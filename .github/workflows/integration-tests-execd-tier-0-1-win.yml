@@ -39,7 +39,7 @@ jobs:
           cp ../fortishield.zip src/winagent/fortishield.zip
       # Upload build artifacts.
       - name: Upload Artifact winagent
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: winagent
           path: src/winagent
