@@ -53,7 +53,7 @@ jobs:
           mkdir C:\win-agent-released
           python -m wget https://fortishield.github.io/packages/4.x/windows/fortishield-agent-${{ matrix.fortishield_version }}.msi -o C:\win-agent-released
       - name: Download base folder
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: win-agent-base.zip
           path: C:\win-agent-base
