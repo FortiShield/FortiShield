@@ -1,15 +1,15 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-analysisd' daemon receives the log messages and compares them to the rules.
+brief: The 'fortishield-analysisd' daemon receives the log messages and compares them to the rules.
        It then creates an alert when a log message matches an applicable rule.
-       Specifically, these tests will verify if the pre-decoding stage of 'wazuh-analysisd' daemon correctly handles
+       Specifically, these tests will verify if the pre-decoding stage of 'fortishield-analysisd' daemon correctly handles
        syslog formats.
 
 components:
@@ -21,7 +21,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
+    - fortishield-analysisd
 
 os_platform:
     - linux
@@ -38,7 +38,7 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-analysisd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-analysisd.html
 
 '''
 
@@ -47,8 +47,8 @@ import json
 
 from pathlib import Path
 
-from wazuh_testing.constants.paths.sockets import LOGTEST_SOCKET_PATH
-from wazuh_testing.utils import configuration
+from fortishield_testing.constants.paths.sockets import LOGTEST_SOCKET_PATH
+from fortishield_testing.utils import configuration
 
 from . import TEST_CASES_PATH
 
@@ -77,7 +77,7 @@ def test_precoder_supported_formats(test_metadata, daemons_handler, connect_to_s
                  To do this, it receives syslog format and checks that the predecoder JSON responses
                  are the same that the loaded ouput for each test case from the 'syslog_socket_input.yaml' file.
 
-    wazuh_min_version: 4.3.0
+    fortishield_min_version: 4.3.0
 
     tier: 2
 

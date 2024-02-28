@@ -1,30 +1,30 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest.mock import patch
 import pytest
 
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.task import *
-        from wazuh.core.utils import FortishieldDBQuery
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.task import *
+        from fortishield.core.utils import FortishieldDBQuery
 
 
-def test_wazuh_db_query_task__init__():
+def test_fortishield_db_query_task__init__():
     """Check if FortishieldDBQueryTask is properly initialized."""
-    with patch('wazuh.core.utils.FortishieldDBQuery.__init__') as mock_wdbq, \
-            patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None) as mock_wdb_backend:
+    with patch('fortishield.core.utils.FortishieldDBQuery.__init__') as mock_wdbq, \
+            patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None) as mock_wdb_backend:
         FortishieldDBQueryTask()
         mock_wdbq.assert_called_once()
         mock_wdb_backend.assert_called_with(query_format='task')
 
 
-@patch('wazuh.core.wazuh_socket.FortishieldSocket._connect')
-@patch('wazuh.core.wazuh_socket.FortishieldSocket.receive', return_value=b'"{\'test\':\'test\'}"')
-@patch('wazuh.core.wazuh_socket.FortishieldSocket.send')
-@patch('wazuh.core.wazuh_socket.FortishieldSocket.close')
+@patch('fortishield.core.fortishield_socket.FortishieldSocket._connect')
+@patch('fortishield.core.fortishield_socket.FortishieldSocket.receive', return_value=b'"{\'test\':\'test\'}"')
+@patch('fortishield.core.fortishield_socket.FortishieldSocket.send')
+@patch('fortishield.core.fortishield_socket.FortishieldSocket.close')
 def test_send_to_tasks_socket(mock_close, mock_send, mock_receive, mock_connect):
     """Check if the function send_to_tasks_socket works properly.
 
@@ -51,23 +51,23 @@ def test_send_to_tasks_socket_ko():
         send_to_tasks_socket({'test': 'test'})
 
 
-def test_wazuh_db_query_task__final_query():
+def test_fortishield_db_query_task__final_query():
     """Check if FortishieldDBQueryTask's method _final_query works properly."""
-    with patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None), \
-            patch('wazuh.core.utils.FortishieldDBQuery._default_query', return_value='test'):
+    with patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None), \
+            patch('fortishield.core.utils.FortishieldDBQuery._default_query', return_value='test'):
         wdbq_task = FortishieldDBQueryTask()
         assert wdbq_task._final_query() == f'test WHERE task_id IN (test) LIMIT :limit OFFSET :offset'
 
 
-def test_wazuh_db_query_task__format_data_into_dictionary():
+def test_fortishield_db_query_task__format_data_into_dictionary():
     """Check that FortishieldDBQueryTask's method _format_data_into_dictionary works properly."""
     data = [
         {'task_id': 1, 'agent_id': '002', 'node': 'worker1', 'module': 'upgrade_module', 'command': 'upgrade',
          'create_time': 1606466932, 'last_update_time': 1606466953, 'status': 'Legacy', 'error_message': None}
     ]
 
-    with patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None), \
-            patch('wazuh.core.utils.FortishieldDBQuery._default_query', return_value='test'):
+    with patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None), \
+            patch('fortishield.core.utils.FortishieldDBQuery._default_query', return_value='test'):
         wdbq_task = FortishieldDBQueryTask()
 
     wdbq_task._data = data
@@ -89,10 +89,10 @@ def test_wazuh_db_query_task__format_data_into_dictionary():
     ('task_list', 'test', {'value': '1', 'operator': 'LIKE'}),
     ('test_field', 'test', {'value': '1', 'operator': 'LIKE'})
 ])
-def test_wazuh_db_query_task__process_filter(field_name, field_filter, q_filter):
+def test_fortishield_db_query_task__process_filter(field_name, field_filter, q_filter):
     """Check that FortishieldDBQueryTask's method _process_filter works properly."""
-    with patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None), \
-            patch('wazuh.core.utils.FortishieldDBQuery._default_query', return_value='test'):
+    with patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None), \
+            patch('fortishield.core.utils.FortishieldDBQuery._default_query', return_value='test'):
         wdbq_task = FortishieldDBQueryTask()
 
     with patch.object(FortishieldDBQuery, '_process_filter') as mock_sup_proc:

@@ -29,7 +29,7 @@ int CreateThreadJoinable(pthread_t *lthread, void * (*function_pointer)(void *),
         return -1;
     }
 
-    read_size = 1024 * (size_t)getDefine_Int("wazuh", "thread_stack_size", 2048, 65536);
+    read_size = 1024 * (size_t)getDefine_Int("fortishield", "thread_stack_size", 2048, 65536);
 
     /* Set the maximum stack limit to new threads */
     if (pthread_attr_setstacksize(&attr, read_size)) {

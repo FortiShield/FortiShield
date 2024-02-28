@@ -45,7 +45,7 @@ info:
   title: 'Fortishield API REST'
   license:
     name: 'GPL 2.0'
-    url: 'https://github.com/fortishield/wazuh/blob/v5.0.0/LICENSE'
+    url: 'https://github.com/fortishield/fortishield/blob/v5.0.0/LICENSE'
 
 servers:
   - url: '{protocol}://{host}:{port}'
@@ -74,7 +74,7 @@ x-rbac-catalog:
     'node:id':
       description: "Reference cluster nodes via node ID (i.e. node:id:worker1)"
     'decoder:file':
-      description: "Reference decoder files via its path (i.e. decoder:file:0005-wazuh_decoders.xml)"
+      description: "Reference decoder files via its path (i.e. decoder:file:0005-fortishield_decoders.xml)"
     'list:file':
       description: "Reference list files via its filename (i.e. list:file:audit-keys)"
     'rule:file':
@@ -555,7 +555,7 @@ components:
             detail: "Permission denied: Resource type: *:*"
             remediation: "Please, make sure you have permissions to execute the current request. For more information
             on how to set up permissions, please visit
-            https://documentation.wazuh.com/5.0/user-manual/api/rbac/configuration.html"
+            https://documentation.fortishield.com/5.0/user-manual/api/rbac/configuration.html"
             error: 4000
             dapi_errors:
               unknown-node:
@@ -622,7 +622,7 @@ components:
             title: "Fortishield Error"
             detail: "Maximum number of requests per minute reached"
             remediation: "This limit can be changed in api.yaml file. More information here:
-            https://documentation.wazuh.com/5.0/user-manual/api/security/configuration.html"
+            https://documentation.fortishield.com/5.0/user-manual/api/security/configuration.html"
             code: 6001
 
     ResourceNotFoundResponse:
@@ -635,7 +635,7 @@ components:
             title: "Resource Not Found"
             detail: "The group does not exist"
             remediation: "Please, use `GET /groups` to find all available groups:
-            https://documentation.wazuh.com/5.0/user-manual/api/rbac/configuration.html"
+            https://documentation.fortishield.com/5.0/user-manual/api/rbac/configuration.html"
             code: 1710
             dapi_errors:
               unknown-node:
@@ -1645,7 +1645,7 @@ components:
           type: string
           description: "Daemon name"
           enum:
-            - wazuh-remoted
+            - fortishield-remoted
         agents:
           type: array
           items:
@@ -1734,7 +1734,7 @@ components:
           type: string
           description: "Daemon name"
           enum:
-            - wazuh-analysisd
+            - fortishield-analysisd
         agents:
           type: array
           items:
@@ -2313,7 +2313,7 @@ components:
           type: string
           description: "Daemon name"
           enum:
-            - wazuh-remoted
+            - fortishield-remoted
         metrics:
           type: object
           properties:
@@ -2442,7 +2442,7 @@ components:
           type: string
           description: "Daemon name"
           enum:
-            - wazuh-analysisd
+            - fortishield-analysisd
         metrics:
           type: object
           properties:
@@ -2937,7 +2937,7 @@ components:
           type: string
           description: "Daemon name"
           enum:
-            - wazuh-db
+            - fortishield-db
         metrics:
           type: object
           properties:
@@ -3253,11 +3253,11 @@ components:
                                 upgrade_update_status:
                                   type: integer
                                   format: int32
-                    wazuhdb:
+                    fortishielddb:
                       type: integer
                       format: int32
-                      description: "Number of wazuhdb queries through FortishieldDB socket"
-                    wazuhdb_breakdown:
+                      description: "Number of fortishielddb queries through FortishieldDB socket"
+                    fortishielddb_breakdown:
                       type: object
                       properties:
                         db:
@@ -3579,11 +3579,11 @@ components:
                                 upgrade_update_status:
                                   type: integer
                                   format: int32
-                    wazuhdb:
+                    fortishielddb:
                       type: integer
                       format: int32
-                      description: "Time taken by all wazuhdb queries (milliseconds)"
-                    wazuhdb_breakdown:
+                      description: "Time taken by all fortishielddb queries (milliseconds)"
+                    fortishielddb_breakdown:
                       type: object
                       properties:
                         db:
@@ -3597,39 +3597,39 @@ components:
     FortishieldDaemonsStatus:
       type: object
       properties:
-        wazuh-agentlessd:
+        fortishield-agentlessd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-analysisd:
+        fortishield-analysisd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-authd:
+        fortishield-authd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-csyslogd:
+        fortishield-csyslogd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-dbd:
+        fortishield-dbd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-execd:
+        fortishield-execd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-integratord:
+        fortishield-integratord:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-logcollector:
+        fortishield-logcollector:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-maild:
+        fortishield-maild:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-monitord:
+        fortishield-monitord:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-remoted:
+        fortishield-remoted:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-reportd:
+        fortishield-reportd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-syscheckd:
+        fortishield-syscheckd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-apid:
+        fortishield-apid:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-clusterd:
+        fortishield-clusterd:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-db:
+        fortishield-db:
           $ref: '#/components/schemas/DaemonStatus'
-        wazuh-modulesd:
+        fortishield-modulesd:
           $ref: '#/components/schemas/DaemonStatus'
 
     FortishieldInfo:
@@ -3876,7 +3876,7 @@ components:
           type: number
           format: float
           description: "Same as `alerts_written` but focusing in [FTS alerts]
-          (https://documentation.wazuh.com/5.0/user-manual/ruleset/ruleset-xml-syntax/decoders.html?highlight=fts
+          (https://documentation.fortishield.com/5.0/user-manual/ruleset/ruleset-xml-syntax/decoders.html?highlight=fts
           #fts)"
         hostinfo_queue_size:
           type: number
@@ -4075,65 +4075,65 @@ components:
     FortishieldLogsSummary:
       type: object
       properties:
-          wazuh-agentlessd:
+          fortishield-agentlessd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-analysisd:
+          fortishield-analysisd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-authd:
+          fortishield-authd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-csyslogd:
+          fortishield-csyslogd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-dbd:
+          fortishield-dbd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-execd:
+          fortishield-execd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-integratord:
+          fortishield-integratord:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-maild:
+          fortishield-maild:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-monitord:
+          fortishield-monitord:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-logcollector:
+          fortishield-logcollector:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-remoted:
+          fortishield-remoted:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-reportd:
+          fortishield-reportd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-rootcheck:
+          fortishield-rootcheck:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-syscheckd:
+          fortishield-syscheckd:
             $ref: '#/components/schemas/LogSummary'
           sca:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-db:
+          fortishield-db:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:
+          fortishield-modulesd:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:agent-upgrade:
+          fortishield-modulesd:agent-upgrade:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:aws-s3:
+          fortishield-modulesd:aws-s3:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:azure-logs:
+          fortishield-modulesd:azure-logs:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:ciscat:
+          fortishield-modulesd:ciscat:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:control:
+          fortishield-modulesd:control:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:command:
+          fortishield-modulesd:command:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:database:
+          fortishield-modulesd:database:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:docker-listener:
+          fortishield-modulesd:docker-listener:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:download:
+          fortishield-modulesd:download:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:oscap:
+          fortishield-modulesd:oscap:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:osquery:
+          fortishield-modulesd:osquery:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:syscollector:
+          fortishield-modulesd:syscollector:
             $ref: '#/components/schemas/LogSummary'
-          wazuh-modulesd:task-manager:
+          fortishield-modulesd:task-manager:
             $ref: '#/components/schemas/LogSummary'
 
     ConfirmationMessage:
@@ -5260,7 +5260,7 @@ components:
         - monitor
         - request
         - syscheck
-        - wazuh-db
+        - fortishield-db
         - wmodules
     configuration:
       in: path
@@ -5453,12 +5453,12 @@ components:
         <td><code>&lt;syscheck&gt;</code>, <code>&lt;rootcheck&gt;</code></td>
         </tr>
         <tr>
-        <td>wazuh-db</td>
+        <td>fortishield-db</td>
         <td>internal</td>
-        <td><code>&lt;wazuh_db&gt;</code></td>
+        <td><code>&lt;fortishield_db&gt;</code></td>
         </tr>
         <tr>
-        <td>wazuh-db</td>
+        <td>fortishield-db</td>
         <td>wdb</td>
         <td><code>&lt;wdb&gt;</code></td>
         </tr>
@@ -5508,9 +5508,9 @@ components:
         items:
           type: string
           enum:
-            - wazuh-analysisd
-            - wazuh-remoted
-            - wazuh-db
+            - fortishield-analysisd
+            - fortishield-remoted
+            - fortishield-db
     daemons_list_agents:
       in: query
       name: daemons_list
@@ -5520,8 +5520,8 @@ components:
         items:
           type: string
           enum:
-            - wazuh-analysisd
-            - wazuh-remoted
+            - fortishield-analysisd
+            - fortishield-remoted
     decoder_name:
       in: query
       name: decoder_names
@@ -6263,7 +6263,7 @@ components:
     version:
       in: query
       name: version
-      description: "Filter by agents version using one of the following formats: 'X.Y.Z', 'vX.Y.Z', 'wazuh X.Y.Z' or 'wazuh vX.Y.Z'. For example: '4.4.0'"
+      description: "Filter by agents version using one of the following formats: 'X.Y.Z', 'vX.Y.Z', 'fortishield X.Y.Z' or 'fortishield vX.Y.Z'. For example: '4.4.0'"
       schema:
         type: string
         format: alphanumeric
@@ -6301,7 +6301,7 @@ components:
     section:
       in: query
       name: section
-      description: "Indicates the wazuh configuration section"
+      description: "Indicates the fortishield configuration section"
       schema:
         type: string
         enum:
@@ -6942,7 +6942,7 @@ components:
       description: "Fortishield version to upgrade to"
       schema:
         type: string
-        format: wazuh_version
+        format: fortishield_version
     force:
       in: query
       name: force
@@ -7096,8 +7096,8 @@ paths:
                 api_version: "v4.5.0"
                 revision: '40100'
                 license_name: "GPL 2.0"
-                license_url: "https://github.com/fortishield/wazuh/blob/v5.0.0/LICENSE"
-                hostname: "wazuh"
+                license_url: "https://github.com/fortishield/fortishield/blob/v5.0.0/LICENSE"
+                hostname: "fortishield"
                 timestamp: "2019-04-02T08:08:11Z"
 
   /active-response:
@@ -7272,7 +7272,7 @@ paths:
                       id: '001'
                       dateAdd: 2021-05-26T12:40:08Z
                       configSum: ab73af41699f13fdd81903b5f23d8d00
-                      manager: wazuh-worker2
+                      manager: fortishield-worker2
                       group: [default]
                       registerIP: Any
                       ip: 172.25.0.6
@@ -7297,7 +7297,7 @@ paths:
                       id: '002'
                       dateAdd: 2021-05-26T12:40:10Z
                       configSum: ab73af41699f13fdd81903b5f23d8d00
-                      manager: wazuh-worker2
+                      manager: fortishield-worker2
                       group: [default]
                       registerIP: Any
                       ip: 172.25.0.11
@@ -7322,7 +7322,7 @@ paths:
                       id: '003'
                       dateAdd: 2021-05-26T12:40:10Z
                       configSum: ab73af41699f13fdd81903b5f23d8d00
-                      manager: wazuh-worker2
+                      manager: fortishield-worker2
                       group: [default]
                       registerIP: Any
                       ip: 172.25.0.10
@@ -7777,7 +7777,7 @@ paths:
                 data:
                   affected_items:
                     - timestamp: 2022-07-27T14:09:20+00:00
-                      name: wazuh-remoted
+                      name: fortishield-remoted
                       agents:
                         - uptime: 2022-07-27T14:09:20+00:00
                           id: 1
@@ -7799,7 +7799,7 @@ paths:
                                 request: 0
                                 shared: 0
                     - timestamp: 2022-07-27T14:09:20+00:00
-                      name: wazuh-analysisd
+                      name: fortishield-analysisd
                       agents:
                         - uptime: 2022-07-27T14:09:20+00:00
                           id: 1
@@ -8491,7 +8491,7 @@ paths:
                       node_name: worker1
                       ip: 172.20.0.7
                       id: 004
-                      manager: wazuh-worker1
+                      manager: fortishield-worker1
                       group:
                         - default
                         - group1
@@ -8516,7 +8516,7 @@ paths:
                       node_name: worker1
                       ip: 172.20.0.9
                       id: 005
-                      manager: wazuh-worker1
+                      manager: fortishield-worker1
                       group:
                         - default
                         - group2
@@ -8541,7 +8541,7 @@ paths:
                       node_name: worker2
                       ip: 172.20.0.10
                       id: 006
-                      manager: wazuh-worker2
+                      manager: fortishield-worker2
                       group:
                         - default
                         - group3
@@ -8848,7 +8848,7 @@ paths:
                     type: string
                     maxLength: 64
                     minLength: 64
-                    format: wazuh_key
+                    format: fortishield_key
                     description: "Key to use when communicating with the manager. The agent must have the same key on
                     its `client.keys` file"
                   name:
@@ -8987,21 +8987,21 @@ paths:
                     - node_name: unknown
                       ip: 172.16.16.16
                       id: 009
-                      name: test_agent_wazuh
+                      name: test_agent_fortishield
                       status: never_connected
                       dateAdd: 2021-05-27T10:06:13Z
                       registerIP: 172.16.16.16
                     - node_name: unknown
                       ip: 172.16.16.17
                       id: 010
-                      name: test_agent_wazuh2
+                      name: test_agent_fortishield2
                       status: never_connected
                       dateAdd: 2021-05-27T10:06:27Z
                       registerIP: 172.16.16.17
                     - node_name: unknown
                       ip: any
                       id: 011
-                      name: test_wazuh_quick
+                      name: test_fortishield_quick
                       status: never_connected
                       dateAdd: 2021-05-27T10:07:37Z
                       registerIP: any
@@ -9213,8 +9213,8 @@ paths:
                           code: 1707
                           message: "Cannot send request, agent is not active"
                           remediation: "Please, check non-active agents connection and try again.
-                           Visit https://documentation.wazuh.com/5.0/user-manual/registering/index.html
-                           and https://documentation.wazuh.com/5.0/user-manual/agents/agent-connection.html
+                           Visit https://documentation.fortishield.com/5.0/user-manual/registering/index.html
+                           and https://documentation.fortishield.com/5.0/user-manual/agents/agent-connection.html
                            to obtain more information on registering and connecting agents"
                         id:
                           - '009'
@@ -9485,7 +9485,7 @@ paths:
                 data:
                   affected_items:
                     - node: "master-node"
-                      cluster: "wazuh"
+                      cluster: "fortishield"
                       type: "master"
                   total_affected_items: 1
                   total_failed_items: 0
@@ -9542,7 +9542,7 @@ paths:
                     - name: master-node
                       type: master
                       version: 4.4.0
-                      ip: wazuh-master
+                      ip: fortishield-master
                     - name: worker1
                       type: worker
                       version: 4.4.0
@@ -9600,7 +9600,7 @@ paths:
                         name: master-node
                         type: master
                         version: 4.4.0
-                        ip: wazuh-master
+                        ip: fortishield-master
                         n_active_agents: 5
                     - info:
                         name: worker1
@@ -9851,14 +9851,14 @@ paths:
               example:
                 data:
                   affected_items:
-                    - name: wazuh
+                    - name: fortishield
                       node_name: master-node
                       node_type: master
                       key: 9d273b53510fef702b54a92e9cffc82e
                       port: 1516
                       bind_addr: 0.0.0.0
                       nodes:
-                        - wazuh-master
+                        - fortishield-master
                       hidden: no
                       disabled: false
                   total_affected_items: 1
@@ -10044,7 +10044,7 @@ paths:
         - $ref: '#/components/parameters/node_id'
       responses:
         '200':
-          description: "Node wazuh daemons statuses"
+          description: "Node fortishield daemons statuses"
           content:
             application/json:
               schema:
@@ -10057,23 +10057,23 @@ paths:
               example:
                 data:
                   affected_items:
-                    - wazuh-agentlessd: stopped
-                      wazuh-analysisd: running
-                      wazuh-authd: stopped
-                      wazuh-csyslogd: stopped
-                      wazuh-dbd: stopped
-                      wazuh-monitord: running
-                      wazuh-execd: running
-                      wazuh-integratord: stopped
-                      wazuh-logcollector: running
-                      wazuh-maild: stopped
-                      wazuh-remoted: running
-                      wazuh-reportd: stopped
-                      wazuh-syscheckd: running
-                      wazuh-apid: running
-                      wazuh-clusterd: running
-                      wazuh-db: running
-                      wazuh-modulesd: running
+                    - fortishield-agentlessd: stopped
+                      fortishield-analysisd: running
+                      fortishield-authd: stopped
+                      fortishield-csyslogd: stopped
+                      fortishield-dbd: stopped
+                      fortishield-monitord: running
+                      fortishield-execd: running
+                      fortishield-integratord: stopped
+                      fortishield-logcollector: running
+                      fortishield-maild: stopped
+                      fortishield-remoted: running
+                      fortishield-reportd: stopped
+                      fortishield-syscheckd: running
+                      fortishield-apid: running
+                      fortishield-clusterd: running
+                      fortishield-db: running
+                      fortishield-modulesd: running
                   total_affected_items: 1
                   total_failed_items: 0
                   failed_items: []
@@ -10147,7 +10147,7 @@ paths:
       tags:
       - Cluster
       summary: "Get node config"
-      description: "Return wazuh configuration used in node {node_id}. The 'section' and 'field' parameters will be ignored if 'raw' parameter is provided."
+      description: "Return fortishield configuration used in node {node_id}. The 'section' and 'field' parameters will be ignored if 'raw' parameter is provided."
       operationId: api.controllers.cluster_controller.get_configuration_node
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/cluster:read'
@@ -10179,9 +10179,9 @@ paths:
                         logall: no
                         logall_json: no
                         email_notification: no
-                        smtp_server: smtp.example.wazuh.com
-                        email_from: wazuh@example.wazuh.com
-                        email_to: recipient@example.wazuh.com
+                        smtp_server: smtp.example.fortishield.com
+                        email_from: fortishield@example.fortishield.com
+                        email_to: recipient@example.fortishield.com
                         email_maxperhour: 12
                         email_log_source: alerts.log
                         agents_disconnection_time: "10m"
@@ -10297,8 +10297,8 @@ paths:
                         - name: disable-account
                           executable: disable-account
                           timeout_allowed: yes
-                        - name: restart-wazuh
-                          executable: restart-wazuh
+                        - name: restart-fortishield
+                          executable: restart-fortishield
                         - name: firewall-drop
                           executable: firewall-drop
                           timeout_allowed: yes
@@ -10364,14 +10364,14 @@ paths:
                         ssl_manager_key: "etc/sslmanager.key"
                         ssl_auto_negotiate: "no"
                       cluster:
-                        name: "wazuh"
+                        name: "fortishield"
                         node_name: "master-node"
                         node_type: "master"
                         key: "9d273b53510fef702b54a92e9cffc82e"
                         port: "1516"
                         bind_addr: "0.0.0.0"
                         nodes:
-                          - "wazuh-master"
+                          - "fortishield-master"
                         hidden: no
                         disabled: no
                   total_affected_items: 1
@@ -10393,7 +10393,7 @@ paths:
       tags:
       - Cluster
       summary: "Update node configuration"
-      description: "Replace wazuh configuration for the given node with the data contained in the API request"
+      description: "Replace fortishield configuration for the given node with the data contained in the API request"
       operationId: api.controllers.cluster_controller.update_configuration
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/cluster:update_config'
@@ -10467,7 +10467,7 @@ paths:
                   affected_items:
                     - uptime: 2022-07-21T10:09:20+00:00
                       timestamp: 2022-07-21T10:48:32+00:00
-                      name: wazuh-remoted
+                      name: fortishield-remoted
                       metrics:
                         tcp_sessions: 0
                         received_bytes: 0
@@ -11041,7 +11041,7 @@ paths:
       tags:
       - Cluster
       summary: "Get node logs"
-      description: "Return the last 2000 wazuh log entries in the specified node"
+      description: "Return the last 2000 fortishield log entries in the specified node"
       operationId: api.controllers.cluster_controller.get_log_node
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/cluster:read'
@@ -11074,15 +11074,15 @@ paths:
                 data:
                   affected_items:
                     - timestamp: '2021-05-27T12:18:08Z'
-                      tag: wazuh-remoted
+                      tag: fortishield-remoted
                       level: debug
                       description: " TCP socket 20 already in keystore. Updating..."
                     - timestamp: '2021-05-27T12:18:08Z'
-                      tag: wazuh-remoted
+                      tag: fortishield-remoted
                       level: debug
                       description: " Agent '003' group is 'default'"
                     - timestamp: '2021-05-27T12:18:08Z'
-                      tag: wazuh-remoted
+                      tag: fortishield-remoted
                       level: debug
                       description: " Agent '003' with group 'default' file 'merged.mg' MD5
                         '9a016508cea1e997ab8569f5cfab30f5'"
@@ -11107,7 +11107,7 @@ paths:
       tags:
       - Cluster
       summary: "Get node logs summary"
-      description: "Return a summary of the last 2000 wazuh log entries in the specified node"
+      description: "Return a summary of the last 2000 fortishield log entries in the specified node"
       operationId: api.controllers.cluster_controller.get_log_summary_node
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/cluster:read'
@@ -11130,14 +11130,14 @@ paths:
               example:
                 data:
                   affected_items:
-                    - wazuh-db:
+                    - fortishield-db:
                         all: 356
                         info: 0
                         error: 0
                         critical: 0
                         warning: 0
                         debug: 356
-                    - wazuh-remoted:
+                    - fortishield-remoted:
                         all: 842
                         info: 0
                         error: 0
@@ -11284,14 +11284,14 @@ paths:
               example:
                 data:
                   affected_items:
-                    - name: "wazuh"
+                    - name: "fortishield"
                       node_name: "master-node"
                       node_type: "master"
                       key: "9d273b53510fef702b54a92e9cffc82e"
                       port: 1516
                       bind_addr: "0.0.0.0"
                       nodes:
-                        - "wazuh-master"
+                        - "fortishield-master"
                       hidden: "no"
                       disabled: "false"
                   total_affected_items: 1
@@ -11348,15 +11348,15 @@ paths:
                 data:
                   affected_items:
                     - items:
-                        - key: audit-wazuh-w
+                        - key: audit-fortishield-w
                           value: write
-                        - key: audit-wazuh-r
+                        - key: audit-fortishield-r
                           value: read
-                        - key: audit-wazuh-a
+                        - key: audit-fortishield-a
                           value: attribute
-                        - key: audit-wazuh-x
+                        - key: audit-fortishield-x
                           value: execute
-                        - key: audit-wazuh-c
+                        - key: audit-fortishield-c
                           value: command
                       relative_dirname: etc/lists
                       filename: audit-keys
@@ -11406,11 +11406,11 @@ paths:
               example:
                 data:
                   affected_items:
-                    - audit-wazuh-w: write
-                      audit-wazuh-r: read
-                      audit-wazuh-a: attribute
-                      audit-wazuh-x: execute
-                      audit-wazuh-c: command
+                    - audit-fortishield-w: write
+                      audit-fortishield-r: read
+                      audit-fortishield-a: attribute
+                      audit-fortishield-x: execute
+                      audit-fortishield-c: command
                   total_affected_items: 1
                   total_failed_items: 0
                   failed_items: []
@@ -11420,11 +11420,11 @@ paths:
               schema:
                 type: string
               example: |
-                audit-wazuh-w:write
-                audit-wazuh-r:read
-                audit-wazuh-a:attribute
-                audit-wazuh-x:execute
-                audit-wazuh-c:command
+                audit-fortishield-w:write
+                audit-fortishield-r:read
+                audit-fortishield-a:attribute
+                audit-fortishield-x:execute
+                audit-fortishield-c:command
         '400':
           $ref: '#/components/responses/ResponseError'
         '401':
@@ -11634,12 +11634,12 @@ paths:
                         - 4.3
                     agent:
                       id: "000"
-                      name: "wazuh-master"
+                      name: "fortishield-master"
                     manager:
-                      name: "wazuh-master"
+                      name: "fortishield-master"
                     id: "1622119563.2682664"
                     cluster:
-                      name: "wazuh"
+                      name: "fortishield"
                       node: "master-node"
                     full_log: "ERROR"
                     decoder: None
@@ -11729,23 +11729,23 @@ paths:
               example:
                 data:
                   affected_items:
-                    - wazuh-agentlessd: "stopped"
-                      wazuh-analysisd: "running"
-                      wazuh-authd: "running"
-                      wazuh-csyslogd: "stopped"
-                      wazuh-dbd: "stopped"
-                      wazuh-monitor": "running"
-                      wazuh-execd: "running"
-                      wazuh-integratord: "stopped"
-                      wazuh-logcollector: "running"
-                      wazuh-maild: "stopped"
-                      wazuh-remoted: "running"
-                      wazuh-reportd: "stopped"
-                      wazuh-syscheckd: "running"
-                      wazuh-clusterd: "running"
-                      wazuh-modulesd: "running"
-                      wazuh-db: "running"
-                      wazuh-apid: "running"
+                    - fortishield-agentlessd: "stopped"
+                      fortishield-analysisd: "running"
+                      fortishield-authd: "running"
+                      fortishield-csyslogd: "stopped"
+                      fortishield-dbd: "stopped"
+                      fortishield-monitor": "running"
+                      fortishield-execd: "running"
+                      fortishield-integratord: "stopped"
+                      fortishield-logcollector: "running"
+                      fortishield-maild: "stopped"
+                      fortishield-remoted: "running"
+                      fortishield-reportd: "stopped"
+                      fortishield-syscheckd: "running"
+                      fortishield-clusterd: "running"
+                      fortishield-modulesd: "running"
+                      fortishield-db: "running"
+                      fortishield-apid: "running"
                   total_affected_items: 1
                   total_failed_items: 0
                   failed_items: []
@@ -11817,7 +11817,7 @@ paths:
       tags:
       - Manager
       summary: "Get configuration"
-      description: "Return wazuh configuration used. The 'section' and 'field' parameters will be ignored if 'raw' parameter is provided."
+      description: "Return fortishield configuration used. The 'section' and 'field' parameters will be ignored if 'raw' parameter is provided."
       operationId: api.controllers.manager_controller.get_configuration
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/manager:read'
@@ -11849,9 +11849,9 @@ paths:
                         logall: no
                         logall_json: no
                         email_notification: no
-                        smtp_server: smtp.example.wazuh.com
-                        email_from: wazuh@example.wazuh.com
-                        email_to: recipient@example.wazuh.com
+                        smtp_server: smtp.example.fortishield.com
+                        email_from: fortishield@example.fortishield.com
+                        email_to: recipient@example.fortishield.com
                         email_maxperhour: 12
                         email_log_source: alerts.log
                         queue_size: 131072
@@ -11967,12 +11967,12 @@ paths:
                   affected_items:
                     - uptime: 2022-07-21T10:09:20+00:00
                       timestamp: 2022-07-21T10:47:59+00:00
-                      name: wazuh-db
+                      name: fortishield-db
                       metrics:
                         queries_total: 1514
                         queries_breakdown:
-                          wazuhdb_queries: 0
-                          wazuhdb_queries_breakdown:
+                          fortishielddb_queries: 0
+                          fortishielddb_queries_breakdown:
                             remove_queries: 0
                             unknown_queries: 0
                           agent_queries: 73
@@ -12073,8 +12073,8 @@ paths:
                           unknown_queries: 0
                         queries_time_total: 493
                         queries_time_breakdown:
-                          wazuhdb_time: 0
-                          wazuhdb_time_breakdown:
+                          fortishielddb_time: 0
+                          fortishielddb_time_breakdown:
                             remove_time: 0
                           agent_time: 351
                           agent_time_breakdown:
@@ -12682,7 +12682,7 @@ paths:
       tags:
       - Manager
       summary: "Get logs"
-      description: "Return the last 2000 wazuh log entries"
+      description: "Return the last 2000 fortishield log entries"
       operationId: api.controllers.manager_controller.get_log
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/manager:read'
@@ -12714,15 +12714,15 @@ paths:
                 data:
                   affected_items:
                     - timestamp: '2020-04-15T14:47:54Z'
-                      tag: wazuh-modulesd:syscollector
+                      tag: fortishield-modulesd:syscollector
                       level: info
                       description: "Start syscheck scan"
                     - timestamp: '2020-04-15T14:47:51Z'
-                      tag: wazuh-modulesd:syscollector
+                      tag: fortishield-modulesd:syscollector
                       level: info
                       description: "Starting evaluation"
                     - timestamp: '2020-04-15T13:50:24Z'
-                      tag: wazuh-maild
+                      tag: fortishield-maild
                       level: error
                       description: " (1263): Error Sending email to 69.172.200.109 (smtp server)"
                   total_affected_items: 3
@@ -12746,7 +12746,7 @@ paths:
       tags:
       - Manager
       summary: "Get logs summary"
-      description: "Return a summary of the last 2000 wazuh log entries"
+      description: "Return a summary of the last 2000 fortishield log entries"
       operationId: api.controllers.manager_controller.get_log_summary
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/manager:read'
@@ -12768,21 +12768,21 @@ paths:
               example:
                 data:
                   affected_items:
-                    - wazuh-modulesd:
+                    - fortishield-modulesd:
                         info: 2
                         all: 2
                         critical: 0
                         debug: 0
                         error: 0
                         warning: 0
-                    - wazuh-db:
+                    - fortishield-db:
                         info: 1
                         all: 4
                         critical: 0
                         debug: 0
                         error: 3
                         warning: 0
-                    - wazuh-rootcheck:
+                    - fortishield-rootcheck:
                         info: 8
                         all: 8
                         critical: 0
@@ -12878,7 +12878,7 @@ paths:
       tags:
       - Manager
       summary: "Restart manager"
-      description: "Restart the wazuh manager"
+      description: "Restart the fortishield manager"
       operationId: api.controllers.manager_controller.put_restart
       x-rbac-actions:
         - $ref: '#/x-rbac-catalog/actions/manager:read'
@@ -14031,7 +14031,7 @@ paths:
                     - file: 0015-ossec_rules.xml
                       relative_dirname: ruleset/rules
                       status: enabled
-                    - file: 0016-wazuh_rules.xml
+                    - file: 0016-fortishield_rules.xml
                       relative_dirname: ruleset/rules
                       status: enabled
                     - file: 0020-syslog_rules.xml
@@ -14737,23 +14737,23 @@ paths:
               example:
                 data:
                   affected_items:
-                    - filename: "0005-wazuh_decoders.xml"
+                    - filename: "0005-fortishield_decoders.xml"
                       relative_dirname: "ruleset/decoders"
                       status: enabled
-                      name: wazuh
+                      name: fortishield
                       position: 0
                       details:
                         prematch:
-                          pattern: "^wazuh: "
-                    - filename: "0005-wazuh_decoders.xml"
+                          pattern: "^fortishield: "
+                    - filename: "0005-fortishield_decoders.xml"
                       relative_dirname: "ruleset/decoders"
                       status: enabled
                       name: agent-buffer
                       position: 1
                       details:
-                        parent: wazuh
+                        parent: fortishield
                         prematch:
-                          pattern: "^wazuh: "
+                          pattern: "^fortishield: "
                           offset: after_parent
                         regex:
                           pattern: "^ '(\\S+)'."
@@ -14813,7 +14813,7 @@ paths:
               example:
                 data:
                   affected_items:
-                    - filename: 0005-wazuh_decoders.xml
+                    - filename: 0005-fortishield_decoders.xml
                       relative_dirname: ruleset/decoders
                       status: enabled
                     - filename: 0006-json_decoders.xml
@@ -14869,10 +14869,10 @@ paths:
                 data:
                   affected_items:
                     - decoder:
-                        - "@name": wazuh
-                          prematch: "^wazuh:"
+                        - "@name": fortishield
+                          prematch: "^fortishield:"
                         - "@name": agent-buffer
-                          parent: wazuh
+                          parent: fortishield
                           prematch:
                             "@offset": after_parent
                             "#text": "^Agent buffer:"
@@ -14881,7 +14881,7 @@ paths:
                             "#text": "^ '(\\S+)'."
                           order: level
                         - "@name": agent-upgrade
-                          parent: wazuh
+                          parent: fortishield
                           prematch:
                             "@offset": after_parent
                             "#text": "^Upgrade procedure |^Custom installation"
@@ -14890,19 +14890,19 @@ paths:
                             "#text": on agent (\d\d\d)\s\((\S+)\):\s(\w+)
                           order: agent.id, agent.name, status
                         - "@name": agent-upgrade
-                          parent: wazuh
+                          parent: fortishield
                           regex: aborted:\s(\.+)$|failed:\s(\.+)$|lost:\s(\.+)$
                           order: error
                         - "@name": agent-upgrade
-                          parent: wazuh
+                          parent: fortishield
                           regex: started.\sCurrent\sversion:\sFortishield\s(\.+)$
                           order: agent.cur_version
                         - "@name": agent-upgrade
-                          parent: wazuh
+                          parent: fortishield
                           regex: succeeded.\sNew\sversion:\sFortishield\s(\.+)$
                           order: agent.new_version
                         - "@name": agent-restart
-                          parent: wazuh
+                          parent: fortishield
                           prematch:
                             "@offset": after_parent
                             "#text": "^Invalid remote configuration:"
@@ -14911,7 +14911,7 @@ paths:
                             "#text": "^ '(\\S+)'."
                           order: module
                         - "@name": fim-state
-                          parent: wazuh
+                          parent: fortishield
                           prematch:
                             "@offset": after_parent
                             "#text": "^FIM DB:"
@@ -14933,44 +14933,44 @@ paths:
                   -  Copyright (C) 2015, Fortishield Inc.
                   -  This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2.
                 -->
-                <decoder name="wazuh">
-                  <prematch>^wazuh: </prematch>
+                <decoder name="fortishield">
+                  <prematch>^fortishield: </prematch>
                 </decoder>
                 <decoder name="agent-buffer">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <prematch offset="after_parent">^Agent buffer:</prematch>
                   <regex offset="after_prematch">^ '(\S+)'.</regex>
                   <order>level</order>
                 </decoder>
                 <decoder name="agent-upgrade">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <prematch offset="after_parent">^Upgrade procedure |^Custom installation </prematch>
                   <regex offset="after_prematch">on agent (\d\d\d)\s\((\S+)\):\s(\w+)</regex>
                   <order>agent.id, agent.name, status</order>
                 </decoder>
                 <decoder name="agent-upgrade">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <regex>aborted:\s(\.+)$|failed:\s(\.+)$|lost:\s(\.+)$</regex>
                   <order>error</order>
                 </decoder>
                 <decoder name="agent-upgrade">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <regex>started.\sCurrent\sversion:\sFortishield\s(\.+)$</regex>
                   <order>agent.cur_version</order>
                 </decoder>
                 <decoder name="agent-upgrade">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <regex>succeeded.\sNew\sversion:\sFortishield\s(\.+)$</regex>
                   <order>agent.new_version</order>
                 </decoder>
                 <decoder name="agent-restart">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <prematch offset="after_parent">^Invalid remote configuration:</prematch>
                   <regex offset="after_prematch">^ '(\S+)'.</regex>
                   <order>module</order>
                 </decoder>
                 <decoder name="fim-state">
-                  <parent>wazuh</parent>
+                  <parent>fortishield</parent>
                   <prematch offset="after_parent">^FIM DB: </prematch>
                   <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
                 </decoder>
@@ -15120,14 +15120,14 @@ paths:
               example:
                 data:
                   affected_items:
-                    - filename: "0005-wazuh_decoders.xml"
+                    - filename: "0005-fortishield_decoders.xml"
                       relative_dirname: "ruleset/decoders"
                       status: enabled
-                      name: wazuh
+                      name: fortishield
                       position: 0
                       details:
                         prematch:
-                          pattern: "^wazuh: "
+                          pattern: "^fortishield: "
                     - filename: "0006-json_decoders.xml"
                       relative_dirname: "ruleset/decoders"
                       status: enabled
@@ -15773,7 +15773,7 @@ paths:
                         id: 496386874
                         time: '2020-04-15T11:02:03Z'
                       sysname: Linux
-                      hostname: wazuh-master
+                      hostname: fortishield-master
                       version: "#34~1584408018~19.10~21df4b1-Ubuntu SMP Tue Mar 17 13:38:51 UTC "
                       release: 5.3.0-7642-generic
                       architecture: x86_64
@@ -15789,7 +15789,7 @@ paths:
                         id: 196194860
                         time: '2020-04-15T11:02:23Z'
                       sysname: Linux
-                      hostname: wazuh-agent1
+                      hostname: fortishield-agent1
                       version: "#34~1584408018~19.10~21df4b1-Ubuntu SMP Tue Mar 17 13:38:51 UTC "
                       release: 5.3.0-7642-generic
                       architecture: x86_64
@@ -15804,7 +15804,7 @@ paths:
                       scan:
                         id: 763390318
                         time: '2020-04-15T11:02:52Z'
-                      hostname: wazuh-agent2
+                      hostname: fortishield-agent2
                       release: 5.3.0-7642-generic
                       version: "#34~1584408018~19.10~21df4b1-Ubuntu SMP Tue Mar 17 13:38:51 UTC "
                       architecture: x86_64
@@ -16091,7 +16091,7 @@ paths:
                       utime: 23
                       egroup: root
                       ruser: root
-                      argvs: "/scripts/entrypoint.sh,wazuh-master,master-node,master"
+                      argvs: "/scripts/entrypoint.sh,fortishield-master,master-node,master"
                       size: 4593
                       euser: root
                       processor: 3
@@ -16114,7 +16114,7 @@ paths:
                     - scan:
                         id: 28643647
                         time: '2020-04-15T11:02:07Z'
-                      name: wazuh-control
+                      name: fortishield-control
                       suser: root
                       nlwp: 1
                       pgrp: 1
@@ -16123,7 +16123,7 @@ paths:
                       utime: 0
                       egroup: root
                       ruser: root
-                      argvs: "/var/ossec/bin/wazuh-control,restart"
+                      argvs: "/var/ossec/bin/fortishield-control,restart"
                       size: 1156
                       euser: root
                       processor: 6
@@ -16591,7 +16591,7 @@ paths:
                       release: 5.8.0-45-generic
                       version: "#51~20.04.1-Ubuntu SMP Tue Feb 23 13:46:31 UTC 2021"
                       architecture: x86_64
-                      hostname: wazuh-master
+                      hostname: fortishield-master
                       agent_id: '001'
                   total_affected_items: 1
                   total_failed_items: 0
@@ -17013,7 +17013,7 @@ paths:
                 $ref: '#/components/schemas/ApiResponse'
               example:
                 data:
-                  message: "User wazuh was successfully logged out"
+                  message: "User fortishield was successfully logged out"
                   error: 0
         '400':
           $ref: '#/components/responses/ResponseError'
@@ -17105,7 +17105,7 @@ paths:
                   data:
                     affected_items:
                       - id: 1
-                        username: wazuh
+                        username: fortishield
                         allow_run_as: true
                         roles:
                           - id: 1
@@ -17246,7 +17246,7 @@ paths:
                   data:
                     affected_items:
                       - id: 1
-                        username: wazuh
+                        username: fortishield
                         allow_run_as: true
                         roles:
                           - 1
@@ -17356,7 +17356,7 @@ paths:
                   "node:id":
                     description: "Reference cluster nodes via node ID (i.e. node:id:worker1)"
                   "decoder:file":
-                    description: "Reference decoder files via its path (i.e. decoder:file:0005-wazuh_decoders.xml)"
+                    description: "Reference decoder files via its path (i.e. decoder:file:0005-fortishield_decoders.xml)"
                   "list:file":
                     description: "Reference list files via its filename (i.e. list:file:audit-keys)"
                   "rule:file":
@@ -17449,12 +17449,12 @@ paths:
                           - 4
                           - 5
                       - id: 1
-                        username: wazuh
+                        username: fortishield
                         allow_run_as: true
                         roles:
                           - 1
                       - id: 2
-                        username: wazuh-wui
+                        username: fortishield-wui
                         allow_run_as: true
                         roles: []
                     total_affected_items: 8
@@ -17628,7 +17628,7 @@ paths:
                   data:
                     affected_items:
                       - id: 100
-                        username: wazuh-test
+                        username: fortishield-test
                         allow_run_as: false
                         roles:
                           - 2
@@ -18388,7 +18388,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PoliciesRequest_no_required'
             example:
-              name: 'wazuhPolicy'
+              name: 'fortishieldPolicy'
               policy:
                 actions:
                   - "agent:delete"
@@ -18803,7 +18803,7 @@ paths:
                       name: "77000bae7bd0"
                       registerIP: "any"
                       dateAdd: "2021-05-31T09:49:28Z"
-                      manager: "wazuh-worker1"
+                      manager: "fortishield-worker1"
                       id: "004"
                       mergedSum: "9a016508cea1e997ab8569f5cfab30f5"
                       version: "Fortishield v4.3.0"
@@ -19038,4 +19038,4 @@ paths:
 
 externalDocs:
   description: "Find more about Fortishield API usage"
-  url: 'https://documentation.wazuh.com/5.0/user-manual/api/index.html'
+  url: 'https://documentation.fortishield.com/5.0/user-manual/api/index.html'

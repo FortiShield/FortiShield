@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -8,26 +8,26 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from wazuh import FortishieldError
-from wazuh.core.wazuh_socket import create_wazuh_socket_message
+from fortishield import FortishieldError
+from fortishield.core.fortishield_socket import create_fortishield_socket_message
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..'))
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.logtest import run_logtest, end_logtest_session
+        from fortishield.logtest import run_logtest, end_logtest_session
 
 
 def send_logtest_msg_mock(**kwargs):
-    socket_response = create_wazuh_socket_message(command=kwargs['command'], parameters=kwargs['parameters'])
+    socket_response = create_fortishield_socket_message(command=kwargs['command'], parameters=kwargs['parameters'])
     socket_response['error'] = 0
     return socket_response
 
@@ -46,7 +46,7 @@ def test_get_logtest_output(logtest_param_values):
     """
     kwargs_keys = ['token', 'event', 'log_format', 'location']
     kwargs = {key: value for key, value in zip(kwargs_keys, logtest_param_values)}
-    with patch('wazuh.logtest.send_logtest_msg') as send_mock:
+    with patch('fortishield.logtest.send_logtest_msg') as send_mock:
         send_mock.side_effect = send_logtest_msg_mock
         result = run_logtest(**kwargs)
         assert result
@@ -59,7 +59,7 @@ def test_get_logtest_output(logtest_param_values):
 
 def test_get_logtest_output_ko():
     """Test `run_logtest` exceptions."""
-    with patch('wazuh.logtest.send_logtest_msg') as send_mock:
+    with patch('fortishield.logtest.send_logtest_msg') as send_mock:
         send_mock.return_value = {'error': 1}
         try:
             run_logtest()
@@ -79,7 +79,7 @@ def test_end_logtest_session(token):
     token : str
         Logtest session token.
     """
-    with patch('wazuh.logtest.send_logtest_msg') as send_mock:
+    with patch('fortishield.logtest.send_logtest_msg') as send_mock:
         send_mock.side_effect = send_logtest_msg_mock
         result = end_logtest_session(token=token)
         assert result['command'] == 'remove_session'
@@ -88,7 +88,7 @@ def test_end_logtest_session(token):
 
 def test_end_logtest_session_ko():
     """Test `end_logtest_session_ko` exceptions."""
-    with patch('wazuh.logtest.send_logtest_msg') as send_mock:
+    with patch('fortishield.logtest.send_logtest_msg') as send_mock:
         send_mock.return_value = {'error': 1}
         try:
             end_logtest_session(token='whatever')

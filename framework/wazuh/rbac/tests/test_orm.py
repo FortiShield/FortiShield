@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -15,9 +15,9 @@ from sqlalchemy import orm as sqlalchemy_orm
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
 
-from wazuh.core.utils import get_utc_now
-from wazuh.rbac.tests.utils import init_db
-from wazuh.rbac.orm import FORTISHIELD_USER_ID, FORTISHIELD_WUI_USER_ID, MAX_ID_RESERVED, User
+from fortishield.core.utils import get_utc_now
+from fortishield.rbac.tests.utils import init_db
+from fortishield.rbac.orm import FORTISHIELD_USER_ID, FORTISHIELD_WUI_USER_ID, MAX_ID_RESERVED, User
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data')
@@ -26,11 +26,11 @@ in_memory_db_path = ":memory:"
 
 @pytest.fixture(scope='function')
 def db_setup():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    import wazuh.rbac.orm as rbac
+                    import fortishield.rbac.orm as rbac
                     # Clear mappers
                     sqlalchemy_orm.clear_mappers()
 
@@ -45,8 +45,8 @@ def fresh_in_memory_db():
     sqlalchemy_orm.clear_mappers()
 
     # Create fresh in-memory db
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
-        import wazuh.rbac.orm as orm
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
+        import fortishield.rbac.orm as orm
         reload(orm)
 
         orm.db_manager.close_sessions()
@@ -61,7 +61,7 @@ def fresh_in_memory_db():
 def test_database_init(db_setup):
     """Check users db is properly initialized"""
     with db_setup.RolesManager() as rm:
-        assert rm.get_role('wazuh') != db_setup.SecurityError.ROLE_NOT_EXIST
+        assert rm.get_role('fortishield') != db_setup.SecurityError.ROLE_NOT_EXIST
 
 def add_token(db_setup):
     """Store a new token rule in the database"""
@@ -118,7 +118,7 @@ def test_delete_all_rules(db_setup):
 
 def test_delete_all_expired_rules(db_setup):
     """Check that rules are correctly deleted"""
-    with patch('wazuh.rbac.orm.time', return_value=0):
+    with patch('fortishield.rbac.orm.time', return_value=0):
         add_token(db_setup)
     with db_setup.TokenManager() as tm:
         assert tm.delete_all_expired_rules()
@@ -874,8 +874,8 @@ def test_databasemanager___init__(fresh_in_memory_db):
     assert hasattr(fresh_in_memory_db.db_manager, "sessions")
 
 
-@patch("wazuh.rbac.orm.create_engine")
-@patch("wazuh.rbac.orm.sessionmaker")
+@patch("fortishield.rbac.orm.create_engine")
+@patch("fortishield.rbac.orm.sessionmaker")
 def test_databasemanager_connect(sessionmaker_mock, create_engine_mock, fresh_in_memory_db):
     """Test `connect` method for class `DatabaseManager`."""
     dbm = fresh_in_memory_db.db_manager
@@ -889,8 +889,8 @@ def test_databasemanager_connect(sessionmaker_mock, create_engine_mock, fresh_in
     create_engine_mock.assert_called_once_with(f"sqlite:///{db_path}", echo=False)
 
 
-@patch("wazuh.rbac.orm.create_engine")
-@patch("wazuh.rbac.orm.sessionmaker")
+@patch("fortishield.rbac.orm.create_engine")
+@patch("fortishield.rbac.orm.sessionmaker")
 def test_databasemanager_close_sessions(sessionmaker_mock, create_engine_mock, fresh_in_memory_db):
     """Test `close_sessions` method for class `DatabaseManager`."""
     dbm = fresh_in_memory_db.db_manager
@@ -903,7 +903,7 @@ def test_databasemanager_close_sessions(sessionmaker_mock, create_engine_mock, f
     sessionmaker_mock.assert_has_calls([call()().close()])
 
 
-@patch("wazuh.rbac.orm._Base.metadata.create_all")
+@patch("fortishield.rbac.orm._Base.metadata.create_all")
 def test_databasemanager_create_database(create_db_mock, fresh_in_memory_db):
     """Test `create_database` method for class `DatabaseManager`."""
     dbm = fresh_in_memory_db.db_manager
@@ -981,7 +981,7 @@ def test_databasemanager_get_table(fresh_in_memory_db):
     # Assert that `get_table` returns the correct Query object depending on the given Table
     current_columns = set(re.findall(column_regex, str(fresh_in_memory_db.db_manager.get_table(
         session, fresh_in_memory_db.User))))
-    with patch("wazuh.rbac.orm._new_columns", new={"new_column"}):
+    with patch("fortishield.rbac.orm._new_columns", new={"new_column"}):
         updated_columns = set(re.findall(column_regex, str(fresh_in_memory_db.db_manager.get_table(session, 
                                                                                                    EnhancedUser))))
 
@@ -1006,18 +1006,18 @@ def test_databasemanager_set_database_version(fresh_in_memory_db):
     assert fresh_in_memory_db.db_manager.sessions[in_memory_db_path].execute(text("pragma user_version")).first()[0] == 555
 
 
-@patch("wazuh.rbac.orm.safe_move")
-@patch("wazuh.rbac.orm.os.remove")
-@patch("wazuh.rbac.orm.chown")
-@patch("wazuh.rbac.orm.os.chmod")
+@patch("fortishield.rbac.orm.safe_move")
+@patch("fortishield.rbac.orm.os.remove")
+@patch("fortishield.rbac.orm.chown")
+@patch("fortishield.rbac.orm.os.chmod")
 def test_check_database_integrity(chmod_mock, chown_mock, remove_mock, safe_move_mock, fresh_in_memory_db):
     """Test `check_database_integrity` function briefly.
 
     NOTE: To correctly test this procedure, use the RBAC database migration integration tests."""
     db_mock = MagicMock()
-    with patch("wazuh.rbac.orm.db_manager", new=db_mock):
-        with patch("wazuh.rbac.orm.os.path.exists", return_value=True):
-            with patch("wazuh.rbac.orm.CURRENT_ORM_VERSION", new=99999):
+    with patch("fortishield.rbac.orm.db_manager", new=db_mock):
+        with patch("fortishield.rbac.orm.os.path.exists", return_value=True):
+            with patch("fortishield.rbac.orm.CURRENT_ORM_VERSION", new=99999):
                 # DB exists and a migration is needed
                 fresh_in_memory_db.check_database_integrity()
                 db_mock.assert_has_calls([
@@ -1038,8 +1038,8 @@ def test_check_database_integrity(chmod_mock, chown_mock, remove_mock, safe_move
                 ], any_order=True)
 
         safe_move_mock.assert_called_once_with(fresh_in_memory_db.DB_FILE_TMP, fresh_in_memory_db.DB_FILE,
-                                               ownership=(fresh_in_memory_db.wazuh_uid(),
-                                                          fresh_in_memory_db.wazuh_gid()),
+                                               ownership=(fresh_in_memory_db.fortishield_uid(),
+                                                          fresh_in_memory_db.fortishield_gid()),
                                                permissions=0o640)
 
         # DB does not exist. A new one will be initialized
@@ -1054,8 +1054,8 @@ def test_check_database_integrity(chmod_mock, chown_mock, remove_mock, safe_move
 
 
 @pytest.mark.parametrize("exception", [ValueError, Exception])
-@patch("wazuh.rbac.orm.DatabaseManager.close_sessions")
-@patch("wazuh.rbac.orm.os.remove")
+@patch("fortishield.rbac.orm.DatabaseManager.close_sessions")
+@patch("fortishield.rbac.orm.os.remove")
 def test_check_database_integrity_exceptions(remove_mock, close_sessions_mock, exception, fresh_in_memory_db):
     """Test `check_database_integrity` function exceptions briefly.
 
@@ -1063,8 +1063,8 @@ def test_check_database_integrity_exceptions(remove_mock, close_sessions_mock, e
     def mocked_exists(path: str):
         return path == fresh_in_memory_db.DB_FILE_TMP
 
-    with patch("wazuh.rbac.orm.os.path.exists", side_effect=mocked_exists) as mock_exists:
-        with patch("wazuh.rbac.orm.DatabaseManager.connect", side_effect=exception) as db_manager_mock:
+    with patch("fortishield.rbac.orm.os.path.exists", side_effect=mocked_exists) as mock_exists:
+        with patch("fortishield.rbac.orm.DatabaseManager.connect", side_effect=exception) as db_manager_mock:
             with pytest.raises(exception):
                 fresh_in_memory_db.check_database_integrity()
 
@@ -1074,8 +1074,8 @@ def test_check_database_integrity_exceptions(remove_mock, close_sessions_mock, e
 
 @pytest.mark.parametrize('from_id, to_id, users', [
     (FORTISHIELD_USER_ID, FORTISHIELD_WUI_USER_ID, [
-        User('wazuh', 'test', user_id=FORTISHIELD_USER_ID),
-        User('wazuh-wui', 'test2', user_id=FORTISHIELD_WUI_USER_ID)
+        User('fortishield', 'test', user_id=FORTISHIELD_USER_ID),
+        User('fortishield-wui', 'test2', user_id=FORTISHIELD_WUI_USER_ID)
     ]),
     (MAX_ID_RESERVED + 1, None, [
         User('custom', 'test', user_id=110),
@@ -1088,8 +1088,8 @@ def test_migrate_data(db_setup, from_id, to_id, users):
     NOTE: To correctly test this procedure, use the RBAC database migration integration tests."""
     # This test case updates the default user passwords and omits the rest of the migration
     if to_id == FORTISHIELD_WUI_USER_ID:
-        with patch("wazuh.rbac.orm.db_manager.get_data", return_value=users):
-            with patch("wazuh.rbac.orm.AuthenticationManager.update_user") as mock_update_user:
+        with patch("fortishield.rbac.orm.db_manager.get_data", return_value=users):
+            with patch("fortishield.rbac.orm.AuthenticationManager.update_user") as mock_update_user:
                 db_setup.db_manager.migrate_data(source=db_setup.DB_FILE, target=db_setup.DB_FILE,
                                                  from_id=from_id, to_id=to_id)
 
@@ -1102,9 +1102,9 @@ def test_migrate_data(db_setup, from_id, to_id, users):
         # since they do not depend on the users being migrated
         empty_list = []
         user_exists = False
-        with patch("wazuh.rbac.orm.AuthenticationManager.add_user",
+        with patch("fortishield.rbac.orm.AuthenticationManager.add_user",
                    side_effect=[not user_exists, user_exists, not user_exists]) as mock_add_user:
-            with patch("wazuh.rbac.orm.db_manager.get_data",
+            with patch("fortishield.rbac.orm.db_manager.get_data",
                        side_effect=[users, empty_list, empty_list, empty_list, empty_list, empty_list, empty_list]):
                 db_setup.db_manager.migrate_data(source=db_setup.DB_FILE, target=db_setup.DB_FILE,
                                                  from_id=from_id, to_id=to_id)

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -8,7 +8,7 @@ import six
 from connexion.jsonifier import JSONEncoder
 
 from api.models.base_model_ import Model
-from wazuh.core.results import AbstractFortishieldResult
+from fortishield.core.results import AbstractFortishieldResult
 
 
 class FortishieldAPIJSONEncoder(JSONEncoder):

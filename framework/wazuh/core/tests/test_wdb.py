@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio  # noqa
@@ -8,10 +8,10 @@ from unittest.mock import patch, AsyncMock, MagicMock, call
 
 import pytest
 
-from wazuh.core import common
-from wazuh.core import exception
-from wazuh.core.common import MAX_SOCKET_BUFFER_SIZE
-from wazuh.core.wdb import AsyncFortishieldDBConnection, FortishieldDBConnection
+from fortishield.core import common
+from fortishield.core import exception
+from fortishield.core.common import MAX_SOCKET_BUFFER_SIZE
+from fortishield.core.wdb import AsyncFortishieldDBConnection, FortishieldDBConnection
 
 
 def format_msg(msg):
@@ -101,7 +101,7 @@ async def test_run_wdb_command():
     command = "any wdb command"
 
     wdb_con = AsyncFortishieldDBConnection()
-    with patch('wazuh.core.wdb.AsyncFortishieldDBConnection._send', return_value=send_result) as wdb_send_mock:
+    with patch('fortishield.core.wdb.AsyncFortishieldDBConnection._send', return_value=send_result) as wdb_send_mock:
         result = await wdb_con.run_wdb_command(command)
         wdb_send_mock.assert_called_once_with(command, raw=True)
 
@@ -115,7 +115,7 @@ async def test_run_wdb_command():
 ])
 async def test_run_wdb_command_ko(wdb_response):
     """Test `FortishieldDBConnection.run_wdb_command` method expected exceptions."""
-    with patch('wazuh.core.wdb.AsyncFortishieldDBConnection._send', return_value=wdb_response):
+    with patch('fortishield.core.wdb.AsyncFortishieldDBConnection._send', return_value=wdb_response):
         wdb_con = AsyncFortishieldDBConnection()
         with pytest.raises(exception.FortishieldInternalError, match=".* 2007 .*") as expected_exc:
             await wdb_con.run_wdb_command("global sync-agent-info-get ")
@@ -129,7 +129,7 @@ def test_failed_connection():
     Tests an exception is properly raised when it's not possible to connect to wdb
     """
     # tests the socket path doesn't exists
-    with patch('wazuh.core.common.WDB_SOCKET', '/this/path/doesnt/exist'):
+    with patch('fortishield.core.common.WDB_SOCKET', '/this/path/doesnt/exist'):
         with pytest.raises(exception.FortishieldException, match=".* 2005 .*"):
             FortishieldDBConnection()
     # tests an exception is properly raised when a connection error is raised
@@ -143,7 +143,7 @@ def test_failed_connection():
 @patch("socket.socket.send")
 def test_wrong_character_encodings_wdb(send_mock, connect_mock):
     """
-    Tests receiving a text with a bad character encoding from wazuh db
+    Tests receiving a text with a bad character encoding from fortishield db
     """
     def recv_mock(size_to_receive):
         bad_string = b' {"bad": "\x96bad"}'
@@ -239,7 +239,7 @@ def test_query_lower_private(send_mock, connect_mock):
 
 @patch("socket.socket.connect")
 @patch("socket.socket.send")
-@patch("wazuh.core.wdb.FortishieldDBConnection._send")
+@patch("fortishield.core.wdb.FortishieldDBConnection._send")
 def test_execute(send_mock, socket_send_mock, connect_mock):
     def send_mock(obj, msg, raw=False):
         return ['ok', '{"total": 5}'] if raw else [{"total": 5}]
@@ -247,7 +247,7 @@ def test_execute(send_mock, socket_send_mock, connect_mock):
     mywdb = FortishieldDBConnection()
     mywdb.execute('agent 000 sql delete from test', delete=True)
     mywdb.execute("agent 000 sql update test set value = 'test' where key = 'test'", update=True)
-    with patch("wazuh.core.wdb.FortishieldDBConnection._send", new=send_mock):
+    with patch("fortishield.core.wdb.FortishieldDBConnection._send", new=send_mock):
         mywdb.execute("agent 000 sql select test from test offset 1 limit 1")
         mywdb.execute("agent 000 sql select test from test offset 1 limit 1", count=True)
         mywdb.execute("agent 000 sql select test from test offset 1 count")
@@ -259,13 +259,13 @@ def test_execute_pagination(socket_send_mock, connect_mock):
     mywdb = FortishieldDBConnection()
 
     # Test pagination
-    with patch("wazuh.core.wdb.FortishieldDBConnection._send",
+    with patch("fortishield.core.wdb.FortishieldDBConnection._send",
                side_effect=[[{'total': 5}], exception.FortishieldInternalError(2009), ['ok', '{"total": 5}'],
                             ['ok', '{"total": 5}']]):
         mywdb.execute("agent 000 sql select test from test offset 1 limit 500")
 
     # Test pagination error
-    with patch("wazuh.core.wdb.FortishieldDBConnection._send",
+    with patch("fortishield.core.wdb.FortishieldDBConnection._send",
                side_effect=[[{'total': 5}], exception.FortishieldInternalError(2009)]):
         with pytest.raises(exception.FortishieldInternalError, match=".* 2009 .*"):
             mywdb.execute("agent 000 sql select test from test offset 1 limit 1")
@@ -285,8 +285,8 @@ def test_failed_execute(send_mock, connect_mock, error_query, error_type, expect
         with pytest.raises(exception.FortishieldException, match=f'.* {expected_exception} .*'):
             mywdb.execute(error_query, delete=delete, update=update)
     else:
-        with patch("wazuh.core.wdb.FortishieldDBConnection._send", return_value=[{'total': 5}]):
-            with patch("wazuh.core.wdb.min", side_effect=error_type):
+        with patch("fortishield.core.wdb.FortishieldDBConnection._send", return_value=[{'total': 5}]):
+            with patch("fortishield.core.wdb.min", side_effect=error_type):
                 with pytest.raises(exception.FortishieldException, match=f'.* {expected_exception} .*'):
                     mywdb.execute(error_query, delete=delete, update=update)
 

@@ -277,7 +277,7 @@ ConfigureBoot()
     if [ "X$INSTYPE" != "Xagent" ]; then
 
         echo ""
-        $ECHO "  $NB- ${startwazuh} ($yes/$no) [$yes]: "
+        $ECHO "  $NB- ${startfortishield} ($yes/$no) [$yes]: "
 
         if [ "X${USER_AUTO_START}" = "X" ]; then
             read ANSWER
@@ -288,11 +288,11 @@ ConfigureBoot()
         echo ""
         case $ANSWER in
             $nomatch)
-                echo "   - ${nowazuhstart}"
+                echo "   - ${nofortishieldstart}"
                 ;;
             *)
                 START_FORTISHIELD="yes"
-                echo "   - ${yeswazuhstart}"
+                echo "   - ${yesfortishieldstart}"
                 ;;
         esac
     fi
@@ -433,12 +433,12 @@ ConfigureServer()
             fi
 
             if [ -x "$HOST_CMD" ]; then
-              HOSTTMP=`${HOST_CMD} -W 5 -t mx wazuh.com 2>/dev/null`
+              HOSTTMP=`${HOST_CMD} -W 5 -t mx fortishield.com 2>/dev/null`
               if [ $? = 1 ]; then
                  # Trying without the -W
-                 HOSTTMP=`${HOST_CMD} -t mx wazuh.com 2>/dev/null`
+                 HOSTTMP=`${HOST_CMD} -t mx fortishield.com 2>/dev/null`
               fi
-              echo "x$HOSTTMP" | grep "wazuh.com mail is handled" > /dev/null 2>&1
+              echo "x$HOSTTMP" | grep "fortishield.com mail is handled" > /dev/null 2>&1
               if [ $? = 0 ]; then
                  # Breaking down the user e-mail
                  EMAILHOST=`echo ${EMAIL} | cut -d "@" -f 2`
@@ -750,13 +750,13 @@ AddCAStore()
 AddPFTable()
 {
     #default pf rules
-    TABLE="wazuh_fwtable"
+    TABLE="fortishield_fwtable"
 
     # Add table to the first line
     echo ""
     echo "   - ${pfmessage}:"
     echo "     ${moreinfo}"
-    echo "     https://documentation.wazuh.com"
+    echo "     https://documentation.fortishield.com"
 
     echo ""
     echo ""
@@ -826,7 +826,7 @@ main()
 
     . ./src/init/language.sh
     . ./src/init/init.sh
-    . ./src/init/wazuh/wazuh.sh
+    . ./src/init/fortishield/fortishield.sh
     . ${TEMPLATE}/${LANGUAGE}/messages.txt
     . ./src/init/inst-functions.sh
     . ./src/init/template-select.sh
@@ -849,7 +849,7 @@ main()
     fi
 
     # Initial message
-    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.wazuh.com"
+    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.fortishield.com"
     catMsg "0x101-initial"
     echo ""
     echo "  - $system: $UNAME (${DIST_NAME} ${DIST_VER}.${DIST_SUBVER})"
@@ -1013,10 +1013,10 @@ main()
     echo " - ${configurationdone}."
     echo ""
     echo " - ${tostart}:"
-    echo "      $INSTALLDIR/bin/wazuh-control start"
+    echo "      $INSTALLDIR/bin/fortishield-control start"
     echo ""
     echo " - ${tostop}:"
-    echo "      $INSTALLDIR/bin/wazuh-control stop"
+    echo "      $INSTALLDIR/bin/fortishield-control stop"
     echo ""
     echo " - ${configat} $INSTALLDIR/etc/ossec.conf"
     echo ""
@@ -1035,7 +1035,7 @@ main()
         fi
         echo ""
 
-        # If version < wazuh 1.2
+        # If version < fortishield 1.2
         if [ "X$USER_OLD_NAME" != "XFortishield" ]; then
             echo " ====================================================================================="
             echo "  ${update_rev_newconf1}"
@@ -1065,19 +1065,19 @@ main()
         echo " - ${addserveragent}"
         echo ""
         echo "   ${moreinfo}"
-        echo "   https://documentation.wazuh.com/"
+        echo "   https://documentation.fortishield.com/"
         echo ""
 
     elif [ "X$INSTYPE" = "Xagent" ]; then
         echo ""
         echo " - ${moreinfo}"
-        echo "   https://documentation.wazuh.com/"
+        echo "   https://documentation.fortishield.com/"
         echo ""
     fi
 
     if [ "X$notmodified" = "Xyes" ]; then
         catMsg "0x105-noboot"
-        echo "      $INSTALLDIR/bin/wazuh-control start"
+        echo "      $INSTALLDIR/bin/fortishield-control start"
         echo ""
     fi
 }

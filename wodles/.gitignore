@@ -11,7 +11,7 @@ build/
 
 # Objects
 libsqlite3.so*
-wazuh-clusterd-internal
+fortishield-clusterd-internal
 
 # Projects
 .idea

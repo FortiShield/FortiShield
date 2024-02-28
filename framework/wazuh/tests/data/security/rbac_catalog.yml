@@ -862,7 +862,7 @@ get_rbac_resources:
       node:id:
         description: Reference cluster nodes via node ID (i.e. node:id:worker1)
       decoder:file:
-        description: Reference decoder files via its path (i.e. decoder:file:0005-wazuh_decoders.xml)
+        description: Reference decoder files via its path (i.e. decoder:file:0005-fortishield_decoders.xml)
       list:file:
         description: Reference list files via its filename (i.e. list:file:audit-keys)
       rule:file:

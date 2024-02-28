@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 import copy
@@ -8,9 +8,9 @@ from datetime import datetime
 from functools import lru_cache
 from typing import Union
 
-from wazuh.core import common
-from wazuh.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_utc_strptime
-from wazuh.core.utils import process_array
+from fortishield.core import common
+from fortishield.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_utc_strptime
+from fortishield.core.utils import process_array
 
 # Default request_slice value
 DEFAULT_REQUEST_SLICE = 500

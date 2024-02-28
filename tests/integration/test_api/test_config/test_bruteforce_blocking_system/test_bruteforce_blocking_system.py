@@ -1,13 +1,13 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the IP blocking feature of the API handled by the 'wazuh-apid' daemon
+brief: These tests will check if the IP blocking feature of the API handled by the 'fortishield-apid' daemon
        is working properly. The Fortishield API is an open source 'RESTful' API that allows for interaction
        with the Fortishield manager from a web browser, command line tool like 'cURL' or any script
        or program that can make web requests.
@@ -21,12 +21,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -51,8 +51,8 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html#access
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html#access
 
 tags:
     - api
@@ -62,11 +62,11 @@ import pytest
 from pathlib import Path
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.patterns import API_LOGIN_ERROR_MSG
-from wazuh_testing.modules.api.utils import login
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import CONFIGURATION_TYPES
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.patterns import API_LOGIN_ERROR_MSG
+from fortishield_testing.modules.api.utils import login
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -96,7 +96,7 @@ def test_bruteforce_blocking_system(test_configuration, test_metadata, add_confi
                  For this purpose, the test causes an IP blocking, make a request before
                  the blocking time finishes and one after the blocking time.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     test_phases:
         - setup:

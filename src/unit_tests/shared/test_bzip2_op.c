@@ -19,7 +19,7 @@
 #include "../headers/bzip2_op.h"
 #include "../wrappers/externals/bzip2/bzlib_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 /* setups/teardowns */
 static int setup_group(void **state) {

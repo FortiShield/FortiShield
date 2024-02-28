@@ -14,11 +14,11 @@ FortishieldSetup(){
 InstallSELinuxPolicyPackage(){
 
     if command -v semodule > /dev/null && command -v getenforce > /dev/null; then
-        if [ -f selinux/wazuh.pp ]; then
+        if [ -f selinux/fortishield.pp ]; then
             if [ $(getenforce) != "Disabled" ]; then
-                cp selinux/wazuh.pp /tmp && semodule -i /tmp/wazuh.pp
-                rm -f /tmp/wazuh.pp
-                semodule -e wazuh
+                cp selinux/fortishield.pp /tmp && semodule -i /tmp/fortishield.pp
+                rm -f /tmp/fortishield.pp
+                semodule -e fortishield
             fi
         fi
     fi
@@ -106,7 +106,7 @@ FortishieldUpgrade()
         cp $PREINSTALLEDDIR/var/db/global.db $PREINSTALLEDDIR/queue/db/
         if [ -f "$PREINSTALLEDDIR/queue/db/global.db" ]; then
             chmod 640 $PREINSTALLEDDIR/queue/db/global.db
-            chown wazuh:wazuh $PREINSTALLEDDIR/queue/db/global.db
+            chown fortishield:fortishield $PREINSTALLEDDIR/queue/db/global.db
             rm -f $PREINSTALLEDDIR/var/db/global.db*
         else
             echo "Unable to move global.db during the upgrade"
@@ -145,7 +145,7 @@ FortishieldUpgrade()
 
     if [ -d $PREINSTALLEDDIR/logs/ossec ]; then
         if [ "$(ls -A $PREINSTALLEDDIR/logs/ossec)" ]; then
-            mv -f $PREINSTALLEDDIR/logs/ossec/* $PREINSTALLEDDIR/logs/wazuh
+            mv -f $PREINSTALLEDDIR/logs/ossec/* $PREINSTALLEDDIR/logs/fortishield
         fi
         rm -rf $PREINSTALLEDDIR/logs/ossec
     fi
@@ -210,11 +210,11 @@ FortishieldUpgrade()
     OSSEC_GROUP=ossec
     if (grep "^ossec:" /etc/group > /dev/null 2>&1) || (dscl . -read /Groups/ossec > /dev/null 2>&1)  ; then
         if [ "X$1" = "Xserver" ]; then
-            find $PREINSTALLEDDIR -group $OSSEC_GROUP -user root -print0 | xargs -0 chown root:wazuh
-            find $PREINSTALLEDDIR -group $OSSEC_GROUP -print0 | xargs -0 chown wazuh:wazuh
+            find $PREINSTALLEDDIR -group $OSSEC_GROUP -user root -print0 | xargs -0 chown root:fortishield
+            find $PREINSTALLEDDIR -group $OSSEC_GROUP -print0 | xargs -0 chown fortishield:fortishield
         else
-            find $PREINSTALLEDDIR -group $OSSEC_GROUP -user root -exec chown root:wazuh {} \;
-            find $PREINSTALLEDDIR -group $OSSEC_GROUP -exec chown wazuh:wazuh {} \;
+            find $PREINSTALLEDDIR -group $OSSEC_GROUP -user root -exec chown root:fortishield {} \;
+            find $PREINSTALLEDDIR -group $OSSEC_GROUP -exec chown fortishield:fortishield {} \;
         fi
     fi
     ./src/init/delete-oldusers.sh $OSSEC_GROUP

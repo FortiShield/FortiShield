@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -19,7 +19,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
+    - fortishield-authd
 
 os_platform:
     - linux
@@ -43,15 +43,15 @@ import re
 import pytest
 from pathlib import Path
 
-from wazuh_testing.utils.file import truncate_file
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.constants.daemons import AUTHD_DAEMON
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils import callbacks
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
+from fortishield_testing.utils.file import truncate_file
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.constants.daemons import AUTHD_DAEMON
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils import callbacks
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -69,7 +69,7 @@ daemons_handler_configuration = {'daemons': [AUTHD_DAEMON], 'ignore_errors': Tru
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_force_options_invalid_config(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_force_options_invalid_config(test_configuration, test_metadata, set_fortishield_configuration,
                                             configure_local_internal_options, truncate_monitored_files,
                                             daemons_handler):
     '''
@@ -78,7 +78,7 @@ def test_authd_force_options_invalid_config(test_configuration, test_metadata, s
         matches the adequate output log. None force registration
         or response message is made.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.3.0
 
     tier: 0
@@ -90,9 +90,9 @@ def test_authd_force_options_invalid_config(test_configuration, test_metadata, s
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_local_internal_options:
             type: fixture
             brief: Handle the monitoring of a specified file.
@@ -114,7 +114,7 @@ def test_authd_force_options_invalid_config(test_configuration, test_metadata, s
         - Invalid configuration values error.
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     log = re.escape(test_metadata['log'])
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
-    assert wazuh_log_monitor.callback_result, f'Error event not detected'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
+    assert fortishield_log_monitor.callback_result, f'Error event not detected'

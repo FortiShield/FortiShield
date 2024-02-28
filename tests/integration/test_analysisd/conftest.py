@@ -1,5 +1,5 @@
 # Copyright (C) 2015-2023, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 import json
 import os
@@ -10,20 +10,20 @@ from collections import defaultdict
 
 import pytest
 
-from wazuh_testing.constants.keys.events import *
-from wazuh_testing.constants.keys.alerts import *
-from wazuh_testing.constants.paths.configurations import CUSTOM_RULES_PATH, CUSTOM_RULES_FILE, FORTISHIELD_CONF_PATH
-from wazuh_testing.constants.paths.logs import ALERTS_JSON_PATH, FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.users import FORTISHIELD_UNIX_GROUP, FORTISHIELD_UNIX_USER
-from wazuh_testing.modules.analysisd import patterns
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils import callbacks, file
+from fortishield_testing.constants.keys.events import *
+from fortishield_testing.constants.keys.alerts import *
+from fortishield_testing.constants.paths.configurations import CUSTOM_RULES_PATH, CUSTOM_RULES_FILE, FORTISHIELD_CONF_PATH
+from fortishield_testing.constants.paths.logs import ALERTS_JSON_PATH, FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.users import FORTISHIELD_UNIX_GROUP, FORTISHIELD_UNIX_USER
+from fortishield_testing.modules.analysisd import patterns
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils import callbacks, file
 
 
 @pytest.fixture()
 def prepare_custom_rules_file(request, test_metadata):
     """Configure a syscollector custom rules for testing.
-    Restarting wazuh-analysisd is required to apply this changes.
+    Restarting fortishield-analysisd is required to apply this changes.
     """
     data_dir = getattr(request.module, 'RULES_SAMPLE_PATH')
     source_rule = os.path.join(data_dir, test_metadata['rules_file'])

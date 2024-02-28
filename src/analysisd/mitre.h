@@ -13,7 +13,7 @@
 
 #include "shared.h"
 #include "../os_net/os_net.h"
-#include "../headers/wazuhdb_op.h"
+#include "../headers/fortishielddb_op.h"
 
 typedef struct tactic_data {
     char* tactic_id;

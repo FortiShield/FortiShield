@@ -814,7 +814,7 @@ def send_message(message: str):
         elif e.errno == 90:
             logging.error("ERROR: Message too long to send to Fortishield.  Skipping message...")
         else:
-            logging.error(f"ERROR: Error sending message to wazuh: {e}")
+            logging.error(f"ERROR: Error sending message to fortishield: {e}")
             sys.exit(1)
     finally:
         s.close()

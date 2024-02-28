@@ -167,8 +167,8 @@ int __wrap_wm_agent_upgrade_validate_system(const char *platform, const char *os
     return mock();
 }
 
-int __wrap_wm_agent_upgrade_validate_version(const char *wazuh_version, const char *platform, wm_upgrade_command command, void *task) {
-    check_expected(wazuh_version);
+int __wrap_wm_agent_upgrade_validate_version(const char *fortishield_version, const char *platform, wm_upgrade_command command, void *task) {
+    check_expected(fortishield_version);
     check_expected(platform);
     check_expected(command);
 

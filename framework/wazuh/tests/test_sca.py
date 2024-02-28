@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -8,17 +8,17 @@ from unittest.mock import call, patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh.sca import get_sca_checks, get_sca_list
-        from wazuh.core.results import AffectedItemsFortishieldResult
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield.sca import get_sca_checks, get_sca_list
+        from fortishield.core.results import AffectedItemsFortishieldResult
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
 # Variables used for the get_sca_checks function test
 TEST_SCA_CHECKS_IDS = {'items': [{'id': 1}, {'id': 2}, {'id': 3}], 'totalItems': 100}
@@ -57,11 +57,11 @@ EXPECTED_SCA_CHECKS_ITEMS = [
 ]
 
 
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.run', return_value={'items': ['test_items'], 'totalItems': 100})
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__exit__')
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__init__', return_value=None)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.sca.get_agents_info', return_value=['000'])
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.run', return_value={'items': ['test_items'], 'totalItems': 100})
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__exit__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__init__', return_value=None)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.sca.get_agents_info', return_value=['000'])
 def test_get_sca_list(mock_get_agents_info, mock_get_basic_information, mock_FortishieldDBQuerySCA__init__,
                       mock_FortishieldDBQuerySCA__exit__, mock_FortishieldDBQuerySCA_run):
     """Test that the get_sca_list function works properly."""
@@ -78,7 +78,7 @@ def test_get_sca_list(mock_get_agents_info, mock_get_basic_information, mock_For
     assert result.total_affected_items == 100
 
 
-@patch('wazuh.sca.get_agents_info', return_value=[])
+@patch('fortishield.sca.get_agents_info', return_value=[])
 def test_get_sca_list_failed_item(mock_get_agents_info):
     """Test that the get_sca_list function works properly when there are failed items."""
 
@@ -92,16 +92,16 @@ def test_get_sca_list_failed_item(mock_get_agents_info):
     assert isinstance(result, AffectedItemsFortishieldResult)
 
 
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckRelational.run', side_effect=[TEST_SCA_CHECKS_COMPLIANCE,
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckRelational.run', side_effect=[TEST_SCA_CHECKS_COMPLIANCE,
                                                                          TEST_SCA_CHECKS_RULES])
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckRelational.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheck.run', return_value=TEST_SCA_CHECKS)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheck.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckIDs.run', return_value=TEST_SCA_CHECKS_IDS)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckIDs.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuery.__exit__')
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.sca.get_agents_info', return_value=['000'])
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckRelational.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheck.run', return_value=TEST_SCA_CHECKS)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheck.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckIDs.run', return_value=TEST_SCA_CHECKS_IDS)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckIDs.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuery.__exit__')
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.sca.get_agents_info', return_value=['000'])
 def test_get_sca_checks(mock_get_agents_info, mock_get_basic_information, mock_FortishieldDBQuery__exit__,
                         mock_FortishieldDBQuerySCACheckIDs__init__, mock_FortishieldDBQuerySCACheckIDs_run,
                         mock_FortishieldDBQuerySCACheck__init__, mock_FortishieldDBQuerySCACheck_run,
@@ -132,11 +132,11 @@ def test_get_sca_checks(mock_get_agents_info, mock_get_basic_information, mock_F
     assert result.total_affected_items == 100
 
 
-@patch('wazuh.core.sca.FortishieldDBQueryDistinctSCACheck.run', return_value={'items': ['test_items'], 'totalItems': 100})
-@patch('wazuh.core.sca.FortishieldDBQueryDistinctSCACheck.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuery.__exit__')
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.sca.get_agents_info', return_value=['000'])
+@patch('fortishield.core.sca.FortishieldDBQueryDistinctSCACheck.run', return_value={'items': ['test_items'], 'totalItems': 100})
+@patch('fortishield.core.sca.FortishieldDBQueryDistinctSCACheck.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuery.__exit__')
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.sca.get_agents_info', return_value=['000'])
 def test_get_sca_checks_distinct(mock_get_agents_info, mock_get_basic_information, mock_FortishieldDBQuery__exit__,
                                  mock_FortishieldDBQueryDistinctSCACheck__init__, mock_FortishieldDBQueryDistinctSCACheck_run):
     """Test that the get_sca_checks function works properly when distinct is True."""
@@ -174,15 +174,15 @@ def test_get_sca_checks_distinct(mock_get_agents_info, mock_get_basic_informatio
     (['title', 'description', 'rules.rule', 'compliance.key'],
      ['title', 'description'], ['compliance.key', 'id_check'], ['rules.rule', 'id_check'])
 ])
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckRelational.run')
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckRelational.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheck.run')
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheck.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckIDs.run', return_value=TEST_SCA_CHECKS_IDS)
-@patch('wazuh.core.sca.FortishieldDBQuerySCACheckIDs.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuery.__exit__')
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.sca.get_agents_info', return_value=['000'])
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckRelational.run')
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckRelational.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheck.run')
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheck.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckIDs.run', return_value=TEST_SCA_CHECKS_IDS)
+@patch('fortishield.core.sca.FortishieldDBQuerySCACheckIDs.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuery.__exit__')
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.sca.get_agents_info', return_value=['000'])
 def test_get_sca_checks_select(mock_get_agents_info, mock_get_basic_information, mock_FortishieldDBQuery__exit__,
                                mock_FortishieldDBQuerySCACheckIDs__init__, mock_FortishieldDBQuerySCACheckIDs_run,
                                mock_FortishieldDBQuerySCACheck__init__, mock_FortishieldDBQuerySCACheck_run,
@@ -216,7 +216,7 @@ def test_get_sca_checks_select(mock_get_agents_info, mock_get_basic_information,
     assert result.total_affected_items == 100
 
 
-@patch('wazuh.sca.get_agents_info', return_value=[])
+@patch('fortishield.sca.get_agents_info', return_value=[])
 def test_get_sca_checks_failed_item(mock_get_agents_info):
     """Test that the get_sca_checks function works properly when there are failed items."""
 

@@ -52,7 +52,7 @@ add_library(content_manager SHARED
     ${CONTENT_DOWNLOAD_SRC}
     )
 
-target_link_libraries(content_manager router urlrequest gcc_s wazuhext lzma rocksdb flatbuffers)
+target_link_libraries(content_manager router urlrequest gcc_s fortishieldext lzma rocksdb flatbuffers)
 
 set_target_properties(content_manager PROPERTIES
         BUILD_RPATH_USE_ORIGIN TRUE

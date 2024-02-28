@@ -15,8 +15,8 @@ assignees: ''
 <!--
 Whenever possible, issues should be created for bug reporting and feature requests.
 For questions related to the user experience, please refer:
-- Fortishield mailing list: https://groups.google.com/forum/#!forum/wazuh
-- Join Fortishield on Slack: https://wazuh.com/community/join-us-on-slack
+- Fortishield mailing list: https://groups.google.com/forum/#!forum/fortishield
+- Join Fortishield on Slack: https://fortishield.com/community/join-us-on-slack
 -->
 
 ## Checks

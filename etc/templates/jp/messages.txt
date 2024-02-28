@@ -96,9 +96,9 @@ yesrunauthd="実行中の認証サービス"
 
 # Part 4
 installing="システムをインストールします"
-startwazuh="インストール後にFortishieldを開始しますか？"
-nowazuhstart="Fortishieldはインストールの最後に開始されません。"
-yeswazuhstart="Fortishieldはインストールの最後に始まります。"
+startfortishield="インストール後にFortishieldを開始しますか？"
+nofortishieldstart="Fortishieldはインストールの最後に開始されません。"
+yesfortishieldstart="Fortishieldはインストールの最後に始まります。"
 runningmake="Makefile を実行します"
 
 

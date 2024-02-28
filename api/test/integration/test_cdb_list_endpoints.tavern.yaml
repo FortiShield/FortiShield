@@ -510,11 +510,11 @@ stages:
         error: 0
         data:
           affected_items:
-            - audit-wazuh-w: write
-              audit-wazuh-r: read
-              audit-wazuh-a: attribute
-              audit-wazuh-x: execute
-              audit-wazuh-c: command
+            - audit-fortishield-w: write
+              audit-fortishield-r: read
+              audit-fortishield-a: attribute
+              audit-fortishield-x: execute
+              audit-fortishield-c: command
           total_affected_items: 1
           total_failed_items: 0
           failed_items: []

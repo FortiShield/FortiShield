@@ -1,15 +1,15 @@
 '''
 copyright: Copyright (C) 2015-2021, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-analysisd' daemon receives the log messages and compares them to the rules.
+brief: The 'fortishield-analysisd' daemon receives the log messages and compares them to the rules.
        It then creates an alert when a log message matches an applicable rule.
-       Specifically, these tests will check if the 'wazuh-analysisd' daemon correctly handles
+       Specifically, these tests will check if the 'fortishield-analysisd' daemon correctly handles
        incoming events related to file scanning.
 
 components:
@@ -21,8 +21,8 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
-    - wazuh-db
+    - fortishield-analysisd
+    - fortishield-db
 
 os_platform:
     - linux
@@ -39,7 +39,7 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-analysisd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-analysisd.html
 
 tags:
     - events
@@ -48,13 +48,13 @@ import pytest
 
 from pathlib import Path
 
-from wazuh_testing import session_parameters
-from wazuh_testing.constants.daemons import FORTISHIELD_DB_DAEMON, ANALYSISD_DAEMON
-from wazuh_testing.constants.paths.sockets import FORTISHIELD_DB_SOCKET_PATH, ANALYSISD_QUEUE_SOCKET_PATH
-from wazuh_testing.modules.analysisd import patterns, configuration as analysisd_config
-from wazuh_testing.modules.monitord import configuration as monitord_config
-from wazuh_testing.tools import mitm
-from wazuh_testing.utils import configuration, callbacks
+from fortishield_testing import session_parameters
+from fortishield_testing.constants.daemons import FORTISHIELD_DB_DAEMON, ANALYSISD_DAEMON
+from fortishield_testing.constants.paths.sockets import FORTISHIELD_DB_SOCKET_PATH, ANALYSISD_QUEUE_SOCKET_PATH
+from fortishield_testing.modules.analysisd import patterns, configuration as analysisd_config
+from fortishield_testing.modules.monitord import configuration as monitord_config
+from fortishield_testing.tools import mitm
+from fortishield_testing.utils import configuration, callbacks
 
 from . import TEST_CASES_PATH
 
@@ -85,11 +85,11 @@ receiver_sockets, monitored_sockets = None, None  # Set in the fixtures
 def test_scan_messages(test_metadata, configure_local_internal_options, configure_sockets_environment_module,
                        connect_to_sockets_module, wait_for_analysisd_startup):
     '''
-    description: Check if when the 'wazuh-analysisd' daemon socket receives a message with
+    description: Check if when the 'fortishield-analysisd' daemon socket receives a message with
                  a file scanning-related event, it generates the corresponding alert
-                 that sends to the 'wazuh-db' daemon socket.
+                 that sends to the 'fortishield-db' daemon socket.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 0
 
@@ -108,7 +108,7 @@ def test_scan_messages(test_metadata, configure_local_internal_options, configur
             brief: Connect to a given list of sockets.
         - wait_for_analysisd_startup:
             type: fixture
-            brief: Wait until the 'wazuh-analysisd' has begun and the 'alerts.json' file is created.
+            brief: Wait until the 'fortishield-analysisd' has begun and the 'alerts.json' file is created.
 
     assertions:
         - Verify that the messages generated are consistent with the events received.

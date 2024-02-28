@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -27,11 +27,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from api.configuration import security_conf
 from api.constants import SECURITY_PATH
-from wazuh.core.common import wazuh_uid, wazuh_gid, DEFAULT_RBAC_RESOURCES
-from wazuh.core.utils import get_utc_now, safe_move
-from wazuh.rbac.utils import clear_cache
+from fortishield.core.common import fortishield_uid, fortishield_gid, DEFAULT_RBAC_RESOURCES
+from fortishield.core.utils import get_utc_now, safe_move
+from fortishield.rbac.utils import clear_cache
 
-logger = logging.getLogger("wazuh-api")
+logger = logging.getLogger("fortishield-api")
 
 # Max reserved ID value
 FORTISHIELD_USER_ID = 1
@@ -3120,7 +3120,7 @@ def check_database_integrity():
         database : str
             Path to the database which permissions are going to be changed.
         """
-        chown(database, wazuh_uid(), wazuh_gid())
+        chown(database, fortishield_uid(), fortishield_gid())
         os.chmod(database, 0o640)
 
     try:
@@ -3159,7 +3159,7 @@ def check_database_integrity():
                 db_manager.set_database_version(DB_FILE_TMP, expected_version)
                 db_manager.close_sessions()
                 safe_move(DB_FILE_TMP, DB_FILE,
-                          ownership=(wazuh_uid(), wazuh_gid()),
+                          ownership=(fortishield_uid(), fortishield_gid()),
                           permissions=0o640)
                 logger.info(f"{DB_FILE} database upgraded successfully")
 

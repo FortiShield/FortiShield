@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -11,23 +11,23 @@ from api.constants import INSTALLATION_UID_KEY, UPDATE_INFORMATION_KEY
 from api.controllers.test.utils import CustomAffectedItems
 from connexion.lifecycle import ConnexionResponse
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        import wazuh.stats as stats
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        import fortishield.stats as stats
         from api.controllers.manager_controller import (
             check_available_version, get_api_config, get_conf_validation, get_configuration, get_info,
             get_log, get_log_summary, get_manager_config_ondemand, get_stats,
             get_stats_analysisd, get_stats_hourly, get_stats_remoted, get_daemon_stats,
             get_stats_weekly, get_status, put_restart, update_configuration)
-        from wazuh import manager
-        from wazuh.core import common
-        from wazuh.core.manager import query_update_check_service
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield import manager
+        from fortishield.core import common
+        from fortishield.core.manager import query_update_check_service
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        del sys.modules['wazuh.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
 
 
 @pytest.mark.asyncio

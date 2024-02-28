@@ -10,7 +10,7 @@
 
 #ifdef ARGV0
 #undef ARGV0
-#define ARGV0 "wazuh-testrule"
+#define ARGV0 "fortishield-testrule"
 #endif
 
 #include "shared.h"
@@ -45,7 +45,7 @@ __attribute__((noreturn))
 static void help_logtest(char * home_path)
 {
     print_header();
-    print_out("\nSince Fortishield v4.1.0 this binary is deprecated. Use wazuh-logtest instead\n");
+    print_out("\nSince Fortishield v4.1.0 this binary is deprecated. Use fortishield-logtest instead\n");
     print_out("  %s: -[Vhdtva] [-c config] [-D dir] [-U rule:alert:decoder]", ARGV0);
     print_out("    -V          Version and license message");
     print_out("    -h          This help message");
@@ -484,7 +484,7 @@ int main(int argc, char **argv)
     minfo(STARTUP_MSG, (int)getpid());
 
     /* Inform that binary is deprecated */
-    print_out("\nSince Fortishield v4.1.0 this binary is deprecated. Use wazuh-logtest instead\n");
+    print_out("\nSince Fortishield v4.1.0 this binary is deprecated. Use fortishield-logtest instead\n");
 
     /* Going to main loop */
     OS_ReadMSG(ut_str);

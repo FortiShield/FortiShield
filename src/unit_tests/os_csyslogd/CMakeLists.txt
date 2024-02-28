@@ -21,7 +21,7 @@ set_target_properties(
 target_link_libraries(CSYSLOGD_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 
 # Generate tests src/unit_tests/csyslogd/test_csyslogd.c

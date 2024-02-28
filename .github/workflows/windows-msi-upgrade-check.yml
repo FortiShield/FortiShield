@@ -19,8 +19,8 @@ jobs:
         run: make -C src TARGET=winagent -j2
       - name: Avoid signing files and pause
         run: |
-          sed -i 's+signtool+::signtool+g' src/win32/wazuh-installer-build-msi.bat
-          sed -i 's+pause+::pause+g' src/win32/wazuh-installer-build-msi.bat
+          sed -i 's+signtool+::signtool+g' src/win32/fortishield-installer-build-msi.bat
+          sed -i 's+pause+::pause+g' src/win32/fortishield-installer-build-msi.bat
       - name: Removing not required files
         run: rm -rf src/external/* .git/
       - name: Compress folder
@@ -34,7 +34,7 @@ jobs:
   check_upgrade_result:
     strategy:
           matrix:
-              wazuh_version: [4.5.2-1]
+              fortishield_version: [4.5.2-1]
     runs-on: windows-latest
     needs: build
     steps:
@@ -51,7 +51,7 @@ jobs:
       - name: Download released .msi
         run: |
           mkdir C:\win-agent-released
-          python -m wget https://packages.wazuh.com/4.x/windows/wazuh-agent-${{ matrix.wazuh_version }}.msi -o C:\win-agent-released
+          python -m wget https://packages.fortishield.com/4.x/windows/fortishield-agent-${{ matrix.fortishield_version }}.msi -o C:\win-agent-released
       - name: Download base folder
         uses: actions/download-artifact@v3
         with:
@@ -63,7 +63,7 @@ jobs:
         run: |
           cd C:\win-agent-base\src\win32
           $VERSION = Get-Content ..\VERSION
-          .\wazuh-installer-build-msi.bat $VERSION 0
+          .\fortishield-installer-build-msi.bat $VERSION 0
           cp *.msi C:\win-agent-base\
       - name: Run tests
         run: |

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -16,14 +16,14 @@ from time import perf_counter
 from typing import Tuple, Dict, Callable
 from uuid import uuid4
 
-from wazuh.core import cluster as metadata, common, exception, utils
-from wazuh.core.agent import Agent
-from wazuh.core.cluster import server, cluster, common as c_common
-from wazuh.core.cluster.dapi import dapi
-from wazuh.core.cluster.utils import context_tag, log_subprocess_execution
-from wazuh.core.common import DECIMALS_DATE_FORMAT
-from wazuh.core.utils import get_utc_now
-from wazuh.core.wdb import AsyncFortishieldDBConnection
+from fortishield.core import cluster as metadata, common, exception, utils
+from fortishield.core.agent import Agent
+from fortishield.core.cluster import server, cluster, common as c_common
+from fortishield.core.cluster.dapi import dapi
+from fortishield.core.cluster.utils import context_tag, log_subprocess_execution
+from fortishield.core.common import DECIMALS_DATE_FORMAT
+from fortishield.core.utils import get_utc_now
+from fortishield.core.wdb import AsyncFortishieldDBConnection
 
 DEFAULT_DATE: str = 'n/a'
 
@@ -50,7 +50,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its integrity information."""
-        return self.wazuh_common.integrity_check
+        return self.fortishield_common.integrity_check
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -63,10 +63,10 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
         super().done_callback(future)
 
         # Integrity task is only freed if master is not waiting for Extra valid files.
-        # if not self.wazuh_common.extra_valid_requested:
-        #     self.wazuh_common.sync_integrity_free[0] = True
+        # if not self.fortishield_common.extra_valid_requested:
+        #     self.fortishield_common.sync_integrity_free[0] = True
 
-        self.wazuh_common.sync_integrity_free[0] = True
+        self.fortishield_common.sync_integrity_free[0] = True
 
 
 class ReceiveExtraValidTask(c_common.ReceiveFileTask):
@@ -91,7 +91,7 @@ class ReceiveExtraValidTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends the previously required extra valid files."""
-        return self.wazuh_common.sync_extra_valid
+        return self.fortishield_common.sync_extra_valid
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -102,8 +102,8 @@ class ReceiveExtraValidTask(c_common.ReceiveFileTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.wazuh_common.extra_valid_requested = False
-        self.wazuh_common.sync_integrity_free[0] = True
+        self.fortishield_common.extra_valid_requested = False
+        self.fortishield_common.sync_integrity_free[0] = True
 
 
 class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
@@ -128,7 +128,7 @@ class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent info."""
-        return self.wazuh_common.sync_wazuh_db_info
+        return self.fortishield_common.sync_fortishield_db_info
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -139,7 +139,7 @@ class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.wazuh_common.sync_agent_info_free = True
+        self.fortishield_common.sync_agent_info_free = True
 
 
 class SendEntireAgentGroupsTask(c_common.SendStringTask):
@@ -163,7 +163,7 @@ class SendEntireAgentGroupsTask(c_common.SendStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker needs the entire agent-groups information."""
-        return self.wazuh_common.send_entire_agent_groups_information
+        return self.fortishield_common.send_entire_agent_groups_information
 
 
 class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):
@@ -361,7 +361,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):
         Parameters
         ----------
         data : bytes
-            Node name, cluster name, node type and wazuh version all separated by spaces.
+            Node name, cluster name, node type and fortishield version all separated by spaces.
 
         Returns
         -------
@@ -616,8 +616,8 @@ class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):
         """
         return super().end_receiving_file(task_and_file_names=task_and_file_names, logger_tag='Integrity check')
 
-    async def sync_wazuh_db_info(self, task_id: bytes, info_type: str):
-        """Create a process to send to the local wazuh-db the chunks of data received from a worker.
+    async def sync_fortishield_db_info(self, task_id: bytes, info_type: str):
+        """Create a process to send to the local fortishield-db the chunks of data received from a worker.
 
         Parameters
         ----------
@@ -916,7 +916,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):
 
                                 mtime_epoch = timegm(mtime.timetuple())
                                 utils.safe_move(tmp_unmerged_path, full_unmerged_name,
-                                                ownership=(common.wazuh_uid(), common.wazuh_gid()),
+                                                ownership=(common.fortishield_uid(), common.fortishield_gid()),
                                                 permissions=cluster_items['files'][item_key]['permissions'],
                                                 time=(mtime_epoch, mtime_epoch))
                                 result['total_updated'] += 1
@@ -929,7 +929,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):
                     else:
                         try:
                             zip_path = os.path.join(decompressed_files_path, file_path)
-                            utils.safe_move(zip_path, full_path, ownership=(common.wazuh_uid(), common.wazuh_gid()),
+                            utils.safe_move(zip_path, full_path, ownership=(common.fortishield_uid(), common.fortishield_gid()),
                                             permissions=cluster_items['files'][item_key]['permissions'])
                         except TimeoutError as e:
                             raise e
@@ -1001,7 +1001,7 @@ class Master(server.AbstractServer):
         except (FileNotFoundError, PermissionError):
             self.logger.warning(
                 "In order to take advantage of Fortishield 4.3.0 cluster improvements, the directory '/dev/shm' must be "
-                "accessible by the 'wazuh' user. Check that this file has permissions to be accessed by all users. "
+                "accessible by the 'fortishield' user. Check that this file has permissions to be accessed by all users. "
                 "Changing the file permissions to 777 will solve this issue.")
             self.logger.warning(
                 "The Fortishield cluster will be run without the improvements added in Fortishield 4.3.0 and higher versions.")

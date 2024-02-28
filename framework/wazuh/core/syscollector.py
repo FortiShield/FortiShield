@@ -1,11 +1,11 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 from enum import Enum
 
-from wazuh.core.agent import Agent
-from wazuh.core.utils import plain_dict_to_nested_dict, get_fields_to_nest, FortishieldDBQuery, FortishieldDBBackend
+from fortishield.core.agent import Agent
+from fortishield.core.utils import plain_dict_to_nested_dict, get_fields_to_nest, FortishieldDBQuery, FortishieldDBBackend
 
 
 class Type(Enum):

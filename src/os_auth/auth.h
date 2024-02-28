@@ -27,7 +27,7 @@
 #define AUTHD_H
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-authd"
+#define ARGV0 "fortishield-authd"
 #endif
 
 #include "../addagent/manage_agents.h"

@@ -10,8 +10,8 @@ on:
   pull_request:
     paths:
         - ".github/workflows/integration-tests-msgraph-tier-0-1-lin.yml"
-        - "src/wazuh_modules/wm_ms_graph.h"
-        - "src/wazuh_modules/wm_ms_graph.c"
+        - "src/fortishield_modules/wm_ms_graph.h"
+        - "src/fortishield_modules/wm_ms_graph.c"
         - "src/config/wmodules-ms-graph.c"
         - "src/Makefile"
         - "tests/integration/conftest.py"
@@ -34,17 +34,17 @@ jobs:
       # Setup MSGraph Proxy
       - name: Download m365proxy and config http for msgraph module
         run: |
-          sed -i 's/https:\/\/%s\/%s/http:\/\/%s\/%s/g' src/wazuh_modules/wm_ms_graph.h
-          curl -L http://packages.wazuh.com/utils/m365proxy/m365proxy.tar.gz | \
+          sed -i 's/https:\/\/%s\/%s/http:\/\/%s\/%s/g' src/fortishield_modules/wm_ms_graph.h
+          curl -L http://packages.fortishield.com/utils/m365proxy/m365proxy.tar.gz | \
           tar zvx -C /tmp/
 
-      # Build wazuh server for linux.
-      - name: Build wazuh server for linux
+      # Build fortishield server for linux.
+      - name: Build fortishield server for linux
         run: |
           make deps -C src TARGET=server -j2
           make -C src TARGET=server -j2
-      # Install wazuh server for linux.
-      - name: Install wazuh server for linux
+      # Install fortishield server for linux.
+      - name: Install fortishield server for linux
         run: |
           echo 'USER_LANGUAGE="en"' > ./etc/preloaded-vars.conf
           echo "" >> ./etc/preloaded-vars.conf

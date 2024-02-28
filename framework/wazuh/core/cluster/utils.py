@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import fcntl
@@ -16,15 +16,15 @@ from functools import lru_cache
 from glob import glob
 from operator import setitem
 
-from wazuh.core import common, pyDaemonModule
-from wazuh.core.configuration import get_ossec_conf
-from wazuh.core.exception import FortishieldException, FortishieldError, FortishieldInternalError
-from wazuh.core.results import FortishieldResult
-from wazuh.core.utils import temporary_cache
-from wazuh.core.wazuh_socket import create_wazuh_socket_message
-from wazuh.core.wlogging import FortishieldLogger
+from fortishield.core import common, pyDaemonModule
+from fortishield.core.configuration import get_ossec_conf
+from fortishield.core.exception import FortishieldException, FortishieldError, FortishieldInternalError
+from fortishield.core.results import FortishieldResult
+from fortishield.core.utils import temporary_cache
+from fortishield.core.fortishield_socket import create_fortishield_socket_message
+from fortishield.core.wlogging import FortishieldLogger
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 execq_lockfile = os.path.join(common.FORTISHIELD_PATH, "var", "run", ".api_execq_lock")
 
 
@@ -50,7 +50,7 @@ def read_cluster_config(config_file=common.OSSEC_CONF, from_import=False) -> typ
     cluster_default_configuration = {
         'disabled': False,
         'node_type': 'master',
-        'name': 'wazuh',
+        'name': 'fortishield',
         'node_name': 'node01',
         'key': '',
         'port': 1516,
@@ -116,9 +116,9 @@ def get_manager_status(cache=False) -> typing.Dict:
     except (PermissionError, FileNotFoundError) as e:
         raise FortishieldInternalError(1913, extra_message=str(e))
 
-    processes = ['wazuh-agentlessd', 'wazuh-analysisd', 'wazuh-authd', 'wazuh-csyslogd', 'wazuh-dbd', 'wazuh-monitord',
-                 'wazuh-execd', 'wazuh-integratord', 'wazuh-logcollector', 'wazuh-maild', 'wazuh-remoted',
-                 'wazuh-reportd', 'wazuh-syscheckd', 'wazuh-clusterd', 'wazuh-modulesd', 'wazuh-db', 'wazuh-apid']
+    processes = ['fortishield-agentlessd', 'fortishield-analysisd', 'fortishield-authd', 'fortishield-csyslogd', 'fortishield-dbd', 'fortishield-monitord',
+                 'fortishield-execd', 'fortishield-integratord', 'fortishield-logcollector', 'fortishield-maild', 'fortishield-remoted',
+                 'fortishield-reportd', 'fortishield-syscheckd', 'fortishield-clusterd', 'fortishield-modulesd', 'fortishield-db', 'fortishield-apid']
 
     data, pidfile_regex, run_dir = {}, re.compile(r'.+\-(\d+)\.pid$'), os.path.join(common.FORTISHIELD_PATH, "var", "run")
     for process in processes:
@@ -155,7 +155,7 @@ def get_cluster_status() -> typing.Dict:
     """
     cluster_status = {"enabled": "no" if read_cluster_config()['disabled'] else "yes"}
     try:
-        cluster_status |= {"running": "yes" if get_manager_status()['wazuh-clusterd'] == 'running' else "no"}
+        cluster_status |= {"running": "yes" if get_manager_status()['fortishield-clusterd'] == 'running' else "no"}
     except FortishieldInternalError:
         cluster_status |= {"running": "no"}
 
@@ -165,7 +165,7 @@ def get_cluster_status() -> typing.Dict:
 def manager_restart() -> FortishieldResult:
     """Restart Fortishield manager.
 
-    Send JSON message with the 'restart-wazuh' command to common.EXECQ_SOCKET socket.
+    Send JSON message with the 'restart-fortishield' command to common.EXECQ_SOCKET socket.
 
     Raises
     ------
@@ -187,7 +187,7 @@ def manager_restart() -> FortishieldResult:
         # execq socket path
         socket_path = common.EXECQ_SOCKET
         # json msg for restarting Fortishield manager
-        msg = json.dumps(create_wazuh_socket_message(origin={'module': common.origin_module.get()},
+        msg = json.dumps(create_fortishield_socket_message(origin={'module': common.origin_module.get()},
                                                      command=common.RESTART_FORTISHIELD_COMMAND,
                                                      parameters={'extra_args': [], 'alert': {}}))
         # initialize socket
@@ -291,14 +291,14 @@ class ClusterFilter(logging.Filter):
 
 class ClusterLogger(FortishieldLogger):
     """
-    Define the logger used by wazuh-clusterd.
+    Define the logger used by fortishield-clusterd.
     """
 
     def setup_logger(self):
         """
         Set ups cluster logger. In addition to super().setup_logger() this method adds:
             * A filter to add tag and subtags to cluster logs
-            * Sets log level based on the "debug_level" parameter received from wazuh-clusterd binary.
+            * Sets log level based on the "debug_level" parameter received from fortishield-clusterd binary.
         """
         super().setup_logger()
         self.logger.addFilter(ClusterFilter(tag='Cluster', subtag='Main'))
@@ -340,7 +340,7 @@ def process_spawn_sleep(child):
         Process child number.
     """
     pid = os.getpid()
-    pyDaemonModule.create_pid(f'wazuh-clusterd_child_{child}', pid)
+    pyDaemonModule.create_pid(f'fortishield-clusterd_child_{child}', pid)
 
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     signal.signal(signal.SIGTERM, signal.SIG_IGN)
@@ -372,7 +372,7 @@ async def forward_function(func: callable, f_kwargs: dict = None, request_type: 
 
     import concurrent
     from asyncio import run
-    from wazuh.core.cluster.dapi.dapi import DistributedAPI
+    from fortishield.core.cluster.dapi.dapi import DistributedAPI
     dapi = DistributedAPI(f=func, f_kwargs=f_kwargs, request_type=request_type,
                           is_async=False, wait_for_complete=True, logger=logger, nodes=nodes,
                           broadcasting=broadcasting)

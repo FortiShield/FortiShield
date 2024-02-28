@@ -1,15 +1,15 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-agentd' program is the client-side daemon that communicates with the server.
+brief: The 'fortishield-agentd' program is the client-side daemon that communicates with the server.
        These tests will check if the configuration options related to the statistics file of
-       the 'wazuh-agentd' daemon are working properly. The statistics files are documents that
+       the 'fortishield-agentd' daemon are working properly. The statistics files are documents that
        show real-time information about the Fortishield environment.
 
 components:
@@ -19,7 +19,7 @@ targets:
     - agent
 
 daemons:
-    - wazuh-agentd
+    - fortishield-agentd
 
 os_platform:
     - linux
@@ -40,7 +40,7 @@ os_version:
     - Windows Server 2016
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/statistics-files/wazuh-agentd-state.html
+    - https://documentation.fortishield.com/current/user-manual/reference/statistics-files/fortishield-agentd-state.html
 
 tags:
     - stats_file
@@ -51,16 +51,16 @@ from pathlib import Path
 import sys
 import time
 
-from wazuh_testing.constants.daemons import AGENT_DAEMON
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.paths.variables import AGENTD_STATE
-from wazuh_testing.constants.platforms import WINDOWS
-from wazuh_testing.modules.agentd.configuration import AGENTD_DEBUG, AGENTD_WINDOWS_DEBUG
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.configuration import get_test_cases_data
-from wazuh_testing.utils.configuration import load_configuration_template
-from wazuh_testing.utils import callbacks
-from wazuh_testing.utils.services import check_if_process_is_running
+from fortishield_testing.constants.daemons import AGENT_DAEMON
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.paths.variables import AGENTD_STATE
+from fortishield_testing.constants.platforms import WINDOWS
+from fortishield_testing.modules.agentd.configuration import AGENTD_DEBUG, AGENTD_WINDOWS_DEBUG
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.utils.configuration import load_configuration_template
+from fortishield_testing.utils import callbacks
+from fortishield_testing.utils.services import check_if_process_is_running
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -68,8 +68,8 @@ from . import CONFIGS_PATH, TEST_CASES_PATH
 pytestmark = pytest.mark.tier(level=0)
 
 # Configuration and cases data.
-configs_path = Path(CONFIGS_PATH, 'wazuh_conf.yaml')
-cases_path = Path(TEST_CASES_PATH, 'wazuh_state_config_tests.yaml')
+configs_path = Path(CONFIGS_PATH, 'fortishield_conf.yaml')
+cases_path = Path(TEST_CASES_PATH, 'fortishield_state_config_tests.yaml')
 
 # Test configurations.
 config_parameters, test_metadata, test_cases_ids = get_test_cases_data(cases_path)
@@ -85,14 +85,14 @@ daemons_handler_configuration = {'all_daemons': True, 'ignore_errors': True}
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_agentd_state_config(test_configuration, test_metadata, remove_state_file, set_wazuh_configuration, configure_local_internal_options,
+def test_agentd_state_config(test_configuration, test_metadata, remove_state_file, set_fortishield_configuration, configure_local_internal_options,
                              truncate_monitored_files, daemons_handler):
 
     '''
-    description: Check that the 'wazuh-agentd.state' statistics file is created
+    description: Check that the 'fortishield-agentd.state' statistics file is created
                  automatically and verify that it is updated at the set intervals.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 0
 
@@ -105,8 +105,8 @@ def test_agentd_state_config(test_configuration, test_metadata, remove_state_fil
             brief: Configuration cases.
         - remove_state_file:
             type: fixture
-            brief: Removes wazuh-agentd.state file.
-        - set_wazuh_configuration:
+            brief: Removes fortishield-agentd.state file.
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -117,11 +117,11 @@ def test_agentd_state_config(test_configuration, test_metadata, remove_state_fil
             brief: Reset the 'ossec.log' file and start a new monitor.
 
     assertions:
-        - Verify that the 'wazuh-agentd.state' statistics file has been created.
-        - Verify that the 'wazuh-agentd.state' statistics file is updated at the specified intervals.
+        - Verify that the 'fortishield-agentd.state' statistics file has been created.
+        - Verify that the 'fortishield-agentd.state' statistics file is updated at the specified intervals.
 
-    input_description: An external YAML file (wazuh_conf.yaml) includes configuration settings for the agent.
-                       Different test cases that are contained in an external YAML file (wazuh_state_config_tests.yaml)
+    input_description: An external YAML file (fortishield_conf.yaml) includes configuration settings for the agent.
+                       Different test cases that are contained in an external YAML file (fortishield_state_config_tests.yaml)
                        that includes the parameters and their expected responses.
 
     expected_output:
@@ -140,6 +140,6 @@ def test_agentd_state_config(test_configuration, test_metadata, remove_state_fil
     assert test_metadata['state_file_exist'] == os.path.exists(AGENTD_STATE)
 
     # Follow ossec.log to find desired messages by a callback
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(str(test_metadata['event_monitor'])))
-    assert (wazuh_log_monitor.callback_result != None), f'Error invalid configuration event not detected'
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(str(test_metadata['event_monitor'])))
+    assert (fortishield_log_monitor.callback_result != None), f'Error invalid configuration event not detected'

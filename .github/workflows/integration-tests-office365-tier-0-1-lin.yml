@@ -10,8 +10,8 @@ on:
   pull_request:
     paths:
         - ".github/workflows/integration-tests-office365-tier-0-1-lin.yml"
-        - "src/wazuh_modules/wm_office365.h"
-        - "src/wazuh_modules/wm_office365.c"
+        - "src/fortishield_modules/wm_office365.h"
+        - "src/fortishield_modules/wm_office365.c"
         - "src/Makefile"
         - "tests/integration/conftest.py"
         - "tests/integration/test_office365/**"
@@ -30,13 +30,13 @@ jobs:
         with:
           python-version-file: ".github/workflows/.python-version-it"
           architecture: x64
-      # Build wazuh agent for linux.
-      - name: Build wazuh agent for linux
+      # Build fortishield agent for linux.
+      - name: Build fortishield agent for linux
         run: |
           make deps -C src TARGET=agent -j2
           make -C src TARGET=agent -j2
-      # Install wazuh agent for linux.
-      - name: Install wazuh agent for linux
+      # Install fortishield agent for linux.
+      - name: Install fortishield agent for linux
         run: |
           echo 'USER_LANGUAGE="en"' > ./etc/preloaded-vars.conf
           echo "" >> ./etc/preloaded-vars.conf

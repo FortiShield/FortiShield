@@ -1,6 +1,6 @@
 # Backup dirs
 $Env:FORTISHIELD_BACKUP_DIR         = ".\backup"
-$TMP_BACKUP_DIR               = "wazuh_backup_tmp"
+$TMP_BACKUP_DIR               = "fortishield_backup_tmp"
 # Finding MSI useful constants
 $Env:FORTISHIELD_DEF_REG_START_PATH = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\"
 $Env:FORTISHIELD_PUBLISHER_VALUE    = "Fortishield, Inc."
@@ -33,7 +33,7 @@ if (Test-Path "$env:windir\sysnative") {
 }
 
 # Check unistall
-function is_wazuh_installed
+function is_fortishield_installed
 {
     Start-NativePowerShell {
 
@@ -56,7 +56,7 @@ function is_wazuh_installed
 }
 
 # Forces Fortishield-Agent to stop
-function stop_wazuh_agent
+function stop_fortishield_agent
 {
     param (
         $process_name
@@ -92,7 +92,7 @@ function backup_home
     Remove-Item $Env:FORTISHIELD_BACKUP_DIR -recurse -ErrorAction SilentlyContinue -force
     Remove-Item $env:temp\$TMP_BACKUP_DIR -recurse -ErrorAction SilentlyContinue
 
-    # Save wazuh home in tmp dir (Exclude not filter directories)
+    # Save fortishield home in tmp dir (Exclude not filter directories)
     New-Item -ItemType directory -Path $env:temp\$TMP_BACKUP_DIR -ErrorAction SilentlyContinue
     Copy-Item .\*  $env:temp\$TMP_BACKUP_DIR -force
 
@@ -110,7 +110,7 @@ function backup_msi {
         write-output "$(Get-Date -format u) - Searching Fortishield-Agent cached MSI through the registry." >> .\upgrade\upgrade.log
 
         $path = Get-ChildItem $Env:FORTISHIELD_DEF_REG_START_PATH
-        $wazuh_msi_path = $null
+        $fortishield_msi_path = $null
 
         # Searching through the registry keys (Starting from $FORTISHIELD_DEF_REG_START_PATH)
         foreach ($subpaths in $path) {
@@ -118,17 +118,17 @@ function backup_msi {
             foreach ($subsubpath in $subpath) {
                 if ($subsubpath -match "InstallProperties") {
                     if ($subsubpath.GetValue("Publisher") -match $Env:FORTISHIELD_PUBLISHER_VALUE) {
-                        $wazuh_msi_path = $subsubpath.GetValue("LocalPackage")
+                        $fortishield_msi_path = $subsubpath.GetValue("LocalPackage")
                     }
                 }
             }
         }
 
         # Do backup the MSI if it exists
-        if ($wazuh_msi_path -ne $null) {
-            $msi_filename = Split-Path $wazuh_msi_path -leaf
-            write-output "$(Get-Date -format u) - Backing up Fortishield-Agent cached MSI: `"$wazuh_msi_path`"." >> .\upgrade\upgrade.log
-            Copy-Item $wazuh_msi_path -Destination $Env:FORTISHIELD_BACKUP_DIR -force
+        if ($fortishield_msi_path -ne $null) {
+            $msi_filename = Split-Path $fortishield_msi_path -leaf
+            write-output "$(Get-Date -format u) - Backing up Fortishield-Agent cached MSI: `"$fortishield_msi_path`"." >> .\upgrade\upgrade.log
+            Copy-Item $fortishield_msi_path -Destination $Env:FORTISHIELD_BACKUP_DIR -force
             Write-Output "$msi_filename"
         } else {
             write-output "$(Get-Date -format u) - Fortishield-Agent cached MSI was not found." >> .\upgrade\upgrade.log
@@ -159,7 +159,7 @@ function get_uninstall_string {
 }
 
 # Looks for the Fortishield-Agent uninstall command and executes it, if exists
-function uninstall_wazuh {
+function uninstall_fortishield {
 
     $UninstallString = get_uninstall_string
 
@@ -170,7 +170,7 @@ function uninstall_wazuh {
 		# registry takes some time to refresh (e.g.: NT 6.3)
 		Start-Sleep 5
 		$counter = 10
-		While((is_wazuh_installed) -And $counter -gt 0) {
+		While((is_fortishield_installed) -And $counter -gt 0) {
 			write-output "$(Get-Date -format u) - Waiting for the uninstallation to end." >> .\upgrade\upgrade.log
 			$counter--
 			Start-Sleep 2
@@ -204,14 +204,14 @@ function restore
     )
 
     kill -processname win32ui -ErrorAction SilentlyContinue -Force
-    stop_wazuh_agent("wazuh-agent")
+    stop_fortishield_agent("fortishield-agent")
 
     # Saves ossec.log before remove fail update
     Copy-Item $Env:FORTISHIELD_BACKUP_DIR\ossec.log $Env:FORTISHIELD_BACKUP_DIR\ossec.log.save -force
     Copy-Item ossec.log $Env:FORTISHIELD_BACKUP_DIR\ossec.log -force
 
     # Uninstall the latest version of the Fortishield-Agent.
-    uninstall_wazuh
+    uninstall_fortishield
 
     # Install the former version of the Fortishield-Agent
     if ($msi_filename -ne $null) {
@@ -219,7 +219,7 @@ function restore
         cmd /c start $Env:FORTISHIELD_BACKUP_DIR\$msi_filename -quiet -norestart -log installer.log
 
         $counter = 10
-        While(-Not (is_wazuh_installed) -And $counter -gt 0) {
+        While(-Not (is_fortishield_installed) -And $counter -gt 0) {
             write-output "$(Get-Date -format u) - Waiting for the installation to end." >> .\upgrade\upgrade.log
             $counter--
             Start-Sleep 2
@@ -242,7 +242,7 @@ function install
     kill -processname win32ui -ErrorAction SilentlyContinue -Force
     Remove-Item .\upgrade\upgrade_result -ErrorAction SilentlyContinue
     write-output "$(Get-Date -format u) - Starting upgrade processs." >> .\upgrade\upgrade.log
-    cmd /c start /wait (Get-Item ".\wazuh-agent*.msi").Name -quiet -norestart -log installer.log
+    cmd /c start /wait (Get-Item ".\fortishield-agent*.msi").Name -quiet -norestart -log installer.log
 }
 
 
@@ -251,8 +251,8 @@ $current_version = (Get-Content VERSION)
 write-output "$(Get-Date -format u) - Current version: $($current_version)." >> .\upgrade\upgrade.log
 
 # Get process name
-$current_process = "wazuh-agent"
-If (!(Test-Path ".\wazuh-agent.exe"))
+$current_process = "fortishield-agent"
+If (!(Test-Path ".\fortishield-agent.exe"))
 {
     $current_process = "ossec-agent"
 }
@@ -264,7 +264,7 @@ $previous_msi_name = backup_msi
 
 # Ensure implicated processes are stopped before launch the upgrade
 Get-Process msiexec | Stop-Process -ErrorAction SilentlyContinue -Force
-stop_wazuh_agent($current_process)
+stop_fortishield_agent($current_process)
 
 # Install
 install
@@ -272,14 +272,14 @@ check-installation
 write-output "$(Get-Date -format u) - Installation finished." >> .\upgrade\upgrade.log
 
 # Check process status
-$process_id = (Get-Process wazuh-agent).id
+$process_id = (Get-Process fortishield-agent).id
 $counter = 10
 while($process_id -eq $null -And $counter -gt 0)
 {
     $counter--
     Start-Service -Name "Fortishield"
     Start-Sleep 2
-    $process_id = (Get-Process wazuh-agent).id
+    $process_id = (Get-Process fortishield-agent).id
 }
 write-output "$(Get-Date -format u) - Process ID: $($process_id)." >> .\upgrade\upgrade.log
 
@@ -288,7 +288,7 @@ Start-Sleep 10
 
 # Check status file
 function Get-AgentStatus {
-    Select-String -Path '.\wazuh-agent.state' -Pattern "^status='(.+)'" | %{$_.Matches[0].Groups[1].value}
+    Select-String -Path '.\fortishield-agent.state' -Pattern "^status='(.+)'" | %{$_.Matches[0].Groups[1].value}
 }
 
 $status = Get-AgentStatus
@@ -308,20 +308,20 @@ If ($status -ne "connected")
 
     write-output "2" | out-file ".\upgrade\upgrade_result" -encoding ascii
 
-    .\wazuh-agent.exe uninstall-service >> .\upgrade\upgrade.log
+    .\fortishield-agent.exe uninstall-service >> .\upgrade\upgrade.log
     restore($previous_msi_name)
 
-    If ($current_process -eq "wazuh-agent")
+    If ($current_process -eq "fortishield-agent")
     {
         write-output "$(Get-Date -format u) - Installing Fortishield service." >> .\upgrade\upgrade.log
-        .\wazuh-agent.exe install-service >> .\upgrade\upgrade.log
+        .\fortishield-agent.exe install-service >> .\upgrade\upgrade.log
     }
     Else
     {
         write-output "$(Get-Date -format u) - Installing Fortishield service." >> .\upgrade\upgrade.log
         sc.exe delete FortishieldSvc -ErrorAction SilentlyContinue -Force
-        Remove-Item .\wazuh-agent.exe -ErrorAction SilentlyContinue
-        Remove-Item .\wazuh-agent.state -ErrorAction SilentlyContinue
+        Remove-Item .\fortishield-agent.exe -ErrorAction SilentlyContinue
+        Remove-Item .\fortishield-agent.state -ErrorAction SilentlyContinue
         .\ossec-agent.exe install-service >> .\upgrade\upgrade.log
     }
 
@@ -339,7 +339,7 @@ Else
 
 Remove-Item $Env:FORTISHIELD_BACKUP_DIR -recurse -ErrorAction SilentlyContinue
 Remove-Item -Path ".\upgrade\*"  -Exclude "*.log", "upgrade_result" -ErrorAction SilentlyContinue
-Remove-Item -Path ".\wazuh-agent*.msi" -ErrorAction SilentlyContinue
+Remove-Item -Path ".\fortishield-agent*.msi" -ErrorAction SilentlyContinue
 Remove-Item -Path ".\do_upgrade.ps1" -ErrorAction SilentlyContinue
 
 exit 0

@@ -11,14 +11,14 @@
   <rule id="500" level="0">
     <category>ossec</category>
     <decoded_as>ossec</decoded_as>
-    <description>Grouping of wazuh rules.</description>
+    <description>Grouping of fortishield rules.</description>
   </rule>
 
   <rule id="501" level="3">
     <if_sid>500</if_sid>
     <if_fts />
     <match>Agent started</match>
-    <description>New wazuh agent connected.</description>
+    <description>New fortishield agent connected.</description>
     <group>pci_dss_10.6.1,gpg13_10.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_AU.6,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 

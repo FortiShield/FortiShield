@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 import os
@@ -11,8 +11,8 @@ import api.middlewares as middlewares
 from api import __path__ as api_path
 from api.authentication import change_keypair
 from api.constants import SECURITY_CONFIG_PATH
-from wazuh import FortishieldInternalError, FortishieldError
-from wazuh.rbac.orm import RolesManager, TokenManager, check_database_integrity, DB_FILE
+from fortishield import FortishieldInternalError, FortishieldError
+from fortishield.rbac.orm import RolesManager, TokenManager, check_database_integrity, DB_FILE
 
 REQUIRED_FIELDS = ['id']
 SORT_FIELDS = ['id', 'name']

@@ -1,6 +1,6 @@
 """
  Copyright (C) 2015-2023, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
@@ -8,15 +8,15 @@ import pytest
 import time
 
 from pathlib import Path
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.tools.simulators.agent_simulator import connect
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.modules.remoted import patterns
-from wazuh_testing.utils.sockets import send_active_response_message
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.remoted.configuration import REMOTED_DEBUG
-from wazuh_testing.tools.monitors import queue_monitor
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.tools.simulators.agent_simulator import connect
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.modules.remoted import patterns
+from fortishield_testing.utils.sockets import send_active_response_message
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.remoted.configuration import REMOTED_DEBUG
+from fortishield_testing.tools.monitors import queue_monitor
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -39,10 +39,10 @@ ACTIVE_RESPONSE_EXAMPLE_COMMAND = 'dummy-ar admin 1.1.1.1 1.1 44 (any-agent) any
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_active_response_ar_sending(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                            set_wazuh_configuration, daemons_handler, simulate_agents):
+                            set_fortishield_configuration, daemons_handler, simulate_agents):
 
     '''
-    description: Check if the 'wazuh-remoted' daemon sends active response commands to the Fortishield agent.
+    description: Check if the 'fortishield-remoted' daemon sends active response commands to the Fortishield agent.
                  For this purpose, the test will establish a connection with a simulated agent using
                  different ports and transport protocols. Then, it will send an active response to that
                  agent, and finally, the test will verify that the events indicating that the active
@@ -68,7 +68,7 @@ def test_active_response_ar_sending(test_configuration, test_metadata, configure
         - simulate_agents
             type: fixture
             brief: create agents
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
 

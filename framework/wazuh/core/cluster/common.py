@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -21,12 +21,12 @@ from uuid import uuid4
 
 import cryptography.fernet
 
-import wazuh.core.results as wresults
-from wazuh import Fortishield
-from wazuh.core import common, exception
-from wazuh.core import utils
-from wazuh.core.cluster import cluster, utils as cluster_utils
-from wazuh.core.wdb import FortishieldDBConnection
+import fortishield.core.results as wresults
+from fortishield import Fortishield
+from fortishield.core import common, exception
+from fortishield.core import utils
+from fortishield.core.cluster import cluster, utils as cluster_utils
+from fortishield.core.wdb import FortishieldDBConnection
 
 class Response:
     """
@@ -132,17 +132,17 @@ class SendStringTask:
     # by the garbage collector (https://github.com/python/cpython/issues/91887).
     tasks_hard_reference = set()
 
-    def __init__(self, wazuh_common, logger):
+    def __init__(self, fortishield_common, logger):
         """Class constructor.
 
         Parameters
         ----------
-        wazuh_common : FortishieldCommon object
+        fortishield_common : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the reception process.
         """
-        self.wazuh_common = wazuh_common
+        self.fortishield_common = fortishield_common
         self.coro = self.set_up_coro()
         self.task = asyncio.create_task(self.coro())
         self.tasks_hard_reference.add(self.task)
@@ -176,12 +176,12 @@ class ReceiveStringTask:
     Create an asyncio task that can be identified by a task_id specified in advance.
     """
 
-    def __init__(self, wazuh_common, logger, task_id, info_type='agent-info'):
+    def __init__(self, fortishield_common, logger, task_id, info_type='agent-info'):
         """Class constructor.
 
         Parameters
         ----------
-        wazuh_common : FortishieldCommon object
+        fortishield_common : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the receive process.
@@ -190,7 +190,7 @@ class ReceiveStringTask:
         info_type : str
             Information type handled.
         """
-        self.wazuh_common = wazuh_common
+        self.fortishield_common = fortishield_common
         self.coro = self.set_up_coro()
         self.task_id = task_id
         self.info_type = info_type
@@ -223,11 +223,11 @@ class ReceiveStringTask:
 
         Remove string and task_id (if exist) from sync_tasks dict. If task was not cancelled, raise stored exception.
         """
-        if self.task_id in self.wazuh_common.in_str:
+        if self.task_id in self.fortishield_common.in_str:
             # pop() is used instead of 'del' so an exception is never raised here
-            self.wazuh_common.in_str.pop(self.task_id, None)
-        if self.task_id in self.wazuh_common.sync_tasks:
-            del self.wazuh_common.sync_tasks[self.task_id]
+            self.fortishield_common.in_str.pop(self.task_id, None)
+        if self.task_id in self.fortishield_common.sync_tasks:
+            del self.fortishield_common.sync_tasks[self.task_id]
         if not self.task.cancelled():
             task_exc = self.task.exception()
             if task_exc:
@@ -239,19 +239,19 @@ class ReceiveFileTask:
     Create an asyncio task that can be identified by a task_id.
     """
 
-    def __init__(self, wazuh_common, logger, task_id: bytes = b''):
+    def __init__(self, fortishield_common, logger, task_id: bytes = b''):
         """Class constructor.
 
         Parameters
         ----------
-        wazuh_common : FortishieldCommon object
+        fortishield_common : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the reception process.
         task_id : bytes
             Pre-defined task_id to identify this object. If not specified, a random task_id will be used.
         """
-        self.wazuh_common = wazuh_common
+        self.fortishield_common = fortishield_common
         self.coro = self.set_up_coro()
         self.task_id = task_id.decode() if task_id else str(uuid4())
         self.received_information = asyncio.Event()
@@ -285,8 +285,8 @@ class ReceiveFileTask:
 
         Remove task_id (if exists) from sync_tasks dict. If task was not cancelled, raise stored exception.
         """
-        if self.task_id in self.wazuh_common.sync_tasks:
-            del self.wazuh_common.sync_tasks[self.task_id]
+        if self.task_id in self.fortishield_common.sync_tasks:
+            del self.fortishield_common.sync_tasks[self.task_id]
         if not self.task.cancelled():
             task_exc = self.task.exception()
             if task_exc:
@@ -339,7 +339,7 @@ class Handler(asyncio.Protocol):
         # Object use to encrypt and decrypt requests.
         self.my_fernet = cryptography.fernet.Fernet(base64.b64encode(fernet_key.encode())) if fernet_key else None
         # Logging.Logger object used to write logs.
-        self.logger = logging.getLogger('wazuh') if not logger else logger
+        self.logger = logging.getLogger('fortishield') if not logger else logger
         # Logging tag.
         self.tag = tag
         # Modify filter tags with context vars.
@@ -577,7 +577,7 @@ class Handler(asyncio.Protocol):
         Parameters
         ----------
         data : dict
-            Dict containing command and list of chunks to be sent to wazuh-db.
+            Dict containing command and list of chunks to be sent to fortishield-db.
         info_type : str
             Information type handled.
         logger : Logger object
@@ -610,7 +610,7 @@ class Handler(asyncio.Protocol):
             logger.debug2(f'Chunk {error[0] + 1}/{len(data["chunks"])}: {data["chunks"][error[0]]}')
             logger.error(f'Fortishield-db response for chunk {error[0] + 1}/{len(data["chunks"])} was not "ok": {error[1]}')
 
-        logger.debug(f'{result["updated_chunks"]}/{len(data["chunks"])} chunks updated in wazuh-db '
+        logger.debug(f'{result["updated_chunks"]}/{len(data["chunks"])} chunks updated in fortishield-db '
                      f'in {result["time_spent"]:.3f}s.')
         result['error_messages'] = [error[1] for error in result['error_messages']['chunks']]
 
@@ -639,7 +639,7 @@ class Handler(asyncio.Protocol):
         relative_path = filename.replace(common.FORTISHIELD_PATH.encode(), b'')
 
         try:
-            # Tell to the destination node where (inside wazuh_path) the file has to be written.
+            # Tell to the destination node where (inside fortishield_path) the file has to be written.
             await self.send_request(command=b'new_file', data=relative_path)
         except exception.FortishieldClusterError as e:
             if e.code != 3020:
@@ -1014,7 +1014,7 @@ class Handler(asyncio.Protocol):
             Response message.
         """
         task_id, error_details = data.split(b' ', 1)
-        error_json = json.loads(error_details, object_hook=as_wazuh_object)
+        error_json = json.loads(error_details, object_hook=as_fortishield_object)
         if task_id != b'None':
             self.interrupted_tasks.add(task_id)
             self.logger.error(f'The task was canceled due to the following error on the remote node: {error_json}',
@@ -1124,7 +1124,7 @@ class Handler(asyncio.Protocol):
             Received error.
         """
         try:
-            exc = json.loads(data.decode(), object_hook=as_wazuh_object)
+            exc = json.loads(data.decode(), object_hook=as_fortishield_object)
         except json.JSONDecodeError as e:
             exc = exception.FortishieldClusterError(3000, extra_message=data.decode())
 
@@ -1313,7 +1313,7 @@ class FortishieldCommon:
             Response message.
         """
         task_id, error_details = task_id_and_error_details.split(' ', 1)
-        error_details_json = json.loads(error_details, object_hook=as_wazuh_object)
+        error_details_json = json.loads(error_details, object_hook=as_fortishield_object)
         if task_id in self.sync_tasks:
             # Remove filename if exists
             if os.path.exists(self.sync_tasks[task_id].filename):
@@ -1494,7 +1494,7 @@ class SyncFiles(SyncTask):
 
 class SyncFortishielddb(SyncTask):
     """
-    Define methods to send information to the master/worker node (wazuh-db) through send_string protocol.
+    Define methods to send information to the master/worker node (fortishield-db) through send_string protocol.
     """
 
     def __init__(self, manager, logger, data_retriever: Callable, cmd: bytes = b'', get_data_command: str = '',
@@ -1508,9 +1508,9 @@ class SyncFortishielddb(SyncTask):
         cmd : bytes
             Request command to send to the master/worker.
         get_data_command : str
-            Command to retrieve data from local wazuh-db.
+            Command to retrieve data from local fortishield-db.
         set_data_command : str
-            Command to set data in master/worker's wazuh-db.
+            Command to set data in master/worker's fortishield-db.
         logger : Logger object
             Logger to use during synchronization process.
         data_retriever : Callable
@@ -1554,7 +1554,7 @@ class SyncFortishielddb(SyncTask):
             self.get_payload[self.pivot_key] = last_pivot_value
 
         try:
-            # Retrieve information from local wazuh-db
+            # Retrieve information from local fortishield-db
             start_time = time.perf_counter()
             while status != 'ok':
                 command = self.get_data_command + json.dumps(self.get_payload)
@@ -1569,7 +1569,7 @@ class SyncFortishielddb(SyncTask):
                     except (IndexError, KeyError):
                         pass
         except exception.FortishieldException as e:
-            self.logger.error(f"Could not obtain data from wazuh-db: {e}")
+            self.logger.error(f"Could not obtain data from fortishield-db: {e}")
             return []
 
         self.logger.debug(f"Obtained {len(chunks)} chunks of data in {(time.perf_counter() - start_time):.3f}s.")
@@ -1671,7 +1671,7 @@ def send_data_to_wdb(data, timeout, info_type='agent-info'):
     Parameters
     ----------
     data : dict
-        Dict containing command and list of chunks to be sent to wazuh-db.
+        Dict containing command and list of chunks to be sent to fortishield-db.
     timeout : int
         Seconds to wait before stopping the task.
     info_type : str
@@ -1748,20 +1748,20 @@ class FortishieldJSONEncoder(json.JSONEncoder):
                 attributes['__qualname__'] = obj.__qualname__
             if hasattr(obj, '__self__'):
                 if isinstance(obj.__self__, Fortishield):
-                    attributes['__wazuh__'] = obj.__self__.to_dict()
+                    attributes['__fortishield__'] = obj.__self__.to_dict()
             attributes['__type__'] = type(obj).__name__
             return result
         elif isinstance(obj, exception.FortishieldException):
-            result = {'__wazuh_exception__': {'__class__': obj.__class__.__name__,
+            result = {'__fortishield_exception__': {'__class__': obj.__class__.__name__,
                                               '__object__': obj.to_dict()}}
             return result
         elif isinstance(obj, wresults.AbstractFortishieldResult):
-            result = {'__wazuh_result__': {'__class__': obj.__class__.__name__,
+            result = {'__fortishield_result__': {'__class__': obj.__class__.__name__,
                                            '__object__': obj.encode_json()}
                       }
             return result
         elif isinstance(obj, (datetime.datetime, datetime.date)):
-            return {'__wazuh_datetime__': obj.isoformat()}
+            return {'__fortishield_datetime__': obj.isoformat()}
         elif isinstance(obj, Exception):
             return {'__unhandled_exc__': {'__class__': obj.__class__.__name__,
                                           '__args__': obj.args}}
@@ -1769,15 +1769,15 @@ class FortishieldJSONEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def as_wazuh_object(dct: Dict):
+def as_fortishield_object(dct: Dict):
     try:
         if '__callable__' in dct:
             encoded_callable = dct['__callable__']
             funcname = encoded_callable['__name__']
-            if '__wazuh__' in encoded_callable:
+            if '__fortishield__' in encoded_callable:
                 # Encoded Fortishield instance method.
-                wazuh = Fortishield()
-                return getattr(wazuh, funcname)
+                fortishield = Fortishield()
+                return getattr(fortishield, funcname)
             else:
                 # Encoded function or static method.
                 qualname = encoded_callable['__qualname__'].split('.')
@@ -1788,14 +1788,14 @@ def as_wazuh_object(dct: Dict):
                     return getattr(module, funcname)
                 else:
                     return getattr(getattr(module, classname), funcname)
-        elif '__wazuh_exception__' in dct:
-            wazuh_exception = dct['__wazuh_exception__']
-            return getattr(exception, wazuh_exception['__class__']).from_dict(wazuh_exception['__object__'])
-        elif '__wazuh_result__' in dct:
-            wazuh_result = dct['__wazuh_result__']
-            return getattr(wresults, wazuh_result['__class__']).decode_json(wazuh_result['__object__'])
-        elif '__wazuh_datetime__' in dct:
-            return datetime.datetime.fromisoformat(dct['__wazuh_datetime__'])
+        elif '__fortishield_exception__' in dct:
+            fortishield_exception = dct['__fortishield_exception__']
+            return getattr(exception, fortishield_exception['__class__']).from_dict(fortishield_exception['__object__'])
+        elif '__fortishield_result__' in dct:
+            fortishield_result = dct['__fortishield_result__']
+            return getattr(wresults, fortishield_result['__class__']).decode_json(fortishield_result['__object__'])
+        elif '__fortishield_datetime__' in dct:
+            return datetime.datetime.fromisoformat(dct['__fortishield_datetime__'])
         elif '__unhandled_exc__' in dct:
             exc_data = dct['__unhandled_exc__']
             return eval(exc_data['__class__'])(*exc_data['__args__'])

@@ -21,8 +21,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "config/authd-config.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
-#include "wazuh_db/wdb.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
+#include "fortishield_db/wdb.h"
 
 #if defined(__hppa__)
 static int setenv(const char *name, const char *val, __attribute__((unused)) int overwrite)

@@ -17,11 +17,11 @@
 #include <cmocka.h>
 #include <time.h>
 #include "shared.h"
-#include "../../../wazuh_modules/wmodules.h"
+#include "../../../fortishield_modules/wmodules.h"
 #include "wmodules_scheduling_helpers.h"
 
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/shared/time_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/time_op_wrappers.h"
 
 static const int TEST_INTERVAL = 5 * 60;
 static const int TEST_DELAY    = 5;

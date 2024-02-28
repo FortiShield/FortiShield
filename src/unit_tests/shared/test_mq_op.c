@@ -20,7 +20,7 @@
 #include "../headers/shared.h"
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
 
 /* Define values may be changed */
 

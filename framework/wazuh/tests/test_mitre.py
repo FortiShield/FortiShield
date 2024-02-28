@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,18 +10,18 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        from wazuh.tests.util import get_fake_database_data, RBAC_bypasser, InitWDBSocketMock
+        from fortishield.tests.util import get_fake_database_data, RBAC_bypasser, InitWDBSocketMock
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh import mitre
-        from wazuh.core import mitre as core_mitre
-        from wazuh.core.common import DECIMALS_DATE_FORMAT
-        from wazuh.core.utils import get_utc_strptime
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield import mitre
+        from fortishield.core import mitre as core_mitre
+        from fortishield.core.common import DECIMALS_DATE_FORMAT
+        from fortishield.core.utils import get_utc_strptime
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 
@@ -69,7 +69,7 @@ def check_datetime(element, key):
 
 # Tests
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_metadata(mock_mitre_dbmitre, mitre_db):
     """Check MITRE metadata."""
     result = mitre.mitre_metadata()
@@ -79,7 +79,7 @@ def test_mitre_metadata(mock_mitre_dbmitre, mitre_db):
     assert all(item[key] == row[key] for item, row in zip(result.affected_items, rows) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_mitigations(mock_mitre_db, mitre_db):
     """Check MITRE mitigations."""
     result = mitre.mitre_mitigations()
@@ -89,7 +89,7 @@ def test_mitre_mitigations(mock_mitre_db, mitre_db):
                                                                           sort_entries(rows)) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_references(mock_mitre_dbmitre, mitre_db):
     """Check MITRE metadata."""
     result = mitre.mitre_references(limit=None)
@@ -103,7 +103,7 @@ def test_mitre_references(mock_mitre_dbmitre, mitre_db):
     assert all(item[key] == check_datetime(row, key) for item, row in zip(sorted_result, sorted_rows) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_tactics(mock_mitre_db, mitre_db):
     """Check MITRE tactics."""
     result = mitre.mitre_tactics()
@@ -114,7 +114,7 @@ def test_mitre_tactics(mock_mitre_db, mitre_db):
                                                                           sort_entries(rows)) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_techniques(mock_mitre_db, mitre_db):
     """Check MITRE techniques."""
     result = mitre.mitre_techniques()
@@ -125,7 +125,7 @@ def test_mitre_techniques(mock_mitre_db, mitre_db):
                                                                           sort_entries(rows)) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_groups(mock_mitre_db, mitre_db):
     """Check MITRE groups."""
     result = mitre.mitre_groups()
@@ -136,7 +136,7 @@ def test_mitre_groups(mock_mitre_db, mitre_db):
                                                                           sort_entries(rows)) for key in row)
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_mitre_software(mock_mitre_db, mitre_db):
     """Check MITRE software."""
     result = mitre.mitre_software()

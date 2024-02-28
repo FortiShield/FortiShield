@@ -16,12 +16,12 @@
 #include "../../wrappers/posix/pthread_wrappers.h"
 #include "../../wrappers/posix/select_wrappers.h"
 #include "../../wrappers/posix/unistd_wrappers.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/os_net/os_net_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_agent_upgrade_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/os_net/os_net_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_agent_upgrade_wrappers.h"
 
-#include "../../wazuh_modules/wmodules.h"
-#include "../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_manager.h"
+#include "../../fortishield_modules/wmodules.h"
+#include "../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_manager.h"
 #include "../../headers/shared.h"
 
 void wm_agent_upgrade_listen_messages(const wm_manager_configs* manager_configs);
@@ -59,7 +59,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_command(void **state)
                   "   \"command\": \"upgrade\","
                   "   \"parameters\": {"
                   "        \"agents\": [1],"
-                  "        \"wpk_repo\": \"packages.wazuh.com/wpk\""
+                  "        \"wpk_repo\": \"packages.fortishield.com/wpk\""
                   "    }"
                   "}";
 
@@ -109,12 +109,12 @@ void test_wm_agent_upgrade_listen_messages_upgrade_command(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: '{"
                                                                                "   \"command\": \"upgrade\","
                                                                                "   \"parameters\": {"
                                                                                "        \"agents\": [1],"
-                                                                               "        \"wpk_repo\": \"packages.wazuh.com/wpk\""
+                                                                               "        \"wpk_repo\": \"packages.fortishield.com/wpk\""
                                                                                "    }"
                                                                                "}'");
 
@@ -128,7 +128,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_command(void **state)
     expect_value(__wrap_wm_agent_upgrade_process_upgrade_command, task, upgrade_task);
     will_return(__wrap_wm_agent_upgrade_process_upgrade_command, response);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{"
                                                                               "    \"error\":0,"
                                                                               "    \"data\":["
@@ -160,7 +160,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_custom_command(void **state)
                   "   \"command\": \"upgrade_custom\","
                   "   \"parameters\": {"
                   "        \"agents\": [2],"
-                  "        \"file_path\":\"/test/wazuh.wpk\""
+                  "        \"file_path\":\"/test/fortishield.wpk\""
                   "    }"
                   "}";
 
@@ -210,12 +210,12 @@ void test_wm_agent_upgrade_listen_messages_upgrade_custom_command(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: '{"
                                                                                "   \"command\": \"upgrade_custom\","
                                                                                "   \"parameters\": {"
                                                                                "        \"agents\": [2],"
-                                                                               "        \"file_path\":\"/test/wazuh.wpk\""
+                                                                               "        \"file_path\":\"/test/fortishield.wpk\""
                                                                                "    }"
                                                                                "}'");
 
@@ -229,7 +229,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_custom_command(void **state)
     expect_value(__wrap_wm_agent_upgrade_process_upgrade_custom_command, task, upgrade_custom_task);
     will_return(__wrap_wm_agent_upgrade_process_upgrade_custom_command, response);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{"
                                                                               "    \"error\":0,"
                                                                               "    \"data\":["
@@ -312,7 +312,7 @@ void test_wm_agent_upgrade_listen_messages_agent_update_status_command(void **st
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: '{"
                                                                                "   \"command\": \"upgrade_update_status\","
                                                                                "   \"parameters\": {"
@@ -333,7 +333,7 @@ void test_wm_agent_upgrade_listen_messages_agent_update_status_command(void **st
     expect_value(__wrap_wm_agent_upgrade_process_agent_result_command, task, upgrade_agent_status_task);
     will_return(__wrap_wm_agent_upgrade_process_agent_result_command, response);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{"
                                                                               "    \"error\":0,"
                                                                               "    \"data\":["
@@ -416,7 +416,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_result_command(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: '{"
                                                                                "   \"command\": \"upgrade_result\","
                                                                                "   \"parameters\": {"
@@ -433,7 +433,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_result_command(void **state)
     expect_value(__wrap_wm_agent_upgrade_process_upgrade_result_command, agent_ids, agents);
     will_return(__wrap_wm_agent_upgrade_process_upgrade_result_command, response);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{"
                                                                               "    \"error\":0,"
                                                                               "    \"data\":["
@@ -495,7 +495,7 @@ void test_wm_agent_upgrade_listen_messages_parse_error(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: 'Bad JSON'");
 
     expect_string(__wrap_wm_agent_upgrade_parse_message, buffer, input);
@@ -507,7 +507,7 @@ void test_wm_agent_upgrade_listen_messages_parse_error(void **state)
     expect_value(__wrap_wm_agent_upgrade_parse_response, error_id, WM_UPGRADE_UNKNOWN_ERROR);
     will_return(__wrap_wm_agent_upgrade_parse_response, response_json);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{\"error\":25,\"message\":\"Upgrade procedure could not start\",\"data\":[{\"error\":25,\"message\":\"Upgrade procedure could not start\"}]}'");
 
     expect_value(__wrap_OS_SendSecureTCP, sock, peer);
@@ -552,7 +552,7 @@ void test_wm_agent_upgrade_listen_messages_parse_error_with_message(void **state
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, input_size);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8155): Incomming message: 'Bad JSON'");
 
     expect_string(__wrap_wm_agent_upgrade_parse_message, buffer, input);
@@ -561,7 +561,7 @@ void test_wm_agent_upgrade_listen_messages_parse_error_with_message(void **state
     will_return(__wrap_wm_agent_upgrade_parse_message, response);
     will_return(__wrap_wm_agent_upgrade_parse_message, OS_INVALID);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8156): Response message: '{\"error\":1,\"data\":[{\"error\":1,\"message\":\"Could not parse message JSON\"}],\"message\":\"Could not parse message JSON\"}'");
 
     expect_value(__wrap_OS_SendSecureTCP, sock, peer);
@@ -600,7 +600,7 @@ void test_wm_agent_upgrade_listen_messages_receive_empty(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, 0);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtdebug1, formatted_msg, "(8159): Empty message from local client.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -634,7 +634,7 @@ void test_wm_agent_upgrade_listen_messages_receive_error(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8111): Error in recv(): 'Success'");
 
     wm_agent_upgrade_listen_messages(config);
@@ -668,7 +668,7 @@ void test_wm_agent_upgrade_listen_messages_receive_sock_error(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, OS_SOCKTERR);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8112): Response size is bigger than expected.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -707,7 +707,7 @@ void test_wm_agent_upgrade_listen_messages_accept_error_eintr(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, OS_SOCKTERR);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8112): Response size is bigger than expected.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -737,7 +737,7 @@ void test_wm_agent_upgrade_listen_messages_accept_error(void **state)
 
     will_return(__wrap_accept, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8110): Error in accept(): 'Operation not permitted'");
 
     will_return(__wrap_select, 1);
@@ -749,7 +749,7 @@ void test_wm_agent_upgrade_listen_messages_accept_error(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, OS_SOCKTERR);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8112): Response size is bigger than expected.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -785,7 +785,7 @@ void test_wm_agent_upgrade_listen_messages_select_zero(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, OS_SOCKTERR);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8112): Response size is bigger than expected.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -822,7 +822,7 @@ void test_wm_agent_upgrade_listen_messages_select_error_eintr(void **state)
     will_return(__wrap_OS_RecvSecureTCP, input);
     will_return(__wrap_OS_RecvSecureTCP, OS_SOCKTERR);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8112): Response size is bigger than expected.");
 
     wm_agent_upgrade_listen_messages(config);
@@ -848,7 +848,7 @@ void test_wm_agent_upgrade_listen_messages_select_error(void **state)
 
     will_return(__wrap_select, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8109): Error in select(): 'Operation not permitted'. Exiting...");
 
     wm_agent_upgrade_listen_messages(config);
@@ -866,7 +866,7 @@ void test_wm_agent_upgrade_listen_messages_bind_error(void **state)
     expect_value(__wrap_OS_BindUnixDomainWithPerms, perm, 0660);
     will_return(__wrap_OS_BindUnixDomainWithPerms, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8108): Unable to bind to socket 'queue/tasks/upgrade': 'Operation not permitted'");
 
     wm_agent_upgrade_listen_messages(config);
@@ -876,7 +876,7 @@ void test_wm_agent_upgrade_start_manager_module_enabled(void **state)
 {
     wm_manager_configs *config = *state;
 
-    expect_string(__wrap__mtinfo, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtinfo, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtinfo, formatted_msg, "(8153): Module Agent Upgrade started.");
 
     expect_string(__wrap_OS_BindUnixDomainWithPerms, path, WM_UPGRADE_SOCK);
@@ -887,7 +887,7 @@ void test_wm_agent_upgrade_start_manager_module_enabled(void **state)
     expect_value(__wrap_OS_BindUnixDomainWithPerms, perm, 0660);
     will_return(__wrap_OS_BindUnixDomainWithPerms, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8108): Unable to bind to socket 'queue/tasks/upgrade': 'Operation not permitted'");
 
     wm_agent_upgrade_start_manager_module(config, 1);
@@ -897,12 +897,12 @@ void test_wm_agent_upgrade_start_manager_module_disabled(void **state)
 {
     wm_manager_configs *config = *state;
 
-    expect_string(__wrap__mtinfo, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtinfo, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtinfo, formatted_msg, "(8152): Module Agent Upgrade disabled. Exiting...");
 
     will_return(__wrap_pthread_exit, OS_INVALID);
 
-    expect_string(__wrap__mtinfo, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtinfo, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtinfo, formatted_msg, "(8153): Module Agent Upgrade started.");
 
     expect_string(__wrap_OS_BindUnixDomainWithPerms, path, WM_UPGRADE_SOCK);
@@ -913,7 +913,7 @@ void test_wm_agent_upgrade_start_manager_module_disabled(void **state)
     expect_value(__wrap_OS_BindUnixDomainWithPerms, perm, 0660);
     will_return(__wrap_OS_BindUnixDomainWithPerms, -1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8108): Unable to bind to socket 'queue/tasks/upgrade': 'Operation not permitted'");
 
     wm_agent_upgrade_start_manager_module(config, 0);

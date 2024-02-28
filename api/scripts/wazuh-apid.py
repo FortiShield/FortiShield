@@ -1,7 +1,7 @@
 #!/var/ossec/framework/python/bin/python3
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -11,15 +11,15 @@ import sys
 import warnings
 
 from api.constants import API_LOG_PATH
-from wazuh.core.wlogging import TimeBasedFileRotatingHandler, SizeBasedFileRotatingHandler
-from wazuh.core import pyDaemonModule
+from fortishield.core.wlogging import TimeBasedFileRotatingHandler, SizeBasedFileRotatingHandler
+from fortishield.core import pyDaemonModule
 
 SSL_DEPRECATED_MESSAGE = 'The `{ssl_protocol}` SSL protocol is deprecated.'
 
-API_MAIN_PROCESS = 'wazuh-apid'
-API_LOCAL_REQUEST_PROCESS = 'wazuh-apid_exec'
-API_AUTHENTICATION_PROCESS = 'wazuh-apid_auth'
-API_SECURITY_EVENTS_PROCESS = 'wazuh-apid_events'
+API_MAIN_PROCESS = 'fortishield-apid'
+API_LOCAL_REQUEST_PROCESS = 'fortishield-apid_exec'
+API_AUTHENTICATION_PROCESS = 'fortishield-apid_auth'
+API_SECURITY_EVENTS_PROCESS = 'fortishield-apid_events'
 
 
 def spawn_process_pool():
@@ -135,8 +135,8 @@ def start():
 
 
 def print_version():
-    from wazuh.core.cluster import __version__, __author__, __wazuh_name__, __licence__
-    print("\n{} {} - {}\n\n{}".format(__wazuh_name__, __version__, __author__, __licence__))
+    from fortishield.core.cluster import __version__, __author__, __fortishield_name__, __licence__
+    print("\n{} {} - {}\n\n{}".format(__fortishield_name__, __version__, __author__, __licence__))
 
 
 def test_config(config_file: str):
@@ -192,12 +192,12 @@ if __name__ == '__main__':
 
     import logging
     from api.api_exception import APIError
-    from wazuh.core import common
+    from fortishield.core import common
     from api import alogging, configuration
     from api.api_exception import APIError
     from api.util import APILoggerSize, to_relative_path
 
-    from wazuh.core import common, utils
+    from fortishield.core import common, utils
 
 
     def set_logging(log_path=f'{API_LOG_PATH}.log', foreground_mode=False, debug_mode='info'):
@@ -218,18 +218,18 @@ if __name__ == '__main__':
             max_size = APILoggerSize(api_conf['logs']['max_size']['size']).size
             custom_handler = SizeBasedFileRotatingHandler(filename=log_path, maxBytes=max_size, backupCount=1)
 
-        for logger_name in ('connexion.aiohttp_app', 'connexion.apis.aiohttp_api', 'wazuh-api'):
+        for logger_name in ('connexion.aiohttp_app', 'connexion.apis.aiohttp_api', 'fortishield-api'):
             api_logger = alogging.APILogger(
                 log_path=log_path, foreground_mode=foreground_mode, logger_name=logger_name,
-                debug_level='info' if logger_name != 'wazuh-api' and debug_mode != 'debug2' else debug_mode
+                debug_level='info' if logger_name != 'fortishield-api' and debug_mode != 'debug2' else debug_mode
             )
             api_logger.setup_logger(custom_handler)
         if os.path.exists(log_path):
-            os.chown(log_path, common.wazuh_uid(), common.wazuh_gid())
+            os.chown(log_path, common.fortishield_uid(), common.fortishield_gid())
             os.chmod(log_path, 0o660)
 
     try:
-        from wazuh.core import utils
+        from fortishield.core import utils
         from api import alogging, configuration
 
         if args.config_file is not None:
@@ -255,7 +255,7 @@ if __name__ == '__main__':
         print(f"Error when trying to start the Fortishield API. {api_log_error}")
         sys.exit(1)
 
-    logger = logging.getLogger('wazuh-api')
+    logger = logging.getLogger('fortishield-api')
 
     import asyncio
     import ssl
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     from api.signals import modify_response_headers, register_background_tasks
     from api.uri_parser import APIUriParser
     from api.util import to_relative_path
-    from wazuh.rbac.orm import check_database_integrity
+    from fortishield.rbac.orm import check_database_integrity
 
     # Check deprecated options. To delete after expected versions
     if 'use_only_authd' in api_conf:
@@ -360,11 +360,11 @@ if __name__ == '__main__':
     else:
         print('Starting API in foreground')
 
-    # Drop privileges to wazuh
+    # Drop privileges to fortishield
     if not args.root:
         if api_conf['drop_privileges']:
-            os.setgid(common.wazuh_gid())
-            os.setuid(common.wazuh_uid())
+            os.setgid(common.fortishield_gid())
+            os.setuid(common.fortishield_uid())
     else:
         print('Starting API as root')
 

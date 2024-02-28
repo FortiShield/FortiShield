@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -18,19 +18,19 @@ path.append(dirname(argv[0]) + '/../framework')  # It is necessary to import For
 
 # Import framework
 try:
-    import wazuh.agent
+    import fortishield.agent
     from api.util import raise_if_exc
-    from wazuh.agent import upgrade_agents, get_upgrade_result, get_agents
-    from wazuh.core import common
-    from wazuh.core.agent import Agent
-    from wazuh.core.cluster.dapi.dapi import DistributedAPI
-    from wazuh.core.exception import FortishieldError
-    from wazuh.core.cluster import utils as cluster_utils
+    from fortishield.agent import upgrade_agents, get_upgrade_result, get_agents
+    from fortishield.core import common
+    from fortishield.core.agent import Agent
+    from fortishield.core.cluster.dapi.dapi import DistributedAPI
+    from fortishield.core.exception import FortishieldError
+    from fortishield.core.cluster import utils as cluster_utils
 except Exception as e:
     print("Error importing 'Fortishield' package.\n\n{0}\n".format(e))
     exit()
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 
 # Functions
@@ -67,7 +67,7 @@ def get_script_arguments() -> argparse.Namespace:
 
 def list_outdated():
     """Print outdated agents."""
-    agents = wazuh.agent.get_outdated_agents()
+    agents = fortishield.agent.get_outdated_agents()
     if agents.total_affected_items == 0:
         print("All agents are updated.")
     else:
@@ -222,8 +222,8 @@ async def main():
         await check_status(affected_agents=result.affected_items, result_dict=agents_versions,
                            failed_agents=failed_agents, silent=args.silent)
 
-    except FortishieldError as wazuh_err:
-        print(f"Error {wazuh_err.code}: {wazuh_err.message}")
+    except FortishieldError as fortishield_err:
+        print(f"Error {fortishield_err.code}: {fortishield_err.message}")
         if args.debug:
             raise
     except ProblemException as e:

@@ -1,5 +1,5 @@
-- name: Command config wazuh manager for invalid connections
-  description: Command config wazuh manager for invalid connections
+- name: Command config fortishield manager for invalid connections
+  description: Command config fortishield manager for invalid connections
   configuration_parameters:
     PORT: '1514'
     PROTOCOL: 'TCP'

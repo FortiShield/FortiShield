@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -7,7 +7,7 @@ import re
 from collections import defaultdict
 from typing import Union
 
-from wazuh.rbac import orm
+from fortishield.rbac import orm
 
 
 class RBAChecker:
@@ -371,7 +371,7 @@ class RBAChecker:
         list_roles = list()
         for role in self.roles_list:
             for rule in role['rules']:
-                # wazuh-wui has id 2
+                # fortishield-wui has id 2
                 if (rule['id'] > orm.MAX_ID_RESERVED or self.user_id == 2) and self.check_rule(rule['rule']):
                     list_roles.append(role['id'])
                     break

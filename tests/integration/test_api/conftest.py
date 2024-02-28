@@ -1,16 +1,16 @@
 """
 Copyright (C) 2015-2022, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 import pytest
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_API_LOG_FILE_PATH, FORTISHIELD_API_JSON_LOG_FILE_PATH
-from wazuh_testing.constants.api import FORTISHIELD_API_PORT, CONFIGURATION_TYPES
-from wazuh_testing.modules.api.configuration import get_configuration, append_configuration, delete_configuration_file
-from wazuh_testing.modules.api.patterns import API_STARTED_MSG
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils.callbacks import generate_callback
+from fortishield_testing.constants.paths.logs import FORTISHIELD_API_LOG_FILE_PATH, FORTISHIELD_API_JSON_LOG_FILE_PATH
+from fortishield_testing.constants.api import FORTISHIELD_API_PORT, CONFIGURATION_TYPES
+from fortishield_testing.modules.api.configuration import get_configuration, append_configuration, delete_configuration_file
+from fortishield_testing.modules.api.patterns import API_STARTED_MSG
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils.callbacks import generate_callback
 
 
 @pytest.fixture

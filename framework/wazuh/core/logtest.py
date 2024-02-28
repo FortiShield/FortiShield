@@ -1,14 +1,14 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from datetime import datetime
 
 import pytz
 
-from wazuh.core.common import LOGTEST_SOCKET, DECIMALS_DATE_FORMAT, origin_module
-from wazuh.core.wazuh_socket import FortishieldSocketJSON, create_wazuh_socket_message
-from wazuh.core.exception import FortishieldError
+from fortishield.core.common import LOGTEST_SOCKET, DECIMALS_DATE_FORMAT, origin_module
+from fortishield.core.fortishield_socket import FortishieldSocketJSON, create_fortishield_socket_message
+from fortishield.core.exception import FortishieldError
 
 
 def send_logtest_msg(command: str = None, parameters: dict = None) -> dict:
@@ -26,7 +26,7 @@ def send_logtest_msg(command: str = None, parameters: dict = None) -> dict:
     dict
         Response from the logtest socket.
     """
-    full_message = create_wazuh_socket_message(origin={'name': 'Logtest', 'module': origin_module.get()},
+    full_message = create_fortishield_socket_message(origin={'name': 'Logtest', 'module': origin_module.get()},
                                                command=command,
                                                parameters=parameters)
     logtest_socket = FortishieldSocketJSON(LOGTEST_SOCKET)

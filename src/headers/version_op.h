@@ -87,6 +87,6 @@ int get_nproc();
  * @retval 1 version1 > version2
  * @retval -1 version1 < version2
  * */
-int compare_wazuh_versions(const char *version1, const char *version2, bool compare_patch);
+int compare_fortishield_versions(const char *version1, const char *version2, bool compare_patch);
 
 #endif /* VERSION_H */

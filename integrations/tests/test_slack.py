@@ -1,5 +1,5 @@
 # Copyright (C) 2023, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute
 # it and/or modify it under the terms of GPLv2
 
@@ -32,7 +32,7 @@ alert_template = {
     'id': 'alert_id',
     'full_log': 'full log.',
     'decoder': {'name': 'decoder-name'},
-    'location': 'wazuh-X',
+    'location': 'fortishield-X',
 }
 
 options_template = {'pretext': 'Fortishield-X -- Alert generated', 'author_name': 'The amazing Fortishield', 'footer': 'Slack API'}
@@ -42,7 +42,7 @@ msg_template = (
     '"rule_id": "rule-id", "timestamp": "year-month-dayThours:minuts:seconds+0000", "id": "alert_id", '
     '"all_fields": {"timestamp": "2023-02-23T00:00:00+00:00", "rule": {"level": 0, '
     '"description": "alert description", "id": "rule-id", "firedtimes": 1}, "id": "alert_id", "full_log": '
-    '"full log.", "decoder": {"name": "decoder-name"}, "location": "wazuh-X", "author_name": "The amazing Fortishield",'
+    '"full log.", "decoder": {"name": "decoder-name"}, "location": "fortishield-X", "author_name": "The amazing Fortishield",'
     '"footer": "Slack API"}'
 )
 slack_webhook = ''

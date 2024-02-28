@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Tests list and flags
 list(APPEND tests_names "test_wm_control")
@@ -14,9 +14,9 @@ list(APPEND tests_flags "-Wl,--wrap,sysinfo_networks -Wl,--wrap,sysinfo_free_res
 list(APPEND use_shared_libs 1)
 
 
-# Generate wazuh modules library
-file(GLOB control ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM control ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB control ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM control ../../../fortishield_modules/main.o)
 
 add_library(CONTROL_O STATIC ${control})
 

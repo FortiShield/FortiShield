@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import datetime
@@ -12,25 +12,25 @@ from shutil import copyfile, Error
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from unittest.mock import call, MagicMock, Mock, mock_open, patch, ANY
 from xml.etree.ElementTree import Element
-from wazuh.core.common import OSSEC_TMP_PATH
+from fortishield.core.common import OSSEC_TMP_PATH
 
 import pytest
 from defusedxml.ElementTree import parse
 from freezegun import freeze_time
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh import FortishieldException
-        from wazuh.core.agent import FortishieldDBQueryAgents
-        from wazuh.core import utils, exception
-        from wazuh.core.common import FORTISHIELD_PATH, AGENT_NAME_LEN_LIMIT
-        from wazuh.core.results import FortishieldResult
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield import FortishieldException
+        from fortishield.core.agent import FortishieldDBQueryAgents
+        from fortishield.core import utils, exception
+        from fortishield.core.common import FORTISHIELD_PATH, AGENT_NAME_LEN_LIMIT
+        from fortishield.core.results import FortishieldResult
 
 # all necessary params
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 test_files_path = os.path.join(test_data_path, 'utils')
-wazuh_cdb_list = "172.16.19.:\n172.16.19.:\n192.168.:"
+fortishield_cdb_list = "172.16.19.:\n172.16.19.:\n192.168.:"
 
 # input data for testing q filter
 input_array = [
@@ -191,7 +191,7 @@ def test_find_nth(string, substring, n, expected_index):
     ([], None),
     ([], 1)
 ])
-@patch('wazuh.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
+@patch('fortishield.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
 def test_cut_array(array, limit):
     """Test cut_array function."""
     result = utils.cut_array(array=array, limit=limit, offset=0)
@@ -205,7 +205,7 @@ def test_cut_array(array, limit):
     (5, -1, 1400),
     (-1, 0, 1401)
 ])
-@patch('wazuh.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
+@patch('fortishield.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
 def test_cut_array_ko(limit, offset, expected_exception):
     """Test cut_array function for all exceptions.
 
@@ -340,12 +340,12 @@ def test_process_array(array, q, filters, limit, search_text, sort_by, select, d
     assert result == {'items': expected_items, 'totalItems': expected_total_items}
 
 
-@patch('wazuh.core.utils.len', return_value=1)
-@patch('wazuh.core.utils.cut_array')
-@patch('wazuh.core.utils.select_array', return_value=ANY)
-@patch('wazuh.core.utils.filter_array_by_query', return_value=ANY)
-@patch('wazuh.core.utils.search_array', return_value=ANY)
-@patch('wazuh.core.utils.sort_array', return_value=ANY)
+@patch('fortishield.core.utils.len', return_value=1)
+@patch('fortishield.core.utils.cut_array')
+@patch('fortishield.core.utils.select_array', return_value=ANY)
+@patch('fortishield.core.utils.filter_array_by_query', return_value=ANY)
+@patch('fortishield.core.utils.search_array', return_value=ANY)
+@patch('fortishield.core.utils.sort_array', return_value=ANY)
 def test_process_array_ops_order(mock_sort_array, mock_search_array, mock_filter_array_by_query, mock_select_array,
                                  mock_cut_array, mock_len):
     """Test that the process_array function calls the sort, search, filter by query, select and cut operations in the
@@ -462,7 +462,7 @@ def test_tail():
     assert len(result) == 20
 
 
-@patch('wazuh.core.utils.chmod')
+@patch('fortishield.core.utils.chmod')
 def test_chmod_r(mock_chmod):
     """Tests chmod_r function."""
     with TemporaryDirectory() as tmpdirname:
@@ -473,7 +473,7 @@ def test_chmod_r(mock_chmod):
         mock_chmod.assert_any_call(os.path.join(tmpdirname, tmpfile.name), 0o777)
 
 
-@patch('wazuh.core.utils.chown')
+@patch('fortishield.core.utils.chown')
 def test_chown_r(mock_chown):
     """Test chown_r function."""
     with TemporaryDirectory() as tmp_dirname:
@@ -484,31 +484,31 @@ def test_chown_r(mock_chown):
         mock_chown.assert_any_call(os.path.join(tmp_dirname, tmp_file.name), 'test_user', 'test_group')
 
 
-@patch('wazuh.core.utils.common.FORTISHIELD_PATH', new='/test/path')
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.remove')
-def test_delete_wazuh_file(mock_remove, mock_exists):
+@patch('fortishield.core.utils.common.FORTISHIELD_PATH', new='/test/path')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.remove')
+def test_delete_fortishield_file(mock_remove, mock_exists):
     """Check delete_file calls functions with expected params"""
-    assert utils.delete_wazuh_file('/test/path/etc/file')
+    assert utils.delete_fortishield_file('/test/path/etc/file')
     mock_remove.assert_called_once_with('/test/path/etc/file')
 
 
-@patch('wazuh.core.utils.common.FORTISHIELD_PATH', new='/test/path')
-def test_delete_wazuh_file_ko():
+@patch('fortishield.core.utils.common.FORTISHIELD_PATH', new='/test/path')
+def test_delete_fortishield_file_ko():
     """Check delete_file calls functions with expected params"""
     with pytest.raises(utils.FortishieldError, match=r'\b1907\b'):
-        utils.delete_wazuh_file('/test/different_path/etc/file')
+        utils.delete_fortishield_file('/test/different_path/etc/file')
 
     with pytest.raises(utils.FortishieldError, match=r'\b1907\b'):
-        utils.delete_wazuh_file('/test/path/file/../../home')
+        utils.delete_fortishield_file('/test/path/file/../../home')
 
-    with patch('wazuh.core.utils.path.exists', return_value=False):
+    with patch('fortishield.core.utils.path.exists', return_value=False):
         with pytest.raises(utils.FortishieldError, match=r'\b1906\b'):
-            utils.delete_wazuh_file('/test/path/etc/file')
+            utils.delete_fortishield_file('/test/path/etc/file')
 
-    with patch('wazuh.core.utils.path.exists', return_value=True):
+    with patch('fortishield.core.utils.path.exists', return_value=True):
         with pytest.raises(utils.FortishieldError, match=r'\b1907\b'):
-            utils.delete_wazuh_file('/test/path/etc/file')
+            utils.delete_fortishield_file('/test/path/etc/file')
 
 
 @pytest.mark.parametrize('ownership, time, permissions',
@@ -517,9 +517,9 @@ def test_delete_wazuh_file_ko():
                           ((1000, 1000), None, 0o660),
                           ((1000, 1000), (12345, 12345), 0o660)]
                          )
-@patch('wazuh.core.utils.chown')
-@patch('wazuh.core.utils.chmod')
-@patch('wazuh.core.utils.utime')
+@patch('fortishield.core.utils.chown')
+@patch('fortishield.core.utils.chmod')
+@patch('fortishield.core.utils.utime')
 def test_safe_move(mock_utime, mock_chmod, mock_chown, ownership, time, permissions):
     """Test safe_move function."""
     with TemporaryDirectory() as tmpdirname:
@@ -536,15 +536,15 @@ def test_safe_move(mock_utime, mock_chmod, mock_chown, ownership, time, permissi
             mock_chmod.assert_called_once_with(tmp_path, permissions)
 
 
-@patch('wazuh.core.utils.chown')
-@patch('wazuh.core.utils.chmod')
-@patch('wazuh.core.utils.utime')
+@patch('fortishield.core.utils.chown')
+@patch('fortishield.core.utils.chmod')
+@patch('fortishield.core.utils.utime')
 def test_safe_move_exception(mock_utime, mock_chmod, mock_chown):
     """Test safe_move function."""
     with TemporaryDirectory() as tmpdirname:
         tmp_file = NamedTemporaryFile(dir=tmpdirname, delete=False)
         target_file = os.path.join(tmpdirname, 'target')
-        with patch('wazuh.core.utils.rename', side_effect=OSError(1)):
+        with patch('fortishield.core.utils.rename', side_effect=OSError(1)):
             utils.safe_move(tmp_file.name, target_file, ownership=(1000, 1000), time=(12345, 12345), permissions=0o660)
         assert (os.path.exists(target_file))
 
@@ -553,12 +553,12 @@ def test_safe_move_exception(mock_utime, mock_chmod, mock_chown):
     ('/var/test_path', True),
     ('./var/test_path/', False)
 ])
-@patch('wazuh.core.utils.chmod')
-@patch('wazuh.core.utils.mkdir')
-@patch('wazuh.core.utils.curdir', new='var')
+@patch('fortishield.core.utils.chmod')
+@patch('fortishield.core.utils.mkdir')
+@patch('fortishield.core.utils.curdir', new='var')
 def test_mkdir_with_mode(mock_mkdir, mock_chmod, dir_name, path_exists):
     """Test mkdir_with_mode function."""
-    with patch('wazuh.core.utils.path.exists', return_value=path_exists):
+    with patch('fortishield.core.utils.path.exists', return_value=path_exists):
         utils.mkdir_with_mode(dir_name)
         mock_chmod.assert_any_call(dir_name, 0o770)
         mock_mkdir.assert_any_call(dir_name, 0o770)
@@ -569,19 +569,19 @@ def test_mkdir_with_mode(mock_mkdir, mock_chmod, dir_name, path_exists):
     ('/var/test_path/', False)
 
 ])
-@patch('wazuh.core.utils.mkdir', side_effect=OSError)
+@patch('fortishield.core.utils.mkdir', side_effect=OSError)
 def test_mkdir_with_mode_ko(mock_mkdir, dir_name, exists):
     """Test mkdir_with_mode function errors work."""
-    with patch('wazuh.core.utils.path.exists', return_value=exists):
+    with patch('fortishield.core.utils.path.exists', return_value=exists):
         with pytest.raises(OSError):
             utils.mkdir_with_mode(dir_name)
 
 
-@patch('wazuh.core.utils.open')
-@patch('wazuh.core.utils.iter', return_value=['1', '2'])
+@patch('fortishield.core.utils.open')
+@patch('fortishield.core.utils.iter', return_value=['1', '2'])
 def test_md5(mock_iter, mock_open):
     """Test md5 function."""
-    with patch('wazuh.core.utils.hashlib.md5') as md:
+    with patch('fortishield.core.utils.hashlib.md5') as md:
         md.return_value.update.side_effect = None
         result = utils.md5('test')
 
@@ -590,11 +590,11 @@ def test_md5(mock_iter, mock_open):
         mock_open.assert_called_once_with('test', 'rb')
 
 
-@patch('wazuh.core.utils.open')
-@patch('wazuh.core.utils.iter', return_value=['1', '2'])
+@patch('fortishield.core.utils.open')
+@patch('fortishield.core.utils.iter', return_value=['1', '2'])
 def test_blake2b(mock_iter, mock_open):
     """Test md5 function."""
-    with patch('wazuh.core.utils.hashlib.blake2b') as blake2b_mock:
+    with patch('fortishield.core.utils.hashlib.blake2b') as blake2b_mock:
         blake2b_mock.return_value.update.side_effect = None
         result = utils.blake2b('test')
 
@@ -609,11 +609,11 @@ def test_protected_get_hashing_algorithm_ko():
         utils.get_hash(filename='test_file', hash_algorithm='test')
 
 
-@patch('wazuh.core.utils.open')
+@patch('fortishield.core.utils.open')
 def test_get_hash(mock_open):
     """Test get_hash function."""
-    with patch('wazuh.core.utils.iter', return_value=['1', '2']):
-        with patch('wazuh.core.utils.hashlib.new') as md:
+    with patch('fortishield.core.utils.iter', return_value=['1', '2']):
+        with patch('fortishield.core.utils.hashlib.new') as md:
             md.return_value.update.side_effect = None
             result = utils.get_hash(filename='test_file')
 
@@ -621,17 +621,17 @@ def test_get_hash(mock_open):
             assert isinstance(result.return_value, MagicMock)
             mock_open.assert_called_once_with('test_file', 'rb')
 
-    with patch('wazuh.core.utils.iter', return_value=[]):
+    with patch('fortishield.core.utils.iter', return_value=[]):
         result = utils.get_hash(filename='test_file', return_hex=False)
 
         assert type(result) == bytes
 
 
-@patch('wazuh.core.utils.open')
-@patch('wazuh.core.utils.iter', return_value=['1', '2'])
+@patch('fortishield.core.utils.open')
+@patch('fortishield.core.utils.iter', return_value=['1', '2'])
 def test_get_hash_ko(mock_iter, mock_open):
     """Test get_hash function error work."""
-    with patch('wazuh.core.utils.hashlib.new') as md:
+    with patch('fortishield.core.utils.hashlib.new') as md:
         md.return_value.update.side_effect = IOError
         result = utils.get_hash(filename='test_file')
 
@@ -664,18 +664,18 @@ def test_plain_dict_to_nested_dict():
     assert result == mock_nested_dict
 
 
-@patch('wazuh.core.utils.compile', return_value='Something')
-def test_basic_load_wazuh_xml(mock_compile):
-    """Test basic load_wazuh_xml functionality."""
-    with patch('wazuh.core.utils.open') as f:
+@patch('fortishield.core.utils.compile', return_value='Something')
+def test_basic_load_fortishield_xml(mock_compile):
+    """Test basic load_fortishield_xml functionality."""
+    with patch('fortishield.core.utils.open') as f:
         f.return_value.__enter__.return_value = StringIO(test_xml)
-        result = utils.load_wazuh_xml('test_file')
+        result = utils.load_fortishield_xml('test_file')
 
         assert isinstance(result, Element)
 
 
-def test_load_wazuh_xml():
-    """Test load_wazuh_xml function."""
+def test_load_fortishield_xml():
+    """Test load_fortishield_xml function."""
 
     def elements_equal(e1, e2):
         if e1.tag != e2.tag: return False
@@ -684,22 +684,22 @@ def test_load_wazuh_xml():
         if len(e1) != len(e2): return False
         return all(elements_equal(c1, c2) for c1, c2 in zip(e1, e2))
 
-    for rule_file in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/test_load_wazuh_xml')):
-        path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/test_load_wazuh_xml'),
+    for rule_file in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/test_load_fortishield_xml')):
+        path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/test_load_fortishield_xml'),
                             rule_file)
         original = parse(path).getroot()
-        result = utils.load_wazuh_xml(path)
+        result = utils.load_fortishield_xml(path)
 
         assert elements_equal(original, result.find('dummy_tag'))
 
 @pytest.mark.parametrize('expected_exception', [
     (1113)
 ])
-def test_load_wazuh_xml_ko(expected_exception):
-    """Test load_wazuh_xml fails gracefully when reading an invalid utf-8 character sequence"""
-    file_path = os.path.join(test_data_path, 'test_load_wazuh_xml_ko/invalid_utf8.xml')
+def test_load_fortishield_xml_ko(expected_exception):
+    """Test load_fortishield_xml fails gracefully when reading an invalid utf-8 character sequence"""
+    file_path = os.path.join(test_data_path, 'test_load_fortishield_xml_ko/invalid_utf8.xml')
     with pytest.raises(FortishieldException, match=f'.* {expected_exception} .*'):
-        utils.load_wazuh_xml(file_path)
+        utils.load_fortishield_xml(file_path)
 
 @pytest.mark.parametrize('version1, version2', [
     ('Fortishield v3.5.0', 'Fortishield v3.5.2'),
@@ -829,11 +829,11 @@ def test_failed_test_get_timeframe_in_seconds():
     ({'operator': '=', 'value': 'user\'s', 'field': 'description'},
      {'operator': 'LIKE', 'value': 'user_s', 'field': 'description'}, {'description'}),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
+@patch('fortishield.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
 def test_FortishieldDBQuery_protected_clean_filter(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                              query_filter, expected_query_filter, expected_wef):
     """Test FortishieldDBQuery._clean_filter function."""
@@ -854,11 +854,11 @@ def test_FortishieldDBQuery_protected_clean_filter(mock_socket_conn, mock_conn_d
     (0, True, 1406),
     (100, True, 1405),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
+@patch('fortishield.core.utils.common.MAXIMUM_DATABASE_LIMIT', new=10)
 def test_FortishieldDBQuery_protected_add_limit_to_query(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                                    limit, error, expected_exception):
     """Test FortishieldDBQuery._add_limit_to_query function."""
@@ -878,9 +878,9 @@ def test_FortishieldDBQuery_protected_add_limit_to_query(mock_socket_conn, mock_
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_sort_query(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Tests FortishieldDBQuery._sort_query function works"""
@@ -903,9 +903,9 @@ def test_FortishieldDBQuery_protected_sort_query(mock_socket_conn, mock_conn_db,
     ({'order': 'asc', 'fields': ['bad_field']}, 1403),
     ({'order': 'asc', 'fields': ['1', '2', '3', '4']}, None)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_add_sort_to_query(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                                   sort, expected_exception):
@@ -933,9 +933,9 @@ def test_FortishieldDBQuery_protected_add_sort_to_query(mock_socket_conn, mock_c
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_add_search_to_query(mock_socket_conn, mock_conn_db, mock_glob,
                                                     mock_exists):
@@ -956,9 +956,9 @@ def test_FortishieldDBQuery_protected_add_search_to_query(mock_socket_conn, mock
     (['1'], False, None),
     (['bad_field'], True, 1724)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
-@patch('wazuh.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.glob.glob', return_value=True)
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_parse_select_filter(mock_socket_conn, mock_glob, mock_conn_db, mock_exists,
                                                     selector_fields, error, expected_exception):
@@ -981,11 +981,11 @@ def test_FortishieldDBQuery_protected_parse_select_filter(mock_socket_conn, mock
         mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._parse_select_filter')
+@patch('fortishield.core.utils.FortishieldDBQuery._parse_select_filter')
 def test_FortishieldDBQuery_protected_add_select_to_query(mock_parse, mock_socket_conn, mock_conn_db, mock_glob,
                                                     mock_exists):
     """Test FortishieldDBQuery._add_select_to_query function."""
@@ -1084,8 +1084,8 @@ def test_FortishieldDBQuery_protected_add_select_to_query(mock_parse, mock_socke
       {'value': 'default', 'operator': '=', 'field': 'group$0', 'separator': 'OR', 'level': 3},
       {'value': 'default3', 'operator': '=', 'field': 'group$1', 'separator': '', 'level': 0}]),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 def test_FortishieldDBQuery_protected_parse_query_regex(mock_backend_connect, mock_exists, q, expected_query_filters):
     """Test FortishieldDBQuery._parse_query function."""
     query = utils.FortishieldDBQuery(offset=0, limit=1, table='agent', sort=None,
@@ -1108,9 +1108,9 @@ def test_FortishieldDBQuery_protected_parse_query_regex(mock_backend_connect, mo
     ('os.bad_field=ubuntu', True, 1408),
     ('os.name=!ubuntu', True, 1409)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_parse_query(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                             q, error, expected_exception):
@@ -1136,9 +1136,9 @@ def test_FortishieldDBQuery_protected_parse_query(mock_socket_conn, mock_conn_db
     {'os.name': 'ubuntu,windows'},
     {'name': 'value1,value2'}
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_parse_legacy_filters(mock_socket_conn, mock_conn_db, mock_glob,
                                                      mock_exists, filter_):
@@ -1159,12 +1159,12 @@ def test_FortishieldDBQuery_protected_parse_legacy_filters(mock_socket_conn, moc
     ({'os.name': 'ubuntu,windows'}, 'os.name=ubuntu'),
     ({'name': 'value1,value2'}, 'os.version>12e')
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._parse_legacy_filters')
-@patch('wazuh.core.utils.FortishieldDBQuery._parse_query')
+@patch('fortishield.core.utils.FortishieldDBQuery._parse_legacy_filters')
+@patch('fortishield.core.utils.FortishieldDBQuery._parse_query')
 def test_FortishieldDBQuery_parse_filters(mock_query, mock_filter, mock_socket_conn, mock_conn_db, mock_glob,
                                     mock_exists, filter, q):
     """Test FortishieldDBQuery._parse_filters function."""
@@ -1190,12 +1190,12 @@ def test_FortishieldDBQuery_parse_filters(mock_query, mock_filter, mock_socket_c
     ('os.name', None, {'value': None, 'operator': 'LIKE', 'field': 'status$0'}),
     ('os.name', 'field', {'value': '2019-07-16 09:21:56', 'operator': 'LIKE', 'field': 'status$0'})
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._filter_status')
-@patch('wazuh.core.utils.FortishieldDBQuery._filter_date')
+@patch('fortishield.core.utils.FortishieldDBQuery._filter_status')
+@patch('fortishield.core.utils.FortishieldDBQuery._filter_date')
 def test_FortishieldDBQuery_protected_process_filter(mock_date, mock_status, mock_socket_conn, mock_conn_db,
                                                mock_glob, mock_exists, field_name, field_filter, q_filter):
     """Tests FortishieldDBQuery._process_filter."""
@@ -1213,11 +1213,11 @@ def test_FortishieldDBQuery_protected_process_filter(mock_date, mock_status, moc
         mock_date.assert_any_call(q_filter, field_name)
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._process_filter')
+@patch('fortishield.core.utils.FortishieldDBQuery._process_filter')
 def test_FortishieldDBQuery_protected_add_filters_to_query(mock_process, mock_socket_conn,
                                                      mock_conn_db, mock_glob, mock_exists):
     """Test FortishieldDBQuery._add_filters_to_query function."""
@@ -1285,8 +1285,8 @@ def test_FortishieldDBQuery_protected_add_filters_to_query(mock_process, mock_so
         'AND ((group = :group$0 COLLATE NOCASE) OR (group = :group$1 COLLATE NOCASE))))',
     ),
 ])
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
-@patch('wazuh.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
 def test_FortishieldDBQuery_protected_add_filters_to_query_final_query(mock_conn_db, mock_file_exists,
                                                                  filters, expected_query):
     """Test FortishieldDBQuery._add_filters_to_query final query."""
@@ -1301,9 +1301,9 @@ def test_FortishieldDBQuery_protected_add_filters_to_query_final_query(mock_conn
     assert query.query.rstrip(' ') == expected_query
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_get_total_items(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Test FortishieldDBQuery._get_total_items function."""
@@ -1320,9 +1320,9 @@ def test_FortishieldDBQuery_protected_get_total_items(mock_socket_conn, mock_con
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_get_total_items_mitre(mock_socket_conn, mock_conn_db, mock_glob,
                                                       mock_exists):
@@ -1339,9 +1339,9 @@ def test_FortishieldDBQuery_protected_get_total_items_mitre(mock_socket_conn, mo
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_substitute_params(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Test utils.FortishieldDBQuery._get_total_items function."""
@@ -1359,9 +1359,9 @@ def test_FortishieldDBQuery_substitute_params(mock_socket_conn, mock_conn_db, mo
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_format_data_into_dictionary(mock_socket_conn, mock_conn_db, mock_glob,
                                                             mock_exists):
@@ -1380,9 +1380,9 @@ def test_FortishieldDBQuery_protected_format_data_into_dictionary(mock_socket_co
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_filter_status(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Test utils.FortishieldDBQuery._filter_status function."""
@@ -1405,9 +1405,9 @@ def test_FortishieldDBQuery_protected_filter_status(mock_socket_conn, mock_conn_
     ({'value': '2019-08-13', 'operator': '<', 'field': 'time'}, 'os.name', 10, False),
     ({'value': 'bad_value'}, 'os.name', 10, True)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_filter_date(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                             date_filter, filter_db_name, time, error):
@@ -1421,7 +1421,7 @@ def test_FortishieldDBQuery_protected_filter_date(mock_socket_conn, mock_conn_db
 
     query.request = {'time': None}
 
-    with patch('wazuh.core.utils.get_timeframe_in_seconds', return_value=time):
+    with patch('fortishield.core.utils.get_timeframe_in_seconds', return_value=time):
         if error:
             with pytest.raises(exception.FortishieldException, match=".* 1412 .*"):
                 query._filter_date(date_filter, filter_db_name)
@@ -1439,7 +1439,7 @@ def test_FortishieldDBQuery_protected_filter_date(mock_socket_conn, mock_conn_db
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_general_run(mock_socket_conn, execute_value, expected_result):
     """Test utils.FortishieldDBQuery.general_run function."""
-    with patch('wazuh.core.utils.FortishieldDBBackend.execute', return_value=execute_value):
+    with patch('fortishield.core.utils.FortishieldDBBackend.execute', return_value=execute_value):
         query = FortishieldDBQueryAgents(offset=0, limit=None, sort=None, search=None, select={'id'},
                                    query=None, count=False, get_data=True, remove_extra_fields=False)
 
@@ -1458,7 +1458,7 @@ def test_FortishieldDBQuery_general_run(mock_socket_conn, execute_value, expecte
 def test_FortishieldDBQuery_oversized_run(mock_socket_conn, execute_value, rbac_ids, negate,
                                     final_rbac_ids, expected_result):
     """Test utils.FortishieldDBQuery.oversized_run function."""
-    with patch('wazuh.core.utils.FortishieldDBBackend.execute', side_effect=[execute_value, final_rbac_ids]):
+    with patch('fortishield.core.utils.FortishieldDBBackend.execute', side_effect=[execute_value, final_rbac_ids]):
         query = FortishieldDBQueryAgents(offset=0, limit=None, sort=None, search=None, select={'id'},
                                    query=None, count=True, get_data=True, remove_extra_fields=False)
         query.legacy_filters['rbac_ids'] = rbac_ids
@@ -1467,11 +1467,11 @@ def test_FortishieldDBQuery_oversized_run(mock_socket_conn, execute_value, rbac_
         assert query.oversized_run() == expected_result
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._default_query')
+@patch('fortishield.core.utils.FortishieldDBQuery._default_query')
 def test_FortishieldDBQuery_reset(mock_query, mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Test utils.FortishieldDBQuery.reset function."""
     query = utils.FortishieldDBQuery(offset=0, limit=1, table='agent', sort=None,
@@ -1487,9 +1487,9 @@ def test_FortishieldDBQuery_reset(mock_query, mock_socket_conn, mock_conn_db, mo
     mock_query.assert_called_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_default_query(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Test utils.FortishieldDBQuery._default_query function."""
@@ -1506,9 +1506,9 @@ def test_FortishieldDBQuery_protected_default_query(mock_socket_conn, mock_conn_
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_default_count_query(mock_socket_conn, mock_conn_db, mock_glob,
                                                     mock_exists):
@@ -1530,9 +1530,9 @@ def test_FortishieldDBQuery_protected_default_count_query(mock_socket_conn, mock
     'all',
     'other_filter'
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQuery_protected_pass_filter(mock_socket_conn, mock_conn_db, mock_glob, mock_exists,
                                             value):
@@ -1550,9 +1550,9 @@ def test_FortishieldDBQuery_protected_pass_filter(mock_socket_conn, mock_conn_db
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQueryDistinct_protected_default_query(mock_socket_conn, mock_conn_db, mock_glob,
                                                       mock_exists):
@@ -1571,9 +1571,9 @@ def test_FortishieldDBQueryDistinct_protected_default_query(mock_socket_conn, mo
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQueryDistinct_protected_default_count_query(mock_socket_conn, mock_conn_db, mock_glob,
                                                             mock_exists):
@@ -1592,11 +1592,11 @@ def test_FortishieldDBQueryDistinct_protected_default_count_query(mock_socket_co
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._add_filters_to_query')
+@patch('fortishield.core.utils.FortishieldDBQuery._add_filters_to_query')
 def test_FortishieldDBQueryDistinct_protected_add_filters_to_query(mock_add, mock_socket_conn, mock_conn_db,
                                                              mock_glob, mock_exists):
     """Test utils.FortishieldDBQueryDistinct._add_filters_to_query function."""
@@ -1616,11 +1616,11 @@ def test_FortishieldDBQueryDistinct_protected_add_filters_to_query(mock_add, moc
     {'name'},
     {'name', 'ip'}
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._add_select_to_query')
+@patch('fortishield.core.utils.FortishieldDBQuery._add_select_to_query')
 def test_FortishieldDBQueryDistinct_protected_add_select_to_query(mock_add, mock_socket_conn, mock_conn_db,
                                                             mock_glob, mock_exists, select):
     """Test utils.FortishieldDBQueryDistinct._add_select_to_query function."""
@@ -1640,9 +1640,9 @@ def test_FortishieldDBQueryDistinct_protected_add_select_to_query(mock_add, mock
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQueryDistinct_protected_format_data_into_dictionary(mock_socket_conn, mock_conn_db,
                                                                     mock_glob, mock_exists):
@@ -1663,9 +1663,9 @@ def test_FortishieldDBQueryDistinct_protected_format_data_into_dictionary(mock_s
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
 def test_FortishieldDBQueryGroupBy__init__(mock_socket_conn, mock_conn_db, mock_glob, mock_exists):
     """Tests utils.FortishieldDBQueryGroupBy.__init__ function works"""
@@ -1681,11 +1681,11 @@ def test_FortishieldDBQueryGroupBy__init__(mock_socket_conn, mock_conn_db, mock_
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._get_total_items')
+@patch('fortishield.core.utils.FortishieldDBQuery._get_total_items')
 def test_FortishieldDBQueryGroupBy_protected_get_total_items(mock_total, mock_socket_conn, mock_conn_db,
                                                        mock_glob, mock_exists):
     """Test utils.FortishieldDBQueryGroupBy._get_total_items function."""
@@ -1704,12 +1704,12 @@ def test_FortishieldDBQueryGroupBy_protected_get_total_items(mock_total, mock_so
     mock_conn_db.assert_called_once_with()
 
 
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.utils.glob.glob', return_value=True)
-@patch('wazuh.core.utils.FortishieldDBBackend.connect_to_db')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.glob.glob', return_value=True)
+@patch('fortishield.core.utils.FortishieldDBBackend.connect_to_db')
 @patch('socket.socket.connect')
-@patch('wazuh.core.utils.FortishieldDBQuery._add_select_to_query')
-@patch('wazuh.core.utils.FortishieldDBQuery._parse_select_filter')
+@patch('fortishield.core.utils.FortishieldDBQuery._add_select_to_query')
+@patch('fortishield.core.utils.FortishieldDBQuery._parse_select_filter')
 def test_FortishieldDBQueryGroupBy_protected_add_select_to_query(mock_parse, mock_add, mock_socket_conn,
                                                            mock_conn_db, mock_glob, mock_exists):
     """Test utils.FortishieldDBQueryGroupBy._add_select_to_query function."""
@@ -1852,12 +1852,12 @@ def test_add_dynamic_detail(detail, value, attribs, details):
         assert details[detail][key] == value
 
 
-@patch('wazuh.core.utils.check_wazuh_limits_unchanged')
-@patch('wazuh.core.utils.check_remote_commands')
-@patch('wazuh.core.utils.check_agents_allow_higher_versions')
-@patch('wazuh.core.manager.common.FORTISHIELD_PATH', new=test_files_path)
-def test_validate_wazuh_xml(mock_remote_commands, mock_agents_versions, mock_unchanged_limits):
-    """Test validate_wazuh_xml method works and methods inside are called with expected parameters"""
+@patch('fortishield.core.utils.check_fortishield_limits_unchanged')
+@patch('fortishield.core.utils.check_remote_commands')
+@patch('fortishield.core.utils.check_agents_allow_higher_versions')
+@patch('fortishield.core.manager.common.FORTISHIELD_PATH', new=test_files_path)
+def test_validate_fortishield_xml(mock_remote_commands, mock_agents_versions, mock_unchanged_limits):
+    """Test validate_fortishield_xml method works and methods inside are called with expected parameters"""
 
     with open(os.path.join(test_files_path, 'test_rules.xml')) as f:
         xml_file = f.read()
@@ -1865,12 +1865,12 @@ def test_validate_wazuh_xml(mock_remote_commands, mock_agents_versions, mock_unc
     m = mock_open(read_data=xml_file)
 
     with patch('builtins.open', m):
-        utils.validate_wazuh_xml(xml_file)
+        utils.validate_fortishield_xml(xml_file)
     mock_remote_commands.assert_not_called()
     mock_agents_versions.assert_not_called()
 
     with patch('builtins.open', m):
-        utils.validate_wazuh_xml(xml_file, config_file=True)
+        utils.validate_fortishield_xml(xml_file, config_file=True)
     mock_remote_commands.assert_called_once()
     mock_agents_versions.assert_called_once()
 
@@ -1878,8 +1878,8 @@ def test_validate_wazuh_xml(mock_remote_commands, mock_agents_versions, mock_unc
 @pytest.mark.parametrize('effect, expected_exception', [
     (utils.ExpatError, 1113)
 ])
-def test_validate_wazuh_xml_ko(effect, expected_exception):
-    """Tests validate_wazuh_xml function works when open function raises an exception.
+def test_validate_fortishield_xml_ko(effect, expected_exception):
+    """Tests validate_fortishield_xml function works when open function raises an exception.
     Parameters
     ----------
     effect : Exception
@@ -1889,12 +1889,12 @@ def test_validate_wazuh_xml_ko(effect, expected_exception):
     """
     input_file = os.path.join(test_files_path, 'test_rules.xml')
 
-    with patch('wazuh.core.utils.load_wazuh_xml', side_effect=effect):
+    with patch('fortishield.core.utils.load_fortishield_xml', side_effect=effect):
         with pytest.raises(FortishieldException, match=f'.* {expected_exception} .*'):
-            utils.validate_wazuh_xml(input_file)
+            utils.validate_fortishield_xml(input_file)
 
 
-@patch('wazuh.core.utils.full_copy')
+@patch('fortishield.core.utils.full_copy')
 def test_delete_file_with_backup(mock_full_copy):
     """Test delete_file_with_backup function."""
     backup_file = 'backup'
@@ -1907,7 +1907,7 @@ def test_delete_file_with_backup(mock_full_copy):
     delete_function.assert_called_once_with(filename=os.path.basename(abs_path))
 
 
-@patch('wazuh.core.utils.full_copy', side_effect=IOError)
+@patch('fortishield.core.utils.full_copy', side_effect=IOError)
 def test_delete_file_with_backup_ko(mock_copyfile):
     """Test delete_file_with_backup function exceptions."""
     with pytest.raises(utils.FortishieldError, match='.* 1019 .*'):
@@ -1922,24 +1922,24 @@ def test_to_relative_path():
     assert utils.to_relative_path(path, prefix='etc') == os.path.basename(path)
 
 
-@patch('wazuh.core.utils.common.RULES_PATH', new=test_files_path)
-@patch('wazuh.core.utils.common.USER_RULES_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.RULES_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.USER_RULES_PATH', new=test_files_path)
 def test_expand_rules():
     rules = utils.expand_rules()
     assert rules == set(map(os.path.basename, glob.glob(os.path.join(test_files_path,
                                                                      f'*{utils.common.RULES_EXTENSION}'))))
 
 
-@patch('wazuh.core.utils.common.DECODERS_PATH', new=test_files_path)
-@patch('wazuh.core.utils.common.USER_DECODERS_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.DECODERS_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.USER_DECODERS_PATH', new=test_files_path)
 def test_expand_decoders():
     decoders = utils.expand_decoders()
     assert decoders == set(map(os.path.basename, glob.glob(os.path.join(test_files_path,
                                                                         f'*{utils.common.DECODERS_EXTENSION}'))))
 
 
-@patch('wazuh.core.utils.common.LISTS_PATH', new=test_files_path)
-@patch('wazuh.core.utils.common.USER_LISTS_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.LISTS_PATH', new=test_files_path)
+@patch('fortishield.core.utils.common.USER_LISTS_PATH', new=test_files_path)
 def test_expand_lists():
     lists = utils.expand_lists()
     assert lists == set(filter(lambda x: len(x.split('.')) == 1, map(os.path.basename, glob.glob(os.path.join(
@@ -1974,7 +1974,7 @@ def test_full_copy():
         os.path.exists(copied_test_file) and os.remove(copied_test_file)
 
 
-@patch('wazuh.core.utils.copy2', new=copyfile)
+@patch('fortishield.core.utils.copy2', new=copyfile)
 def test_full_copy_ko():
     """Test `full_copy` function using mutation testing."""
     with pytest.raises(AssertionError):
@@ -2026,7 +2026,7 @@ def test_get_utc_now():
     ({'eps': {'allow': True}}),
     ({'eps': {'allow': False}})
 ])
-def test_check_wazuh_limits_unchanged(new_conf, unchanged_limits_conf, original_conf, limits_conf):
+def test_check_fortishield_limits_unchanged(new_conf, unchanged_limits_conf, original_conf, limits_conf):
     """Test if ossec.conf limits are protected by the API.
 
     When 'eps': {'allow': False} is set in the API configuration, the limits in ossec.conf cannot be changed.
@@ -2046,12 +2046,12 @@ def test_check_wazuh_limits_unchanged(new_conf, unchanged_limits_conf, original_
     api_conf = utils.configuration.api_conf
     api_conf['upload_configuration']['limits'].update(limits_conf)
 
-    with patch('wazuh.core.utils.configuration.api_conf', new=api_conf):
+    with patch('fortishield.core.utils.configuration.api_conf', new=api_conf):
         if limits_conf['eps']['allow'] or unchanged_limits_conf:
-            utils.check_wazuh_limits_unchanged(new_conf, original_conf)
+            utils.check_fortishield_limits_unchanged(new_conf, original_conf)
         else:
             with pytest.raises(exception.FortishieldError, match=".* 1127 .*"):
-                utils.check_wazuh_limits_unchanged(new_conf, original_conf)
+                utils.check_fortishield_limits_unchanged(new_conf, original_conf)
 
 
 @pytest.mark.parametrize("new_conf", [
@@ -2085,7 +2085,7 @@ def test_agents_allow_higher_versions(new_conf, agents_conf):
     api_conf = utils.configuration.api_conf
     api_conf['upload_configuration']['agents'].update(agents_conf)
 
-    with patch('wazuh.core.utils.configuration.api_conf', new=api_conf):
+    with patch('fortishield.core.utils.configuration.api_conf', new=api_conf):
         if agents_conf['allow_higher_versions']['allow'] or new_conf.find('no') != -1:
             utils.check_agents_allow_higher_versions(new_conf)
         else:
@@ -2100,11 +2100,11 @@ def test_agents_allow_higher_versions(new_conf, agents_conf):
         # check_xml test case
         (True, "<Test>'+Tes't</Test>")]
 )
-@patch('wazuh.core.utils.tempfile.mkstemp',
+@patch('fortishield.core.utils.tempfile.mkstemp',
         return_value=('handle', os.path.join(OSSEC_TMP_PATH, 'file.tmp')))
-@patch('wazuh.core.utils.chmod')
-@patch('wazuh.core.common.wazuh_gid')
-@patch('wazuh.core.common.wazuh_uid')
+@patch('fortishield.core.utils.chmod')
+@patch('fortishield.core.common.fortishield_gid')
+@patch('fortishield.core.common.fortishield_uid')
 def test_upload_file(mock_uid, mock_gid, 
                      mock_chmod, mock_mks,
                      chk_xml, content):
@@ -2113,13 +2113,13 @@ def test_upload_file(mock_uid, mock_gid,
     Parameters
     ----------
     mock_uid: Mock
-        mock of the wazuh.core.common.wazuh_uid function.
+        mock of the fortishield.core.common.fortishield_uid function.
     mock_gid: Mock
-        mock of the wazuh.core.common.wazuh_gid function.
+        mock of the fortishield.core.common.fortishield_gid function.
     mock_chmod: Mock
-        mock of the wazuh.core.utils.chmod function.
+        mock of the fortishield.core.utils.chmod function.
     mock_mks
-        Mock of the wazuh.core.utils.tempfile.mkstemp function.
+        Mock of the fortishield.core.utils.tempfile.mkstemp function.
     chk_xml: bool
         check_xml_formula_value parameter passed to uploda_file.
     content: str
@@ -2129,8 +2129,8 @@ def test_upload_file(mock_uid, mock_gid,
     mko = mock_open()
     handle = mko()
 
-    with patch('wazuh.core.utils.open', mko):
-        with patch('wazuh.core.utils.safe_move') as mock_safe_move:
+    with patch('fortishield.core.utils.open', mko):
+        with patch('fortishield.core.utils.safe_move') as mock_safe_move:
             result = utils.upload_file(content, file_path=filename,
                                         check_xml_formula_values=chk_xml)
             assert isinstance(result, FortishieldResult)
@@ -2151,24 +2151,24 @@ def test_upload_file(mock_uid, mock_gid,
         # safe_move raises a PermissionError()
         (PermissionError(), False, (utils.FortishieldError, 1006))]
 )
-@patch('wazuh.core.utils.tempfile.mkstemp',
+@patch('fortishield.core.utils.tempfile.mkstemp',
         return_value=('handle', os.path.join(OSSEC_TMP_PATH, 'file.tmp')))
-@patch('wazuh.core.utils.chmod')
-@patch('wazuh.core.common.wazuh_gid')
-@patch('wazuh.core.common.wazuh_uid')
+@patch('fortishield.core.utils.chmod')
+@patch('fortishield.core.common.fortishield_gid')
+@patch('fortishield.core.common.fortishield_uid')
 def test_upload_file_ko(mock_uid, mock_gid, mock_chmod, mock_mks,
                      sm_side_effect, w_side_effect, upload_error):
     """
     Parameters
     ----------
     mock_uid : Mock
-        mock of the wazuh.core.common.wazuh_uid function.
+        mock of the fortishield.core.common.fortishield_uid function.
     mock_gid : Mock
-        mock of the wazuh.core.common.wazuh_gid function.
+        mock of the fortishield.core.common.fortishield_gid function.
     mock_chmod: Mock
-        mock of the wazuh.core.utils.chmod function.
+        mock of the fortishield.core.utils.chmod function.
     mock_mks : Mock
-        Mock of the wazuh.core.utils.tempfile.mkstemp function.
+        Mock of the fortishield.core.utils.tempfile.mkstemp function.
     sm_side_effect : Exception
         Exception to raise in the safe_move mock as side_effect.
     w_side_effect : bool
@@ -2185,7 +2185,7 @@ def test_upload_file_ko(mock_uid, mock_gid, mock_chmod, mock_mks,
     if w_side_effect:
         handle.write.side_effect = IOError()
 
-    with patch('wazuh.core.utils.open', mko):
-        with patch('wazuh.core.utils.safe_move', side_effect=sm_side_effect) as mock_safe_move:
+    with patch('fortishield.core.utils.open', mko):
+        with patch('fortishield.core.utils.safe_move', side_effect=sm_side_effect) as mock_safe_move:
             with pytest.raises(upload_error[0], match=rf'\b{upload_error[1]}\b'):
                 utils.upload_file("test", file_path=filename)

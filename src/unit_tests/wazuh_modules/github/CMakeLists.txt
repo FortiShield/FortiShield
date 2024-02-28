@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Tests list and flags
 list(APPEND tests_names "test_wm_github")
@@ -28,9 +28,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB github ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM github ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB github ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM github ../../../fortishield_modules/main.o)
 
 add_library(GITHUB_O STATIC ${github})
 

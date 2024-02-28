@@ -8,7 +8,7 @@
 */
 #if defined(WIN32) || defined(__linux__) || defined(__MACH__)
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_ENABLED = "enabled";
 static const char *XML_INTERVAL = "interval";

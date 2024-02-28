@@ -13,7 +13,7 @@
 #include <cmocka.h>
 
 #include "../client-agent/agentd.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 #define DUMMY_VALID_SOCKET_FD 1
 

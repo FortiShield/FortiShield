@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,9 +21,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
-    - wazuh-monitord
-    - wazuh-modulesd
+    - fortishield-analysisd
+    - fortishield-monitord
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -45,13 +45,13 @@ tags:
 import pytest
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.modulesd.configuration import MODULESD_DEBUG
-from wazuh_testing.modules.modulesd import patterns
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.configuration import get_test_cases_data
-from wazuh_testing.utils.configuration import load_configuration_template
-from wazuh_testing.utils import callbacks
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.modulesd.configuration import MODULESD_DEBUG
+from fortishield_testing.modules.modulesd import patterns
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.utils.configuration import load_configuration_template
+from fortishield_testing.utils import callbacks
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
 # Marks
@@ -80,11 +80,11 @@ local_internal_options = {MODULESD_DEBUG: '2'}
 
 # Tests
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t1_configurations, t1_configuration_metadata), ids=t1_case_ids)
-def test_enabled(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_enabled(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start):
     '''
     description: Check 'ms-graph' behavior when enabled tag is set to yes and if run_on_start is enabled or not.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -95,7 +95,7 @@ def test_enabled(test_configuration, test_metadata, set_wazuh_configuration, con
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -121,25 +121,25 @@ def test_enabled(test_configuration, test_metadata, set_wazuh_configuration, con
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*INFO: Started module'
+        - r'.*fortishield-modulesd:ms-graph.*INFO: Started module'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*INFO: Started module"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error module enabled event not detected'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*INFO: Started module"))
+    assert (fortishield_log_monitor.callback_result != None), f'Error module enabled event not detected'
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*{msg}", {
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*{msg}", {
                               'msg': str(test_metadata['msg'])}))
-    assert (wazuh_log_monitor.callback_result != None), f'Error module started or delayed event not detected'
+    assert (fortishield_log_monitor.callback_result != None), f'Error module started or delayed event not detected'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t2_configurations, t2_configuration_metadata), ids=t2_case_ids)
-def test_disabled(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_disabled(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start):
     '''
     description: Check 'ms-graph' behavior when enabled tag is set to no.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -150,7 +150,7 @@ def test_disabled(test_configuration, test_metadata, set_wazuh_configuration, co
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -174,10 +174,10 @@ def test_disabled(test_configuration, test_metadata, set_wazuh_configuration, co
                        the module. This include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*INFO: (Module disabled). Exiting.'
+        - r'.*fortishield-modulesd:ms-graph.*INFO: (Module disabled). Exiting.'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*INFO: (Module disabled). Exiting."))
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*INFO: (Module disabled). Exiting."))
 
-    assert (wazuh_log_monitor.callback_result != None), f'Error module disabled event not detected'
+    assert (fortishield_log_monitor.callback_result != None), f'Error module disabled event not detected'

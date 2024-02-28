@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from copy import copy
@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from freezegun import freeze_time
-from wazuh.core.exception import FortishieldPermissionError, FortishieldTooManyRequests
+from fortishield.core.exception import FortishieldPermissionError, FortishieldTooManyRequests
 
 from api.middlewares import (
     MAX_REQUESTS_EVENTS_DEFAULT,

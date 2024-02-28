@@ -1,22 +1,22 @@
 """
  Copyright (C) 2015-2021, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 
 from pathlib import Path
-from wazuh_testing.constants.paths.configurations import FORTISHIELD_CONF_PATH
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.paths.configurations import FORTISHIELD_CONF_PATH
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
-from wazuh_testing.modules.remoted.configuration import REMOTED_DEBUG
-from wazuh_testing.modules.remoted.patterns import CONFIGURATION_ERROR, INVALID_VALUE_FOR_ELEMENT
+from fortishield_testing.modules.remoted.configuration import REMOTED_DEBUG
+from fortishield_testing.modules.remoted.patterns import CONFIGURATION_ERROR, INVALID_VALUE_FOR_ELEMENT
 
 
 # Set pytest marks.
@@ -36,10 +36,10 @@ local_internal_options = {REMOTED_DEBUG: '2'}
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_invalid_connection(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                            set_wazuh_configuration, restart_wazuh_expect_error):
+                            set_fortishield_configuration, restart_fortishield_expect_error):
 
     '''
-    description: Check if `wazuh-remoted` fails using invalid 'connection' values and shows the expected error message
+    description: Check if `fortishield-remoted` fails using invalid 'connection' values and shows the expected error message
                  to inform about it. For this purpose, the test will set a configuration from the module test cases and
                  check if is correct using a FileMonitor catching the errors.
 
@@ -60,7 +60,7 @@ def test_invalid_connection(test_configuration, test_metadata, configure_local_i
             type: fixture
             brief: Starts/Restarts the daemons indicated in `daemons_handler_configuration` before each test,
                    once the test finishes, stops the daemons.
-        - restart_wazuh_expect_error
+        - restart_fortishield_expect_error
             type: fixture
             brief: Restart service when expected error is None, once the test finishes stops the daemons.
     '''

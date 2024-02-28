@@ -7,7 +7,7 @@ get_policies:
     result:
       affected_items:
         - id: 100
-          name: wazuhPolicy
+          name: fortishieldPolicy
           policy:
             actions:
               - "*:*"
@@ -146,7 +146,7 @@ add_policy:
         "4009":
           - ossecPolicy
   - params:
-      name: wazuhPolicy
+      name: fortishieldPolicy
       policy:
         actions:
           - agent:delete
@@ -157,7 +157,7 @@ add_policy:
       affected_items: []
       failed_items:
         "4009":
-          - wazuhPolicy
+          - fortishieldPolicy
   - params:
       name: ossecPolicy
       policy:
@@ -258,7 +258,7 @@ update_policy:
   - params:
       policy_id:
         - 1
-      name: wazuhPolicy
+      name: fortishieldPolicy
       policy:
         actions:
           - agent:delete

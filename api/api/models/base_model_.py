@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import pprint
@@ -12,7 +12,7 @@ from connexion import ProblemException
 
 from api import util
 from api.util import raise_if_exc, get_invalid_keys
-from wazuh.core.exception import FortishieldError, FortishieldNotAcceptable
+from fortishield.core.exception import FortishieldError, FortishieldNotAcceptable
 
 T = typing.TypeVar('T')
 

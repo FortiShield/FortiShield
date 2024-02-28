@@ -183,8 +183,8 @@ INSERT INTO sys_osinfo VALUES (2011369001, '2019/03/21 10:25:00', 'agent', 'x86_
 INSERT INTO sys_hwinfo VALUES (2089525312, '2019/03/21 11:25:00', '0', 'Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz', 2,
                                1992.001, 492832, 64032, 88);
 
-INSERT INTO sys_programs VALUES (95033803, '2019/03/21 13:25:00', 'deb', 'wazuh-manager', 'extra', 'admin', 320462,
-                                 'Fortishield, Inc <info@wazuh.com>', null, '3.9.0-1', 'amd64', null, null,
+INSERT INTO sys_programs VALUES (95033803, '2019/03/21 13:25:00', 'deb', 'fortishield-manager', 'extra', 'admin', 320462,
+                                 'Fortishield, Inc <info@fortishield.com>', null, '3.9.0-1', 'amd64', null, null,
                                  'Fortishield helps you to gain security visibility into your infrastructure by monitoring hosts at an operating system and application level. It provides the following capabilities: log analysis, file integrity monitoring, intrusions detection and policy and compliance monitoring',
                                  null, 0);
 INSERT INTO sys_programs VALUES (95033803, '2019/03/21 13:25:00', 'deb', 'curl', 'optional', 'web', 386,
@@ -201,7 +201,7 @@ INSERT INTO sys_programs VALUES (1554688024, '2019/03/21 14:18:35', 'deb', 'libn
                                  null, 0);
 
 INSERT INTO sys_processes VALUES (1794805470, '2019/03/21 13:25:06', 8012, 'python3', 'S', 1, 850, 111,
-                                  '/var/ossec/framework/python/bin/python3', '/var/ossec/framework/scripts/wazuh_clusterd.py',
+                                  '/var/ossec/framework/python/bin/python3', '/var/ossec/framework/scripts/fortishield_clusterd.py',
                                   'ossec', 'ossec', 'ossec', 'ossec', 'ossec', 'ossec', 'ossec', 20, 0, 30264, 121056,
                                   5621, 1211, 15073, 8011, 8011, 1, 8012, 0, 0);
 INSERT INTO sys_processes VALUES (1794805470, '2019/03/21 13:25:06', 1, 'systemd', 'S', 0, 146, 744, '/sbin/init', null,

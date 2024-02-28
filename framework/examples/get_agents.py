@@ -11,11 +11,11 @@
 ###
 
 # Instructions:
-#  - Use the embedded interpreter to run the script: {wazuh_path}/framework/python/bin/python3 get_agents.py
+#  - Use the embedded interpreter to run the script: {fortishield_path}/framework/python/bin/python3 get_agents.py
 
 import json
 
-import wazuh.agent as agent
+import fortishield.agent as agent
 
 if __name__ == "__main__":
 

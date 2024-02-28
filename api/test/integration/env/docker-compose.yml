@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  wazuh-master:
+  fortishield-master:
     profiles:
       - standalone
       - cluster
@@ -9,8 +9,8 @@ services:
     build:
       context: .
       dockerfile: base/manager/manager.Dockerfile
-    image: integration_test_wazuh-manager
-    hostname: wazuh-master
+    image: integration_test_fortishield-manager
+    hostname: fortishield-master
     ports:
       - "55000:55000"
     volumes:
@@ -18,208 +18,208 @@ services:
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-master
+      - fortishield-master
       - master-node
       - master
       - ${ENV_MODE}
 
-  wazuh-worker1:
+  fortishield-worker1:
     profiles:
       - cluster
       - managers
     build:
       context: .
       dockerfile: base/manager/manager.Dockerfile
-    image: integration_test_wazuh-manager
-    hostname: wazuh-worker1
+    image: integration_test_fortishield-manager
+    hostname: fortishield-worker1
     volumes:
       - ./configurations/tmp/manager:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-master
+      - fortishield-master
       - worker1
       - worker
 
-  wazuh-worker2:
+  fortishield-worker2:
     profiles:
       - cluster
       - managers
     build:
       context: .
       dockerfile: base/manager/manager.Dockerfile
-    image: integration_test_wazuh-manager
-    hostname: wazuh-worker2
+    image: integration_test_fortishield-manager
+    hostname: fortishield-worker2
     volumes:
       - ./configurations/tmp/manager:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
-      - wazuh-master
+      - fortishield-master
       - worker2
       - worker
 
-  wazuh-agent1:
+  fortishield-agent1:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/new.Dockerfile
-    image: integration_test_wazuh-agent
-    hostname: wazuh-agent1
+    image: integration_test_fortishield-agent
+    hostname: fortishield-agent1
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent1
+      - fortishield-agent1
     depends_on:
       - nginx-lb
 
-  wazuh-agent2:
+  fortishield-agent2:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/new.Dockerfile
-    image: integration_test_wazuh-agent
-    hostname: wazuh-agent2
+    image: integration_test_fortishield-agent
+    hostname: fortishield-agent2
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent2
+      - fortishield-agent2
     depends_on:
-      - wazuh-agent1
+      - fortishield-agent1
       - nginx-lb
 
-  wazuh-agent3:
+  fortishield-agent3:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/new.Dockerfile
-    image: integration_test_wazuh-agent
-    hostname: wazuh-agent3
+    image: integration_test_fortishield-agent
+    hostname: fortishield-agent3
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent3
+      - fortishield-agent3
     depends_on:
-      - wazuh-agent2
+      - fortishield-agent2
       - nginx-lb
 
-  wazuh-agent4:
+  fortishield-agent4:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/new.Dockerfile
-    image: integration_test_wazuh-agent
-    hostname: wazuh-agent4
+    image: integration_test_fortishield-agent
+    hostname: fortishield-agent4
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent4
+      - fortishield-agent4
     depends_on:
-      - wazuh-agent3
+      - fortishield-agent3
       - nginx-lb
 
-  wazuh-agent5:
+  fortishield-agent5:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/old.Dockerfile
-    image: integration_test_wazuh-agent_old
-    hostname: wazuh-agent5
+    image: integration_test_fortishield-agent_old
+    hostname: fortishield-agent5
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent5
+      - fortishield-agent5
       - agent_old
     depends_on:
-      - wazuh-agent4
+      - fortishield-agent4
       - nginx-lb
 
-  wazuh-agent6:
+  fortishield-agent6:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/old.Dockerfile
-    image: integration_test_wazuh-agent_old
-    hostname: wazuh-agent6
+    image: integration_test_fortishield-agent_old
+    hostname: fortishield-agent6
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent6
+      - fortishield-agent6
       - agent_old
     depends_on:
-      - wazuh-agent5
+      - fortishield-agent5
       - nginx-lb
 
-  wazuh-agent7:
+  fortishield-agent7:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/old.Dockerfile
-    image: integration_test_wazuh-agent_old
-    hostname: wazuh-agent7
+    image: integration_test_fortishield-agent_old
+    hostname: fortishield-agent7
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent7
+      - fortishield-agent7
       - agent_old
     depends_on:
-      - wazuh-agent6
+      - fortishield-agent6
       - nginx-lb
 
-  wazuh-agent8:
+  fortishield-agent8:
     profiles:
       - standalone
       - cluster
     build:
       context: .
       dockerfile: base/agent/old.Dockerfile
-    image: integration_test_wazuh-agent_old
-    hostname: wazuh-agent8
+    image: integration_test_fortishield-agent_old
+    hostname: fortishield-agent8
     volumes:
       - ./configurations/tmp/agent:/tmp_volume
       - ./tools/:/tools
     entrypoint:
       - /scripts/entrypoint.sh
       - nginx-lb
-      - wazuh-agent8
+      - fortishield-agent8
       - agent_old
     depends_on:
-      - wazuh-agent7
+      - fortishield-agent7
       - nginx-lb
 
   nginx-lb:

@@ -1,5 +1,5 @@
 ' Copyright (C) 2015, Fortishield Inc.
-' Created by Fortishield, Inc. <info@wazuh.com>.
+' Created by Fortishield, Inc. <info@fortishield.com>.
 ' This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 @startuml analysisd-localfile
@@ -22,13 +22,13 @@
     alt Is localfile event
         analysisd -> analysisd: Enqueue event in event queue
         alt Queue full
-            alt Is wazuh-agent module
+            alt Is fortishield-agent module
                 analysisd -> state: dropped->agent++
-            else Is wazuh-agentlessd module
+            else Is fortishield-agentlessd module
                 analysisd -> state: dropped->agentless++
-            else Is wazuh-monitord module
+            else Is fortishield-monitord module
                 analysisd -> state: dropped->monitor++
-            else Is wazuh-remoted module
+            else Is fortishield-remoted module
                 analysisd -> state: dropped->remote++
             else Is virustotal module
                 analysisd -> state: dropped->integrations->virustotal++
@@ -75,13 +75,13 @@
             end
         else
             alt Is decoded
-                alt Is wazuh-agent module
+                alt Is fortishield-agent module
                     analysisd -> state: decoded->agent++
-                else Is wazuh-agentlessd module
+                else Is fortishield-agentlessd module
                     analysisd -> state: decoded->agentless++
-                else Is wazuh-monitord module
+                else Is fortishield-monitord module
                     analysisd -> state: decoded->monitor++
-                else Is wazuh-remoted module
+                else Is fortishield-remoted module
                     analysisd -> state: decoded->remote++
                 else Is virustotal module
                     analysisd -> state: decoded->integrations->virustotal++

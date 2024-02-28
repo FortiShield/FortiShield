@@ -9,7 +9,7 @@
  */
 #include "shared.h"
 #include "execd.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include "client-agent/agentd.h"
 #include "logcollector/logcollector.h"
 #include "rootcheck/rootcheck.h"

@@ -31,11 +31,11 @@ class MultiOrderedDict(OrderedDict):
             super(MultiOrderedDict, self).__setitem__(key, value)
 
 
-def getFortishieldInfo(wazuh_home):
-    wazuh_control = os.path.join(wazuh_home, "bin", "wazuh-control")
-    wazuh_env_vars = {}
+def getFortishieldInfo(fortishield_home):
+    fortishield_control = os.path.join(fortishield_home, "bin", "fortishield-control")
+    fortishield_env_vars = {}
     try:
-        proc = subprocess.Popen([wazuh_control, "info"], stdout=subprocess.PIPE)
+        proc = subprocess.Popen([fortishield_control, "info"], stdout=subprocess.PIPE)
         (stdout, stderr) = proc.communicate()
     except Exception as e:
         print("Seems like there is no Fortishield installation.")
@@ -45,9 +45,9 @@ def getFortishieldInfo(wazuh_home):
     env_variables.remove("")
     for env_variable in env_variables:
         key, value = env_variable.split("=")
-        wazuh_env_vars[key] = value.replace("\"", "")
+        fortishield_env_vars[key] = value.replace("\"", "")
 
-    return wazuh_env_vars
+    return fortishield_env_vars
 
 
 def provisionDR():
@@ -58,18 +58,18 @@ def provisionDR():
     for file in os.listdir(rules_dir):
         file_fullpath = os.path.join(rules_dir, file)
         if os.path.isfile(file_fullpath) and re.match(r'^test_(.*_)?rules.xml$', file):
-            shutil.copy2(file_fullpath, args.wazuh_home + "/etc/rules")
+            shutil.copy2(file_fullpath, args.fortishield_home + "/etc/rules")
 
     for file in os.listdir(decoders_dir):
         file_fullpath = os.path.join(decoders_dir, file)
         if os.path.isfile(file_fullpath) and re.match(r'^test_(.*_)?decoders.xml$', file):
-            shutil.copy2(file_fullpath, args.wazuh_home + "/etc/decoders")
+            shutil.copy2(file_fullpath, args.fortishield_home + "/etc/decoders")
 
 
 
 def cleanDR():
-    rules_dir = args.wazuh_home + "/etc/rules"
-    decoders_dir = args.wazuh_home + "/etc/decoders"
+    rules_dir = args.fortishield_home + "/etc/rules"
+    decoders_dir = args.fortishield_home + "/etc/decoders"
 
     for file in os.listdir(rules_dir):
         file_fullpath = os.path.join(rules_dir, file)
@@ -155,7 +155,7 @@ class OssecTester(object):
         self.tested_decoders = set()
 
     def buildCmd(self, rule, alert, decoder):
-        cmd = ['%s/wazuh-logtest' % (self._ossec_path), ]
+        cmd = ['%s/fortishield-logtest' % (self._ossec_path), ]
         cmd += ['-U', "%s:%s:%s" % (rule, alert, decoder)]
         return cmd
 
@@ -264,7 +264,7 @@ def cleanup(*args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This script tests Fortishield rules.')
-    parser.add_argument('--path', '-p', default='/var/ossec', dest='wazuh_home',
+    parser.add_argument('--path', '-p', default='/var/ossec', dest='fortishield_home',
                         help='Use -p or --path to specify Fortishield installation path')
     parser.add_argument('--geoip', '-g', action='store_true', dest='geoip',
                         help='Use -g or --geoip to enable geoip tests (default: False)')
@@ -279,8 +279,8 @@ if __name__ == "__main__":
         if not selective_test.endswith('.ini'):
             selective_test += '.ini'
 
-    wazuh_info = getFortishieldInfo(args.wazuh_home)
-    if wazuh_info is None:
+    fortishield_info = getFortishieldInfo(args.fortishield_home)
+    if fortishield_info is None:
         sys.exit(1)
 
     for sig in (signal.SIGABRT, signal.SIGINT, signal.SIGTERM):
@@ -290,7 +290,7 @@ if __name__ == "__main__":
         enable_win_eventlog_tests()
 
     provisionDR()
-    OT = OssecTester(args.wazuh_home)
+    OT = OssecTester(args.fortishield_home)
     error = OT.run(selective_test, args.geoip)
 
     cleanDR()

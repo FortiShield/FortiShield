@@ -10,7 +10,7 @@
  */
 
 #ifndef WIN32
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_ATTEMPTS = "attempts";
 static const char *XML_RUN_ON_START = "run_on_start";

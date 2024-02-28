@@ -1,13 +1,13 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 from json import dumps, loads
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldInternalError
-from wazuh.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_date_from_timestamp
-from wazuh.core.wazuh_socket import FortishieldSocket
+from fortishield.core import common
+from fortishield.core.exception import FortishieldInternalError
+from fortishield.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_date_from_timestamp
+from fortishield.core.fortishield_socket import FortishieldSocket
 
 tasks_fields = {'task_id': 'task_id', 'agent_id': 'agent_id', 'node': 'node', 'module': 'module',
                 'command': 'command', 'create_time': 'create_time', 'last_update_time': 'last_update_time',

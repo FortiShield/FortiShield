@@ -6,10 +6,10 @@
   Fortishield API rules ID: 400 - 428
 -->
 
-<group name="wazuh_api,">
+<group name="fortishield_api,">
 
   <rule id="400" level="0">
-    <decoded_as>wazuh-api</decoded_as>
+    <decoded_as>fortishield-api</decoded_as>
     <description>Rules for Fortishield API events.</description>
   </rule>
 
@@ -131,7 +131,7 @@
   </rule>
 
   <rule id="420" level="0">
-    <decoded_as>wazuh-api-info</decoded_as>
+    <decoded_as>fortishield-api-info</decoded_as>
     <description>Rules for Fortishield API events.</description>
   </rule>
 

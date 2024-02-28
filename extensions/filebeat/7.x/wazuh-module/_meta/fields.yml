@@ -1,9 +1,9 @@
-- key: wazuh
-  title: "wazuh"
+- key: fortishield
+  title: "fortishield"
   description: >
-    wazuh Module
+    fortishield Module
   fields:
-    - name: wazuh
+    - name: fortishield
       type: group
       description: >
       fields:

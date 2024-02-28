@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 
@@ -16,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text
 from yaml import safe_load
 
-from wazuh.core.exception import FortishieldError
+from fortishield.core.exception import FortishieldError
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'security/')
 
@@ -52,29 +52,29 @@ def create_memory_db(sql_file, session):
 
 
 def reload_default_rbac_resources():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=default_orm_engine):
             with patch('shutil.chown'), patch('os.chmod'):
-                import wazuh.rbac.orm as orm
+                import fortishield.rbac.orm as orm
                 reload(orm)
                 orm.db_manager.connect(orm.DB_FILE)
                 orm.db_manager.create_database(orm.DB_FILE)
                 orm.db_manager.insert_default_resources(orm.DB_FILE)
-                import wazuh.rbac.decorators as decorators
-                from wazuh.tests.util import RBAC_bypasser
+                import fortishield.rbac.decorators as decorators
+                from fortishield.tests.util import RBAC_bypasser
 
                 decorators.expose_resources = RBAC_bypasser
-                from wazuh import security
+                from fortishield import security
     return security, orm
 
 
 @pytest.fixture(scope='function')
 def db_setup():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    import wazuh.rbac.orm as orm
+                    import fortishield.rbac.orm as orm
                     # Clear mappers
                     sqlalchemy_orm.clear_mappers()
                     # Invalidate in-memory database
@@ -87,13 +87,13 @@ def db_setup():
                     orm.db_manager.connect(orm.DB_FILE)
                     orm.db_manager.create_database(orm.DB_FILE)
                     orm.db_manager.insert_default_resources(orm.DB_FILE)
-                    import wazuh.rbac.decorators as decorators
-                    from wazuh.tests.util import RBAC_bypasser
+                    import fortishield.rbac.decorators as decorators
+                    from fortishield.tests.util import RBAC_bypasser
 
                     decorators.expose_resources = RBAC_bypasser
-                    from wazuh import security
-                    from wazuh.core.results import FortishieldResult
-                    from wazuh.core import security as core_security
+                    from fortishield import security
+                    from fortishield.core.results import FortishieldResult
+                    from fortishield.core import security as core_security
     try:
         create_memory_db('schema_security_test.sql', orm.db_manager.sessions[orm.DB_FILE])
     except OperationalError:

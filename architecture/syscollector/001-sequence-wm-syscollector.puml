@@ -1,12 +1,12 @@
 ' Copyright (C) 2015, Fortishield Inc.
-' Created by Fortishield, Inc. <info@wazuh.com>.
+' Created by Fortishield, Inc. <info@fortishield.com>.
 ' This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 @startuml wm-syscollector
 
 actor user
-actor "wazuh-manager" as manager
-participant "wazuh-modulesd\nmain" as main
+actor "fortishield-manager" as manager
+participant "fortishield-modulesd\nmain" as main
 participant "wm_comm\n<<thread>>" as comm
 participant "wm_syscollector\n<<thread>>" as wm_syscollector
 

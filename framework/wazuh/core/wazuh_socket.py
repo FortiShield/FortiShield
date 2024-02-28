@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -8,8 +8,8 @@ import socket
 from json import dumps, loads
 from struct import pack, unpack
 
-from wazuh import common
-from wazuh.core.exception import FortishieldException, FortishieldInternalError
+from fortishield import common
+from fortishield.core.exception import FortishieldException, FortishieldInternalError
 
 SOCKET_COMMUNICATION_PROTOCOL_VERSION = 1
 
@@ -244,12 +244,12 @@ class FortishieldAsyncSocketJSON(FortishieldAsyncSocket):
 daemons = {
     "authd": {"protocol": "TCP", "path": common.AUTHD_SOCKET, "header_format": "<I", "size": 4},
     "task-manager": {"protocol": "TCP", "path": common.TASKS_SOCKET, "header_format": "<I", "size": 4},
-    "wazuh-db": {"protocol": "TCP", "path": common.WDB_SOCKET, "header_format": "<I", "size": 4},
+    "fortishield-db": {"protocol": "TCP", "path": common.WDB_SOCKET, "header_format": "<I", "size": 4},
     "remoted": {"protocol": "TCP", "path": common.REMOTED_SOCKET, "header_format": "<I", "size": 4}
 }
 
 
-async def wazuh_sendasync(daemon_name: str, message: str = None) -> dict:
+async def fortishield_sendasync(daemon_name: str, message: str = None) -> dict:
     """Send a message to the specified daemon's socket and wait for its response.
 
     Parameters
@@ -273,7 +273,7 @@ async def wazuh_sendasync(daemon_name: str, message: str = None) -> dict:
     return data
 
 
-async def wazuh_sendsync(daemon_name: str = None, message: str = None) -> dict:
+async def fortishield_sendsync(daemon_name: str = None, message: str = None) -> dict:
     """Send a message to the specified daemon's socket and wait for its response.
 
     Parameters
@@ -309,7 +309,7 @@ async def wazuh_sendsync(daemon_name: str = None, message: str = None) -> dict:
     return data
 
 
-def create_wazuh_socket_message(origin=None, command=None, parameters=None):
+def create_fortishield_socket_message(origin=None, command=None, parameters=None):
     communication_protocol_message = {'version': SOCKET_COMMUNICATION_PROTOCOL_VERSION}
 
     if origin:

@@ -2,7 +2,7 @@
 ## Index
 1. [Purpose](#purpose)
 2. [Architecture Diagram](#architecture-diagram)
-3. [Compile Fortishield](#compile-wazuh)
+3. [Compile Fortishield](#compile-fortishield)
 4. [How to use the tool](#how-to-use-the-tool)
 
 ## Purpose
@@ -13,7 +13,7 @@ The rsync Testing Tool was created to test and validate the rsync module. This t
 ![alt text](../images/rsyncTestToolArchDiagram.png)
 
 ## Compile Fortishield
-In order to run unit tests on a specific wazuh target, the project needs to be built with the `DEBUG` and `TEST` options as shown below:
+In order to run unit tests on a specific fortishield target, the project needs to be built with the `DEBUG` and `TEST` options as shown below:
 ```
 make deps RESOURCES_URL=file:///path/to/deps/
 make TARGET=server|agent DEBUG=1 TEST=1

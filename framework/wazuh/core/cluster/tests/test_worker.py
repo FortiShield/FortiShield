@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -15,23 +15,23 @@ import pytest
 from uvloop import EventLoopPolicy, Loop
 from freezegun import freeze_time
 
-import wazuh.core.exception as exception
+import fortishield.core.exception as exception
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.core.cluster import client, worker, common as cluster_common
-        from wazuh.core import common as core_common
-        from wazuh.core.wdb import AsyncFortishieldDBConnection
+        from fortishield.core.cluster import client, worker, common as cluster_common
+        from fortishield.core import common as core_common
+        from fortishield.core.wdb import AsyncFortishieldDBConnection
 
-logger = logging.getLogger("wazuh")
+logger = logging.getLogger("fortishield")
 cluster_items = {'node': 'master-node',
                  'intervals': {'worker': {'connection_retry': 1, "sync_integrity": 2, "timeout_agent_groups": 0,
                                           "sync_agent_info": 5, "sync_agent_groups": 5,
@@ -39,7 +39,7 @@ cluster_items = {'node': 'master-node',
                                "communication": {"timeout_receiving_file": 1, "max_zip_size": 1000, "min_zip_size": 0,
                                                  "zip_limit_tolerance": 0.2, "timeout_cluster_request": 20}},
                  "files": {"cluster_item_key": {"remove_subdirs_if_empty": True, "permissions": "value"}}}
-configuration = {'node_name': 'master', 'nodes': ['master'], 'port': 1111, "name": "wazuh", "node_type": "master"}
+configuration = {'node_name': 'master', 'nodes': ['master'], 'port': 1111, "name": "fortishield", "node_type": "master"}
 
 
 def get_worker_handler(loop):
@@ -57,8 +57,8 @@ def get_worker_handler(loop):
                                 manager=abstract_client, cluster_items=cluster_items)
 
 
-def get_sync_wazuh_db(worker_handler):
-    return cluster_common.SyncFortishielddb(worker_handler, logging.getLogger("wazuh"), cmd=b"cmd",
+def get_sync_fortishield_db(worker_handler):
+    return cluster_common.SyncFortishielddb(worker_handler, logging.getLogger("fortishield"), cmd=b"cmd",
                                       get_data_command="get_command", set_data_command="set_command",
                                       data_retriever=None)
 
@@ -73,11 +73,11 @@ async def test_rgit_init(event_loop):
     def return_coro():
         return coro
 
-    with patch('wazuh.core.cluster.worker.ReceiveAgentGroupsTask.set_up_coro',
+    with patch('fortishield.core.cluster.worker.ReceiveAgentGroupsTask.set_up_coro',
                side_effect=return_coro) as set_up_coro_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(wazuh_common=get_worker_handler(event_loop),
-                                                                  logger=logging.getLogger("wazuh"), task_id="0101")
-        assert isinstance(receive_agent_groups_task.wazuh_common, cluster_common.FortishieldCommon)
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+                                                                  logger=logging.getLogger("fortishield"), task_id="0101")
+        assert isinstance(receive_agent_groups_task.fortishield_common, cluster_common.FortishieldCommon)
         assert receive_agent_groups_task.task_id == "0101"
         set_up_coro_mock.assert_called_once()
 
@@ -86,10 +86,10 @@ async def test_rgit_init(event_loop):
 async def test_rgit_set_up_coro(event_loop):
     """Check if the function is called when the master sends its periodic agent-groups information."""
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
+    with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(wazuh_common=get_worker_handler(event_loop),
-                                                                  logger=logging.getLogger("wazuh"), task_id="0101")
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+                                                                  logger=logging.getLogger("fortishield"), task_id="0101")
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
 
@@ -100,10 +100,10 @@ async def test_rgit_set_up_coro(event_loop):
 async def test_rgcit_set_up_coro(event_loop):
     """Check if the function is called when the master sends its entire agent-groups information."""
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
+    with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(wazuh_common=get_worker_handler(event_loop),
-                                                                        logger=logging.getLogger("wazuh"),
+        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+                                                                        logger=logging.getLogger("fortishield"),
                                                                         task_id="0101")
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
@@ -115,40 +115,40 @@ async def test_rgcit_set_up_coro(event_loop):
 async def test_rgit_done_callback(event_loop):
     """Check if the agent-groups periodic synchronization process was correct."""
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
+    with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(wazuh_common=get_worker_handler(event_loop),
-                                                                  logger=logging.getLogger("wazuh"), task_id="0101")
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+                                                                  logger=logging.getLogger("fortishield"), task_id="0101")
 
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
         recv_agent_mock.assert_awaited_once()
-        assert receive_agent_groups_task.wazuh_common.sync_agent_groups_free is True
+        assert receive_agent_groups_task.fortishield_common.sync_agent_groups_free is True
 
 
 @pytest.mark.asyncio
 async def test_rgcit_done_callback(event_loop):
     """Check if the agent-groups entire synchronization process was correct."""
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
+    with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(wazuh_common=get_worker_handler(event_loop),
-                                                                        logger=logging.getLogger("wazuh"),
+        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+                                                                        logger=logging.getLogger("fortishield"),
                                                                         task_id="0101")
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
         recv_agent_mock.assert_awaited_once()
-        assert receive_agent_groups_task.wazuh_common.sync_agent_groups_free is True
+        assert receive_agent_groups_task.fortishield_common.sync_agent_groups_free is True
 
 
 @pytest.mark.asyncio
 async def test_rit_set_up_coro(event_loop):
     """Check if a callable is being returned by this method."""
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.process_files_from_master',
+    with patch('fortishield.core.cluster.worker.WorkerHandler.process_files_from_master',
                return_value='') as process_files_mock:
-        receive_task = worker.ReceiveIntegrityTask(wazuh_common=get_worker_handler(event_loop), logger=None)
-        receive_task.wazuh_common = cluster_common.FortishieldCommon()
+        receive_task = worker.ReceiveIntegrityTask(fortishield_common=get_worker_handler(event_loop), logger=None)
+        receive_task.fortishield_common = cluster_common.FortishieldCommon()
         while not receive_task.task.done():
             await asyncio.sleep(0.01)
 
@@ -165,31 +165,31 @@ async def test_rit_done_callback(event_loop):
     def return_coro():
         return coro
 
-    with patch('wazuh.core.cluster.worker.ReceiveIntegrityTask.set_up_coro', side_effect=return_coro):
-        receive_task = worker.ReceiveIntegrityTask(wazuh_common=get_worker_handler(event_loop), logger=None)
-        receive_task.wazuh_common = cluster_common.FortishieldCommon()
+    with patch('fortishield.core.cluster.worker.ReceiveIntegrityTask.set_up_coro', side_effect=return_coro):
+        receive_task = worker.ReceiveIntegrityTask(fortishield_common=get_worker_handler(event_loop), logger=None)
+        receive_task.fortishield_common = cluster_common.FortishieldCommon()
 
         while not receive_task.task.done():
             await asyncio.sleep(0.01)
 
-        assert receive_task.wazuh_common.check_integrity_free is True
+        assert receive_task.fortishield_common.check_integrity_free is True
 
 
 # Test SyncFortishielddb class
 @pytest.mark.asyncio
-async def test_sync_wazuh_db_init(event_loop):
+async def test_sync_fortishield_db_init(event_loop):
     """Test the '__init__' method from the SyncFortishielddb class."""
-    sync_wazuh_db = get_sync_wazuh_db(get_worker_handler(event_loop))
-    assert sync_wazuh_db.get_data_command == "get_command"
-    assert sync_wazuh_db.set_data_command == "set_command"
-    assert sync_wazuh_db.data_retriever is None
+    sync_fortishield_db = get_sync_fortishield_db(get_worker_handler(event_loop))
+    assert sync_fortishield_db.get_data_command == "get_command"
+    assert sync_fortishield_db.set_data_command == "set_command"
+    assert sync_fortishield_db.data_retriever is None
 
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
 @patch("json.dumps", return_value="")
-@patch('wazuh.core.cluster.worker.cluster.run_in_pool', return_value=True)
-async def test_sync_wazuh_db_sync_ok(run_in_pool_mock, json_dumps_mock, event_loop):
+@patch('fortishield.core.cluster.worker.cluster.run_in_pool', return_value=True)
+async def test_sync_fortishield_db_sync_ok(run_in_pool_mock, json_dumps_mock, event_loop):
     """Check if the information is being properly sent to the master node."""
     chunks = True
 
@@ -200,14 +200,14 @@ async def test_sync_wazuh_db_sync_ok(run_in_pool_mock, json_dumps_mock, event_lo
         else:
             return []
 
-    sync_wazuh_db = get_sync_wazuh_db(get_worker_handler(event_loop))
-    sync_wazuh_db.data_retriever = callable_mock
+    sync_fortishield_db = get_sync_fortishield_db(get_worker_handler(event_loop))
+    sync_fortishield_db.data_retriever = callable_mock
 
     # Test try and if
-    with patch.object(logging.getLogger("wazuh"), "debug") as logger_debug_mock:
-        with patch("wazuh.core.cluster.worker.WorkerHandler.send_string", return_value=b"OK") as send_string_mock:
-            with patch("wazuh.core.cluster.worker.WorkerHandler.send_request") as send_request_mock:
-                assert await sync_wazuh_db.sync(start_time=10, chunks=["get_command"]) is True
+    with patch.object(logging.getLogger("fortishield"), "debug") as logger_debug_mock:
+        with patch("fortishield.core.cluster.worker.WorkerHandler.send_string", return_value=b"OK") as send_string_mock:
+            with patch("fortishield.core.cluster.worker.WorkerHandler.send_request") as send_request_mock:
+                assert await sync_fortishield_db.sync(start_time=10, chunks=["get_command"]) is True
                 send_request_mock.assert_called_once_with(command=b"cmd", data=b"OK")
                 json_dumps_mock.assert_called_with({"set_data_command": "set_command", "payload": {},
                                                     "chunks": ["get_command"]})
@@ -217,28 +217,28 @@ async def test_sync_wazuh_db_sync_ok(run_in_pool_mock, json_dumps_mock, event_lo
 
     # Test else
     chunks = False
-    with patch.object(logging.getLogger("wazuh"), "info") as logger_info_mock:
-        assert await sync_wazuh_db.sync(start_time=10, chunks=[]) is True
+    with patch.object(logging.getLogger("fortishield"), "info") as logger_info_mock:
+        assert await sync_fortishield_db.sync(start_time=10, chunks=[]) is True
         logger_info_mock.assert_called_once_with("Finished in -10.000s. Updated 0 chunks.")
 
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
 @patch("json.dumps", return_value="")
-@patch("wazuh.core.cluster.worker.WorkerHandler.send_string", return_value=b"Error")
-async def test_sync_wazuh_db_sync_ko(send_string_mock, json_dumps_mock, event_loop):
+@patch("fortishield.core.cluster.worker.WorkerHandler.send_string", return_value=b"Error")
+async def test_sync_fortishield_db_sync_ko(send_string_mock, json_dumps_mock, event_loop):
     """Test if the proper exceptions are raised when needed."""
 
     def callable_mock(data):
         """Mock method in order to obtain a particular output."""
         return [data]
 
-    sync_wazuh_db = get_sync_wazuh_db(get_worker_handler(event_loop))
-    sync_wazuh_db.data_retriever = callable_mock
+    sync_fortishield_db = get_sync_fortishield_db(get_worker_handler(event_loop))
+    sync_fortishield_db.data_retriever = callable_mock
 
     # Test try and if
     with pytest.raises(exception.FortishieldClusterError, match=r".* 3016 .*"):
-        await sync_wazuh_db.sync(start_time=10, chunks=["get_command"])
+        await sync_fortishield_db.sync(start_time=10, chunks=["get_command"])
     json_dumps_mock.assert_called_with({"set_data_command": "set_command", "payload": {}, "chunks": ["get_command"]})
     send_string_mock.assert_called_with(b"")
 
@@ -264,9 +264,9 @@ async def test_worker_handler_init(event_loop):
 
 @pytest.mark.asyncio
 @patch("os.path.exists", return_value=False)
-@patch("wazuh.core.utils.mkdir_with_mode")
+@patch("fortishield.core.utils.mkdir_with_mode")
 @patch("os.path.join", return_value="/some/path")
-@patch("wazuh.core.cluster.worker.client.AbstractClient.connection_result")
+@patch("fortishield.core.cluster.worker.client.AbstractClient.connection_result")
 async def test_worker_handler_connection_result(connection_result_mock, join_mock, mkdir_with_mode_mock, exists_mock,
                                                 event_loop):
     """Check if the function is called whenever the master sends a response to the worker's hello command."""
@@ -281,11 +281,11 @@ async def test_worker_handler_connection_result(connection_result_mock, join_moc
 
 
 @pytest.mark.asyncio
-@patch.object(logging.getLogger("wazuh"), "debug")
+@patch.object(logging.getLogger("fortishield"), "debug")
 async def test_worker_handler_process_request_ok(logger_mock, event_loop):
     """Check if all the command that a worker can receive are being defined."""
     worker_handler = get_worker_handler(event_loop)
-    worker_handler.logger = logging.getLogger("wazuh")
+    worker_handler.logger = logging.getLogger("fortishield")
 
     class ClientsMock:
         """Auxiliary class."""
@@ -310,39 +310,39 @@ async def test_worker_handler_process_request_ok(logger_mock, event_loop):
             self.dapi = LocalServerDapiMock()
 
     # Test the first condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.sync_integrity_ok_from_master",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.sync_integrity_ok_from_master",
                return_value=b"ok") as ok_mock:
         assert worker_handler.process_request(command=b"syn_m_c_ok", data=b"data") == b"ok"
         ok_mock.assert_called_once()
         logger_mock.assert_called_with("Command received: 'b'syn_m_c_ok''")
     # Test the second condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.setup_receive_files_from_master",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.setup_receive_files_from_master",
                return_value=b"ok") as setup_mock:
         assert worker_handler.process_request(command=b"syn_m_c", data=b"data") == b"ok"
         setup_mock.assert_called_once()
         logger_mock.assert_called_with("Command received: 'b'syn_m_c''")
     # Test the third condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.end_receiving_integrity",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.end_receiving_integrity",
                return_value=b"ok") as integrity_mock:
         assert worker_handler.process_request(command=b"syn_m_c_e", data=b"data") == b"ok"
         integrity_mock.assert_called_once_with(b"data".decode())
         logger_mock.assert_called_with("Command received: 'b'syn_m_c_e''")
     # Test the fourth condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.error_receiving_integrity",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.error_receiving_integrity",
                return_value=b"ok") as error_integrity_mock:
         assert worker_handler.process_request(command=b"syn_m_c_r", data=b"data") == b"ok"
         error_integrity_mock.assert_called_once_with(b"data".decode())
         logger_mock.assert_called_with("Command received: 'b'syn_m_c_r''")
     # Test the fifth condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.setup_sync_integrity",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.setup_sync_integrity",
                return_value=b"ok") as setup_sync_integrity_mock:
         assert worker_handler.process_request(command=b"syn_g_m_w", data=b"data") == b"ok"
         setup_sync_integrity_mock.assert_called_once_with(b"syn_g_m_w", b"data")
         logger_mock.assert_called_with("Command received: 'b'syn_g_m_w''")
     # Test the sixth condition
-    with patch("wazuh.core.cluster.master.Master.setup_task_logger",
+    with patch("fortishield.core.cluster.master.Master.setup_task_logger",
                worker_handler.setup_task_logger('Agent-info sync')) as setup_task_logger_mock:
-        with patch("wazuh.core.cluster.worker.c_common.end_sending_agent_information",
+        with patch("fortishield.core.cluster.worker.c_common.end_sending_agent_information",
                    return_value=b"ok") as sync_mock:
             assert worker_handler.process_request(
                 command=b"syn_m_a_e", data=b'{"updated_chunks": 4, "error_messages": []}') == b"ok"
@@ -351,14 +351,14 @@ async def test_worker_handler_process_request_ok(logger_mock, event_loop):
                                               b'{"updated_chunks": 4, "error_messages": []}'.decode())
             logger_mock.assert_called_with("Command received: 'b'syn_m_a_e''")
     # Test the seventh condition
-    with patch("wazuh.core.cluster.worker.c_common.error_receiving_agent_information",
+    with patch("fortishield.core.cluster.worker.c_common.error_receiving_agent_information",
                return_value=b"ok") as error_mock:
         assert worker_handler.process_request(command=b"syn_m_a_err", data=b"data") == b"ok"
         error_mock.assert_called_once_with(
             worker_handler.task_loggers['Agent-info sync'], b"data".decode(), info_type='agent-info')
         logger_mock.assert_called_with("Command received: 'b'syn_m_a_err''")
     # Test the eighth condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.forward_dapi_response",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.forward_dapi_response",
                side_effect=b"ok") as forward_dapi_mock:
         assert worker_handler.process_request(command=b"dapi_res",
                                               data=b"data") == (b'ok', b'Response forwarded to worker')
@@ -367,7 +367,7 @@ async def test_worker_handler_process_request_ok(logger_mock, event_loop):
         forward_dapi_mock.assert_called_with(b"data")
         logger_mock.assert_called_with("Command received: 'b'dapi_res''")
     # Test the ninth condition
-    with patch("wazuh.core.cluster.worker.WorkerHandler.forward_sendsync_response",
+    with patch("fortishield.core.cluster.worker.WorkerHandler.forward_sendsync_response",
                return_value=b"ok") as forward_sendsync_mock:
         assert worker_handler.process_request(command=b"sendsyn_res",
                                               data=b"data") == (b'ok', b'Response forwarded to worker')
@@ -399,21 +399,21 @@ async def test_worker_handler_process_request_ok(logger_mock, event_loop):
         add_request_mock.assert_called_once_with(b"master*data")
         logger_mock.assert_called_with("Command received: 'b'dapi''")
     # Test the thirteenth condition
-    with patch("wazuh.core.cluster.worker.client.AbstractClient.process_request",
+    with patch("fortishield.core.cluster.worker.client.AbstractClient.process_request",
                return_value=True) as process_request_mock:
         assert worker_handler.process_request(command=b"random", data=b"data") is True
         process_request_mock.assert_called_once_with(b"random", b"data")
 
 
 @pytest.mark.asyncio
-@patch.object(logging.getLogger("wazuh"), "info")
-@patch("wazuh.core.cluster.worker.client.AbstractClient.connection_lost")
-@patch("wazuh.core.cluster.worker.cluster.clean_up")
+@patch.object(logging.getLogger("fortishield"), "info")
+@patch("fortishield.core.cluster.worker.client.AbstractClient.connection_lost")
+@patch("fortishield.core.cluster.worker.cluster.clean_up")
 async def test_worker_handler_connection_lost(clean_up_mock, connection_lost_mock, logger_mock, event_loop):
     """Check if all the pending tasks are closed when the connection between workers and master is lost."""
 
     worker_handler = get_worker_handler(event_loop)
-    worker_handler.logger = logging.getLogger("wazuh")
+    worker_handler.logger = logging.getLogger("fortishield")
 
     class PendingTaskMock:
         """Auxiliary class."""
@@ -439,7 +439,7 @@ async def test_worker_handler_connection_lost(clean_up_mock, connection_lost_moc
 
 
 @pytest.mark.asyncio
-@patch.object(logging.getLogger("wazuh"), "debug")
+@patch.object(logging.getLogger("fortishield"), "debug")
 async def test_worker_handler_process_request_ko(logger_mock, event_loop):
     """Test the correct exception raise at method 'process_request'."""
 
@@ -481,7 +481,7 @@ async def test_worker_handler_get_manager(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.common.FortishieldCommon.setup_receive_file", return_value=b"ok")
+@patch("fortishield.core.cluster.common.FortishieldCommon.setup_receive_file", return_value=b"ok")
 async def test_master_handler_setup_sync_integrity(setup_receive_file_mock, event_loop):
     """Check if the synchronization process was correctly started."""
 
@@ -498,8 +498,8 @@ async def test_master_handler_setup_sync_integrity(setup_receive_file_mock, even
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
-@patch.object(logging.getLogger("wazuh.Integrity check"), "info")
-@patch("wazuh.core.cluster.common.FortishieldCommon.setup_receive_file", return_value="OK")
+@patch.object(logging.getLogger("fortishield.Integrity check"), "info")
+@patch("fortishield.core.cluster.common.FortishieldCommon.setup_receive_file", return_value="OK")
 async def test_worker_handler_setup_receive_files_from_master(setup_receive_file_mock, logger_mock, event_loop):
     """Check is a task was set up to wait until the integrity information has been received from the master and
     processed."""
@@ -511,7 +511,7 @@ async def test_worker_handler_setup_receive_files_from_master(setup_receive_file
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.common.FortishieldCommon.end_receiving_file", return_value=(b"OK", b"OK"))
+@patch("fortishield.core.cluster.common.FortishieldCommon.end_receiving_file", return_value=(b"OK", b"OK"))
 async def test_worker_handler_end_receiving_integrity(end_receiving_file_mock, event_loop):
     """Test if a task was notified about some information reception."""
 
@@ -521,7 +521,7 @@ async def test_worker_handler_end_receiving_integrity(end_receiving_file_mock, e
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.common.FortishieldCommon.error_receiving_file", return_value=(b"error", b"error"))
+@patch("fortishield.core.cluster.common.FortishieldCommon.error_receiving_file", return_value=(b"error", b"error"))
 async def test_worker_handler_error_receiving_integrity(error_receiving_file_mock, event_loop):
     """Check if a task was notified about some error that had place during the process."""
 
@@ -533,7 +533,7 @@ async def test_worker_handler_error_receiving_integrity(error_receiving_file_moc
 
 # @pytest.mark.asyncio
 # @freeze_time('1970-01-01')
-# @patch.object(logging.getLogger("wazuh.Integrity check"), "info")
+# @patch.object(logging.getLogger("fortishield.Integrity check"), "info")
 # async def test_worker_handler_sync_integrity_ok_from_master(logger_mock, event_loop):
 #     """Check the correct output message when a command 'sync_m_c_ok' takes place."""
 
@@ -544,7 +544,7 @@ async def test_worker_handler_error_receiving_integrity(error_receiving_file_moc
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.wdb.socket.socket")
+@patch("fortishield.core.wdb.socket.socket")
 async def test_worker_compare_agent_groups_checksums(socket_mock, event_loop):
     """Check all the possible cases in the checksums comparison."""
 
@@ -570,7 +570,7 @@ async def test_worker_compare_agent_groups_checksums(socket_mock, event_loop):
                                              get_data_command='global sync-agent-groups-get ',
                                              get_payload={"condition": "sync_status", "get_global_hash": True})
 
-    with patch('wazuh.core.cluster.worker.c_common.SyncFortishielddb', return_value=sync_object):
+    with patch('fortishield.core.cluster.worker.c_common.SyncFortishielddb', return_value=sync_object):
         # Nothing is returned
         with patch.object(sync_object, 'retrieve_information', side_effect=[None]):
             assert await w_handler.compare_agent_groups_checksums(master_checksum='CKS', logger=logger) == False
@@ -592,7 +592,7 @@ async def test_worker_compare_agent_groups_checksums(socket_mock, event_loop):
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.worker.c_common.Handler.send_request')
+@patch('fortishield.core.cluster.worker.c_common.Handler.send_request')
 async def test_worker_check_agent_groups_checksums(send_request_mock, event_loop):
     """Check that the function check_agent_groups_checksums correctly checks the comparison counter."""
 
@@ -618,7 +618,7 @@ async def test_worker_check_agent_groups_checksums(send_request_mock, event_loop
     worker_handler.agent_groups_mismatch_counter = 0
     data = {"chunks": ['[{"hash": "a"}]']}
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.compare_agent_groups_checksums', return_value=False):
+    with patch('fortishield.core.cluster.worker.WorkerHandler.compare_agent_groups_checksums', return_value=False):
         # Check that when the checksums are different the counter is incremented
         await worker_handler.check_agent_groups_checksums(data=data, logger=logger)
         assert worker_handler.agent_groups_mismatch_counter == 1
@@ -633,7 +633,7 @@ async def test_worker_check_agent_groups_checksums(send_request_mock, event_loop
         send_request_mock.assert_called_once_with(command=b'syn_w_g_c', data=b'')
         assert 'Sent request to obtain all agent-groups information from the master node.' in logger._info
 
-    with patch('wazuh.core.cluster.worker.WorkerHandler.compare_agent_groups_checksums', return_value=True):
+    with patch('fortishield.core.cluster.worker.WorkerHandler.compare_agent_groups_checksums', return_value=True):
         # Check that when the checksums are equal, the counter is reset (without previous attempts).
         logger.clear()
         worker_handler.agent_groups_mismatch_counter = 0
@@ -651,14 +651,14 @@ async def test_worker_check_agent_groups_checksums(send_request_mock, event_loop
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
-@patch('wazuh.core.cluster.worker.WorkerHandler.check_agent_groups_checksums', return_value='')
-@patch('wazuh.core.cluster.common.Handler.send_request', return_value='check')
-@patch('wazuh.core.cluster.common.Handler.update_chunks_wdb', return_value={'updated_chunks': 1})
-@patch('wazuh.core.cluster.common.Handler.get_chunks_in_task_id', return_value='chunks')
+@patch('fortishield.core.cluster.worker.WorkerHandler.check_agent_groups_checksums', return_value='')
+@patch('fortishield.core.cluster.common.Handler.send_request', return_value='check')
+@patch('fortishield.core.cluster.common.Handler.update_chunks_wdb', return_value={'updated_chunks': 1})
+@patch('fortishield.core.cluster.common.Handler.get_chunks_in_task_id', return_value='chunks')
 async def test_worker_handler_recv_agent_groups_information(get_chunks_in_task_id_mock, update_chunks_wdb_mock,
                                                             send_request_mock, check_agent_groups_checksums_mock,
                                                             event_loop):
-    """Check that the wazuh-db data reception task is created."""
+    """Check that the fortishield-db data reception task is created."""
 
     class LoggerMock:
         """Auxiliary class."""
@@ -700,13 +700,13 @@ async def test_worker_handler_recv_agent_groups_information(get_chunks_in_task_i
 
 @freeze_time('1970-01-01')
 @pytest.mark.asyncio
-@patch.object(wazuh.core.cluster.worker.json, "dumps", return_value="")
-@patch.object(logging.getLogger("wazuh.Integrity check"), "info")
-@patch.object(logging.getLogger("wazuh.Integrity check"), "error")
-@patch("wazuh.core.cluster.common.SyncFiles.sync", return_value=True)
-@patch("wazuh.core.cluster.cluster.get_files_status", return_value={})
-@patch("wazuh.core.cluster.worker.client.common.Handler.send_request")
-@patch("wazuh.core.cluster.common.SyncTask.request_permission", return_value=True)
+@patch.object(fortishield.core.cluster.worker.json, "dumps", return_value="")
+@patch.object(logging.getLogger("fortishield.Integrity check"), "info")
+@patch.object(logging.getLogger("fortishield.Integrity check"), "error")
+@patch("fortishield.core.cluster.common.SyncFiles.sync", return_value=True)
+@patch("fortishield.core.cluster.cluster.get_files_status", return_value={})
+@patch("fortishield.core.cluster.worker.client.common.Handler.send_request")
+@patch("fortishield.core.cluster.common.SyncTask.request_permission", return_value=True)
 async def test_worker_handler_sync_integrity(request_permission_mock,
                                              send_request_mock,
                                              get_files_status,
@@ -734,7 +734,7 @@ async def test_worker_handler_sync_integrity(request_permission_mock,
     worker_handler.server = ManagerMock()
 
     # Test the try
-    with (patch('wazuh.core.cluster.worker.cluster.run_in_pool', side_effect=cluster_run_in_pool_mock) as
+    with (patch('fortishield.core.cluster.worker.cluster.run_in_pool', side_effect=cluster_run_in_pool_mock) as
           run_in_pool_mock):
         try:
             await asyncio.wait_for(worker_handler.sync_integrity(), 0.2)
@@ -774,8 +774,8 @@ async def test_worker_handler_sync_integrity(request_permission_mock,
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
 @patch('asyncio.sleep', side_effect=Exception())
-@patch("wazuh.core.cluster.master.AsyncFortishieldDBConnection")
-@patch('wazuh.core.cluster.common.SyncFortishielddb')
+@patch("fortishield.core.cluster.master.AsyncFortishieldDBConnection")
+@patch('fortishield.core.cluster.common.SyncFortishielddb')
 async def test_worker_handler_sync_agent_info(SyncFortishielddb_mock, AsyncFortishieldDBConnection_mock, sleep_mock, event_loop):
     """Check that the agent-info task is properly configured."""
 
@@ -813,8 +813,8 @@ async def test_worker_handler_sync_agent_info(SyncFortishielddb_mock, AsyncForti
 
 @pytest.mark.asyncio
 @patch('asyncio.sleep', side_effect=Exception())
-@patch("wazuh.core.cluster.master.AsyncFortishieldDBConnection")
-@patch('wazuh.core.cluster.common.SyncFortishielddb')
+@patch("fortishield.core.cluster.master.AsyncFortishieldDBConnection")
+@patch('fortishield.core.cluster.common.SyncFortishielddb')
 async def test_worker_handler_sync_agent_info_ko(SyncFortishielddb_mock, AsyncFortishieldDBConnection_mock, sleep_mock, event_loop):
     """Check that the agent-info task is properly configured."""
 
@@ -842,10 +842,10 @@ async def test_worker_handler_sync_agent_info_ko(SyncFortishielddb_mock, AsyncFo
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
-@patch.object(logging.getLogger("wazuh.Integrity sync"), "debug")
-@patch("wazuh.core.cluster.common.SyncFiles.sync", return_value=True)
-@patch('wazuh.core.cluster.worker.perf_counter', return_value=0)
-@patch("wazuh.core.cluster.cluster.merge_info", return_value=("n_files", "merged_file"))
+@patch.object(logging.getLogger("fortishield.Integrity sync"), "debug")
+@patch("fortishield.core.cluster.common.SyncFiles.sync", return_value=True)
+@patch('fortishield.core.cluster.worker.perf_counter', return_value=0)
+@patch("fortishield.core.cluster.cluster.merge_info", return_value=("n_files", "merged_file"))
 async def test_worker_handler_sync_extra_valid(merge_info_mock, perf_counter_mock, sync_mock, logger_debug_mock,
                                                event_loop):
     """Test the 'sync_extra_valid' method."""
@@ -860,7 +860,7 @@ async def test_worker_handler_sync_extra_valid(merge_info_mock, perf_counter_moc
     extra_valid = {"/missing/path": 0, "missing/path2": 1}
     worker_handler = get_worker_handler(event_loop)
     worker_handler.server = ManagerMock()
-    with patch.object(logging.getLogger("wazuh.Integrity sync"), "info") as logger_info_mock:
+    with patch.object(logging.getLogger("fortishield.Integrity sync"), "info") as logger_info_mock:
         await worker_handler.sync_extra_valid(extra_valid)
         logger_debug_mock.assert_has_calls([call("Starting sending extra valid files to master."),
                                             call("Finished sending extra valid files in 0.000s.")])
@@ -875,8 +875,8 @@ async def test_worker_handler_sync_extra_valid(merge_info_mock, perf_counter_moc
             metadata_len=1, task_pool=None)
 
     # Test the first exception
-    with patch("wazuh.core.cluster.worker.WorkerHandler.send_request") as send_request_mock:
-        with patch.object(logging.getLogger("wazuh.Integrity sync"), "error") as logger_error_mock:
+    with patch("fortishield.core.cluster.worker.WorkerHandler.send_request") as send_request_mock:
+        with patch.object(logging.getLogger("fortishield.Integrity sync"), "error") as logger_error_mock:
             merge_info_mock.side_effect = exception.FortishieldException(1001)
             cls = cluster_common.FortishieldJSONEncoder
             await worker_handler.sync_extra_valid(extra_valid)
@@ -900,11 +900,11 @@ async def test_worker_handler_sync_extra_valid(merge_info_mock, perf_counter_moc
 @freeze_time('1970-01-01')
 @patch("shutil.rmtree")
 @patch("json.dumps", return_value="")
-@patch("wazuh.core.cluster.cluster.decompress_files")
-@patch.object(logging.getLogger("wazuh.Integrity sync"), "info")
-@patch.object(logging.getLogger("wazuh.Integrity sync"), "debug")
-@patch("wazuh.core.cluster.worker.client.common.Handler.send_request")
-@patch("wazuh.core.cluster.worker.WorkerHandler.update_master_files_in_worker")
+@patch("fortishield.core.cluster.cluster.decompress_files")
+@patch.object(logging.getLogger("fortishield.Integrity sync"), "info")
+@patch.object(logging.getLogger("fortishield.Integrity sync"), "debug")
+@patch("fortishield.core.cluster.worker.client.common.Handler.send_request")
+@patch("fortishield.core.cluster.worker.WorkerHandler.update_master_files_in_worker")
 async def test_worker_handler_process_files_from_master_ok(update_files_mock, send_request_mock, logger_debug_mock,
                                                            logger_info_mock, decompress_files_mock,
                                                            json_dumps_mock,
@@ -948,7 +948,7 @@ async def test_worker_handler_process_files_from_master_ok(update_files_mock, se
     decompress_files_mock.return_value = (ko_files[0], zip_path)
     event = asyncio.Event()
 
-    with patch('wazuh.core.cluster.cluster.run_in_pool', side_effect=cluster_run_in_pool_mock) as run_in_pool_mock:
+    with patch('fortishield.core.cluster.cluster.run_in_pool', side_effect=cluster_run_in_pool_mock) as run_in_pool_mock:
         ko_files_ret = ko_files[0]
         await asyncio.gather(worker_handler.process_files_from_master(name="task_id", file_received=event),
                              unlock_event(event))
@@ -1028,7 +1028,7 @@ async def test_worker_handler_process_files_from_master_ok(update_files_mock, se
 
 @pytest.mark.asyncio
 @patch("json.dumps", return_value="")
-@patch("wazuh.core.cluster.worker.client.common.Handler.send_request")
+@patch("fortishield.core.cluster.worker.client.common.Handler.send_request")
 async def test_worker_handler_process_files_from_master_ko(send_request_mock,
                                                            json_dumps_mock,
                                                            event_loop):
@@ -1072,17 +1072,17 @@ async def test_worker_handler_process_files_from_master_ko(send_request_mock,
 @pytest.mark.asyncio
 @patch("builtins.open")
 @patch("os.path.exists", return_value=False)
-@patch("wazuh.core.cluster.worker.safe_move")
-@patch("wazuh.core.cluster.worker.utils.mkdir_with_mode")
+@patch("fortishield.core.cluster.worker.safe_move")
+@patch("fortishield.core.cluster.worker.utils.mkdir_with_mode")
 @patch("os.path.join", return_value="queue/testing/")
-@patch("wazuh.core.common.wazuh_uid", return_value="wazuh_uid")
-@patch("wazuh.core.common.wazuh_gid", return_value="wazuh_gid")
-async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, wazuh_uid_mock, path_join_mock,
+@patch("fortishield.core.common.fortishield_uid", return_value="fortishield_uid")
+@patch("fortishield.core.common.fortishield_gid", return_value="fortishield_gid")
+async def test_worker_handler_update_master_files_in_worker_ok(fortishield_gid_mock, fortishield_uid_mock, path_join_mock,
                                                                mkdir_with_mode_mock, safe_move_mock, path_exists_mock,
                                                                open_mock, event_loop):
     """Check if the method is properly receiving and updating files."""
 
-    all_mocks = [wazuh_gid_mock, wazuh_uid_mock, path_join_mock, mkdir_with_mode_mock, safe_move_mock, open_mock,
+    all_mocks = [fortishield_gid_mock, fortishield_uid_mock, path_join_mock, mkdir_with_mode_mock, safe_move_mock, open_mock,
                  path_exists_mock]
 
     worker_handler = get_worker_handler(event_loop)
@@ -1093,7 +1093,7 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
     # Test the first for: for -> if -> for -> try
     # In the nested method, with the first value sent to the 'update_master_files_in_worker' (shared), we
     # are testing the if, meanwhile with the second (missing), we are testing the else.
-    with patch("wazuh.core.cluster.cluster.unmerge_info", return_value=[("name", "content", "_")]):
+    with patch("fortishield.core.cluster.cluster.unmerge_info", return_value=[("name", "content", "_")]):
         with patch("os.remove") as os_remove_mock:
             result_logs = worker_handler.update_master_files_in_worker(
                 ko_files={"shared": {
@@ -1112,8 +1112,8 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
                                              call(core_common.FORTISHIELD_PATH, 'filename1'),
                                              call('/zip/path', 'filename1'),
                                              call(core_common.FORTISHIELD_PATH, 'filename3')])
-            wazuh_uid_mock.assert_called_with()
-            wazuh_gid_mock.assert_called_with()
+            fortishield_uid_mock.assert_called_with()
+            fortishield_gid_mock.assert_called_with()
             mkdir_with_mode_mock.assert_any_call("queue/testing")
             assert safe_move_mock.call_count == 2
             open_mock.assert_called_once()
@@ -1144,8 +1144,8 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
     path_join_mock.assert_has_calls([call(core_common.FORTISHIELD_PATH, "filename1"),
                                      call(core_common.FORTISHIELD_PATH, "filename2"),
                                      call(core_common.FORTISHIELD_PATH, "filename3")])
-    wazuh_uid_mock.assert_not_called()
-    wazuh_gid_mock.assert_not_called()
+    fortishield_uid_mock.assert_not_called()
+    fortishield_gid_mock.assert_not_called()
     mkdir_with_mode_mock.assert_not_called()
     safe_move_mock.assert_not_called()
     open_mock.assert_not_called()
@@ -1175,8 +1175,8 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
     path_join_mock.assert_has_calls([call(core_common.FORTISHIELD_PATH, "filename1"),
                                      call(core_common.FORTISHIELD_PATH, "filename2"),
                                      call(core_common.FORTISHIELD_PATH, "filename3")])
-    wazuh_uid_mock.assert_not_called()
-    wazuh_gid_mock.assert_not_called()
+    fortishield_uid_mock.assert_not_called()
+    fortishield_gid_mock.assert_not_called()
     mkdir_with_mode_mock.assert_not_called()
     safe_move_mock.assert_not_called()
     open_mock.assert_not_called()
@@ -1206,8 +1206,8 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
             assert result_logs['generic_errors'] == []
             path_join_mock.assert_has_calls([call(core_common.FORTISHIELD_PATH, "filename3"),
                                              call(core_common.FORTISHIELD_PATH, "")])
-            wazuh_uid_mock.assert_not_called()
-            wazuh_gid_mock.assert_not_called()
+            fortishield_uid_mock.assert_not_called()
+            fortishield_gid_mock.assert_not_called()
             mkdir_with_mode_mock.assert_not_called()
             safe_move_mock.assert_not_called()
             open_mock.assert_not_called()
@@ -1231,8 +1231,8 @@ async def test_worker_handler_update_master_files_in_worker_ok(wazuh_gid_mock, w
 
     path_join_mock.assert_has_calls([call(core_common.FORTISHIELD_PATH, "filename3"),
                                      call(core_common.FORTISHIELD_PATH, "")])
-    wazuh_uid_mock.assert_not_called()
-    wazuh_gid_mock.assert_not_called()
+    fortishield_uid_mock.assert_not_called()
+    fortishield_gid_mock.assert_not_called()
     mkdir_with_mode_mock.assert_not_called()
     safe_move_mock.assert_not_called()
     open_mock.assert_not_called()
@@ -1249,8 +1249,8 @@ async def test_worker_handler_get_logger(event_loop):
 # Test Worker class methods
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.worker.metadata.__version__", "1.0.0")
-@patch("wazuh.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
+@patch("fortishield.core.cluster.worker.metadata.__version__", "1.0.0")
+@patch("fortishield.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
 async def test_worker_init(api_request_queue, event_loop):
     """Check if the object Worker is being properly initialized."""
 
@@ -1259,7 +1259,7 @@ async def test_worker_init(api_request_queue, event_loop):
                                   performance_test=False, logger=None, concurrency_test=False, file='None', string=20,
                                   task_pool=task_pool)
 
-    assert nested_worker.cluster_name == "wazuh"
+    assert nested_worker.cluster_name == "fortishield"
     assert nested_worker.node_type == "master"
     assert nested_worker.handler_class == worker.WorkerHandler
     assert "cluster_name" in nested_worker.extra_args
@@ -1273,8 +1273,8 @@ async def test_worker_init(api_request_queue, event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.client.AbstractClientManager.add_tasks", return_value=["task"])
-@patch("wazuh.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
+@patch("fortishield.core.cluster.client.AbstractClientManager.add_tasks", return_value=["task"])
+@patch("fortishield.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
 async def test_worker_add_tasks(api_request_queue, acm_mock, event_loop):
     """Check if the tasks that the worker will run are defined."""
 
@@ -1303,7 +1303,7 @@ async def test_worker_add_tasks(api_request_queue, acm_mock, event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
+@patch("fortishield.core.cluster.worker.dapi.APIRequestQueue", return_value="APIRequestQueue object")
 async def test_worker_get_node(api_request_queue, event_loop):
     """Check if the basic cluster information is returned."""
     task_pool = {'task_pool': ''}

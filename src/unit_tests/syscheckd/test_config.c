@@ -19,8 +19,8 @@
 
 #include "../wrappers/common.h"
 #include "../wrappers/posix/pthread_wrappers.h"
-#include "../wrappers/wazuh/os_regex/os_regex_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_regex/os_regex_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 /* redefinitons/wrapping */
 typedef struct entry_struct_s {

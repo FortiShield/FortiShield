@@ -17,7 +17,7 @@
 #include "os_regex/os_regex.h"
 #include "os_execd/execd.h"
 #include "eventinfo.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
 #include "labels.h"
 #include "exec.h"
 
@@ -112,7 +112,7 @@ void OS_Exec(int *execq, int *arq, int *sock, const Eventinfo *lf, const active_
                 snprintf(c_agent_id, OS_SIZE_16, "%.3d", id_array[i]);
 
                 agt_labels = labels_find(c_agent_id, sock);
-                agt_version = labels_get(agt_labels, "_wazuh_version");
+                agt_version = labels_get(agt_labels, "_fortishield_version");
 
                 if (!agt_version) {
                     json_agt_info = wdb_get_agent_info(id_array[i], sock);
@@ -202,7 +202,7 @@ void OS_Exec(int *execq, int *arq, int *sock, const Eventinfo *lf, const active_
             snprintf(c_agent_id, OS_SIZE_16, "%.3d", agt_id);
 
             agt_labels = labels_find(c_agent_id, sock);
-            agt_version = labels_get(agt_labels, "_wazuh_version");
+            agt_version = labels_get(agt_labels, "_fortishield_version");
 
             if (!agt_version) {
                 json_agt_info = wdb_get_agent_info(agt_id, sock);

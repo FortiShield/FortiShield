@@ -10,7 +10,7 @@ on:
   pull_request:
     paths:
         - ".github/workflows/integration-tests-rbac-tier-0-1.yml"
-        - "framework/wazuh/rbac/"
+        - "framework/fortishield/rbac/"
         - "src/Makefile"
         - "tests/integration/conftest.py"
         - "tests/integration/test_api/test_rbac/**"
@@ -29,13 +29,13 @@ jobs:
         with:
           python-version-file: ".github/workflows/.python-version-it"
           architecture: x64
-      # Build wazuh server for linux.
-      - name: Build wazuh server for linux
+      # Build fortishield server for linux.
+      - name: Build fortishield server for linux
         run: |
           make deps -C src TARGET=server -j2
           make -C src TARGET=server -j2
-      # Install wazuh server for linux.
-      - name: Install wazuh server for linux
+      # Install fortishield server for linux.
+      - name: Install fortishield server for linux
         run: |
           echo 'USER_LANGUAGE="en"' > ./etc/preloaded-vars.conf
           echo "" >> ./etc/preloaded-vars.conf

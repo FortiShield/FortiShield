@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import contextlib
@@ -9,9 +9,9 @@ import os
 import re
 from typing import Union
 
-from wazuh.core import common, utils
-from wazuh.core import wazuh_socket
-from wazuh.core.exception import FortishieldError, FortishieldInternalError, FortishieldException
+from fortishield.core import common, utils
+from fortishield.core import fortishield_socket
+from fortishield.core.exception import FortishieldError, FortishieldInternalError, FortishieldException
 
 DAYS = "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 MONTHS = "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -148,7 +148,7 @@ async def get_daemons_stats_socket(socket: str,
         Dictionary with daemon's statistical information.
     """
     # Create message
-    full_message = wazuh_socket.create_wazuh_socket_message(
+    full_message = fortishield_socket.create_fortishield_socket_message(
         origin={'module': common.origin_module.get()},
         command='getstats' if not agents_list else 'getagentsstats',
         parameters=
@@ -159,7 +159,7 @@ async def get_daemons_stats_socket(socket: str,
 
     # Connect to socket
     try:
-        s = wazuh_socket.FortishieldAsyncSocketJSON()
+        s = fortishield_socket.FortishieldAsyncSocketJSON()
         await s.connect(socket)
     except Exception as exc:
         raise FortishieldInternalError(1121, extra_message=socket) from exc
@@ -323,7 +323,7 @@ def send_command_to_socket(dest_socket: str, command: str) -> dict:
 
     """
     try:
-        s = wazuh_socket.FortishieldSocket(dest_socket)
+        s = fortishield_socket.FortishieldSocket(dest_socket)
     except FortishieldException:
         # Error connecting to socket
         raise FortishieldInternalError(1121)

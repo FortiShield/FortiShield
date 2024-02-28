@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -17,9 +17,9 @@ from uuid import uuid4
 
 import uvloop
 
-from wazuh.core import common, exception, utils
-from wazuh.core.cluster import common as c_common
-from wazuh.core.cluster.utils import ClusterFilter, context_tag
+from fortishield.core import common, exception, utils
+from fortishield.core.cluster import common as c_common
+from fortishield.core.cluster.utils import ClusterFilter, context_tag
 
 
 class AbstractServerHandler(c_common.Handler):
@@ -276,7 +276,7 @@ class AbstractServer:
         self.cluster_items = cluster_items
         self.enable_ssl = enable_ssl
         self.tag = tag
-        self.logger = logging.getLogger('wazuh') if not logger else logger
+        self.logger = logging.getLogger('fortishield') if not logger else logger
         # logging tag
         context_tag.set(self.tag)
         self.tasks = [self.check_clients_keepalive]

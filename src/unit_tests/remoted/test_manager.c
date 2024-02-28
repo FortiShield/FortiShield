@@ -14,18 +14,18 @@
 #include <stdio.h>
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/os_crypto/sha256_op_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/shared/agent_op_wrappers.h"
-#include "../wrappers/wazuh/remoted/shared_download_wrappers.h"
+#include "../wrappers/fortishield/os_crypto/sha256_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/shared/agent_op_wrappers.h"
+#include "../wrappers/fortishield/remoted/shared_download_wrappers.h"
 #include "../wrappers/posix/dirent_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
-#include "../wrappers/wazuh/remoted/request_wrappers.h"
-#include "../wrappers/wazuh/remoted/remoted_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_global_helpers_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/remoted/request_wrappers.h"
+#include "../wrappers/fortishield/remoted/remoted_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_global_helpers_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
 
-#include "../wazuh_db/wdb.h"
+#include "../fortishield_db/wdb.h"
 #include "../remoted/remoted.h"
 #include "../remoted/shared_download.h"
 #include "../../remoted/manager.c"
@@ -4639,10 +4639,10 @@ void test_save_controlmsg_agent_invalid_version(void **state)
 
     expect_string(__wrap__mdebug1, formatted_msg, "Agent NEW_AGENT sent HC_STARTUP from ''");
 
-    expect_string(__wrap_compare_wazuh_versions, version1, "v4.5.0");
-    expect_string(__wrap_compare_wazuh_versions, version2, "v4.6.0");
-    expect_value(__wrap_compare_wazuh_versions, compare_patch, false);
-    will_return(__wrap_compare_wazuh_versions, -1);
+    expect_string(__wrap_compare_fortishield_versions, version1, "v4.5.0");
+    expect_string(__wrap_compare_fortishield_versions, version2, "v4.6.0");
+    expect_value(__wrap_compare_fortishield_versions, compare_patch, false);
+    will_return(__wrap_compare_fortishield_versions, -1);
 
     expect_string(__wrap__mdebug2, formatted_msg, "Unable to connect agent: '001': 'Incompatible version'");
 
@@ -5062,10 +5062,10 @@ void test_save_controlmsg_startup(void **state)
 
     expect_string(__wrap__mdebug1, formatted_msg, "Agent NEW_AGENT sent HC_STARTUP from ''");
 
-    expect_string(__wrap_compare_wazuh_versions, version1, "v4.5.0");
-    expect_string(__wrap_compare_wazuh_versions, version2, "v4.5.0");
-    expect_value(__wrap_compare_wazuh_versions, compare_patch, false);
-    will_return(__wrap_compare_wazuh_versions, 0);
+    expect_string(__wrap_compare_fortishield_versions, version1, "v4.5.0");
+    expect_string(__wrap_compare_fortishield_versions, version2, "v4.5.0");
+    expect_value(__wrap_compare_fortishield_versions, compare_patch, false);
+    will_return(__wrap_compare_fortishield_versions, 0);
 
     expect_function_call(__wrap_OSHash_Create);
     will_return(__wrap_OSHash_Create, 1);
@@ -5137,7 +5137,7 @@ void test_save_controlmsg_shutdown(void **state)
     expect_string(__wrap_wdb_update_agent_connection_status, sync_status, "synced");
     will_return(__wrap_wdb_update_agent_connection_status, OS_SUCCESS);
 
-    expect_string(__wrap_SendMSG, message, "1:wazuh-remoted:ossec: Agent stopped: 'NEW_AGENT->10.2.2.5'.");
+    expect_string(__wrap_SendMSG, message, "1:fortishield-remoted:ossec: Agent stopped: 'NEW_AGENT->10.2.2.5'.");
     expect_string(__wrap_SendMSG, locmsg, "[001] (NEW_AGENT) 10.2.2.5");
     expect_any(__wrap_SendMSG, loc);
     will_return(__wrap_SendMSG, -1);
@@ -5151,7 +5151,7 @@ void test_save_controlmsg_shutdown(void **state)
 
     expect_string(__wrap__minfo, formatted_msg, "Successfully reconnected to 'queue/sockets/queue'");
 
-    expect_string(__wrap_SendMSG, message, "1:wazuh-remoted:ossec: Agent stopped: 'NEW_AGENT->10.2.2.5'.");
+    expect_string(__wrap_SendMSG, message, "1:fortishield-remoted:ossec: Agent stopped: 'NEW_AGENT->10.2.2.5'.");
     expect_string(__wrap_SendMSG, locmsg, "[001] (NEW_AGENT) 10.2.2.5");
     expect_any(__wrap_SendMSG, loc);
     will_return(__wrap_SendMSG, -1);

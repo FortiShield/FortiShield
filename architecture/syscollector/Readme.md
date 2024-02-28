@@ -1,19 +1,19 @@
 <!---
 Copyright (C) 2015, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 -->
 
 # Fortishield module: Syscollector architecture
 ## Index
-- [Fortishield module: Syscollector architecture](#wazuh-module-syscollector-architecture)
+- [Fortishield module: Syscollector architecture](#fortishield-module-syscollector-architecture)
   - [Index](#index)
   - [Purpose](#purpose)
   - [Sequence diagrams](#sequence-diagrams)
 
 
 ## Purpose
-Everyone knows the importance of having detailed system information from our environment to take decisions based on specific use cases. Having detailed and valuable information about our environment helps us to react under unpredictable scenarios. The wazuh agents are able to collect interesting and valuable system information regarding processes, hardware, packages, OS, network and ports.
+Everyone knows the importance of having detailed system information from our environment to take decisions based on specific use cases. Having detailed and valuable information about our environment helps us to react under unpredictable scenarios. The fortishield agents are able to collect interesting and valuable system information regarding processes, hardware, packages, OS, network and ports.
 
 The System Inventory feature interacts with different modules to split responsabilities and optimize internal dependencias:
 - Data Provider: Module in charge of gathering system information based on OSes. This involves information about current running processes, packages/programs installed, ports being used, network adapters and OS general information.
@@ -24,7 +24,7 @@ The System Inventory feature interacts with different modules to split responsab
 
 ## Sequence diagrams
 The different sequence diagrams ilustrate the flow of the different modules interacting on the syscollector general use.the configuration.
-- 001-sequence-wm-syscollector: It explains the wazuh module syscollector initialization, construction, use, destruction and stop from the wazuh modules daemon perspective.
+- 001-sequence-wm-syscollector: It explains the fortishield module syscollector initialization, construction, use, destruction and stop from the fortishield modules daemon perspective.
 - 002-sequence-syscollector: It explains the syscollector internal interactions with modules like dbsync, rsync and normalizer. This diagram shows how is the flow for data synchronization, checksum calculation, scan starting, etc.
 - 003-sequence-manager-side: It explains the modules interaction (analysisd, wdb) when a syscollector message arrives from the manager perspective. This diagram shows how is the flow from the modules initialization to the database storage.
 

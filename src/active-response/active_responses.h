@@ -39,7 +39,7 @@ typedef enum _ar_command_list {
 void write_debug_file(const char *ar_name, const char *msg);
 
 /**
- * @brief Set wazuh home directory and check message from stdin
+ * @brief Set fortishield home directory and check message from stdin
  * @param argv Arguments of the script
  * @param message JSON message from stdin
  * @return Command from message

@@ -14,8 +14,8 @@
 #endif
 #include "os_crypto/md5/md5_op.h"
 #include "os_net/os_net.h"
-#include "wazuh_modules/wmodules.h"
-#include "wazuh_modules/wm_sca.h"
+#include "fortishield_modules/wmodules.h"
+#include "fortishield_modules/wm_sca.h"
 #include "syscheck_op.h"
 #include "agentd.h"
 
@@ -280,7 +280,7 @@ int receive_msg()
                                 if (!UnmergeFiles(file, SHAREDCFG_DIR, OS_TEXT, &ignore_list)) {
                                     char msg_output[OS_MAXSTR];
 
-                                    snprintf(msg_output, OS_MAXSTR, "%c:%s:%s",  LOCALFILE_MQ, "wazuh-agent", AG_IN_UNMERGE);
+                                    snprintf(msg_output, OS_MAXSTR, "%c:%s:%s",  LOCALFILE_MQ, "fortishield-agent", AG_IN_UNMERGE);
                                     send_msg(msg_output, -1);
                                 }
                                 else {

@@ -1,8 +1,8 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core.exception import FortishieldException, FortishieldError
+from fortishield.core.exception import FortishieldException, FortishieldError
 import pytest
 
 
@@ -23,13 +23,13 @@ import pytest
         (1017, {'node_name': 'Node Name', 'not_ready_daemons': 'not ready daemons'}, None, None, None, None, None, 
             'Error 1017 - Some Fortishield daemons are not ready yet in node "Node Name" (not ready daemons)'),        
     ])
-def test_wazuh_exception_to_string(code, extra_message, extra_remediation, cmd_error, dapi_errors, title , type, exc_string):
+def test_fortishield_exception_to_string(code, extra_message, extra_remediation, cmd_error, dapi_errors, title , type, exc_string):
     """Check object constructor """
     exc = FortishieldException(code, extra_message, extra_remediation, cmd_error, dapi_errors, title, type)
     assert str(exc) == exc_string
 
 
-def test_wazuh_exception__or__():
+def test_fortishield_exception__or__():
     """Check that FortishieldException's | operator performs the join of dapi errors properly."""
     excp1 = FortishieldException(1308)
     excp1._dapi_errors = {'test1': 'test error'}
@@ -39,14 +39,14 @@ def test_wazuh_exception__or__():
     assert excp3._dapi_errors == {'test1': 'test error', 'test2': 'test error'}
 
 
-def test_wazuh_exception__deepcopy__():
+def test_fortishield_exception__deepcopy__():
     """Check that FortishieldException's __deepcopy__ magic method works properly."""
     excp1 = FortishieldException(1308)
     excp2 = excp1.__deepcopy__()
     assert excp1 == excp2 and excp1 is not excp2
 
 
-def test_wazuh_error__or__():
+def test_fortishield_error__or__():
     """Check that FortishieldError's | operator performs the union of id sets properly."""
     error1 = FortishieldError(1309, ids={1, 2, 3})
     error2 = FortishieldError(1309, ids={4, 5, 6})

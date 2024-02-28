@@ -15,16 +15,16 @@
 
 #include "../../wrappers/common.h"
 #include "../../wrappers/libc/stdio_wrappers.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/shared/mq_op_wrappers.h"
-#include "../../wrappers/wazuh/shared/url_wrappers.h"
-#include "../../wrappers/wazuh/os_crypto/sha1_op_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_agent_upgrade_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/mq_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/url_wrappers.h"
+#include "../../wrappers/fortishield/os_crypto/sha1_op_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_agent_upgrade_wrappers.h"
 
-#include "../../wazuh_modules/wmodules.h"
-#include "../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_validate.h"
-#include "../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_tasks.h"
+#include "../../fortishield_modules/wmodules.h"
+#include "../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_validate.h"
+#include "../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_tasks.h"
 #include "../../headers/shared.h"
 
 // Setup / teardown
@@ -314,15 +314,15 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_https_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "https://packages.wazuh.com/4.x/wpk/windows/versions");
+    expect_string(__wrap_wurl_http_get, url, "https://packages.fortishield.com/4.x/wpk/windows/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "https://packages.wazuh.com/4.x/wpk/windows/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v4.0.0_windows.wpk");
+    assert_string_equal(task->wpk_repository, "https://packages.fortishield.com/4.x/wpk/windows/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v4.0.0_windows.wpk");
     assert_string_equal(task->wpk_sha1, "231ef123a32d312b4123c21313ee6780");
 }
 
@@ -341,15 +341,15 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_http_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "http://packages.wazuh.com/wpk/windows/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://packages.fortishield.com/wpk/windows/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "http://packages.wazuh.com/wpk/windows/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v3.13.1_windows.wpk");
+    assert_string_equal(task->wpk_repository, "http://packages.fortishield.com/wpk/windows/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v3.13.1_windows.wpk");
     assert_string_equal(task->wpk_sha1, "4a313b1312c23a213f2e3209fe0909dd");
 }
 
@@ -358,7 +358,7 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_invalid_version(void **s
 {
     wm_agent_info *agent = state[0];
     wm_upgrade_task *task = state[1];
-    char *repo = "packages.wazuh.com/4.x/wpk";
+    char *repo = "packages.fortishield.com/4.x/wpk";
     char *versions = NULL;
 
     os_strdup("windows", agent->platform);
@@ -370,7 +370,7 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_invalid_version(void **s
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "http://packages.wazuh.com/4.x/wpk/windows/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://packages.fortishield.com/4.x/wpk/windows/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
@@ -386,7 +386,7 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_invalid_repo(void **stat
 {
     wm_agent_info *agent = state[0];
     wm_upgrade_task *task = state[1];
-    char *repo = "error.wazuh.com/wpk/";
+    char *repo = "error.fortishield.com/wpk/";
     char *versions = NULL;
 
     os_strdup("windows", agent->platform);
@@ -396,7 +396,7 @@ void test_wm_agent_upgrade_validate_wpk_version_windows_invalid_repo(void **stat
     task->use_http = true;
     os_strdup("v4.2.0", task->wpk_version);
 
-    expect_string(__wrap_wurl_http_get, url, "http://error.wazuh.com/wpk/windows/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://error.fortishield.com/wpk/windows/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
@@ -424,15 +424,15 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_https_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "https://packages.wazuh.com/4.x/wpk/linux/x64/versions");
+    expect_string(__wrap_wurl_http_get, url, "https://packages.fortishield.com/4.x/wpk/linux/x64/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "https://packages.wazuh.com/4.x/wpk/linux/x64/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v4.0.0_linux_x64.wpk");
+    assert_string_equal(task->wpk_repository, "https://packages.fortishield.com/4.x/wpk/linux/x64/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v4.0.0_linux_x64.wpk");
     assert_string_equal(task->wpk_sha1, "231ef123a32d312b4123c21313ee6780");
 }
 
@@ -452,15 +452,15 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_http_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "http://packages.wazuh.com/wpk/linux/x64/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://packages.fortishield.com/wpk/linux/x64/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "http://packages.wazuh.com/wpk/linux/x64/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v3.13.1_linux_x64.wpk");
+    assert_string_equal(task->wpk_repository, "http://packages.fortishield.com/wpk/linux/x64/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v3.13.1_linux_x64.wpk");
     assert_string_equal(task->wpk_sha1, "4a313b1312c23a213f2e3209fe0909dd");
 }
 
@@ -487,7 +487,7 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_invalid_version(void **sta
 {
     wm_agent_info *agent = state[0];
     wm_upgrade_task *task = state[1];
-    char *repo = "packages.wazuh.com/4.x/wpk";
+    char *repo = "packages.fortishield.com/4.x/wpk";
     char *versions = NULL;
 
     os_strdup("ubuntu", agent->platform);
@@ -500,7 +500,7 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_invalid_version(void **sta
 
     os_strdup("error\nerror\nerror", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "http://packages.wazuh.com/4.x/wpk/linux/x64/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://packages.fortishield.com/4.x/wpk/linux/x64/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
@@ -516,7 +516,7 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_invalid_repo(void **state)
 {
     wm_agent_info *agent = state[0];
     wm_upgrade_task *task = state[1];
-    char *repo = "error.wazuh.com/wpk/";
+    char *repo = "error.fortishield.com/wpk/";
     char *versions = NULL;
 
     os_strdup("ubuntu", agent->platform);
@@ -527,7 +527,7 @@ void test_wm_agent_upgrade_validate_wpk_version_linux_invalid_repo(void **state)
     task->use_http = true;
     os_strdup("v4.2.0", task->wpk_version);
 
-    expect_string(__wrap_wurl_http_get, url, "http://error.wazuh.com/wpk/linux/x64/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://error.fortishield.com/wpk/linux/x64/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
@@ -555,15 +555,15 @@ void test_wm_agent_upgrade_validate_wpk_version_ubuntu_old_version(void **state)
 
     os_strdup("v3.3.0 ad87687f6876e876876bb86ad54e57aa", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "https://packages.wazuh.com/wpk/ubuntu/16.04/x64/versions");
+    expect_string(__wrap_wurl_http_get, url, "https://packages.fortishield.com/wpk/ubuntu/16.04/x64/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "https://packages.wazuh.com/wpk/ubuntu/16.04/x64/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v3.3.0_ubuntu_16.04_x64.wpk");
+    assert_string_equal(task->wpk_repository, "https://packages.fortishield.com/wpk/ubuntu/16.04/x64/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v3.3.0_ubuntu_16.04_x64.wpk");
     assert_string_equal(task->wpk_sha1, "ad87687f6876e876876bb86ad54e57aa");
 }
 
@@ -582,15 +582,15 @@ void test_wm_agent_upgrade_validate_wpk_version_rhel_old_version(void **state)
 
     os_strdup("v3.3.0 ad87687f6876e876876bb86ad54e57aa", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "https://packages.wazuh.com/wpk/rhel/6/x86/versions");
+    expect_string(__wrap_wurl_http_get, url, "https://packages.fortishield.com/wpk/rhel/6/x86/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "https://packages.wazuh.com/wpk/rhel/6/x86/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v3.3.0_rhel_6_x86.wpk");
+    assert_string_equal(task->wpk_repository, "https://packages.fortishield.com/wpk/rhel/6/x86/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v3.3.0_rhel_6_x86.wpk");
     assert_string_equal(task->wpk_sha1, "ad87687f6876e876876bb86ad54e57aa");
 }
 
@@ -598,7 +598,7 @@ void test_wm_agent_upgrade_validate_wpk_version_no_version(void **state)
 {
     wm_agent_info *agent = state[0];
     wm_upgrade_task *task = state[1];
-    char *repo = "packages.wazuh.com/4.x/wpk";
+    char *repo = "packages.fortishield.com/4.x/wpk";
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, repo);
 
@@ -624,15 +624,15 @@ void test_wm_agent_upgrade_validate_wpk_version_macos_https_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "https://packages.wazuh.com/4.x/wpk/macos/x64/pkg/versions");
+    expect_string(__wrap_wurl_http_get, url, "https://packages.fortishield.com/4.x/wpk/macos/x64/pkg/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "https://packages.wazuh.com/4.x/wpk/macos/x64/pkg/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v4.0.0_macos_x64.wpk");
+    assert_string_equal(task->wpk_repository, "https://packages.fortishield.com/4.x/wpk/macos/x64/pkg/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v4.0.0_macos_x64.wpk");
     assert_string_equal(task->wpk_sha1, "231ef123a32d312b4123c21313ee6780");
 }
 
@@ -652,15 +652,15 @@ void test_wm_agent_upgrade_validate_wpk_version_macos_http_ok(void **state)
 
     os_strdup("v3.13.1 4a313b1312c23a213f2e3209fe0909dd\nv4.0.0 231ef123a32d312b4123c21313ee6780", versions);
 
-    expect_string(__wrap_wurl_http_get, url, "http://packages.wazuh.com/wpk/macos/x64/pkg/versions");
+    expect_string(__wrap_wurl_http_get, url, "http://packages.fortishield.com/wpk/macos/x64/pkg/versions");
     expect_value(__wrap_wurl_http_get, timeout, WM_UPGRADE_DEFAULT_REQUEST_TIMEOUT);
     will_return(__wrap_wurl_http_get, versions);
 
     int ret = wm_agent_upgrade_validate_wpk_version(agent, task, NULL);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
-    assert_string_equal(task->wpk_repository, "http://packages.wazuh.com/wpk/macos/x64/pkg/");
-    assert_string_equal(task->wpk_file, "wazuh_agent_v3.13.1_macos_x64.wpk");
+    assert_string_equal(task->wpk_repository, "http://packages.fortishield.com/wpk/macos/x64/pkg/");
+    assert_string_equal(task->wpk_file, "fortishield_agent_v3.13.1_macos_x64.wpk");
     assert_string_equal(task->wpk_sha1, "4a313b1312c23a213f2e3209fe0909dd");
 }
 
@@ -668,12 +668,12 @@ void test_wm_agent_upgrade_validate_wpk_version_macos_http_ok(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_ok(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v3.9.1";
+    char *fortishield_version = "v3.9.1";
     char *platform = "ubuntu";
 
     task->force_upgrade = false;
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
     assert_string_equal(task->wpk_version, "v3.13.0");
@@ -682,10 +682,10 @@ void test_wm_agent_upgrade_validate_version_upgrade_ok(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_custom_ok(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v3.9.1";
+    char *fortishield_version = "v3.9.1";
     char *platform = "ubuntu";
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE_CUSTOM, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE_CUSTOM, task);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
 }
@@ -693,10 +693,10 @@ void test_wm_agent_upgrade_validate_version_upgrade_custom_ok(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_non_minimal(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v2.1.1";
+    char *fortishield_version = "v2.1.1";
     char *platform = "ubuntu";
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_NOT_MINIMAL_VERSION_SUPPORTED);
 }
@@ -704,10 +704,10 @@ void test_wm_agent_upgrade_validate_version_upgrade_non_minimal(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_custom_non_minimal(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v2.1.1";
+    char *fortishield_version = "v2.1.1";
     char *platform = "ubuntu";
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE_CUSTOM, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE_CUSTOM, task);
 
     assert_int_equal(ret, WM_UPGRADE_NOT_MINIMAL_VERSION_SUPPORTED);
 }
@@ -715,13 +715,13 @@ void test_wm_agent_upgrade_validate_version_upgrade_custom_non_minimal(void **st
 void test_wm_agent_upgrade_validate_version_upgrade_older_version(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v3.13.1";
+    char *fortishield_version = "v3.13.1";
     char *platform = "ubuntu";
 
     task->force_upgrade = false;
     os_strdup("v3.12.0", task->custom_version);
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_NEW_VERSION_LEES_OR_EQUAL_THAT_CURRENT);
     assert_string_equal(task->wpk_version, "v3.12.0");
@@ -730,13 +730,13 @@ void test_wm_agent_upgrade_validate_version_upgrade_older_version(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_greater_version(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v3.9.1";
+    char *fortishield_version = "v3.9.1";
     char *platform = "ubuntu";
 
     task->force_upgrade = false;
     os_strdup("v3.13.1", task->custom_version);
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_NEW_VERSION_GREATER_MASTER);
     assert_string_equal(task->wpk_version, "v3.13.1");
@@ -745,13 +745,13 @@ void test_wm_agent_upgrade_validate_version_upgrade_greater_version(void **state
 void test_wm_agent_upgrade_validate_version_upgrade_force(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v3.9.1";
+    char *fortishield_version = "v3.9.1";
     char *platform = "ubuntu";
 
     task->force_upgrade = true;
     os_strdup("v3.13.1", task->custom_version);
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
     assert_string_equal(task->wpk_version, "v3.13.1");
@@ -770,13 +770,13 @@ void test_wm_agent_upgrade_validate_version_version_null(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_ok_macos(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v4.3.0";
+    char *fortishield_version = "v4.3.0";
     char *platform = "darwin";
 
     task->force_upgrade = true;
     os_strdup("v4.3.0", task->custom_version);
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_SUCCESS);
     assert_string_equal(task->wpk_version, "v4.3.0");
@@ -785,10 +785,10 @@ void test_wm_agent_upgrade_validate_version_upgrade_ok_macos(void **state)
 void test_wm_agent_upgrade_validate_version_upgrade_non_minimal_macos(void **state)
 {
     wm_upgrade_task *task = state[1];
-    char *wazuh_version = "v4.2.0";
+    char *fortishield_version = "v4.2.0";
     char *platform = "darwin";
 
-    int ret = wm_agent_upgrade_validate_version(wazuh_version, platform, WM_UPGRADE_UPGRADE, task);
+    int ret = wm_agent_upgrade_validate_version(fortishield_version, platform, WM_UPGRADE_UPGRADE, task);
 
     assert_int_equal(ret, WM_UPGRADE_NOT_MINIMAL_VERSION_SUPPORTED);
 }
@@ -798,15 +798,15 @@ void test_wm_agent_upgrade_validate_wpk_exist(void **state)
     wm_upgrade_task *task = *state;
     char *sha1 = "74691287f21a312ab2a12e31a23f21a33d242d52";
 
-    os_strdup("https://packages.wazuh.com/4.x/wpk/windows/", task->wpk_repository);
-    os_strdup("wazuh_agent_v4.0.0_windows.wpk", task->wpk_file);
+    os_strdup("https://packages.fortishield.com/4.x/wpk/windows/", task->wpk_repository);
+    os_strdup("fortishield_agent_v4.0.0_windows.wpk", task->wpk_file);
     os_strdup(sha1, task->wpk_sha1);
 
-    expect_string(__wrap_fopen, path, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_fopen, path, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, 1);
 
-    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_OS_SHA1_File, mode, OS_BINARY);
     will_return(__wrap_OS_SHA1_File, sha1);
     will_return(__wrap_OS_SHA1_File, 0);
@@ -824,15 +824,15 @@ void test_wm_agent_upgrade_validate_wpk_exist_diff_sha1(void **state)
     wm_upgrade_task *task = *state;
     char *sha1 = "74691287f21a312ab2a12e31a23f21a33d242d52";
 
-    os_strdup("https://packages.wazuh.com/4.x/wpk/windows/", task->wpk_repository);
-    os_strdup("wazuh_agent_v4.0.0_windows.wpk", task->wpk_file);
+    os_strdup("https://packages.fortishield.com/4.x/wpk/windows/", task->wpk_repository);
+    os_strdup("fortishield_agent_v4.0.0_windows.wpk", task->wpk_file);
     os_strdup(sha1, task->wpk_sha1);
 
-    expect_string(__wrap_fopen, path, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_fopen, path, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, 1);
 
-    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_OS_SHA1_File, mode, OS_BINARY);
     will_return(__wrap_OS_SHA1_File, "32bb98743e298dee0a654a654765c765d765ae80");
     will_return(__wrap_OS_SHA1_File, 0);
@@ -840,15 +840,15 @@ void test_wm_agent_upgrade_validate_wpk_exist_diff_sha1(void **state)
     expect_value(__wrap_fclose, _File, 1);
     will_return(__wrap_fclose, 0);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
-    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk'");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk'");
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 0);
 
-    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_OS_SHA1_File, mode, OS_BINARY);
     will_return(__wrap_OS_SHA1_File, sha1);
     will_return(__wrap_OS_SHA1_File, 0);
@@ -863,30 +863,30 @@ void test_wm_agent_upgrade_validate_wpk_download_retry(void **state)
     wm_upgrade_task *task = *state;
     char *sha1 = "74691287f21a312ab2a12e31a23f21a33d242d52";
 
-    os_strdup("https://packages.wazuh.com/4.x/wpk/windows/", task->wpk_repository);
-    os_strdup("wazuh_agent_v4.0.0_windows.wpk", task->wpk_file);
+    os_strdup("https://packages.fortishield.com/4.x/wpk/windows/", task->wpk_repository);
+    os_strdup("fortishield_agent_v4.0.0_windows.wpk", task->wpk_file);
     os_strdup(sha1, task->wpk_sha1);
 
-    expect_string(__wrap_fopen, path, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_fopen, path, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, 0);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
-    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk'");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk'");
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
     expect_value(__wrap_sleep, seconds, 1);
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 0);
 
-    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_OS_SHA1_File, mode, OS_BINARY);
     will_return(__wrap_OS_SHA1_File, sha1);
     will_return(__wrap_OS_SHA1_File, 0);
@@ -901,23 +901,23 @@ void test_wm_agent_upgrade_validate_wpk_download_diff_sha1(void **state)
     wm_upgrade_task *task = *state;
     char *sha1 = "74691287f21a312ab2a12e31a23f21a33d242d52";
 
-    os_strdup("https://packages.wazuh.com/4.x/wpk/windows/", task->wpk_repository);
-    os_strdup("wazuh_agent_v4.0.0_windows.wpk", task->wpk_file);
+    os_strdup("https://packages.fortishield.com/4.x/wpk/windows/", task->wpk_repository);
+    os_strdup("fortishield_agent_v4.0.0_windows.wpk", task->wpk_file);
     os_strdup(sha1, task->wpk_sha1);
 
-    expect_string(__wrap_fopen, path, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_fopen, path, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, 0);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
-    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk'");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk'");
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 0);
 
-    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_OS_SHA1_File, fname, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_OS_SHA1_File, mode, OS_BINARY);
     will_return(__wrap_OS_SHA1_File, "32bb98743e298dee0a654a654765c765d765ae80");
     will_return(__wrap_OS_SHA1_File, 0);
@@ -932,47 +932,47 @@ void test_wm_agent_upgrade_validate_wpk_download_retry_max(void **state)
     wm_upgrade_task *task = *state;
     char *sha1 = "74691287f21a312ab2a12e31a23f21a33d242d52";
 
-    os_strdup("https://packages.wazuh.com/4.x/wpk/windows/", task->wpk_repository);
-    os_strdup("wazuh_agent_v4.0.0_windows.wpk", task->wpk_file);
+    os_strdup("https://packages.fortishield.com/4.x/wpk/windows/", task->wpk_repository);
+    os_strdup("fortishield_agent_v4.0.0_windows.wpk", task->wpk_file);
     os_strdup(sha1, task->wpk_sha1);
 
-    expect_string(__wrap_fopen, path, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_fopen, path, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, 0);
 
-    expect_string(__wrap__mtdebug1, tag, "wazuh-modulesd:agent-upgrade");
-    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk'");
+    expect_string(__wrap__mtdebug1, tag, "fortishield-modulesd:agent-upgrade");
+    expect_string(__wrap__mtdebug1, formatted_msg, "(8161): Downloading WPK file from: 'https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk'");
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
     expect_value(__wrap_sleep, seconds, 1);
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
     expect_value(__wrap_sleep, seconds, 2);
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
     expect_value(__wrap_sleep, seconds, 3);
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
     expect_value(__wrap_sleep, seconds, 4);
 
-    expect_string(__wrap_wurl_request, url, "https://packages.wazuh.com/4.x/wpk/windows/wazuh_agent_v4.0.0_windows.wpk");
-    expect_string(__wrap_wurl_request, dest, "var/upgrade/wazuh_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, url, "https://packages.fortishield.com/4.x/wpk/windows/fortishield_agent_v4.0.0_windows.wpk");
+    expect_string(__wrap_wurl_request, dest, "var/upgrade/fortishield_agent_v4.0.0_windows.wpk");
     expect_value(__wrap_wurl_request, timeout, WM_UPGRADE_WPK_DOWNLOAD_TIMEOUT);
     will_return(__wrap_wurl_request, 1);
 
@@ -1078,7 +1078,7 @@ void test_wm_agent_upgrade_validate_task_status_message_error_code(void **state)
     cJSON_AddNumberToObject(response, "agent", 5);
     cJSON_AddStringToObject(response, "status", "Done");
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8119): There has been an error updating task state. Error code: '1', message: 'Error'");
 
     int ret = wm_agent_upgrade_validate_task_status_message(response, NULL, NULL);
@@ -1092,7 +1092,7 @@ void test_wm_agent_upgrade_validate_task_status_message_invalid_json(void **stat
 {
     cJSON *response = cJSON_CreateObject();
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8107): Required parameters in message are missing.");
 
     int ret = wm_agent_upgrade_validate_task_status_message(response, NULL, NULL);

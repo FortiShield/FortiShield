@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest.mock import patch
 
 import pytest
 
-from wazuh.tests.util import InitWDBSocketMock
+from fortishield.tests.util import InitWDBSocketMock
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.mitre import *
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.mitre import *
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_FortishieldDBQueryMitreMetadata(mock_wdb):
     """Verify that the method connects correctly to the database and returns the correct type."""
     db_query = FortishieldDBQueryMitreMetadata()
@@ -32,7 +32,7 @@ def test_FortishieldDBQueryMitreMetadata(mock_wdb):
     FortishieldDBQueryMitreSoftware
 
 ])
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_mitre_test.sql'))
 def test_FortishieldDBQueryMitre_classes(mock_wdb, wdb_query_class):
     """Verify that the method connects correctly to the database and returns the correct types."""
     db_query = wdb_query_class()
@@ -57,7 +57,7 @@ def test_FortishieldDBQueryMitre_classes(mock_wdb, wdb_query_class):
     FortishieldDBQueryMitreTechniques,
     FortishieldDBQueryMitreSoftware
 ])
-@patch('wazuh.core.utils.FortishieldDBConnection')
+@patch('fortishield.core.utils.FortishieldDBConnection')
 def test_get_mitre_items(mock_wdb, mitre_wdb_query_class):
     """Test get_mitre_items function."""
     info, data = get_mitre_items(mitre_wdb_query_class)

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -16,7 +16,7 @@ from typing import Any, Dict
 
 # ===================================================== Functions ======================================================
 @lru_cache(maxsize=None)
-def find_wazuh_path() -> str:
+def find_fortishield_path() -> str:
     """Get the Fortishield installation path.
 
     Returns
@@ -38,18 +38,18 @@ def find_wazuh_path() -> str:
             abs_path = parts[0]
             allparts.insert(0, parts[1])
 
-    wazuh_path = ''
+    fortishield_path = ''
     try:
         for i in range(0, allparts.index('framework')):
-            wazuh_path = os.path.join(wazuh_path, allparts[i])
+            fortishield_path = os.path.join(fortishield_path, allparts[i])
     except ValueError:
         pass
 
-    return wazuh_path
+    return fortishield_path
 
 
-def wazuh_uid() -> int:
-    """Retrieve the numerical user ID for the wazuh user.
+def fortishield_uid() -> int:
+    """Retrieve the numerical user ID for the fortishield user.
 
     Returns
     -------
@@ -59,8 +59,8 @@ def wazuh_uid() -> int:
     return getpwnam(USER_NAME).pw_uid if globals()['_FORTISHIELD_UID'] is None else globals()['_FORTISHIELD_UID']
 
 
-def wazuh_gid() -> int:
-    """Retrieve the numerical group ID for the wazuh group.
+def fortishield_gid() -> int:
+    """Retrieve the numerical group ID for the fortishield group.
 
     Returns
     -------
@@ -151,14 +151,14 @@ _context_cache = dict()
 cache_event = Event()
 _FORTISHIELD_UID = None
 _FORTISHIELD_GID = None
-GROUP_NAME = 'wazuh'
-USER_NAME = 'wazuh'
-FORTISHIELD_PATH = find_wazuh_path()
+GROUP_NAME = 'fortishield'
+USER_NAME = 'fortishield'
+FORTISHIELD_PATH = find_fortishield_path()
 
 
 # ============================================= Fortishield constants - Commands =============================================
 CHECK_CONFIG_COMMAND = 'check-manager-configuration'
-RESTART_FORTISHIELD_COMMAND = 'restart-wazuh'
+RESTART_FORTISHIELD_COMMAND = 'restart-fortishield'
 
 
 # =========================================== Fortishield constants - Date format ============================================
@@ -184,7 +184,7 @@ MAX_GROUPS_PER_MULTIGROUP = 128
 
 # ============================================= Fortishield constants - Version ==============================================
 # Agent upgrading variables.
-WPK_REPO_URL_4_X = "packages.wazuh.com/4.x/wpk/"
+WPK_REPO_URL_4_X = "packages.fortishield.com/4.x/wpk/"
 # Agent component stats required version.
 AGENT_COMPONENT_STATS_REQUIRED_VERSION = {'logcollector': 'v4.2.0', 'agent': 'v4.2.0'}
 # Version variables (legacy, required, etc).
@@ -207,8 +207,8 @@ FORTISHIELD_LOG = os.path.join(FORTISHIELD_LOGS, 'ossec.log')
 FORTISHIELD_LOG_JSON = os.path.join(FORTISHIELD_LOGS, 'ossec.json')
 DATABASE_PATH = os.path.join(FORTISHIELD_PATH, 'var', 'db')
 DATABASE_PATH_GLOBAL = os.path.join(DATABASE_PATH, 'global.db')
-ANALYSISD_STATS = os.path.join(FORTISHIELD_PATH, 'var', 'run', 'wazuh-analysisd.state')
-REMOTED_STATS = os.path.join(FORTISHIELD_PATH, 'var', 'run', 'wazuh-remoted.state')
+ANALYSISD_STATS = os.path.join(FORTISHIELD_PATH, 'var', 'run', 'fortishield-analysisd.state')
+REMOTED_STATS = os.path.join(FORTISHIELD_PATH, 'var', 'run', 'fortishield-remoted.state')
 OSSEC_TMP_PATH = os.path.join(FORTISHIELD_PATH, 'tmp')
 OSSEC_PIDFILE_PATH = os.path.join(FORTISHIELD_PATH, 'var', 'run')
 OS_PIDFILE_PATH = os.path.join('var', 'run')

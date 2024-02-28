@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import calendar
@@ -13,9 +13,9 @@ from unittest.mock import patch, PropertyMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core import wlogging
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core import wlogging
 
 
 def test_timebasedfilerotatinghandler_dorollover():
@@ -38,7 +38,7 @@ def test_timebasedfilerotatinghandler_dorollover():
 
 
 @pytest.mark.parametrize('rotated_file', ['test.log.2021-08-03', 'test.log.2019-07-04'])
-@patch('wazuh.core.utils.mkdir_with_mode')
+@patch('fortishield.core.utils.mkdir_with_mode')
 def test_timebasedfilerotatinghandler_compute_log_directory(mock_mkdir, rotated_file):
     """Test if method compute_log_directory of TimeBasedFileRotatingHandler works properly.
 
@@ -85,7 +85,7 @@ def test_sizebasedfilerotatinghandler_dorollover():
             assert backup.read().decode() == test_str
 
 
-@patch('wazuh.core.utils.mkdir_with_mode')
+@patch('fortishield.core.utils.mkdir_with_mode')
 def test_sizebasedfilerotatinghandler_compute_log_directory(mock_mkdir):
     """Test if method compute_log_directory of SizeBasedFileRotatingHandler works properly."""
     previous_rotated_logs = randint(2, 15)
@@ -117,7 +117,7 @@ def test_sizebasedfilerotatinghandler_compute_log_directory(mock_mkdir):
         mock_mkdir.assert_called_with(log_path, 0o750)
 
         # Expect the 4th rotated log
-        with patch("wazuh.core.wlogging.os.path.exists", new=_mock_exists):
+        with patch("fortishield.core.wlogging.os.path.exists", new=_mock_exists):
             expected_name = join(log_path, f"test.log-{int(day):02d}_{previous_rotated_logs + 1}.gz")
             computed_name = fh.compute_log_directory()
 
@@ -128,9 +128,9 @@ def test_sizebasedfilerotatinghandler_compute_log_directory(mock_mkdir):
 @pytest.mark.parametrize('max_size', [0, 500])
 @patch('logging.addLevelName')
 @patch('logging.Logger.addHandler')
-@patch('wazuh.core.wlogging.SizeBasedFileRotatingHandler')
-@patch('wazuh.core.wlogging.TimeBasedFileRotatingHandler')
-def test_wazuh_logger_setup_logger(mock_time_handler, mock_size_handler, mock_add_handler, mock_add_level_name,
+@patch('fortishield.core.wlogging.SizeBasedFileRotatingHandler')
+@patch('fortishield.core.wlogging.TimeBasedFileRotatingHandler')
+def test_fortishield_logger_setup_logger(mock_time_handler, mock_size_handler, mock_add_handler, mock_add_level_name,
                                    max_size):
     """Test if method setup_logger of FortishieldLogger setups the logger attribute properly.
 
@@ -167,7 +167,7 @@ def test_wazuh_logger_setup_logger(mock_time_handler, mock_size_handler, mock_ad
 @patch.object(wlogging.FortishieldLogger, 'custom_formatter', create=True, new_callable=PropertyMock)
 @patch.object(wlogging.FortishieldLogger, 'max_size', create=True, new_callable=PropertyMock)
 @patch('logging.Formatter')
-def test_wazuh_logger__init__(mock_lformatter, mock_max_size, mock_formatter, mock_logger_name, mock_debug_level,
+def test_fortishield_logger__init__(mock_lformatter, mock_max_size, mock_formatter, mock_logger_name, mock_debug_level,
                               mock_foreground_mode, mock_logger, mock_tag, mock_log_path):
     """Test if FortishieldLogger __init__ method initialize all attributes properly."""
     # To bypass the checking of the existence of a valid Fortishield install
@@ -185,9 +185,9 @@ def test_wazuh_logger__init__(mock_lformatter, mock_max_size, mock_formatter, mo
     ('foreground_mode', None, True),
     ('doesnt_exists', AttributeError, None)
 ])
-@patch('wazuh.core.wlogging.SizeBasedFileRotatingHandler')
-@patch('wazuh.core.wlogging.TimeBasedFileRotatingHandler')
-def test_wazuh_logger_getattr(mock_time_handler, mock_size_handler, attribute, expected_exception, expected_value):
+@patch('fortishield.core.wlogging.SizeBasedFileRotatingHandler')
+@patch('fortishield.core.wlogging.TimeBasedFileRotatingHandler')
+def test_fortishield_logger_getattr(mock_time_handler, mock_size_handler, attribute, expected_exception, expected_value):
     """Test if FortishieldLogger __getattr__ method works properly."""
     tmp_dir = tempfile.TemporaryDirectory()
     # To bypass the checking of the existence of a valid Fortishield install

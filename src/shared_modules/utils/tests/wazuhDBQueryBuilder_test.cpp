@@ -9,8 +9,8 @@
  * Foundation.
  */
 
-#include "wazuhDBQueryBuilder_test.hpp"
-#include "wazuhDBQueryBuilder.hpp"
+#include "fortishieldDBQueryBuilder_test.hpp"
+#include "fortishieldDBQueryBuilder.hpp"
 #include <string>
 
 TEST_F(FortishieldDBQueryBuilderTest, GlobalTest)

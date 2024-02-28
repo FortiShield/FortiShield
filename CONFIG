@@ -7,7 +7,7 @@ Copyright (C) 2014 Trend Micro Inc.
 
 = Information about Fortishield =
 
-Visit https://www.wazuh.com
+Visit https://www.fortishield.com
 
 
 = Recommended Installation =
@@ -19,4 +19,4 @@ See INSTALL
 
 Just follow the steps from the install.sh script.
 More information at
-https://documentation.wazuh.com
+https://documentation.fortishield.com

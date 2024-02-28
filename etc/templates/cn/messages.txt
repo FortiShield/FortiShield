@@ -91,9 +91,9 @@ yesrunauthd="运行Auth守护进程"
 
 # Part 4
 installing="正在安装系统"
-startwazuh="你想在安装后启动Fortishield吗？"
-nowazuhstart="Fortishield不会在安装结束时开始。"
-yeswazuhstart="Fortishield将在安装结束时开始。"
+startfortishield="你想在安装后启动Fortishield吗？"
+nofortishieldstart="Fortishield不会在安装结束时开始。"
+yesfortishieldstart="Fortishield将在安装结束时开始。"
 runningmake="正在运行Makefile"
 
 # Final

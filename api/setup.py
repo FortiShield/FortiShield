@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from setuptools import setup, find_namespace_packages
@@ -17,7 +17,7 @@ setup(
     name='api',
     version='5.0.0',
     description="Fortishield API",
-    author_email="hello@wazuh.com",
+    author_email="hello@fortishield.com",
     author="Fortishield",
     url="https://github.com/fortishield",
     keywords=["Fortishield API"],

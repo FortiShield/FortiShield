@@ -8,7 +8,7 @@
 */
 #ifndef WIN32
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include <stdio.h>
 #define MAX_TIMEOUT_VALUE 9000
 

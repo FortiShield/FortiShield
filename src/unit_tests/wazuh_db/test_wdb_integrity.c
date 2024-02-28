@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wazuh_db/wdb.h"
+#include "../fortishield_db/wdb.h"
 #include "../headers/shared.h"
 #include "../os_crypto/sha1/sha1_op.h"
 #include "../external/sqlite/sqlite3.h"
@@ -22,8 +22,8 @@
 
 #include "../wrappers/externals/openssl/digest_wrappers.h"
 #include "../wrappers/externals/sqlite/sqlite3_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 #include "cJSON.h"
 #include "os_err.h"
 

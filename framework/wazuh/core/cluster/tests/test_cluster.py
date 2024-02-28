@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import io
@@ -12,22 +12,22 @@ from time import time
 from unittest.mock import MagicMock, mock_open, patch, call, ANY
 
 import pytest
-from wazuh.core import common
+from fortishield.core import common
 from concurrent.futures import ProcessPoolExecutor
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        import wazuh.core.cluster.cluster as cluster
-        from wazuh import FortishieldException
-        from wazuh.core.exception import FortishieldError, FortishieldInternalError
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        import fortishield.core.cluster.cluster as cluster
+        from fortishield import FortishieldException
+        from fortishield.core.exception import FortishieldError, FortishieldInternalError
 
 agent_groups = b"default,windows-servers"
 
@@ -36,7 +36,7 @@ default_cluster_configuration = {
     'cluster': {
         'disabled': 'yes',
         'node_type': 'master',
-        'name': 'wazuh',
+        'name': 'fortishield',
         'node_name': 'node01',
         'key': '',
         'port': 1516,
@@ -50,7 +50,7 @@ custom_cluster_configuration = {
     'cluster': {
         'disabled': 'no',
         'node_type': 'master',
-        'name': 'wazuh',
+        'name': 'fortishield',
         'node_name': 'node01',
         'key': 'a' * 32,
         'port': 1516,
@@ -83,9 +83,9 @@ custom_incomplete_configuration = {
 ])
 def test_check_cluster_config_ko(read_config, message):
     """Check wrong configurations to check the proper exceptions are raised."""
-    with patch('wazuh.core.cluster.utils.get_ossec_conf', return_value=read_config) as m:
+    with patch('fortishield.core.cluster.utils.get_ossec_conf', return_value=read_config) as m:
         with pytest.raises(FortishieldException, match=rf'.* 3004 .* {message}'):
-            configuration = wazuh.core.cluster.utils.read_config()
+            configuration = fortishield.core.cluster.utils.read_config()
             for key in m.return_value["cluster"]:
                 if key in configuration:
                     configuration[key] = m.return_value["cluster"][key]
@@ -98,7 +98,7 @@ def test_get_node():
     test_dict = {"node_name": "master", "name": "master",
                  "node_type": "master"}
 
-    with patch('wazuh.core.cluster.cluster.read_config', return_value=test_dict):
+    with patch('fortishield.core.cluster.cluster.read_config', return_value=test_dict):
         get_node = cluster.get_node()
         assert isinstance(get_node, dict)
         assert get_node["node"] == test_dict["node_name"]
@@ -112,9 +112,9 @@ def test_check_cluster_status():
 
 
 @patch('os.path.getmtime', return_value=45)
-@patch('wazuh.core.cluster.cluster.blake2b', return_value="hash")
-@patch("wazuh.core.cluster.cluster.path.join", return_value="/mock/foo/bar")
-@patch('wazuh.core.cluster.cluster.walk', return_value=[('/foo/bar', (), ('spam', 'eggs', '.merged'))])
+@patch('fortishield.core.cluster.cluster.blake2b', return_value="hash")
+@patch("fortishield.core.cluster.cluster.path.join", return_value="/mock/foo/bar")
+@patch('fortishield.core.cluster.cluster.walk', return_value=[('/foo/bar', (), ('spam', 'eggs', '.merged'))])
 def test_walk_dir(walk_mock, path_join_mock, blake2b_mock, getmtime_mock):
     """Check the different outputs of the walk_files function."""
 
@@ -190,7 +190,7 @@ def test_walk_dir(walk_mock, path_join_mock, blake2b_mock, getmtime_mock):
     getmtime_mock.assert_has_calls([call(path_join_mock.return_value), call(path_join_mock.return_value)])
 
 
-@patch('wazuh.core.cluster.cluster.walk', return_value=[('/foo/bar', (), ['spam'])])
+@patch('fortishield.core.cluster.cluster.walk', return_value=[('/foo/bar', (), ['spam'])])
 @patch('os.path.join', return_value='/foo/bar')
 def test_walk_dir_ko(mock_path_join, mock_walk):
     """Check all errors that can be raised by the function walk_dir."""
@@ -205,7 +205,7 @@ def test_walk_dir_ko(mock_path_join, mock_walk):
                          {'/foo/bar/': {'mod_time': True}})
         assert logs['error']['/foo/bar'] == ["Can't read metadata from file spam: "]
 
-    with patch('wazuh.core.cluster.cluster.walk', side_effect=OSError):
+    with patch('fortishield.core.cluster.cluster.walk', side_effect=OSError):
         with pytest.raises(FortishieldInternalError, match=r'.* 3015 .*'):
             cluster.walk_dir("/foo/bar", True, ["all"], ["ar.conf"], [".xml", ".txt"], "",
                              {'/foo/bar/': {'mod_time': True}})
@@ -215,7 +215,7 @@ def test_walk_dir_ko(mock_path_join, mock_walk):
                          {'/foo/bar/': {'mod_time': False}})
 
 
-@patch('wazuh.core.cluster.cluster.get_cluster_items', return_value={
+@patch('fortishield.core.cluster.cluster.get_cluster_items', return_value={
     "files": {
         "etc/": {
             "permissions": 416,
@@ -246,18 +246,18 @@ def test_get_files_status(mock_get_cluster_items):
 
     test_dict = {"path": "metadata"}
 
-    with patch('wazuh.core.cluster.cluster.walk_dir', return_value=(test_dict, {})):
+    with patch('fortishield.core.cluster.cluster.walk_dir', return_value=(test_dict, {})):
         assert isinstance(cluster.get_files_status(), tuple) and \
                all(isinstance(d, dict) for d in cluster.get_files_status())
 
         assert cluster.get_files_status()[0]["path"] == (test_dict["path"])
 
-    with patch('wazuh.core.cluster.cluster.walk_dir', side_effect=Exception):
+    with patch('fortishield.core.cluster.cluster.walk_dir', side_effect=Exception):
         _, logs = cluster.get_files_status()
         assert logs['warning']['etc/'] == [f"Error getting file status: ."]
 
 
-@patch('wazuh.core.cluster.cluster.get_cluster_items', return_value={
+@patch('fortishield.core.cluster.cluster.get_cluster_items', return_value={
     'files': {
         'etc/': {'permissions': 416, 'source': 'master', 'files': ['client.keys'], 'recursive': False, 'restart': False,
                  'remove_subdirs_if_empty': False, 'extra_valid': False, 'description': 'client keys file database'},
@@ -288,14 +288,14 @@ def test_get_ruleset_status(mock_get_cluster_items):
              ['~', '.tmp', '.lock', '.swp'], 'etc/lists/', {}, True)
     ]
 
-    with patch("wazuh.core.cluster.cluster.walk_dir", return_value=(test_dict, {})) as walk_dir_mock:
+    with patch("fortishield.core.cluster.cluster.walk_dir", return_value=(test_dict, {})) as walk_dir_mock:
         result = cluster.get_ruleset_status({})
         assert isinstance(result, dict)
         assert result["path"] == test_dict["path"]["hash"]
         assert walk_dir_mock.call_args_list == expected_calls
 
-    with patch("wazuh.core.cluster.cluster.walk_dir", side_effect=Exception):
-        with patch.object(wazuh.core.cluster.cluster.logger, "warning") as logger_mock:
+    with patch("fortishield.core.cluster.cluster.walk_dir", side_effect=Exception):
+        with patch.object(fortishield.core.cluster.cluster.logger, "warning") as logger_mock:
             cluster.get_ruleset_status({})
             logger_mock.assert_has_calls([call('Error getting file status: .')]*3)
 
@@ -327,10 +327,10 @@ def test_update_cluster_control(failed_item, exists, expected_result):
 
 
 @patch('zlib.compress', return_value=b'compressed_test_content')
-@patch('wazuh.core.cluster.cluster.get_cluster_items')
-@patch('wazuh.core.cluster.cluster.mkdir_with_mode')
-@patch('wazuh.core.cluster.cluster.path.dirname', return_value='/some/path')
-@patch('wazuh.core.cluster.cluster.path.exists', return_value=False)
+@patch('fortishield.core.cluster.cluster.get_cluster_items')
+@patch('fortishield.core.cluster.cluster.mkdir_with_mode')
+@patch('fortishield.core.cluster.cluster.path.dirname', return_value='/some/path')
+@patch('fortishield.core.cluster.cluster.path.exists', return_value=False)
 def test_compress_files_ok(mock_path_exists, mock_path_dirname, mock_mkdir_with_mode, mock_get_cluster_items,
                            mock_zlib):
     """Check if the compressing function is working properly."""
@@ -348,10 +348,10 @@ def test_compress_files_ok(mock_path_exists, mock_path_dirname, mock_mkdir_with_
         ]
 
 
-@patch('wazuh.core.cluster.cluster.get_cluster_items')
-@patch('wazuh.core.cluster.cluster.mkdir_with_mode')
-@patch('wazuh.core.cluster.cluster.path.dirname', return_value='/some/path')
-@patch('wazuh.core.cluster.cluster.path.exists', return_value=False)
+@patch('fortishield.core.cluster.cluster.get_cluster_items')
+@patch('fortishield.core.cluster.cluster.mkdir_with_mode')
+@patch('fortishield.core.cluster.cluster.path.dirname', return_value='/some/path')
+@patch('fortishield.core.cluster.cluster.path.exists', return_value=False)
 def test_compress_files_ko(mock_path_exists, mock_path_dirname, mock_mkdir_with_mode, mock_get_cluster_items):
     """Check if the compressing function is raising every exception."""
     with patch('builtins.open', mock_open(read_data='test_content')):
@@ -382,7 +382,7 @@ def test_compress_files_ko(mock_path_exists, mock_path_dirname, mock_mkdir_with_
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.cluster.decompress_files', return_value="OK")
+@patch('fortishield.core.cluster.cluster.decompress_files', return_value="OK")
 async def test_async_decompress_files(decompress_files_mock):
     """Check if the async wrapper is correctly working."""
     zip_path = '/foo/bar/'
@@ -395,8 +395,8 @@ async def test_async_decompress_files(decompress_files_mock):
 @patch('zlib.decompress')
 @patch('os.makedirs')
 @patch('os.path.exists', side_effect=[False, True, True])
-@patch('wazuh.core.cluster.cluster.remove')
-@patch('wazuh.core.cluster.cluster.mkdir_with_mode')
+@patch('fortishield.core.cluster.cluster.remove')
+@patch('fortishield.core.cluster.cluster.mkdir_with_mode')
 @patch('json.loads', return_value="some string with files")
 async def test_decompress_files_ok(json_loads_mock, mkdir_with_mode_mock, remove_mock, os_path_exists_mock,
                                    mock_makedirs, zlib_mock):
@@ -423,7 +423,7 @@ async def test_decompress_files_ok(json_loads_mock, mkdir_with_mode_mock, remove
 @pytest.mark.asyncio
 @patch('shutil.rmtree')
 @patch('zlib.decompress', return_value=Exception)
-@patch('wazuh.core.cluster.cluster.mkdir_with_mode')
+@patch('fortishield.core.cluster.cluster.mkdir_with_mode')
 async def test_decompress_files_ko(mkdir_with_mode_mock, zlib_mock, rmtree_mock):
     """Check if the decompressing function is raising the necessary exceptions."""
 
@@ -442,12 +442,12 @@ async def test_decompress_files_ko(mkdir_with_mode_mock, zlib_mock, rmtree_mock)
         with patch('builtins.open', mock_open(read_data=f'path{cluster.PATH_SEP}content'.encode())):
             with patch('os.path.exists', return_value=False):
                 with patch('os.makedirs', side_effect=PermissionError) as mock_makedirs:
-                    with patch('wazuh.core.cluster.cluster.remove'):
+                    with patch('fortishield.core.cluster.cluster.remove'):
                         mock_makedirs.errno = 13  # Errno 13: Permission denied
                         cluster.decompress_files(zip_dir)
 
 
-@patch('wazuh.core.cluster.cluster.get_cluster_items')
+@patch('fortishield.core.cluster.cluster.get_cluster_items')
 def test_compare_files(mock_get_cluster_items):
     """Check the different outputs of the compare_files function."""
     mock_get_cluster_items.return_value = {'files': {'key': {'extra_valid': True}}}
@@ -458,7 +458,7 @@ def test_compare_files(mock_get_cluster_items):
                  'some/path4/': {'cluster_item_key': "key", 'hash': 'blake2_hash value'}}
 
     # First condition
-    with patch('wazuh.core.cluster.cluster.merge_info', return_values=[1, "random/path/"]):
+    with patch('fortishield.core.cluster.cluster.merge_info', return_values=[1, "random/path/"]):
         files = cluster.compare_files(seq, condition, 'worker1')
         assert len(files["missing"]) == 1
         assert len(files["extra"]) == 0
@@ -475,8 +475,8 @@ def test_compare_files(mock_get_cluster_items):
     assert len(files["shared"]) == 0
 
 
-@patch('wazuh.core.cluster.cluster.get_cluster_items')
-@patch.object(wazuh.core.cluster.cluster.logger, "error")
+@patch('fortishield.core.cluster.cluster.get_cluster_items')
+@patch.object(fortishield.core.cluster.cluster.logger, "error")
 def test_compare_files_ko(logger_mock, mock_get_cluster_items):
     """Check the different outputs of the compare_files function."""
     mock_get_cluster_items.return_value = {'files': {'key': {'extra_valid': True}}}
@@ -493,14 +493,14 @@ def test_compare_files_ko(logger_mock, mock_get_cluster_items):
         logger_mock.assert_called_once_with(
             f"Error getting agent IDs while verifying which extra-valid files are required: ")
         mock_get_cluster_items.assert_called_once_with()
-        wazuh_db_query_mock.assert_called_once_with()
+        fortishield_db_query_mock.assert_called_once_with()
 
 
 def test_clean_up_ok():
     """Check if the cleaning function is working properly."""
 
     with patch('os.path.join', return_value="some/path/"):
-        with patch.object(wazuh.core.cluster.cluster.logger, "debug") as mock_logger:
+        with patch.object(fortishield.core.cluster.cluster.logger, "debug") as mock_logger:
             with patch('os.path.exists', return_value=False) as path_exists_mock:
                 cluster.clean_up("worker1")
                 mock_logger.assert_any_call("Removing 'some/path/'.")
@@ -508,7 +508,7 @@ def test_clean_up_ok():
                 mock_logger.assert_called_with("Removed 'some/path/'.")
 
                 path_exists_mock.return_value = True
-                with patch('wazuh.core.cluster.cluster.listdir',
+                with patch('fortishield.core.cluster.cluster.listdir',
                            return_value=["c-internal.sock", "other_file.txt"]):
                     with patch('os.path.isdir', return_value=True) as is_dir_mock:
                         with patch('shutil.rmtree'):
@@ -517,7 +517,7 @@ def test_clean_up_ok():
                             mock_logger.assert_called_with("Removed 'some/path/'.")
 
                         is_dir_mock.return_value = False
-                        with patch('wazuh.core.cluster.cluster.remove'):
+                        with patch('fortishield.core.cluster.cluster.remove'):
                             cluster.clean_up("worker1")
                             mock_logger.assert_any_call("Removing 'some/path/'.")
                             mock_logger.assert_called_with("Removed 'some/path/'.")
@@ -530,15 +530,15 @@ def test_clean_up_ko():
                      f"'stat: path should be string, bytes, os.PathLike or integer, not type'."
 
     with patch('os.path.join') as path_join_mock:
-        with patch.object(wazuh.core.cluster.cluster.logger, "error") as mock_error_logger:
-            with patch.object(wazuh.core.cluster.cluster.logger, "debug") as mock_debug_logger:
+        with patch.object(fortishield.core.cluster.cluster.logger, "error") as mock_error_logger:
+            with patch.object(fortishield.core.cluster.cluster.logger, "debug") as mock_debug_logger:
                 path_join_mock.return_value = Exception
                 cluster.clean_up("worker1")
                 mock_debug_logger.assert_any_call(f"Removing '{Exception}'.")
                 mock_error_logger.assert_called_once_with(error_cleaning)
 
                 with patch('os.path.exists', return_value=True):
-                    with patch('wazuh.core.cluster.cluster.listdir',
+                    with patch('fortishield.core.cluster.cluster.listdir',
                                return_value=["c-internal.sock", "other_file.txt"]):
                         with patch('shutil.rmtree', side_effect=Exception):
                             cluster.clean_up("worker1")
@@ -547,8 +547,8 @@ def test_clean_up_ko():
                             mock_debug_logger.assert_called_with(f"Removed '{Exception}'.")
 
 
-@patch('wazuh.core.cluster.cluster.listdir', return_value=['005', '006'])
-@patch('wazuh.core.cluster.cluster.stat')
+@patch('fortishield.core.cluster.cluster.listdir', return_value=['005', '006'])
+@patch('fortishield.core.cluster.cluster.stat')
 def test_merge_info(stat_mock, listdir_mock):
     """Test merge agent info function."""
     stat_mock.return_value.st_mtime = time()
@@ -574,7 +574,7 @@ def test_unmerge_info():
     agent_info = f"23 005 2019-03-29 14:57:29.610934\n{agent_groups}".encode()
 
     with patch('builtins.open', mock_open(read_data=agent_info)):
-        with patch('wazuh.core.cluster.cluster.stat') as stat_mock:
+        with patch('fortishield.core.cluster.cluster.stat') as stat_mock:
             # Make sure that the function is running correctly
             stat_mock.return_value.st_size = len(agent_info) - 5
             assert list(cluster.unmerge_info("destination/directory/", "path/file/", "filename")) == [
@@ -582,7 +582,7 @@ def test_unmerge_info():
 
             # Make sure that the Exception is being properly called
             stat_mock.return_value.st_size = len(agent_info)
-            with patch.object(wazuh.core.cluster.cluster.logger, "warning") as mock_logger:
+            with patch.object(fortishield.core.cluster.cluster.logger, "warning") as mock_logger:
                 list(cluster.unmerge_info("destination/directory/", "path/file/", "filename"))
                 mock_logger.assert_called_once_with("Malformed file (not enough values to unpack "
                                                     "(expected 3, got 1)). Parsed line: rs'. "
@@ -597,7 +597,7 @@ async def test_run_in_pool(event_loop):
         """Mock function."""
         return "Mock callable"
 
-    with patch('wazuh.core.cluster.cluster.wait_for', return_value="OK") as wait_for_mock:
+    with patch('fortishield.core.cluster.cluster.wait_for', return_value="OK") as wait_for_mock:
         assert await cluster.run_in_pool(event_loop, ProcessPoolExecutor(max_workers=1), mock_callable, None) == wait_for_mock.return_value
         wait_for_mock.assert_called_once()
 

@@ -1,22 +1,22 @@
 """
  Copyright (C) 2015-2024, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 
 from pathlib import Path
-from wazuh_testing.tools.simulators.agent_simulator import connect
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.remoted.configuration import REMOTED_DEBUG
-from wazuh_testing.constants.paths.sockets import ANALYSISD_QUEUE_SOCKET_PATH
-from wazuh_testing.constants.daemons import ANALYSISD_DAEMON
-from wazuh_testing.modules.analysisd.patterns import ANALYSISD_STARTED
-from wazuh_testing.tools.mitm import ManInTheMiddle
-from wazuh_testing.utils import callbacks
-from wazuh_testing.tools.monitors import file_monitor
+from fortishield_testing.tools.simulators.agent_simulator import connect
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.remoted.configuration import REMOTED_DEBUG
+from fortishield_testing.constants.paths.sockets import ANALYSISD_QUEUE_SOCKET_PATH
+from fortishield_testing.constants.daemons import ANALYSISD_DAEMON
+from fortishield_testing.modules.analysisd.patterns import ANALYSISD_STARTED
+from fortishield_testing.tools.mitm import ManInTheMiddle
+from fortishield_testing.utils import callbacks
+from fortishield_testing.tools.monitors import file_monitor
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -48,7 +48,7 @@ receiver_sockets, monitored_sockets = None, None  # Set in the fixtures
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_protocols_communication(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                            set_wazuh_configuration, daemons_handler, simulate_agents, configure_sockets_environment_module,
+                            set_fortishield_configuration, daemons_handler, simulate_agents, configure_sockets_environment_module,
                        connect_to_sockets_module, waiting_for_analysisd_startup):
 
     '''
@@ -75,7 +75,7 @@ def test_protocols_communication(test_configuration, test_metadata, configure_lo
         - simulate_agents
             type: fixture
             brief: create agents
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
         - configure_sockets_environment_module:
@@ -86,7 +86,7 @@ def test_protocols_communication(test_configuration, test_metadata, configure_lo
             brief: Connect to a given list of sockets.
         - waiting_for_analysisd_startup:
             type: fixture
-            brief: Wait until the 'wazuh-analysisd' has begun and the 'alerts.json' file is created.
+            brief: Wait until the 'fortishield-analysisd' has begun and the 'alerts.json' file is created.
 
     '''
     agent = simulate_agents[0]

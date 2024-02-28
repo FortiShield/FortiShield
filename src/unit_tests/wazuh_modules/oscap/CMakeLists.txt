@@ -15,9 +15,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB oscap ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM oscap ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB oscap ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM oscap ../../../fortishield_modules/main.o)
 
 add_library(OSCAP_O STATIC ${oscap})
 

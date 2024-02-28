@@ -119,7 +119,7 @@
     -  Author: Josh Brower, Josh@DefensiveDepth.com.
     -  Licensed under the MIT License: http://opensource.org/licenses/MIT
     -  Windows Process Attributes documentation here: http://defensivedepth.com/windows-processes
-    -  Updated by Fortishield, Inc. <support@wazuh.com>.
+    -  Updated by Fortishield, Inc. <support@fortishield.com>.
 -->
 
 <group name="sysmon,sysmon_process-anomalies,">

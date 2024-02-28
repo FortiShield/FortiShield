@@ -97,7 +97,7 @@ extern w_queue_t * upgrade_module_input;
  */
 void w_init_queues();
 
-#define FORTISHIELD_SERVER    "wazuh-server"
+#define FORTISHIELD_SERVER    "fortishield-server"
 #define MAX_DECODER_ORDER_SIZE  1024
 
 extern OSHash *fim_agentinfo;

@@ -1,1 +1,1 @@
-wazuh_master = __import__('wazuh-master')
+fortishield_master = __import__('fortishield-master')

@@ -20,17 +20,17 @@
 #include "../../addagent/manage_agents.h"
 #include "../../headers/sec.h"
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/exec_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/exec_op_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
-#include "../wrappers/wazuh/wazuh_modules/wm_exec_wrappers.h"
+#include "../wrappers/fortishield/fortishield_modules/wm_exec_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
 #include "../wrappers/posix/pthread_wrappers.h"
 #include "../wrappers/linux/socket_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
-#include "../wrappers/wazuh/os_auth/os_auth_wrappers.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield/os_auth/os_auth_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
 
 #define BUFFERSIZE 1024
 #define QUEUE_SIZE 5

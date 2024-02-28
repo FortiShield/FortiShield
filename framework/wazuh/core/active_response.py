@@ -1,17 +1,17 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
 
-from wazuh.core import common
-from wazuh.core.agent import Agent
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.utils import read_cluster_config
-from wazuh.core.exception import FortishieldError
-from wazuh.core.utils import FortishieldVersion
-from wazuh.core.wazuh_queue import FortishieldQueue
-from wazuh.core.wazuh_socket import create_wazuh_socket_message
+from fortishield.core import common
+from fortishield.core.agent import Agent
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.utils import read_cluster_config
+from fortishield.core.exception import FortishieldError
+from fortishield.core.utils import FortishieldVersion
+from fortishield.core.fortishield_queue import FortishieldQueue
+from fortishield.core.fortishield_socket import create_fortishield_socket_message
 
 
 def get_commands() -> list:
@@ -239,7 +239,7 @@ class ARJsonMessage(ARMessageBuilder):
         node_name = get_node().get('node') if cluster_enabled else None
 
         msg_queue = json.dumps(
-            create_wazuh_socket_message(origin={'name': node_name, 'module': common.origin_module.get()},
+            create_fortishield_socket_message(origin={'name': node_name, 'module': common.origin_module.get()},
                                         command=command,
                                         parameters={'extra_args': arguments if arguments else [],
                                                     'alert': alert if alert else {}}))

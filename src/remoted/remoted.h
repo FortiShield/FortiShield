@@ -12,7 +12,7 @@
 #define LOGREMOTE_H
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-remoted"
+#define ARGV0 "fortishield-remoted"
 #endif
 
 #include "../config/config.h"

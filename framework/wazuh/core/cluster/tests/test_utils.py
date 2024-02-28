@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -9,20 +9,20 @@ from unittest.mock import patch, MagicMock, call
 
 import pytest
 
-with patch('wazuh.core.common.getgrnam'):
-    with patch('wazuh.core.common.getpwnam'):
-        with patch('wazuh.core.common.wazuh_uid'):
-            with patch('wazuh.core.common.wazuh_gid'):
-                sys.modules['wazuh.rbac.orm'] = MagicMock()
+with patch('fortishield.core.common.getgrnam'):
+    with patch('fortishield.core.common.getpwnam'):
+        with patch('fortishield.core.common.fortishield_uid'):
+            with patch('fortishield.core.common.fortishield_gid'):
+                sys.modules['fortishield.rbac.orm'] = MagicMock()
 
-                from wazuh.core.cluster import utils
-                from wazuh import FortishieldError, FortishieldException, FortishieldInternalError
-                from wazuh.core.results import FortishieldResult
+                from fortishield.core.cluster import utils
+                from fortishield import FortishieldError, FortishieldException, FortishieldInternalError
+                from fortishield.core.results import FortishieldResult
 
 default_cluster_config = {
     'disabled': True,
     'node_type': 'master',
-    'name': 'wazuh',
+    'name': 'fortishield',
     'node_name': 'node01',
     'key': '',
     'port': 1516,
@@ -37,21 +37,21 @@ def test_read_cluster_config():
     config = utils.read_cluster_config()
     assert config == default_cluster_config
 
-    with patch('wazuh.core.cluster.utils.get_ossec_conf', side_effect=FortishieldError(1001)):
+    with patch('fortishield.core.cluster.utils.get_ossec_conf', side_effect=FortishieldError(1001)):
         with pytest.raises(FortishieldError, match='.* 3006 .*'):
             utils.read_cluster_config()
 
-    with patch('wazuh.core.configuration.load_wazuh_xml', return_value=SystemExit):
+    with patch('fortishield.core.configuration.load_fortishield_xml', return_value=SystemExit):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             utils.read_cluster_config(from_import=True)
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
 
-    with patch('wazuh.core.cluster.utils.get_ossec_conf', side_effect=KeyError(1)):
+    with patch('fortishield.core.cluster.utils.get_ossec_conf', side_effect=KeyError(1)):
         with pytest.raises(FortishieldError, match='.* 3006 .*'):
             utils.read_cluster_config()
 
-    with patch('wazuh.core.cluster.utils.get_ossec_conf', return_value={'cluster': default_cluster_config}):
+    with patch('fortishield.core.cluster.utils.get_ossec_conf', return_value={'cluster': default_cluster_config}):
         utils.read_config.cache_clear()
         default_cluster_config.pop('hidden')
         default_cluster_config['disabled'] = 'no'
@@ -100,14 +100,14 @@ def test_get_manager_status():
     for value in status.values():
         assert value == 'stopped'
 
-    with patch('wazuh.core.cluster.utils.glob', return_value=['ossec-0.pid']):
+    with patch('fortishield.core.cluster.utils.glob', return_value=['ossec-0.pid']):
         with patch('re.match', return_value='None'):
             status = utils.get_manager_status()
             for value in status.values():
                 assert value == 'failed'
 
-        # with patch('wazuh.core.cluster.utils.join', return_value='failed') as join_mock:
-        with patch('wazuh.core.cluster.utils.os.path.exists', side_effect=exist_mock):
+        # with patch('fortishield.core.cluster.utils.join', return_value='failed') as join_mock:
+        with patch('fortishield.core.cluster.utils.os.path.exists', side_effect=exist_mock):
             status = utils.get_manager_status()
             for value in status.values():
                 assert value == 'failed'
@@ -151,14 +151,14 @@ def test_get_cluster_status():
     status = utils.get_cluster_status()
     assert {'enabled': 'no', 'running': 'no'} == status
 
-    with patch('wazuh.core.cluster.utils.get_manager_status', side_effect=FortishieldInternalError(1913)):
+    with patch('fortishield.core.cluster.utils.get_manager_status', side_effect=FortishieldInternalError(1913)):
         status = utils.get_cluster_status()
         assert {'enabled': 'no', 'running': 'no'} == status
 
 
 def test_manager_restart():
     """Verify that manager_restart send to the manager the restart request."""
-    with patch('wazuh.core.cluster.utils.open', side_effect=None):
+    with patch('fortishield.core.cluster.utils.open', side_effect=None):
         with patch('fcntl.lockf', side_effect=None):
             with pytest.raises(FortishieldInternalError, match='.* 1901 .*'):
                 utils.manager_restart()
@@ -232,7 +232,7 @@ def test_ClusterFilter():
 
 
 def test_ClusterLogger():
-    """Verify that ClusterLogger defines the logger used by wazuh-clusterd."""
+    """Verify that ClusterLogger defines the logger used by fortishield-clusterd."""
     current_logger_path = os.path.join(os.path.dirname(__file__), 'testing.log')
     cluster_logger = utils.ClusterLogger(foreground_mode=False, log_path=current_logger_path,
                                          tag='%(asctime)s %(levelname)s: [%(tag)s] [%(subtag)s] %(message)s',
@@ -266,19 +266,19 @@ def test_log_subprocess_execution():
 
 
 @patch('os.getpid', return_value=0000)
-@patch('wazuh.core.cluster.utils.pyDaemonModule.create_pid')
+@patch('fortishield.core.cluster.utils.pyDaemonModule.create_pid')
 def test_process_spawn_sleep(pyDaemon_create_pid_mock, get_pid_mock):
     """Check if the cluster pool is properly spawned."""
 
     child = 1
     utils.process_spawn_sleep(child)
 
-    pyDaemon_create_pid_mock.assert_called_once_with(f'wazuh-clusterd_child_{child}', get_pid_mock.return_value)
+    pyDaemon_create_pid_mock.assert_called_once_with(f'fortishield-clusterd_child_{child}', get_pid_mock.return_value)
 
 
 @pytest.mark.asyncio
 @patch('concurrent.futures.ThreadPoolExecutor')
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI')
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI')
 async def test_forward_function(distributed_api_mock, concurrent_mock):
     """Check if the function is correctly distributed to the master node."""
 
@@ -321,7 +321,7 @@ async def test_forward_function(distributed_api_mock, concurrent_mock):
         [{'disabled': True, 'node_type': 'worker'}, True],
     )
 )
-@patch('wazuh.core.cluster.utils.read_cluster_config')
+@patch('fortishield.core.cluster.utils.read_cluster_config')
 def test_running_on_master_node(read_cluster_config_mock, cluster_config, expected):
     """
     Test that running_on_master function returns the expected value,

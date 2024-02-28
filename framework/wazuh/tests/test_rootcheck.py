@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,21 +10,21 @@ from unittest.mock import patch, MagicMock, call
 import pytest
 
 from api.util import parse_api_param
-from wazuh.core.exception import FortishieldError
+from fortishield.core.exception import FortishieldError
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh import rootcheck
-        from wazuh.core.rootcheck import FortishieldDBQueryRootcheck
-        from wazuh.core.tests.test_rootcheck import InitRootcheck, send_msg_to_wdb, remove_db, \
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield import rootcheck
+        from fortishield.core.rootcheck import FortishieldDBQueryRootcheck
+        from fortishield.core.tests.test_rootcheck import InitRootcheck, send_msg_to_wdb, remove_db, \
             test_data_path as core_data
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -56,12 +56,12 @@ test_result = [
                                         {'id': '003', 'status': ['disconnected']}]}],
      ['active', 'disconnected', 'disconnected'], test_result[2]),
 ])
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.rootcheck.FortishieldDBQueryAgents.__exit__')
-@patch('wazuh.rootcheck.FortishieldDBQueryAgents.__init__', return_value=None)
-@patch('wazuh.syscheck.FortishieldQueue._connect')
-@patch('wazuh.syscheck.FortishieldQueue.send_msg_to_agent', side_effect=set_callable_list)
-@patch('wazuh.syscheck.FortishieldQueue.close')
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.rootcheck.FortishieldDBQueryAgents.__exit__')
+@patch('fortishield.rootcheck.FortishieldDBQueryAgents.__init__', return_value=None)
+@patch('fortishield.syscheck.FortishieldQueue._connect')
+@patch('fortishield.syscheck.FortishieldQueue.send_msg_to_agent', side_effect=set_callable_list)
+@patch('fortishield.syscheck.FortishieldQueue.close')
 def test_rootcheck_run(close_mock, send_mock, connect_mock, agent_init__mock, agent_exit__mock,
                        agent_list, failed_items, status_list, expected_result):
     """Test function `run` from rootcheck module.
@@ -77,7 +77,7 @@ def test_rootcheck_run(close_mock, send_mock, connect_mock, agent_init__mock, ag
     expected_result : list
         List of dicts with expected results for every test.
     """
-    with patch('wazuh.rootcheck.FortishieldDBQueryAgents.run', return_value=failed_items[0]):
+    with patch('fortishield.rootcheck.FortishieldDBQueryAgents.run', return_value=failed_items[0]):
         result = rootcheck.run(agent_list=agent_list)
         for args, kwargs in callable_list:
             assert (isinstance(a, str) for a in args)
@@ -97,7 +97,7 @@ def test_rootcheck_run(close_mock, send_mock, connect_mock, agent_init__mock, ag
     (['000', '001', '003'], ['000', '001'], [call('agent 000 rootcheck delete'), call('agent 001 rootcheck delete')],
      [None, None])
 ])
-@patch('wazuh.rootcheck.get_agents_info', return_value={'000', '001', '002'})
+@patch('fortishield.rootcheck.get_agents_info', return_value={'000', '001', '002'})
 @patch('socket.socket.connect')
 def test_clear(mock_connect, mock_info, agent_list, expected_affected_items, expected_calls, wdb_side_effect):
     """Test if function clear() returns expected result and if delete command is executed.
@@ -118,7 +118,7 @@ def test_clear(mock_connect, mock_info, agent_list, expected_affected_items, exp
     wdb_side_effect : FortishieldError or list
         Side effect used in the mocked FortishieldDBConnection._send function.
     """
-    with patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=wdb_side_effect) as mock_wdbconn:
+    with patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=wdb_side_effect) as mock_wdbconn:
         result = rootcheck.clear(agent_list).render()
 
         assert result['data']['affected_items'] == expected_affected_items
@@ -128,8 +128,8 @@ def test_clear(mock_connect, mock_info, agent_list, expected_affected_items, exp
         mock_wdbconn.assert_has_calls(expected_calls, any_order=True)
 
 
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_last_scan(mock_connect, mock_send, mock_info):
     """Check if get_last_scan() returned results have expected format and content"""
@@ -140,9 +140,9 @@ def test_get_last_scan(mock_connect, mock_send, mock_info):
 @pytest.mark.parametrize('limit', [
     1, 3, None
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent(mock_connect, mock_send, mock_info, mock_exists, limit):
     """Check if limit is correctly applied to get_rootcheck_agent() function
@@ -166,9 +166,9 @@ def test_get_rootcheck_agent(mock_connect, mock_send, mock_info, mock_exists, li
 @pytest.mark.parametrize('select', [
     ['log'], ['log', 'pci_dss'], ['status'], None
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_select(mock_connect, mock_send, mock_info, mock_exists, select):
     """Check that only selected elements are returned
@@ -197,9 +197,9 @@ def test_get_rootcheck_agent_select(mock_connect, mock_send, mock_info, mock_exi
     ('outstanding', 5),
     ('solved', 1)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_search(mock_connect, mock_send, mock_info, mock_exists, search, total_expected_items):
     """Checks if the number of items returned is as expected when using the search parameter.
@@ -227,9 +227,9 @@ def test_get_rootcheck_agent_search(mock_connect, mock_send, mock_info, mock_exi
     ('pci_dss>3', 2),
     ('(pci_dss>3,pci_dss<2);log~System', 5),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_query(mock_connect, mock_send, mock_info, mock_exists, query, total_expected_items):
     """Checks if the number of items returned is as expected when using query parameter.
@@ -253,9 +253,9 @@ def test_get_rootcheck_agent_query(mock_connect, mock_send, mock_info, mock_exis
     (['cis', 'pci_dss'], True, 3),
     (['log'], True, 6),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_distinct(mock_connect, mock_send, mock_info, mock_exists, select, distinct,
                                       total_expected_items):
@@ -281,9 +281,9 @@ def test_get_rootcheck_agent_distinct(mock_connect, mock_send, mock_info, mock_e
     ('-cis', 'Benchmark v1.0'),
     ('+cis', '/var'),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_sort(mock_connect, mock_send, mock_info, mock_exists, sort, first_item):
     """Checks if the the first item returned is expected when using sort parameter
@@ -314,9 +314,9 @@ def test_get_rootcheck_agent_sort(mock_connect, mock_send, mock_info, mock_exist
     ({'status': 'all', 'cis': '3.4 Debian Linux', 'pci_dss': '1.5'}, 1),
     ({'status': 'all', 'cis': '3.4 Debian Linux', 'pci_dss': '4.1'}, 0)
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_rootcheck_agent_filters(mock_connect, mock_send, mock_info, mock_exists, filters, total_expected_items):
     """Checks if the number of items returned is as expected when using different filters.

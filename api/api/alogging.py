@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import binascii
@@ -14,7 +14,7 @@ from aiohttp import web_request
 from aiohttp.abc import AbstractAccessLogger
 from pythonjsonlogger import jsonlogger
 
-from wazuh.core.wlogging import FortishieldLogger
+from fortishield.core.wlogging import FortishieldLogger
 
 # Compile regex when the module is imported so it's not necessary to compile it everytime log.info is called
 request_pattern = re.compile(r'\[.+]|\s+\*\s+')
@@ -127,7 +127,7 @@ class AccessLogger(AbstractAccessLogger):
 
 class APILogger(FortishieldLogger):
     """
-    Define the logger used by wazuh-apid.
+    Define the logger used by fortishield-apid.
     """
 
     def __init__(self, *args: dict, **kwargs: dict):

@@ -1,13 +1,13 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core import common
-from wazuh.core.agent import get_agents_info
-from wazuh.core.exception import FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult, merge
-from wazuh.core.syscollector import FortishieldDBQuerySyscollector, get_valid_fields, Type
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core import common
+from fortishield.core.agent import get_agents_info
+from fortishield.core.exception import FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult, merge
+from fortishield.core.syscollector import FortishieldDBQuerySyscollector, get_valid_fields, Type
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=['syscollector:read'], resources=['agent:id:{agent_list}'])

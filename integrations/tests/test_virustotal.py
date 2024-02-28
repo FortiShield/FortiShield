@@ -1,5 +1,5 @@
 # Copyright (C) 2023, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute
 # it and/or modify it under the terms of GPLv2
 
@@ -39,7 +39,7 @@ alert_template = {
     'id': 'alert_id',
     'full_log': 'full log.',
     'decoder': {'name': 'decoder-name'},
-    'location': 'wazuh-X',
+    'location': 'fortishield-X',
     'agent': {'id': '001', 'name': 'The agent', 'ip': '1.1.1.1'},
 }
 

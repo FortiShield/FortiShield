@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (C) 2015, Fortishield Inc.
 
-SERVICE=wazuh-agent
+SERVICE=fortishield-agent
 OSSEC_INIT_FILE=/etc/ossec-init.conf
 FORTISHIELD_HOME=$(pwd)
 if [ "${FORTISHIELD_HOME}" = "/" ]; then
@@ -76,20 +76,20 @@ function restore_ossec_ownership {
 
         # If the list is not empty, then it is assumed that the version to restore is lower than 4.3
         if [ -n "${OSSEC_LIST_FILES}" ]; then
-            # If there are files with the group or user wazuh, then they are changed to ossec.
-            find ./ -group wazuh -exec chgrp ossec {} \;
-            find ./ -user wazuh -exec chown ossec {} \;
+            # If there are files with the group or user fortishield, then they are changed to ossec.
+            find ./ -group fortishield -exec chgrp ossec {} \;
+            find ./ -user fortishield -exec chown ossec {} \;
             # Delete user and group
             if command -v deluser > /dev/null 2>&1; then
-               deluser wazuh > /dev/null 2>&1
+               deluser fortishield > /dev/null 2>&1
             else
-               userdel wazuh > /dev/null 2>&1
+               userdel fortishield > /dev/null 2>&1
             fi
             # Delete user and group
             if command -v delgroup > /dev/null 2>&1; then
-               delgroup wazuh > /dev/null 2>&1
+               delgroup fortishield > /dev/null 2>&1
             else
-               groupdel wazuh >/dev/null 2>&1
+               groupdel fortishield >/dev/null 2>&1
             fi
         fi
 }
@@ -98,10 +98,10 @@ function restore_ossec_ownership {
 function restore_selinux_policy {
     if command -v semodule > /dev/null && command -v getenforce > /dev/null; then
         if [ $(getenforce) != "Disabled" ]; then
-            if [ -f ./var/selinux/wazuh.pp ]; then
+            if [ -f ./var/selinux/fortishield.pp ]; then
                 echo "$(date +"%Y/%m/%d %H:%M:%S") - Restoring SELinux policy." >> ./logs/upgrade.log
-                semodule -i ./var/selinux/wazuh.pp >> ./logs/upgrade.log 2>&1
-                semodule -e wazuh >> ./logs/upgrade.log 2>&1
+                semodule -i ./var/selinux/fortishield.pp >> ./logs/upgrade.log 2>&1
+                semodule -e fortishield >> ./logs/upgrade.log 2>&1
             else
                 echo "$(date +"%Y/%m/%d %H:%M:%S") - ERROR: Fortishield SELinux module not found." >> ./logs/upgrade.log
             fi
@@ -113,7 +113,7 @@ function restore_selinux_policy {
 
 # Search for Agent version
 # Agent >= 4.2
-eval $(./bin/wazuh-control info 2>/dev/null)
+eval $(./bin/fortishield-control info 2>/dev/null)
 if [ -z "${FORTISHIELD_REVISION}" ] ; then
     # Agent < 4.2
     REVISION=""
@@ -149,7 +149,7 @@ mkdir -p ./backup
 
 echo "$(date +"%Y/%m/%d %H:%M:%S") - Generating Backup." >> ./logs/upgrade.log
 
-FOLDERS_TO_BACKUP=($FORTISHIELD_HOME/{active-response,bin,etc,lib,queue,ruleset,wodles,agentless,logs/{ossec,wazuh},var/selinux} \
+FOLDERS_TO_BACKUP=($FORTISHIELD_HOME/{active-response,bin,etc,lib,queue,ruleset,wodles,agentless,logs/{ossec,fortishield},var/selinux} \
                    $OSSEC_INIT_FILE \
                    $SYSTEMD_SERVICE_UNIT_PATH \
                    $INIT_PATH)
@@ -192,7 +192,7 @@ echo "$(date +"%Y/%m/%d %H:%M:%S") - Installation result = ${RESULT}" >> ./logs/
 status="pending"
 COUNTER=30
 while [ "$status" != "connected" -a $COUNTER -gt 0 ]; do
-    . ./var/run/wazuh-agentd.state >> ./logs/upgrade.log 2>&1
+    . ./var/run/fortishield-agentd.state >> ./logs/upgrade.log 2>&1
     echo "$(date +"%Y/%m/%d %H:%M:%S") - Waiting connection... Remaining attempts: ${COUNTER}." >> ./logs/upgrade.log
     sleep 1
     COUNTER=$[COUNTER - 1]
@@ -209,7 +209,7 @@ else
     echo "$(date +"%Y/%m/%d %H:%M:%S") - Upgrade failed. Restoring..." >> ./logs/upgrade.log
 
     # Cleanup before restore
-    CONTROL="./bin/wazuh-control"
+    CONTROL="./bin/fortishield-control"
     if [ ! -f $CONTROL ]; then
         CONTROL="./bin/ossec-control"
     fi
@@ -247,7 +247,7 @@ else
     fi
 
     # Restore diff folder
-    install -d -m 0750 -o wazuh -g wazuh $FORTISHIELD_HOME/queue/diff
+    install -d -m 0750 -o fortishield -g fortishield $FORTISHIELD_HOME/queue/diff
 
     # Assign the ossec ownership, if appropriate
     if [ $RESTORE_OSSEC_OWN -eq 1 ]; then
@@ -272,7 +272,7 @@ else
         systemctl daemon-reload >> ./logs/upgrade.log 2>&1
     fi
 
-    CONTROL="./bin/wazuh-control"
+    CONTROL="./bin/fortishield-control"
     if [ ! -f $CONTROL ]; then
         CONTROL="./bin/ossec-control"
     fi

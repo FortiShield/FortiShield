@@ -14,12 +14,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wazuh_db/wdb.h"
+#include "../fortishield_db/wdb.h"
 #include "../headers/shared.h"
 
 #include "../wrappers/externals/sqlite/sqlite3_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
 
 static const char *VALID_ENTRY = "{\"path\":\"/test\",\"timestamp\":10,\"version\":2,\"attributes\":{\"type\":\"file\"}}";

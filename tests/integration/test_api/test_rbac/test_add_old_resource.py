@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,12 +21,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -43,8 +43,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/reference.html#tag/Security
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/reference.html#tag/Security
     - https://en.wikipedia.org/wiki/Role-based_access_control
 
 tags:
@@ -54,9 +54,9 @@ import pytest
 from pathlib import Path
 
 from . import TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import manage_security_resources
-from wazuh_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import manage_security_resources
+from fortishield_testing.utils.configuration import get_test_cases_data
 
 
 # Marks
@@ -79,7 +79,7 @@ def test_add_old_resource(test_configuration, test_metadata, truncate_monitored_
     description: Check if the security relationships of a previous user are removed from the system after adding a
                  new user with the same ID.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     test_phases:
         - setup:

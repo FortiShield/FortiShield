@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -22,12 +22,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -44,8 +44,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html
 
 tags:
     - api
@@ -57,10 +57,10 @@ from pathlib import Path
 from random import choices
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES, GROUPS_ROUTE, CDB_LIST_ROUTE
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import login, get_base_url
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import CONFIGURATION_TYPES, GROUPS_ROUTE, CDB_LIST_ROUTE
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import login, get_base_url
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -124,7 +124,7 @@ def test_max_upload_size(test_configuration, test_metadata, add_configuration, t
                  a '200' HTTP status code ('OK') should be returned. If 'max_upload_size' is not limitless,
                  both PUT and POST endpoints should fail when trying to send a bigger body.
 
-    wazuh_min_version: 4.3.0
+    fortishield_min_version: 4.3.0
 
     test_phases:
         - setup:
@@ -166,7 +166,7 @@ def test_max_upload_size(test_configuration, test_metadata, add_configuration, t
             brief: Monitor the API log file to detect whether it has been started or not.
 
     assertions:
-        - Verify that the 'wazuh-apid' daemon returns a proper HTTP status code depending on the value
+        - Verify that the 'fortishield-apid' daemon returns a proper HTTP status code depending on the value
           of the 'max_upload_size' tag and the size of the response body received.
 
     input_description: The test gets the configuration from the YAML file, which contains the API configuration.

@@ -16,11 +16,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../wazuh_db/helpers/wdb_agents_helpers.h"
-#include "wazuhdb_op.h"
+#include "../fortishield_db/helpers/wdb_agents_helpers.h"
+#include "fortishielddb_op.h"
 
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 
 extern int test_mode;
 

@@ -12,11 +12,11 @@
 #include "manage_agents.h"
 #include "os_crypto/md5/md5_op.h"
 #include "os_err.h"
-#include "wazuh_db/wdb.h"
+#include "fortishield_db/wdb.h"
 #include <time.h>
 #ifndef CLIENT
-#include "wazuh_db/helpers/wdb_global_helpers.h"
-#include "wazuhdb_op.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
+#include "fortishielddb_op.h"
 #endif
 
 #define str_startwith(x, y) strncmp(x, y, strlen(y))
@@ -171,10 +171,10 @@ int OS_RemoveAgent(const char *u_id) {
         free(name);
     }
 
-    // Remove DB from wazuh-db
+    // Remove DB from fortishield-db
     int sock = -1;
     int error;
-    snprintf(wdbquery, OS_SIZE_128, "wazuhdb remove %s", u_id);
+    snprintf(wdbquery, OS_SIZE_128, "fortishielddb remove %s", u_id);
     os_calloc(OS_SIZE_6144, sizeof(char), wdboutput);
     if (error = wdbc_query_ex(&sock, wdbquery, wdboutput, OS_SIZE_6144), !error) {
         mdebug1("DB from agent %s was deleted '%s'", u_id, wdboutput);

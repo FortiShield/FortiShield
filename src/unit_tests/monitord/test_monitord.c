@@ -17,9 +17,9 @@
 #include <stdio.h>
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/mq_op_wrappers.h"
-#include "../wrappers/wazuh/shared/validate_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/mq_op_wrappers.h"
+#include "../wrappers/fortishield/shared/validate_op_wrappers.h"
 
 #include "../external/cJSON/cJSON.h"
 #include "../headers/store_op.h"

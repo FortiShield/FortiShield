@@ -11,8 +11,8 @@
 #include "shared.h"
 #include "read-agents.h"
 #include "os_net/os_net.h"
-#include "wazuhdb_op.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
+#include "fortishielddb_op.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
 
 #ifndef WIN32
 static int _get_time_fim_scan(const char* agent_id, agent_info *agt_info) __attribute__((nonnull(1)));
@@ -494,27 +494,27 @@ char **get_agents(int flag){
 
 #ifndef WIN32
 time_t scantime_fim (const char *agent_id, const char *scan) {
-    char *wazuhdb_query = NULL;
+    char *fortishielddb_query = NULL;
     char *response = NULL;
     char *message;
     time_t ts = -1;
     int wdb_socket = -1;
 
-    os_calloc(OS_SIZE_6144 + 1, sizeof(char), wazuhdb_query);
+    os_calloc(OS_SIZE_6144 + 1, sizeof(char), fortishielddb_query);
     os_calloc(OS_SIZE_6144, sizeof(char), response);
 
-    snprintf(wazuhdb_query, OS_SIZE_6144, "agent %s syscheck scan_info_get %s",
+    snprintf(fortishielddb_query, OS_SIZE_6144, "agent %s syscheck scan_info_get %s",
             agent_id, scan
     );
 
-    if (wdbc_query_ex(&wdb_socket, wazuhdb_query, response, OS_SIZE_6144) == 0) {
+    if (wdbc_query_ex(&wdb_socket, fortishielddb_query, response, OS_SIZE_6144) == 0) {
         if (wdbc_parse_result(response, &message) == WDBC_OK) {
             ts = atol(message);
             mdebug2("Agent '%s' FIM '%s' timestamp:'%ld'", agent_id, scan, (long int)ts);
         }
     }
 
-    free(wazuhdb_query);
+    free(fortishielddb_query);
     free(response);
     return (ts);
 }

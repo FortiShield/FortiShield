@@ -2,17 +2,17 @@
 
 # Darwin init script.
 # by Lorenzo Costanzia di Costigliole <mummie@tin.it>
-# Modified by Fortishield, Inc. <info@wazuh.com>.
+# Modified by Fortishield, Inc. <info@fortishield.com>.
 # Copyright (C) 2015, Fortishield Inc.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 INSTALLATION_PATH=${1}
-SERVICE=/Library/LaunchDaemons/com.wazuh.agent.plist
+SERVICE=/Library/LaunchDaemons/com.fortishield.agent.plist
 STARTUP=/Library/StartupItems/FORTISHIELD/StartupParameters.plist
 LAUNCHER_SCRIPT=/Library/StartupItems/FORTISHIELD/Fortishield-launcher
 STARTUP_SCRIPT=/Library/StartupItems/FORTISHIELD/FORTISHIELD
 
-launchctl unload /Library/LaunchDaemons/com.wazuh.agent.plist 2> /dev/null
+launchctl unload /Library/LaunchDaemons/com.fortishield.agent.plist 2> /dev/null
 mkdir -p /Library/StartupItems/FORTISHIELD
 chown root:wheel /Library/StartupItems/FORTISHIELD
 rm -f $STARTUP $STARTUP_SCRIPT $SERVICE
@@ -25,7 +25,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
  <plist version="1.0">
      <dict>
          <key>Label</key>
-         <string>com.wazuh.agent</string>
+         <string>com.fortishield.agent</string>
          <key>ProgramArguments</key>
          <array>
              <string>'$LAUNCHER_SCRIPT'</string>
@@ -44,15 +44,15 @@ echo '
 
 StartService ()
 {
-        '${INSTALLATION_PATH}'/bin/wazuh-control start
+        '${INSTALLATION_PATH}'/bin/fortishield-control start
 }
 StopService ()
 {
-        '${INSTALLATION_PATH}'/bin/wazuh-control stop
+        '${INSTALLATION_PATH}'/bin/fortishield-control stop
 }
 RestartService ()
 {
-        '${INSTALLATION_PATH}'/bin/wazuh-control restart
+        '${INSTALLATION_PATH}'/bin/fortishield-control restart
 }
 RunService "$1"
 ' > $STARTUP_SCRIPT
@@ -93,12 +93,12 @@ chmod u=rw-,go=r-- $STARTUP
 echo '#!/bin/sh
 
 capture_sigterm() {
-    '${INSTALLATION_PATH}'/bin/wazuh-control stop
+    '${INSTALLATION_PATH}'/bin/fortishield-control stop
     exit $?
 }
 
-if ! '${INSTALLATION_PATH}'/bin/wazuh-control start; then
-    '${INSTALLATION_PATH}'/bin/wazuh-control stop
+if ! '${INSTALLATION_PATH}'/bin/fortishield-control start; then
+    '${INSTALLATION_PATH}'/bin/fortishield-control stop
 fi
 
 while : ; do

@@ -7,7 +7,7 @@
 #
 
 FORTISHIELD_HOME=FORTISHIELD_HOME_TMP
-FORTISHIELD_CONTROL="$FORTISHIELD_HOME/bin/wazuh-control"
+FORTISHIELD_CONTROL="$FORTISHIELD_HOME/bin/fortishield-control"
 
 case "$1" in
 start)

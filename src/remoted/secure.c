@@ -12,7 +12,7 @@
 #include "../os_net/os_net.h"
 #include "remoted.h"
 #include "state.h"
-#include "../wazuh_db/helpers/wdb_global_helpers.h"
+#include "../fortishield_db/helpers/wdb_global_helpers.h"
 #include "router.h"
 #include "sym_load.h"
 #include "utils/flatbuffers/include/syscollector_synchronization_schema.h"

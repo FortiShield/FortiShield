@@ -9,7 +9,7 @@
  * Foundation.
  */
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_DISABLED = "disabled";
 static const char *XML_BUCKET = "bucket";

@@ -90,9 +90,9 @@ yesrunauthd="Ejecutando Authd"
 
 # Part 4
 installing="Instalando el sistema"
-startwazuh="¿Desea iniciar Fortishield al finalizar la instalación?"
-nowazuhstart="Fortishield no se inicializará al finalizar la instalación."
-yeswazuhstart="Fortishield se inicializará al finalizar la instalación."
+startfortishield="¿Desea iniciar Fortishield al finalizar la instalación?"
+nofortishieldstart="Fortishield no se inicializará al finalizar la instalación."
+yesfortishieldstart="Fortishield se inicializará al finalizar la instalación."
 runningmake="Ejecutando el Makefile"
 
 # Final

@@ -1,41 +1,41 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
 import sys
 from unittest.mock import patch, MagicMock
-from wazuh.core.exception import FortishieldInternalError
+from fortishield.core.exception import FortishieldInternalError
 
 import pytest
 
 DATA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "test_cdb_list")
 
-with patch('wazuh.core.common.getgrnam'):
-    with patch('wazuh.core.common.getpwnam'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.getgrnam'):
+    with patch('fortishield.core.common.getpwnam'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.cdb_list import get_lists, get_path_lists, iterate_lists, get_list_file, upload_list_file,\
+        from fortishield.cdb_list import get_lists, get_path_lists, iterate_lists, get_list_file, upload_list_file,\
             delete_list_file
-        from wazuh.core import common
-        from wazuh.core.results import AffectedItemsFortishieldResult
+        from fortishield.core import common
+        from fortishield.core.results import AffectedItemsFortishieldResult
 
-RELATIVE_PATH = os.path.join("framework", "wazuh", "tests", "data", "test_cdb_list")
+RELATIVE_PATH = os.path.join("framework", "fortishield", "tests", "data", "test_cdb_list")
 NAME_FILE_1 = "test_lists_1"
 NAME_FILE_2 = "test_lists_2"
 NAME_FILES = [NAME_FILE_1, NAME_FILE_2]
 
-RESULT_GET_LIST_FILE_1 = [{'items': [{'key': 'test-wazuh-w', 'value': 'write'},
-                                     {'key': 'test-wazuh-r', 'value': 'read'},
-                                     {'key': 'test-wazuh-a', 'value': 'attribute'},
-                                     {'key': 'test-wazuh-x', 'value': 'execute'},
-                                     {'key': 'test-wazuh-c', 'value': 'command'}
+RESULT_GET_LIST_FILE_1 = [{'items': [{'key': 'test-fortishield-w', 'value': 'write'},
+                                     {'key': 'test-fortishield-r', 'value': 'read'},
+                                     {'key': 'test-fortishield-a', 'value': 'attribute'},
+                                     {'key': 'test-fortishield-x', 'value': 'execute'},
+                                     {'key': 'test-fortishield-c', 'value': 'command'}
                                      ],
                            'relative_dirname': RELATIVE_PATH,
                            'filename': NAME_FILE_1
@@ -68,7 +68,7 @@ def lists_path_mock(**kwargs):
     ([NAME_FILE_1], RESULT_GET_LIST_FILE_1),
     (NAME_FILES, RESULTS_GET_LIST)
 ])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
 def test_get_lists(paths, expected_result):
     """Test basic `get_list` functionality.
 
@@ -88,7 +88,7 @@ def test_get_lists(paths, expected_result):
 
 
 @pytest.mark.parametrize("limit", [1, 2])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
 def test_get_lists_limit(limit):
     """Test `get_lists` functionality when using the `limit` parameter.
 
@@ -105,7 +105,7 @@ def test_get_lists_limit(limit):
 
 
 @pytest.mark.parametrize("offset", [0, 1])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
 def test_get_lists_offset(offset):
     """Test `get_lists` functionality when using the `offset` parameter.
 
@@ -127,9 +127,9 @@ def test_get_lists_offset(offset):
     ("command", False, None, NAME_FILES, RESULT_GET_LIST_FILE_1),
     ("command", False, "items", [NAME_FILE_2], []),
     ("write", False, "items", NAME_FILES, RESULTS_GET_LIST),
-    ("test-wazuh-w", False, "items", NAME_FILES, RESULT_GET_LIST_FILE_1),
+    ("test-fortishield-w", False, "items", NAME_FILES, RESULT_GET_LIST_FILE_1),
     ("test-ossec-w", False, "items", NAME_FILES, RESULT_GET_LIST_FILE_2),
-    ("test-wazuh-w", False, "items", [NAME_FILE_2], []),
+    ("test-fortishield-w", False, "items", [NAME_FILE_2], []),
     ("command", True, None, NAME_FILES, RESULT_GET_LIST_FILE_2),
     ("test-ossec-w", True, None, NAME_FILES, RESULT_GET_LIST_FILE_1),
     ("command", True, None, [NAME_FILE_2], RESULT_GET_LIST_FILE_2),
@@ -137,11 +137,11 @@ def test_get_lists_offset(offset):
     ("command", True, "items", [NAME_FILE_2], RESULT_GET_LIST_FILE_2),
     ("command", True, "items", [NAME_FILE_1], []),
     ("write", True, "items", NAME_FILES, []),
-    ("test-wazuh-w", True, "items", NAME_FILES, RESULT_GET_LIST_FILE_2),
+    ("test-fortishield-w", True, "items", NAME_FILES, RESULT_GET_LIST_FILE_2),
     ("test-ossec-w", True, "items", NAME_FILES, RESULT_GET_LIST_FILE_1),
-    ("test-wazuh-w", True, "items", [NAME_FILE_2], RESULT_GET_LIST_FILE_2),
+    ("test-fortishield-w", True, "items", [NAME_FILE_2], RESULT_GET_LIST_FILE_2),
 ])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
 def test_get_lists_search(search_text, complementary_search, search_in_fields, paths, expected_result):
     """Test `get_lists` functionality when using the `search` parameter.
 
@@ -166,7 +166,7 @@ def test_get_lists_search(search_text, complementary_search, search_in_fields, p
     assert result.affected_items == expected_result
 
 
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
 def test_get_lists_sort():
     """Test `get_lists` functionality when using the `sort` parameter."""
     result_a = get_lists(filename=NAME_FILES, sort_by=['filename'], sort_ascending=True)
@@ -179,8 +179,8 @@ def test_get_lists_sort():
     assert result_b.affected_items == RESULT_GET_LIST_FILE_2 + RESULT_GET_LIST_FILE_1
 
 
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
-@patch('wazuh.cdb_list.iterate_lists', side_effect=lists_path_mock)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.iterate_lists', side_effect=lists_path_mock)
 def test_get_path_lists(iterate_mock):
     """Test `get_path_lists` functionality without any other parameter aside from `path`.
 
@@ -196,8 +196,8 @@ def test_get_path_lists(iterate_mock):
 
 
 @pytest.mark.parametrize("limit", [1, 2])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
-@patch('wazuh.cdb_list.iterate_lists', side_effect=lists_path_mock)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.iterate_lists', side_effect=lists_path_mock)
 def test_get_path_lists_limit(iterate_mock, limit):
     """Test `get_path_lists` functionality when using the `limit` parameter.
 
@@ -215,8 +215,8 @@ def test_get_path_lists_limit(iterate_mock, limit):
 
 
 @pytest.mark.parametrize("offset", [0, 1])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
-@patch('wazuh.cdb_list.iterate_lists', side_effect=lists_path_mock)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.iterate_lists', side_effect=lists_path_mock)
 def test_get_path_lists_offset(iterate_mock, offset):
     """Test `get__path_lists` functionality when using the `offset` parameter.
 
@@ -250,8 +250,8 @@ def test_get_path_lists_offset(iterate_mock, offset):
     ("lists_2", True, "filename", NAME_FILES, RESULT_GET_PATH_LIST_FILE_1),
     ("invalid", True, "filename", NAME_FILES, RESULTS_GET_PATH_LIST)
 ])
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
-@patch('wazuh.cdb_list.iterate_lists', side_effect=lists_path_mock)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.iterate_lists', side_effect=lists_path_mock)
 def test_get_path_lists_search(iterate_mock, search_text, complementary_search, search_in_fields, paths, expected_result):
     """Test `get_path_lists` functionality when using the `search` parameter.
 
@@ -277,8 +277,8 @@ def test_get_path_lists_search(iterate_mock, search_text, complementary_search, 
     assert result.affected_items == expected_result
 
 
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
-@patch('wazuh.cdb_list.iterate_lists', side_effect=lists_path_mock)
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH)
+@patch('fortishield.cdb_list.iterate_lists', side_effect=lists_path_mock)
 def test_get_path_lists_sort(iterate_mock):
     """Test `get_path_lists` functionality when using the `sort` parameter."""
     result_a = get_path_lists(filename=NAME_FILES, sort_by=['filename'], sort_ascending=True)
@@ -309,7 +309,7 @@ def test_get_list_file(filename, raw, expected_result, total_failed_items):
     total_failed_items : int
         Expected number of failed items.
     """
-    with patch('wazuh.cdb_list.get_filenames_paths', return_value=[os.path.join(DATA_PATH, 'test_lists_2')]):
+    with patch('fortishield.cdb_list.get_filenames_paths', return_value=[os.path.join(DATA_PATH, 'test_lists_2')]):
         result = get_list_file([filename], raw)
         if raw:
             assert result == expected_result
@@ -319,12 +319,12 @@ def test_get_list_file(filename, raw, expected_result, total_failed_items):
             assert result.render()['data']['affected_items'][0] == expected_result
 
 
-@patch('wazuh.cdb_list.safe_move')
-@patch('wazuh.cdb_list.delete_file_with_backup')
-@patch('wazuh.cdb_list.upload_file')
-@patch('wazuh.cdb_list.delete_list_file')
-@patch('wazuh.cdb_list.remove')
-@patch('wazuh.cdb_list.exists', return_value=True)
+@patch('fortishield.cdb_list.safe_move')
+@patch('fortishield.cdb_list.delete_file_with_backup')
+@patch('fortishield.cdb_list.upload_file')
+@patch('fortishield.cdb_list.delete_list_file')
+@patch('fortishield.cdb_list.remove')
+@patch('fortishield.cdb_list.exists', return_value=True)
 def test_upload_list_file(mock_exists, mock_remove, mock_delete_list_file, mock_upload_file,
                           mock_delete_file_with_backup, mock_safe_move):
     """Check that functions inside upload_list_file are called with expected params"""
@@ -339,16 +339,16 @@ def test_upload_list_file(mock_exists, mock_remove, mock_delete_list_file, mock_
                                                          mock_delete_list_file)
 
 
-@patch('wazuh.cdb_list.common.USER_LISTS_PATH', return_value='/test/path')
-@patch('wazuh.cdb_list.remove')
+@patch('fortishield.cdb_list.common.USER_LISTS_PATH', return_value='/test/path')
+@patch('fortishield.cdb_list.remove')
 def test_upload_list_file_ko(mock_remove, mock_lists_path):
     """Check whether expected exceptions are raised."""
     result = upload_list_file(filename='test', content='')
     assert isinstance(result, AffectedItemsFortishieldResult)
     assert result.render()['data']['failed_items'][0]['error']['code'] == 1112
 
-    with patch('wazuh.cdb_list.safe_move') as mock_safe_move:
-        with patch('wazuh.cdb_list.exists', return_value=True):
+    with patch('fortishield.cdb_list.safe_move') as mock_safe_move:
+        with patch('fortishield.cdb_list.exists', return_value=True):
             # File already exists and overwrite is False, raise exception
             result = upload_list_file(filename='test', content='test:content')
             assert result.render()['data']['failed_items'][0]['error']['code'] == 1905
@@ -356,7 +356,7 @@ def test_upload_list_file_ko(mock_remove, mock_lists_path):
             mock_safe_move.assert_called_once_with('', os.path.join(common.USER_LISTS_PATH, 'test'))
 
             # File with same name already exists in subdirectory, raise exception
-            with patch('wazuh.cdb_list.get_filenames_paths', return_value=['/test']):
+            with patch('fortishield.cdb_list.get_filenames_paths', return_value=['/test']):
                 result = upload_list_file(filename='test', content='test:content', overwrite=True)
                 assert result.render()['data']['failed_items'][0]['error']['code'] == 1805
 
@@ -366,13 +366,13 @@ def test_upload_list_file_ko(mock_remove, mock_lists_path):
 
         # Exception while trying to create list file
         with patch('builtins.open'):
-            with patch('wazuh.cdb_list.exists', return_value=False):
-                with patch('wazuh.core.configuration.tempfile.mkstemp', return_value=['mock_handle', 'mock_tmp_file']):
+            with patch('fortishield.cdb_list.exists', return_value=False):
+                with patch('fortishield.core.configuration.tempfile.mkstemp', return_value=['mock_handle', 'mock_tmp_file']):
                     with pytest.raises(FortishieldInternalError, match=r'\b1005\b'):
                         upload_list_file(filename='test', content='test:content', overwrite=False)
 
 
-@patch('wazuh.core.cdb_list.delete_wazuh_file')
+@patch('fortishield.core.cdb_list.delete_fortishield_file')
 def test_delete_list_file(mock_delete_file):
     """Check that expected result is returned when the file is deleted."""
     try:
@@ -381,10 +381,10 @@ def test_delete_list_file(mock_delete_file):
         with open(test_file, 'a') as f:
             f.write('key:value\n"ke:y2":value2\n')
 
-        with patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH):
+        with patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH):
             result = delete_list_file(['test_file'])
             assert result.render()['data']['affected_items'][0] ==\
-                   'framework/wazuh/tests/data/test_cdb_list/test_file'
+                   'framework/fortishield/tests/data/test_cdb_list/test_file'
     finally:
         try:
             os.remove(test_file)
@@ -396,6 +396,6 @@ def test_delete_list_file(mock_delete_file):
 
 def test_delete_list_file_ko():
     """Check that expected error code is returned when the file can't be deleted."""
-    with patch('wazuh.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH):
+    with patch('fortishield.cdb_list.common.USER_LISTS_PATH', new=DATA_PATH):
         result = delete_list_file(['test_file'])
         assert result.render()['data']['failed_items'][0]['error']['code'] == 1906

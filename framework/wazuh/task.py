@@ -1,15 +1,15 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
 
-from wazuh.core.common import DATABASE_LIMIT
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.task import FortishieldDBQueryTask
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.common import DATABASE_LIMIT
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.task import FortishieldDBQueryTask
+from fortishield.rbac.decorators import expose_resources
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 
 @expose_resources(actions=["task:status"], resources=["*:*:*"], post_proc_kwargs={'exclude_codes': [1817]})

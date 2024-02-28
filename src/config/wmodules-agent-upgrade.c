@@ -7,10 +7,10 @@
  * Foundation
 */
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 #ifdef CLIENT
-#include "wazuh_modules/agent_upgrade/agent/wm_agent_upgrade_agent.h"
+#include "fortishield_modules/agent_upgrade/agent/wm_agent_upgrade_agent.h"
 
 static const char *XML_ENABLED = "enabled";
 static const char *XML_WAIT_START = "notification_wait_start";

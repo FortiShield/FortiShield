@@ -17,14 +17,14 @@
 #include <stdio.h>
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/mq_op_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
-#include "../wrappers/wazuh//monitord/monitord_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/mq_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield//monitord/monitord_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
-#include "../wrappers/wazuh/shared/auth_client_wrappers.h"
-#include "../wrappers/wazuh/shared/agent_op_wrappers.h"
+#include "../wrappers/fortishield/shared/auth_client_wrappers.h"
+#include "../wrappers/fortishield/shared/agent_op_wrappers.h"
 
 #include "../config/client-config.h"
 #include "../headers/store_op.h"

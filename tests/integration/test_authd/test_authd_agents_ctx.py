@@ -1,14 +1,14 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the 'wazuh-authd' daemon correctly handles the enrollment requests
-       from agents with pre-existing IP addresses or names. The 'wazuh-authd' daemon can automatically
+brief: These tests will check if the 'fortishield-authd' daemon correctly handles the enrollment requests
+       from agents with pre-existing IP addresses or names. The 'fortishield-authd' daemon can automatically
        add a Fortishield agent to a Fortishield manager and provide the key to the agent. It is used along with
        the 'agent-auth' application.
 
@@ -19,9 +19,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
-    - wazuh-modulesd
+    - fortishield-authd
+    - fortishield-db
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -38,8 +38,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-authd.html
-    - https://documentation.wazuh.com/current/user-manual/reference/tools/agent_groups.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-authd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/tools/agent_groups.html
 
 tags:
     - enrollment
@@ -48,14 +48,14 @@ from pathlib import Path
 
 import pytest
 import time
-from wazuh_testing.constants.paths.sockets import AUTHD_SOCKET_PATH
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.utils.agent_groups import check_agent_groups
-from wazuh_testing.utils.db_queries.global_db import clean_agents_from_db
-from wazuh_testing.utils.client_keys import check_client_keys
+from fortishield_testing.constants.paths.sockets import AUTHD_SOCKET_PATH
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.utils.agent_groups import check_agent_groups
+from fortishield_testing.utils.db_queries.global_db import clean_agents_from_db
+from fortishield_testing.utils.client_keys import check_client_keys
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH, utils
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 # Marks
 pytestmark = [pytest.mark.linux, pytest.mark.tier(level=0), pytest.mark.server]
@@ -122,16 +122,16 @@ def register_agent_local_server(receiver_sockets, Name, Group=None, IP=None):
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_ossec_authd_agents_ctx(test_configuration, test_metadata, set_wazuh_configuration, truncate_monitored_files,
+def test_ossec_authd_agents_ctx(test_configuration, test_metadata, set_fortishield_configuration, truncate_monitored_files,
                                 clean_agents_ctx, daemons_handler, wait_for_authd_startup, connect_to_sockets, set_up_groups):
     '''
     description:
-        Check if when the 'wazuh-authd' daemon receives an enrollment request from an agent
+        Check if when the 'fortishield-authd' daemon receives an enrollment request from an agent
         that has an IP address or name that is already registered, 'authd' creates a record
         for the new agent and deletes the old one. In this case, the enrollment requests
         are sent to an IP v4 network socket.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -143,9 +143,9 @@ def test_ossec_authd_agents_ctx(test_configuration, test_metadata, set_wazuh_con
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - truncate_monitored_files:
             type: fixture
             brief: Truncate all the log files and json alerts files before and after the test execution.
@@ -170,11 +170,11 @@ def test_ossec_authd_agents_ctx(test_configuration, test_metadata, set_wazuh_con
         - Verify that agents using an already registered name can successfully enroll.
 
     input_description:
-        Different test cases are contained in an external YAML file (wazuh_conf.yaml)
-        which includes configuration settings for the 'wazuh-authd' daemon.
+        Different test cases are contained in an external YAML file (fortishield_conf.yaml)
+        which includes configuration settings for the 'fortishield-authd' daemon.
 
     expected_output:
-        - r'Accepting connections on port 1515' (When the 'wazuh-authd' daemon is ready to accept enrollments)
+        - r'Accepting connections on port 1515' (When the 'fortishield-authd' daemon is ready to accept enrollments)
         - r'OSSEC K:' (When the agent has enrolled in the manager)
     tags:
         - keys

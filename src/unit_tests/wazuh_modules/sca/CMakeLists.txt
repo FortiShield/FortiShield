@@ -16,9 +16,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB sca ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM sca ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB sca ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM sca ../../../fortishield_modules/main.o)
 
 add_library(SCA_O STATIC ${sca})
 

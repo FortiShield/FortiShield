@@ -14,12 +14,12 @@
 #include <stdio.h>
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
-#include "../wrappers/wazuh/os_regex/os_regex_wrappers.h"
-#include "../wrappers/wazuh/shared/labels_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_global_helpers_wrappers.h"
-#include "../wrappers/wazuh/shared/mq_op_wrappers.h"
-#include "../wrappers/wazuh/shared/validate_op_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield/os_regex/os_regex_wrappers.h"
+#include "../wrappers/fortishield/shared/labels_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_global_helpers_wrappers.h"
+#include "../wrappers/fortishield/shared/mq_op_wrappers.h"
+#include "../wrappers/fortishield/shared/validate_op_wrappers.h"
 #include "../../analysisd/eventinfo.h"
 #include "../../analysisd/config.h"
 #include "../../analysisd/alerts/exec.h"
@@ -53,11 +53,11 @@ static int test_setup(void **state) {
     init_data->lf->agent_id = "001";
     init_data->lf->decoder_info->name = "syscheck_event";
 
-    init_data->ar->name = "restart-wazuh0";
+    init_data->ar->name = "restart-fortishield0";
     init_data->ar->ar_cmd->extra_args = NULL;
     init_data->ar->location = 0;
     init_data->ar->agent_id = "002";
-    init_data->ar->command = "restart-wazuh";
+    init_data->ar->command = "restart-fortishield";
 
     *state = init_data;
 
@@ -124,7 +124,7 @@ void test_server_success_json(void **state)
 
     data->ar->location = AS_ONLY;
 
-    char *exec_msg = "{\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg = "{\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node = NULL;
 
@@ -158,13 +158,13 @@ void test_all_agents_success_json_string(void **state)
     char *version_2 = "Fortishield v4.0.0";
     data->ar->location = ALL_AGENTS;
 
-    char *exec_msg_1 = "(local_source) [] NNS 003 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg_1 = "(local_source) [] NNS 003 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info_1 = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node_1 = NULL;
 
     os_strdup("node01", node_1);
 
-    char *exec_msg = "(local_source) [] NNS 005 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NNS 005 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -183,7 +183,7 @@ void test_all_agents_success_json_string(void **state)
     wlabel_t *labels_1 = NULL;
     os_calloc(2, sizeof(wlabel_t), labels_1);
 
-    os_strdup("_wazuh_version", labels_1[0].key);
+    os_strdup("_fortishield_version", labels_1[0].key);
     os_strdup(version_1, labels_1[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "003");
@@ -208,7 +208,7 @@ void test_all_agents_success_json_string(void **state)
     wlabel_t *labels_2 = NULL;
     os_calloc(2, sizeof(wlabel_t), labels_2);
 
-    os_strdup("_wazuh_version", labels_2[0].key);
+    os_strdup("_fortishield_version", labels_2[0].key);
     os_strdup(version_2, labels_2[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "005");
@@ -242,7 +242,7 @@ void test_all_agents_success_json_string_wdb(void **state)
     cJSON_AddStringToObject(agent_info_1, "version", version_1);
     cJSON_AddItemToArray(agent_info_array_1, agent_info_1);
 
-    char *exec_msg_1 = "(local_source) [] NNS 003 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg_1 = "(local_source) [] NNS 003 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info_1 = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node_1 = NULL;
 
@@ -253,7 +253,7 @@ void test_all_agents_success_json_string_wdb(void **state)
     cJSON_AddStringToObject(agent_info_2, "version", version_2);
     cJSON_AddItemToArray(agent_info_array_2, agent_info_2);
 
-    char *exec_msg = "(local_source) [] NNS 005 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NNS 005 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -275,7 +275,7 @@ void test_all_agents_success_json_string_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "003");
     will_return(__wrap_labels_find, labels_1);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, array[0]);
@@ -300,7 +300,7 @@ void test_all_agents_success_json_string_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "005");
     will_return(__wrap_labels_find, labels_2);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, array[1]);
@@ -343,7 +343,7 @@ void test_all_agents_success_fail_agt_info1(void **state)
     expect_string(__wrap_labels_find, agent_id, "003");
     will_return(__wrap_labels_find, labels_1);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, array[0]);
@@ -359,7 +359,7 @@ void test_all_agents_success_fail_agt_info1(void **state)
     expect_string(__wrap_labels_find, agent_id, "005");
     will_return(__wrap_labels_find, labels_2);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, array[1]);
@@ -381,7 +381,7 @@ void test_specific_agent_success_json(void **state)
     char *version = "Fortishield v4.2.0";
     data->ar->location = SPECIFIC_AGENT;
 
-    char *exec_msg = "(local_source) [] NNS 002 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg = "(local_source) [] NNS 002 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node = NULL;
 
@@ -392,7 +392,7 @@ void test_specific_agent_success_json(void **state)
     wlabel_t *labels = NULL;
     os_calloc(2, sizeof(wlabel_t), labels);
 
-    os_strdup("_wazuh_version", labels[0].key);
+    os_strdup("_fortishield_version", labels[0].key);
     os_strdup(version, labels[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "002");
@@ -431,7 +431,7 @@ void test_specific_agent_success_json_wdb(void **state)
     cJSON_AddStringToObject(agent_info, "version", version);
     cJSON_AddItemToArray(agent_info_array, agent_info);
 
-    char *exec_msg = "(local_source) [] NNS 002 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg = "(local_source) [] NNS 002 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node = NULL;
 
@@ -445,7 +445,7 @@ void test_specific_agent_success_json_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "002");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->ar->agent_id));
@@ -476,7 +476,7 @@ void test_specific_agent_success_string(void **state)
     char *version = "Fortishield v4.0.0";
     data->ar->location = SPECIFIC_AGENT;
 
-    char *exec_msg = "(local_source) [] NNS 002 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NNS 002 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -484,7 +484,7 @@ void test_specific_agent_success_string(void **state)
     wlabel_t *labels = NULL;
     os_calloc(2, sizeof(wlabel_t), labels);
 
-    os_strdup("_wazuh_version", labels[0].key);
+    os_strdup("_fortishield_version", labels[0].key);
     os_strdup(version, labels[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "002");
@@ -517,7 +517,7 @@ void test_specific_agent_success_string_wdb(void **state)
     cJSON_AddStringToObject(agent_info, "version", version);
     cJSON_AddItemToArray(agent_info_array, agent_info);
 
-    char *exec_msg = "(local_source) [] NNS 002 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NNS 002 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -528,7 +528,7 @@ void test_specific_agent_success_string_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "002");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->ar->agent_id));
@@ -560,7 +560,7 @@ void test_specific_agent_success_fail_agt_info1(void **state)
     expect_string(__wrap_labels_find, agent_id, "002");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->ar->agent_id));
@@ -582,7 +582,7 @@ void test_remote_agent_success_json(void **state)
     char *version = "Fortishield v4.2.0";
     data->ar->location = REMOTE_AGENT;
 
-    char *exec_msg = "(local_source) [] NRN 001 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg = "(local_source) [] NRN 001 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node = NULL;
 
@@ -593,7 +593,7 @@ void test_remote_agent_success_json(void **state)
     wlabel_t *labels = NULL;
     os_calloc(2, sizeof(wlabel_t), labels);
 
-    os_strdup("_wazuh_version", labels[0].key);
+    os_strdup("_fortishield_version", labels[0].key);
     os_strdup(version, labels[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "001");
@@ -632,7 +632,7 @@ void test_remote_agent_success_json_wdb(void **state)
     cJSON_AddStringToObject(agent_info, "version", version);
     cJSON_AddItemToArray(agent_info_array, agent_info);
 
-    char *exec_msg = "(local_source) [] NRN 001 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"wazuh-analysisd\"},\"command\":\"restart-wazuh0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
+    char *exec_msg = "(local_source) [] NRN 001 {\"version\":1,\"origin\":{\"name\":\"node01\",\"module\":\"fortishield-analysisd\"},\"command\":\"restart-fortishield0\",\"parameters\":{\"extra_args\":[],\"alert\":[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]}}";
     const char *alert_info = "[{\"timestamp\":\"2021-01-05T15:23:00.547+0000\",\"rule\":{\"level\":5,\"description\":\"File added to the system.\",\"id\":\"554\"}}]";
     char *node = NULL;
 
@@ -646,7 +646,7 @@ void test_remote_agent_success_json_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "001");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->lf->agent_id));
@@ -677,7 +677,7 @@ void test_remote_agent_success_string(void **state)
     char *version = "Fortishield v4.0.0";
     data->ar->location = REMOTE_AGENT;
 
-    char *exec_msg = "(local_source) [] NRN 001 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NRN 001 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -685,7 +685,7 @@ void test_remote_agent_success_string(void **state)
     wlabel_t *labels = NULL;
     os_calloc(2, sizeof(wlabel_t), labels);
 
-    os_strdup("_wazuh_version", labels[0].key);
+    os_strdup("_fortishield_version", labels[0].key);
     os_strdup(version, labels[0].value);
 
     expect_string(__wrap_labels_find, agent_id, "001");
@@ -718,7 +718,7 @@ void test_remote_agent_success_string_wdb(void **state)
     cJSON_AddStringToObject(agent_info, "version", version);
     cJSON_AddItemToArray(agent_info_array, agent_info);
 
-    char *exec_msg = "(local_source) [] NRN 001 restart-wazuh0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
+    char *exec_msg = "(local_source) [] NRN 001 restart-fortishield0 - - 160987966.80794 554 (ubuntu) any->syscheck /home/vagrant/file/n44.txt -";
 
     Config.ar = 1;
     __crt_ftell = 80794;
@@ -729,7 +729,7 @@ void test_remote_agent_success_string_wdb(void **state)
     expect_string(__wrap_labels_find, agent_id, "001");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->lf->agent_id));
@@ -761,7 +761,7 @@ void test_remote_agent_success_fail_agt_info1(void **state)
     expect_string(__wrap_labels_find, agent_id, "001");
     will_return(__wrap_labels_find, labels);
 
-    expect_string(__wrap_labels_get, key, "_wazuh_version");
+    expect_string(__wrap_labels_get, key, "_fortishield_version");
     will_return(__wrap_labels_get, NULL);
 
     expect_value(__wrap_wdb_get_agent_info, id, atoi(data->lf->agent_id));

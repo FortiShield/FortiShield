@@ -1,16 +1,16 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-logtest' tool allows the testing and verification of rules and decoders against provided log examples
-       remotely inside a sandbox in 'wazuh-analysisd'. This functionality is provided by the manager, whose work
+brief: The 'fortishield-logtest' tool allows the testing and verification of rules and decoders against provided log examples
+       remotely inside a sandbox in 'fortishield-analysisd'. This functionality is provided by the manager, whose work
        parameters are configured in the ossec.conf file in the XML rule_test section. Test logs can be evaluated through
-       the 'wazuh-logtest' tool or by making requests via RESTful API. These tests will check if the logtest
+       the 'fortishield-logtest' tool or by making requests via RESTful API. These tests will check if the logtest
        configuration is valid. Also checks rules, decoders, decoders, alerts matching logs correctly.
 
 components:
@@ -22,7 +22,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
+    - fortishield-analysisd
 
 os_platform:
     - linux
@@ -39,9 +39,9 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/tools/wazuh-logtest.html
-    - https://documentation.wazuh.com/current/user-manual/capabilities/wazuh-logtest/index.html
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-analysisd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/tools/fortishield-logtest.html
+    - https://documentation.fortishield.com/current/user-manual/capabilities/fortishield-logtest/index.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-analysisd.html
 
 tags:
     - logtest_configuration
@@ -51,9 +51,9 @@ from pathlib import Path
 import re
 
 import pytest
-from wazuh_testing.constants.paths.sockets import LOGTEST_SOCKET_PATH
-from wazuh_testing.constants.daemons import ANALYSISD_DAEMON, FORTISHIELD_DB_DAEMON
-from wazuh_testing.utils import configuration
+from fortishield_testing.constants.paths.sockets import LOGTEST_SOCKET_PATH
+from fortishield_testing.constants.daemons import ANALYSISD_DAEMON, FORTISHIELD_DB_DAEMON
+from fortishield_testing.utils import configuration
 
 from . import TEST_CASES_FOLDER_PATH
 
@@ -82,11 +82,11 @@ local_rules_debug_messages = ['Trying rule: 880000 - Parent rules verbose', '*Ru
 def test_rules_verbose(test_metadata, daemons_handler_module, configure_rules_list,
                        wait_for_logtest_startup, connect_to_sockets):
     '''
-    description: Check if 'wazuh-logtest' works correctly in 'verbose' mode for rules debugging. To do this, it sends
+    description: Check if 'fortishield-logtest' works correctly in 'verbose' mode for rules debugging. To do this, it sends
                  the inputs through a socket, receives and decodes the message. Then, it checks
                  if any invalid token or session token is not caught.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 0
 

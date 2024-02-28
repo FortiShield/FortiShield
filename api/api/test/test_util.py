@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -11,7 +11,7 @@ from connexion import ProblemException
 
 from api import util
 from api.api_exception import APIError
-from wazuh.core.exception import FortishieldError, FortishieldPermissionError, FortishieldResourceNotFound, FortishieldInternalError
+from fortishield.core.exception import FortishieldError, FortishieldPermissionError, FortishieldResourceNotFound, FortishieldInternalError
 
 
 class TestClass:
@@ -285,7 +285,7 @@ def test_get_invalid_keys(dikt, f_kwargs, invalid_keys):
 
 @pytest.mark.parametrize('link', [
     '',
-    'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+    'https://documentation.fortishield.com/current/user-manual/api/reference.html'
 ])
 @pytest.mark.asyncio
 async def test_deprecate_endpoint(link):

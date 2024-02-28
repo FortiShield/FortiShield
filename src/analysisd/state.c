@@ -9,7 +9,7 @@
  */
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-analysisd"
+#define ARGV0 "fortishield-analysisd"
 #endif
 
 #include "shared.h"
@@ -818,13 +818,13 @@ void w_inc_received_events() {
 
 void w_inc_decoded_by_component_events(const char *component, const char *agent_id) {
     if (component != NULL) {
-        if (!strcmp(component, "wazuh-agent")) {
+        if (!strcmp(component, "fortishield-agent")) {
             w_inc_agent_decoded_events(agent_id);
-        } else if (!strcmp(component, "wazuh-agentlessd")) {
+        } else if (!strcmp(component, "fortishield-agentlessd")) {
             w_inc_agentless_decoded_events(agent_id);
-        } else if (!strcmp(component, "wazuh-monitord")) {
+        } else if (!strcmp(component, "fortishield-monitord")) {
             w_inc_monitor_decoded_events(agent_id);
-        } else if (!strcmp(component, "wazuh-remoted")) {
+        } else if (!strcmp(component, "fortishield-remoted")) {
             w_inc_remote_decoded_events(agent_id);
         } else if (!strcmp(component, "virustotal")) {
             w_inc_integrations_virustotal_decoded_events(agent_id);
@@ -1146,13 +1146,13 @@ void w_inc_modules_logcollector_others_decoded_events(const char *agent_id) {
 
 void w_inc_dropped_by_component_events(const char *component) {
     if (component != NULL) {
-        if (!strcmp(component, "wazuh-agent")) {
+        if (!strcmp(component, "fortishield-agent")) {
             w_inc_agent_dropped_events();
-        } else if (!strcmp(component, "wazuh-agentlessd")) {
+        } else if (!strcmp(component, "fortishield-agentlessd")) {
             w_inc_agentless_dropped_events();
-        } else if (!strcmp(component, "wazuh-monitord")) {
+        } else if (!strcmp(component, "fortishield-monitord")) {
             w_inc_monitor_dropped_events();
-        } else if (!strcmp(component, "wazuh-remoted")) {
+        } else if (!strcmp(component, "fortishield-remoted")) {
             w_inc_remote_dropped_events();
         } else if (!strcmp(component, "virustotal")) {
             w_inc_integrations_virustotal_dropped_events();

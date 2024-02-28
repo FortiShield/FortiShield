@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -11,10 +11,10 @@ from connexion.lifecycle import ConnexionResponse
 
 from api.controllers.test.utils import CustomAffectedItems
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
         from api.controllers.agent_controller import (
             add_agent, delete_agents, delete_groups,
             delete_multiple_agent_single_group,
@@ -29,12 +29,12 @@ with patch('wazuh.common.wazuh_uid'):
             put_multiple_agent_single_group, put_upgrade_agents,
             put_upgrade_custom_agents, reconnect_agents, restart_agent,
             restart_agents, restart_agents_by_group, restart_agents_by_node)
-        from wazuh import agent, stats
-        from wazuh.core.common import DATABASE_LIMIT
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield import agent, stats
+        from fortishield.core.common import DATABASE_LIMIT
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        del sys.modules['wazuh.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
 
 
 @pytest.mark.asyncio

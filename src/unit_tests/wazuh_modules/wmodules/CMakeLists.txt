@@ -7,8 +7,8 @@
 
 # Generate wmodules library
 file(GLOB wmodules_files
-    ${SRC_FOLDER}/wazuh_modules/*.o)
-list(REMOVE_ITEM wmodules_files ${SRC_FOLDER}/wazuh_modules/main.o)
+    ${SRC_FOLDER}/fortishield_modules/*.o)
+list(REMOVE_ITEM wmodules_files ${SRC_FOLDER}/fortishield_modules/main.o)
 
 add_library(WMODULES_O STATIC ${wmodules_files})
 
@@ -28,7 +28,7 @@ set_target_properties(
 target_link_libraries(WMODULES_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate wmodules tests
 list(APPEND wmodules_names "test_wmodules")

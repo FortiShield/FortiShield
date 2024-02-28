@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,15 +9,15 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        import fortishield.rbac.decorators
 
-        from wazuh.tests.util import get_fake_database_data, RBAC_bypasser, InitWDBSocketMock
+        from fortishield.tests.util import get_fake_database_data, RBAC_bypasser, InitWDBSocketMock
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh import task, FortishieldError
-        from wazuh.core.task import FortishieldDBQueryTask
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield import task, FortishieldError
+        from fortishield.core.task import FortishieldDBQueryTask
 
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -31,7 +31,7 @@ def fake_final_query(self):
 
 # Tests
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 def test_get_task_status_no_filter(mock_task_db):
     """Check system's tasks (No filters)
@@ -44,7 +44,7 @@ def test_get_task_status_no_filter(mock_task_db):
     assert result.total_affected_items == rows[0]
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("task_list, total", [
     (['1'], 1),
@@ -68,7 +68,7 @@ def test_get_task_status_task_list(mock_task_db, task_list, total):
     assert result.total_affected_items == total
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("agent_id", [
     ('002'),
@@ -94,7 +94,7 @@ def test_get_task_status_agent_id(mock_task_db, agent_id):
     assert result.total_affected_items == expected_total_items
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("search, total", [
     ('upgrade_module', 6),
@@ -117,7 +117,7 @@ def test_get_task_status_search(mock_task_db, search, total):
     assert result.total_affected_items == total
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("select, total, agents", [
     (['node'], 6, ['1', '2', '3'])
@@ -140,7 +140,7 @@ def test_get_task_status_select(mock_task_db, select, total, agents):
             assert specified_select in element.keys()
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("status", [
     ('Legacy'),
@@ -167,7 +167,7 @@ def test_get_task_status_status(mock_task_db, status):
     assert result.total_affected_items == expected_total_items
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("node", [
     ('worker2'),
@@ -194,7 +194,7 @@ def test_get_task_status_node(mock_task_db, node):
     assert result.total_affected_items == expected_total_items
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("command", [
     ('upgrade'),
@@ -220,7 +220,7 @@ def test_get_task_status_command(mock_task_db, command):
     assert result.total_affected_items == expected_total_items
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 @pytest.mark.parametrize("module", [
     ('upgrade_module'),
@@ -246,7 +246,7 @@ def test_get_task_status_module(mock_task_db, module):
     assert result.total_affected_items == expected_total_items
 
 
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 def test_get_task_status_sort(mock_wdb):
     """Test sort filter."""
@@ -266,7 +266,7 @@ def test_get_task_status_sort(mock_wdb):
     (9, 0),
     (15, 9)
 ])
-@patch('wazuh.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
+@patch('fortishield.core.utils.FortishieldDBConnection', return_value=InitWDBSocketMock(sql_schema_file='schema_tasks_test.sql'))
 @patch.object(FortishieldDBQueryTask, '_final_query', fake_final_query)
 def test_get_task_status_offset_limit(mock_wdb, offset, limit):
     """Test if data are retrieved properly from Tasks database."""

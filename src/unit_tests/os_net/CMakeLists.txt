@@ -20,7 +20,7 @@ set_target_properties(
 target_link_libraries(OS_NET_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate os_net tests
 list(APPEND os_net_names "test_os_net")

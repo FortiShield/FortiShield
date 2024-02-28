@@ -1,6 +1,6 @@
 """
 Copyright (C) 2015-2023, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 import os
@@ -9,24 +9,24 @@ import pytest
 import sys
 from typing import List
 
-from wazuh_testing import session_parameters
-from wazuh_testing.constants import platforms
-from wazuh_testing.constants.daemons import FORTISHIELD_MANAGER, API_DAEMONS_REQUIREMENTS
-from wazuh_testing.constants.paths import ROOT_PREFIX
-from wazuh_testing.constants.paths.api import RBAC_DATABASE_PATH
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, ALERTS_JSON_PATH, FORTISHIELD_API_LOG_FILE_PATH, \
+from fortishield_testing import session_parameters
+from fortishield_testing.constants import platforms
+from fortishield_testing.constants.daemons import FORTISHIELD_MANAGER, API_DAEMONS_REQUIREMENTS
+from fortishield_testing.constants.paths import ROOT_PREFIX
+from fortishield_testing.constants.paths.api import RBAC_DATABASE_PATH
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, ALERTS_JSON_PATH, FORTISHIELD_API_LOG_FILE_PATH, \
                                                FORTISHIELD_API_JSON_LOG_FILE_PATH
-from wazuh_testing.constants.paths.configurations import FORTISHIELD_CLIENT_KEYS_PATH
-from wazuh_testing.logger import logger
-from wazuh_testing.tools import socket_controller
-from wazuh_testing.tools.monitors import queue_monitor
-from wazuh_testing.tools.simulators.agent_simulator import create_agents, connect
-from wazuh_testing.tools.simulators.authd_simulator import AuthdSimulator
-from wazuh_testing.tools.simulators.remoted_simulator import RemotedSimulator
-from wazuh_testing.utils import configuration, database, file, mocking, services
-from wazuh_testing.utils.file import remove_file
-from wazuh_testing.utils.manage_agents import remove_agents
-from wazuh_testing.utils.services import control_service
+from fortishield_testing.constants.paths.configurations import FORTISHIELD_CLIENT_KEYS_PATH
+from fortishield_testing.logger import logger
+from fortishield_testing.tools import socket_controller
+from fortishield_testing.tools.monitors import queue_monitor
+from fortishield_testing.tools.simulators.agent_simulator import create_agents, connect
+from fortishield_testing.tools.simulators.authd_simulator import AuthdSimulator
+from fortishield_testing.tools.simulators.remoted_simulator import RemotedSimulator
+from fortishield_testing.utils import configuration, database, file, mocking, services
+from fortishield_testing.utils.file import remove_file
+from fortishield_testing.utils.manage_agents import remove_agents
+from fortishield_testing.utils.services import control_service
 
 #- - - - - - - - - - - - - - - - - - - - - - - - -Pytest configuration - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -116,50 +116,50 @@ def pytest_collection_modifyitems(config: pytest.Config, items: List[pytest.Item
 
 
 @pytest.fixture(scope='session')
-def load_wazuh_basic_configuration():
+def load_fortishield_basic_configuration():
     """Load a new basic configuration to the manager"""
     # Load ossec.conf with all disabled settings
     minimal_configuration = configuration.get_minimal_configuration()
 
     # Make a backup from current configuration
-    backup_ossec_configuration = configuration.get_wazuh_conf()
+    backup_ossec_configuration = configuration.get_fortishield_conf()
 
     # Write new configuration
-    configuration.write_wazuh_conf(minimal_configuration)
+    configuration.write_fortishield_conf(minimal_configuration)
 
     yield
 
     # Restore the ossec.conf backup
-    configuration.write_wazuh_conf(backup_ossec_configuration)
+    configuration.write_fortishield_conf(backup_ossec_configuration)
 
 
 @pytest.fixture()
-def backup_wazuh_configuration() -> None:
-    """Backup wazuh configuration. Saves the initial configuration and restores it after the test."""
+def backup_fortishield_configuration() -> None:
+    """Backup fortishield configuration. Saves the initial configuration and restores it after the test."""
     # Save configuration
-    backup_config = configuration.get_wazuh_conf()
+    backup_config = configuration.get_fortishield_conf()
 
     yield
 
     # Restore configuration
-    configuration.write_wazuh_conf(backup_config)
+    configuration.write_fortishield_conf(backup_config)
 
 
 @pytest.fixture()
-def set_wazuh_configuration(test_configuration: dict) -> None:
-    """Set wazuh configuration
+def set_fortishield_configuration(test_configuration: dict) -> None:
+    """Set fortishield configuration
 
     Args:
         test_configuration (dict): Configuration template data to write in the ossec.conf
     """
     # Save current configuration
-    backup_config = configuration.get_wazuh_conf()
+    backup_config = configuration.get_fortishield_conf()
 
     # Configuration for testing
-    test_config = configuration.set_section_wazuh_conf(test_configuration.get('sections'))
+    test_config = configuration.set_section_fortishield_conf(test_configuration.get('sections'))
 
     # Set new configuration
-    configuration.write_wazuh_conf(test_config)
+    configuration.write_fortishield_conf(test_config)
 
     # Set current configuration
     session_parameters.current_configuration = test_config
@@ -167,7 +167,7 @@ def set_wazuh_configuration(test_configuration: dict) -> None:
     yield
 
     # Restore previous configuration
-    configuration.write_wazuh_conf(backup_config)
+    configuration.write_fortishield_conf(backup_config)
 
 
 def truncate_monitored_files_implementation() -> None:
@@ -209,7 +209,7 @@ def daemons_handler_implementation(request: pytest.FixtureRequest) -> None:
     The  `daemons_handler_configuration` should be a dictionary with the following keys:
         daemons (list, optional): List with every daemon to be used by the module. In case of empty a ValueError
             will be raised
-        all_daemons (boolean): Configure to restart all wazuh services. Default `False`.
+        all_daemons (boolean): Configure to restart all fortishield services. Default `False`.
         ignore_errors (boolean): Configure if errors in daemon handling should be ignored. This option is available
         in order to use this fixture along with invalid configuration. Default `False`
 
@@ -242,7 +242,7 @@ def daemons_handler_implementation(request: pytest.FixtureRequest) -> None:
 
     try:
         if all_daemons:
-            logger.debug('Restarting wazuh using wazuh-control')
+            logger.debug('Restarting fortishield using fortishield-control')
             services.control_service('restart')
         else:
             for daemon in daemons:
@@ -262,7 +262,7 @@ def daemons_handler_implementation(request: pytest.FixtureRequest) -> None:
     yield
 
     if all_daemons:
-        logger.debug('Stopping wazuh using wazuh-control')
+        logger.debug('Stopping fortishield using fortishield-control')
         services.control_service('stop')
     else:
         if daemons == API_DAEMONS_REQUIREMENTS: daemons.reverse() # Stop in reverse, otherwise the next start will fail
@@ -292,8 +292,8 @@ def daemons_handler_module(request: pytest.FixtureRequest) -> None:
 
 
 @pytest.fixture(scope='module')
-def restart_wazuh_daemon_after_finishing_module(daemon: str = None) -> None:
-    """Restart a Fortishield daemons and clears the wazuh log after the test module finishes execution.
+def restart_fortishield_daemon_after_finishing_module(daemon: str = None) -> None:
+    """Restart a Fortishield daemons and clears the fortishield log after the test module finishes execution.
     Args:
         daemon (str): provide which daemon to restart. If None, all daemons will be restarted.
     """
@@ -370,7 +370,7 @@ def configure_sockets_environment_implementation(request: pytest.FixtureRequest)
     """
     monitored_sockets_params = getattr(request.module, 'monitored_sockets_params')
 
-    # Stop wazuh-service and ensure all daemons are stopped
+    # Stop fortishield-service and ensure all daemons are stopped
     services.control_service('stop')
     services.wait_expected_daemon_status(running_condition=False)
 
@@ -487,7 +487,7 @@ def connect_to_sockets_module(request: pytest.FixtureRequest) -> None:
 
 @pytest.fixture(scope='module')
 def mock_agent_module():
-    """Fixture to create a mocked agent in wazuh databases"""
+    """Fixture to create a mocked agent in fortishield databases"""
     agent_id = mocking.create_mocked_agent(name='mocked_agent')
 
     yield agent_id
@@ -626,13 +626,13 @@ def add_user_in_rbac(request):
 @pytest.fixture(autouse=True)
 def autostart_simulators(request: pytest.FixtureRequest) -> None:
     """
-    Fixture for starting simulators in wazuh-agent executions.
+    Fixture for starting simulators in fortishield-agent executions.
 
     This fixture starts both Authd and Remoted simulators only in the cases where the service is not
     FORTISHIELD_MANAGER, and when the test function is not already using the simulator fixture, if it does
     use one of them, only start the remaining simulator.
 
-    This is required so all wazuh-agent instances are being tested with the wazuh-manager connection
+    This is required so all fortishield-agent instances are being tested with the fortishield-manager connection
     being mocked.
     """
     create_authd = 'authd_simulator' not in request.fixturenames

@@ -17,7 +17,7 @@ etc/ossec.mc
 src/Config.OS
 src/selinux/*.mod
 src/selinux/*.pp
-framework/wazuh/core/wazuh.json
+framework/fortishield/core/fortishield.json
 src/**/build/*
 src/generated_headers/*.h
 src/generated_headers/*.hpp
@@ -41,7 +41,7 @@ src/ossec-maild
 src/ossec-makelists
 src/ossec-monitord
 src/ossec-regex
-src/wazuh-regex
+src/fortishield-regex
 src/parallel-regex
 src/ossec-remoted
 src/ossec-reportd
@@ -51,25 +51,25 @@ src/rootcheck_control
 src/syscheck_control
 src/syscheck_update
 src/verify-agent-conf
-src/wazuh-modulesd
-src/wazuh-auth
-src/wazuh-db
-src/wazuh-agentd
-src/wazuh-agentlessd
-src/wazuh-analysisd
-src/wazuh-authd
-src/wazuh-csyslogd
-src/wazuh-dbd
-src/wazuh-execd
-src/wazuh-logcollector
-src/wazuh-logtest-legacy
-src/wazuh-maild
-src/wazuh-monitord
-src/wazuh-remoted
-src/wazuh-reportd
-src/wazuh-syscheckd
-src/wazuh-integratord
-src/wazuh-keystore
+src/fortishield-modulesd
+src/fortishield-auth
+src/fortishield-db
+src/fortishield-agentd
+src/fortishield-agentlessd
+src/fortishield-analysisd
+src/fortishield-authd
+src/fortishield-csyslogd
+src/fortishield-dbd
+src/fortishield-execd
+src/fortishield-logcollector
+src/fortishield-logtest-legacy
+src/fortishield-maild
+src/fortishield-monitord
+src/fortishield-remoted
+src/fortishield-reportd
+src/fortishield-syscheckd
+src/fortishield-integratord
+src/fortishield-keystore
 
 # Active responses
 src/firewall-drop
@@ -81,10 +81,10 @@ src/firewalld-drop
 src/disable-account
 src/host-deny
 src/ip-customblock
-src/restart-wazuh
+src/restart-fortishield
 src/route-null
 src/kaspersky
-src/wazuh-slack
+src/fortishield-slack
 
 # Windows agent
 src/win32/*.exe
@@ -100,8 +100,8 @@ src/win32/route-null-2012.cmd
 src/win32/netsh.cmd
 src/win32/VERSION
 src/win32/REVISION
-src/libwazuhshared.*
-src/libwazuhext.*
+src/libfortishieldshared.*
+src/libfortishieldext.*
 
 # Eclipse files
 .cproject
@@ -132,7 +132,7 @@ src/shared_modules/dbsync/smokeTests/temp.db
 src/shared_modules/rsync/coverage_report/
 src/shared_modules/utils/coverage_report/
 src/shared_modules/utils/tests/coverage_report
-src/wazuh_modules/syscollector/coverage_report/
+src/fortishield_modules/syscollector/coverage_report/
 src/ossec.test
 src/tap_*
 etc/preloaded-vars.conf
@@ -147,7 +147,7 @@ api/test/integration/_test_results
 src/active-response/firewall-drop.sh
 
 # Databases commits
-framework/wazuh/rbac/migrations/versions/*
+framework/fortishield/rbac/migrations/versions/*
 
 # Documentation files
 documentation/
@@ -156,9 +156,9 @@ doxygen_errors.txt
 
 # Flatbuffers generated headers.
 src/shared_modules/utils/flatbuffers/include/
-src/wazuh_modules/syscollector/include/*_generated.h
-src/wazuh_modules/vulnerability_scanner/include/*_schema.h
-src/wazuh_modules/vulnerability_scanner/include/*_generated.h
+src/fortishield_modules/syscollector/include/*_generated.h
+src/fortishield_modules/vulnerability_scanner/include/*_schema.h
+src/fortishield_modules/vulnerability_scanner/include/*_generated.h
 
 # Test files
-src/wazuh_modules/vulnerability_scanner/qa/test_data/*/input_*.bin
+src/fortishield_modules/vulnerability_scanner/qa/test_data/*/input_*.bin

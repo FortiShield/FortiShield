@@ -1,11 +1,11 @@
 """
 Copyright (C) 2015-2023, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 import pytest
 
-from wazuh_testing.modules.api.utils import add_resources, relate_resources, remove_resources
+from fortishield_testing.modules.api.utils import add_resources, relate_resources, remove_resources
 
 
 @pytest.fixture

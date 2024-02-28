@@ -1,17 +1,17 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from os import remove
 from os.path import join, split, exists, isfile, dirname as path_dirname
 
-from wazuh.core import common
-from wazuh.core.cdb_list import iterate_lists, get_list_from_file, REQUIRED_FIELDS, SORT_FIELDS, delete_list, \
+from fortishield.core import common
+from fortishield.core.cdb_list import iterate_lists, get_list_from_file, REQUIRED_FIELDS, SORT_FIELDS, delete_list, \
     get_filenames_paths, validate_cdb_list, LIST_FIELDS
-from wazuh.core.exception import FortishieldError
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.utils import process_array, safe_move, delete_file_with_backup, upload_file, to_relative_path
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.exception import FortishieldError
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.utils import process_array, safe_move, delete_file_with_backup, upload_file, to_relative_path
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=['lists:read'], resources=['list:file:{filename}'])
@@ -97,7 +97,7 @@ def get_list_file(filename: list = None, raw: bool = None) -> AffectedItemsForti
                                       none_msg='No list was returned')
 
     try:
-        # Recursively search for filename inside {wazuh_path}/etc/lists/
+        # Recursively search for filename inside {fortishield_path}/etc/lists/
         content = get_list_from_file(get_filenames_paths(filename)[0], raw)
         if raw:
             result = content

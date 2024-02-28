@@ -144,7 +144,7 @@ def generate_msg(alert: any, options: any, apikey: str) -> str:
     msg: str
         The JSON message to send
     """
-    managed_security_url = 'https://wazuh.com'
+    managed_security_url = 'https://fortishield.com'
     level = alert['rule']['level']
 
     severity = 'info'

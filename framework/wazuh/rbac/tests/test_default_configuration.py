@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,7 +9,7 @@ import pytest
 import yaml
 from sqlalchemy import create_engine
 
-from wazuh.rbac.tests.utils import init_db
+from fortishield.rbac.tests.utils import init_db
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data')
@@ -17,13 +17,13 @@ test_data_path = os.path.join(test_path, 'data')
 
 @pytest.fixture(scope='function')
 def db_setup():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    import wazuh.rbac.orm as rbac
-                    import wazuh.rbac.decorators
-                    wazuh.rbac.decorators.rbac.set({'rbac_mode': 'white'})
+                    import fortishield.rbac.orm as rbac
+                    import fortishield.rbac.decorators
+                    fortishield.rbac.decorators.rbac.set({'rbac_mode': 'white'})
     init_db('schema_security_test.sql', test_data_path)
 
     yield rbac

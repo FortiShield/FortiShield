@@ -6,7 +6,7 @@ edit_run_as:
     result:
       affected_items:
         - id: 1
-          username: wazuh
+          username: fortishield
           allow_run_as: false
           roles:
             - 1
@@ -17,7 +17,7 @@ edit_run_as:
     result:
       affected_items:
         - id: 2
-          username: wazuh-wui
+          username: fortishield-wui
           allow_run_as: true
           roles:
             - 1

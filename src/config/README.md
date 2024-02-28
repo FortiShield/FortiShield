@@ -22,4 +22,4 @@ This configuration data has 2 special array fields "hosts" and "certificate_auth
 
 ## Documentation
 
-* [Configuration documentation](https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html)
+* [Configuration documentation](https://documentation.fortishield.com/current/user-manual/reference/ossec-conf/index.html)

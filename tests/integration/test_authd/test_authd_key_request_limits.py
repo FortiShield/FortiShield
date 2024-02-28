@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2021, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -18,7 +18,7 @@ components:
     - manager
 
 daemons:
-    - wazuh-authd
+    - fortishield-authd
 
 os_platform:
     - linux
@@ -43,8 +43,8 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/auth.html
-    - https://documentation.wazuh.com/current/user-manual/registering/key-request.html
+    - https://documentation.fortishield.com/current/user-manual/reference/ossec-conf/auth.html
+    - https://documentation.fortishield.com/current/user-manual/registering/key-request.html
 
 tags:
     - key_request
@@ -53,14 +53,14 @@ import re
 from pathlib import Path
 
 import pytest
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.paths.sockets import MODULESD_KREQUEST_SOCKET_PATH
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils import callbacks
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
-from wazuh_testing.constants.daemons import AUTHD_DAEMON
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.paths.sockets import MODULESD_KREQUEST_SOCKET_PATH
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils import callbacks
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
+from fortishield_testing.constants.daemons import AUTHD_DAEMON
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH, SCRIPTS_FOLDER_PATH
 
@@ -83,14 +83,14 @@ receiver_sockets_params = [(MODULESD_KREQUEST_SOCKET_PATH, 'AF_UNIX', 'UDP')]
 script_path = SCRIPTS_FOLDER_PATH
 script_filename = 'fetch_keys.py'
 
-monitored_sockets_params = [('wazuh-authd', None, True)]
+monitored_sockets_params = [('fortishield-authd', None, True)]
 receiver_sockets, monitored_sockets = None, None
 
 daemons_handler_configuration = {'all_daemons': True}
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_key_request_limits(test_configuration, test_metadata, set_wazuh_configuration,
+def test_key_request_limits(test_configuration, test_metadata, set_fortishield_configuration,
                             copy_tmp_script, configure_local_internal_options,
                             truncate_monitored_files, daemons_handler,
                             wait_for_authd_startup, connect_to_sockets):
@@ -99,7 +99,7 @@ def test_key_request_limits(test_configuration, test_metadata, set_wazuh_configu
         Checks that every input message on the key request port with different limits 'timeout' and 'queue_size'
         configuration, along with a delayed script, shows the corresponding error in the manager logs.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     parameters:
         - test_configuration:
@@ -108,9 +108,9 @@ def test_key_request_limits(test_configuration, test_metadata, set_wazuh_configu
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - copy_tmp_script:
             type: fixture
             brief: Copy the script to a temporary folder for testing.
@@ -150,7 +150,7 @@ def test_key_request_limits(test_configuration, test_metadata, set_wazuh_configu
     for input in messages:
         key_request_sock.send(input, size=False)
     # Monitor expected log messages
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     log = re.escape(log)
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
-    assert wazuh_log_monitor.callback_result, f'Error event not detected'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
+    assert fortishield_log_monitor.callback_result, f'Error event not detected'

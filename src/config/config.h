@@ -59,7 +59,7 @@ typedef enum needed_tags {
 
 
 #include "../os_xml/os_xml.h"
-#include "../config/wazuh_db-config.h"
+#include "../config/fortishield_db-config.h"
 #include "time.h"
 
 /* Main function to read the config */

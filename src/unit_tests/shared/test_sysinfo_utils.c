@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/shared/sym_load_wrappers.h"
+#include "../wrappers/fortishield/shared/sym_load_wrappers.h"
 #include "../../headers/shared.h"
 #include "../../headers/sysinfo_utils.h"
 #include "../wrappers/common.h"

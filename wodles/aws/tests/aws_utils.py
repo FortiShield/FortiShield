@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -8,7 +8,7 @@ import copy
 from unittest.mock import patch
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-import wazuh_integration
+import fortishield_integration
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'buckets_s3'))
 import aws_bucket
@@ -101,7 +101,7 @@ UNABLE_TO_FETCH_DELETE_FROM_QUEUE = 21
 INVALID_REGION_ERROR_CODE = 22
 
 
-def get_wazuh_integration_parameters(service_name: str = TEST_SERVICE_NAME, profile: str = TEST_AWS_PROFILE,
+def get_fortishield_integration_parameters(service_name: str = TEST_SERVICE_NAME, profile: str = TEST_AWS_PROFILE,
                                      iam_role_arn: str = None, region: str = None, discard_field: str = None,
                                      discard_regex: str = None, sts_endpoint: str = None, service_endpoint: str = None,
                                      iam_role_duration: str = None, external_id: str = None,
@@ -145,7 +145,7 @@ def get_wazuh_integration_parameters(service_name: str = TEST_SERVICE_NAME, prof
             'external_id': external_id, 'skip_on_error': skip_on_error}
 
 
-def get_wazuh_aws_database_parameters(service_name: str = TEST_SERVICE_NAME, profile: str = TEST_AWS_PROFILE,
+def get_fortishield_aws_database_parameters(service_name: str = TEST_SERVICE_NAME, profile: str = TEST_AWS_PROFILE,
                                       db_name: str = TEST_DATABASE,
                                       iam_role_arn: str = None, region: str = None, discard_field: str = None,
                                       discard_regex: str = None, sts_endpoint: str = None, service_endpoint: str = None,
@@ -359,54 +359,54 @@ def get_aws_s3_log_handler_parameters(iam_role_arn: str = None, iam_role_duratio
             'sts_endpoint': sts_endpoint, 'service_endpoint': service_endpoint}
 
 
-def get_mocked_wazuh_integration(**kwargs):
-    with patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.sqlite3.connect'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
-        return wazuh_integration.FortishieldIntegration(**get_wazuh_integration_parameters(**kwargs))
+def get_mocked_fortishield_integration(**kwargs):
+    with patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.sqlite3.connect'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
+        return fortishield_integration.FortishieldIntegration(**get_fortishield_integration_parameters(**kwargs))
 
 
-def get_mocked_wazuh_aws_database(**kwargs):
-    with patch('wazuh_integration.FortishieldAWSDatabase.check_metadata_version'), \
-            patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.sqlite3.connect'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
-        return wazuh_integration.FortishieldAWSDatabase(**get_wazuh_aws_database_parameters(**kwargs))
+def get_mocked_fortishield_aws_database(**kwargs):
+    with patch('fortishield_integration.FortishieldAWSDatabase.check_metadata_version'), \
+            patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.sqlite3.connect'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
+        return fortishield_integration.FortishieldAWSDatabase(**get_fortishield_aws_database_parameters(**kwargs))
 
 
 def get_mocked_aws_bucket(**kwargs):
-    with patch('wazuh_integration.FortishieldAWSDatabase.check_metadata_version'), \
-            patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.sqlite3.connect'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
+    with patch('fortishield_integration.FortishieldAWSDatabase.check_metadata_version'), \
+            patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.sqlite3.connect'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
         return aws_bucket.AWSBucket(**get_aws_bucket_parameters(**kwargs))
 
 
 def get_mocked_bucket(class_=aws_bucket.AWSBucket, **kwargs):
-    with patch('wazuh_integration.FortishieldAWSDatabase.check_metadata_version'), \
-            patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.sqlite3.connect'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
+    with patch('fortishield_integration.FortishieldAWSDatabase.check_metadata_version'), \
+            patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.sqlite3.connect'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
         return class_(**get_aws_bucket_parameters(**kwargs))
 
 
 def get_mocked_service(class_=aws_service.AWSService, **kwargs):
-    with patch('wazuh_integration.FortishieldAWSDatabase.check_metadata_version'), \
-            patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.sqlite3.connect'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
+    with patch('fortishield_integration.FortishieldAWSDatabase.check_metadata_version'), \
+            patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.sqlite3.connect'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
         return class_(**get_aws_service_parameters(**kwargs))
 
 
 def get_mocked_aws_sqs_queue(**kwargs):
-    with patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION), \
+    with patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION), \
             patch('s3_log_handler.AWSS3LogHandler.__init__') as mocked_handler, \
             patch('sqs_message_processor.AWSQueueMessageProcessor.__init__') as mocked_processor:
         return sqs_queue.AWSSQSQueue(message_processor=mocked_processor, bucket_handler=mocked_handler,
@@ -414,9 +414,9 @@ def get_mocked_aws_sqs_queue(**kwargs):
 
 
 def get_mocked_aws_sl_subscriber_bucket(**kwargs):
-    with patch('wazuh_integration.FortishieldIntegration.get_client'), \
-            patch('wazuh_integration.utils.find_wazuh_path', return_value=TEST_FORTISHIELD_PATH), \
-            patch('wazuh_integration.utils.get_wazuh_version', return_value=FORTISHIELD_VERSION):
+    with patch('fortishield_integration.FortishieldIntegration.get_client'), \
+            patch('fortishield_integration.utils.find_fortishield_path', return_value=TEST_FORTISHIELD_PATH), \
+            patch('fortishield_integration.utils.get_fortishield_version', return_value=FORTISHIELD_VERSION):
         return s3_log_handler.AWSSLSubscriberBucket(**get_aws_s3_log_handler_parameters(**kwargs))
 
 

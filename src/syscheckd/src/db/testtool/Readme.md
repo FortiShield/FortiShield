@@ -2,7 +2,7 @@
 ## Index
 1. [Purpose](#purpose)
 2. [Architecture Diagram](#architecture-diagram)
-3. [Compile Fortishield](#compile-wazuh)
+3. [Compile Fortishield](#compile-fortishield)
 4. [How to use the tool](#how-to-use-the-tool)
 
 ## Purpose
@@ -14,7 +14,7 @@ The FIMDB Testing Tool was created to test and validate the fimdb module. This t
 ![alt text](../../../../../architecture/FIM/db/002-sequence-testtool.puml)
 
 ## Compile Fortishield
-In order to run tests on a specific wazuh target, the project needs to be built either in release or debug mode.
+In order to run tests on a specific fortishield target, the project needs to be built either in release or debug mode.
 ```
 make TARGET=server|agent|winagent <DEBUG=1>
 ```

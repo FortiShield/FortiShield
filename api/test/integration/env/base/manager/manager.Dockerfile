@@ -1,4 +1,4 @@
-FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_wazuh-generic
+FROM public.ecr.aws/o5x5t0j3/amd64/api_development:integration_test_fortishield-generic
 
 # ENV_MODE needs to be assigned to an environment variable as it is going to be used at run time (CMD)
 ARG ENV_MODE
@@ -9,9 +9,9 @@ ARG FORTISHIELD_BRANCH
 
 ADD base/manager/supervisord.conf /etc/supervisor/conf.d/
 
-RUN mkdir wazuh && curl -sL https://github.com/fortishield/wazuh/tarball/${FORTISHIELD_BRANCH} | tar zx --strip-components=1 -C wazuh
-COPY base/manager/preloaded-vars.conf /wazuh/etc/preloaded-vars.conf
-RUN /wazuh/install.sh
+RUN mkdir fortishield && curl -sL https://github.com/fortishield/fortishield/tarball/${FORTISHIELD_BRANCH} | tar zx --strip-components=1 -C fortishield
+COPY base/manager/preloaded-vars.conf /fortishield/etc/preloaded-vars.conf
+RUN /fortishield/install.sh
 
 COPY base/manager/entrypoint.sh /scripts/entrypoint.sh
 

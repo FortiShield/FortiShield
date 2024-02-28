@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import hashlib
@@ -11,18 +11,18 @@ from unittest.mock import patch, MagicMock, ANY, call
 
 from werkzeug.exceptions import Unauthorized
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.results import FortishieldResult
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.results import FortishieldResult
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
         from api import authentication
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data')
@@ -32,7 +32,7 @@ security_conf = FortishieldResult({
     'rbac_mode': 'black'
 })
 decoded_payload = {
-    "iss": 'wazuh',
+    "iss": 'fortishield',
     "aud": 'Fortishield API REST',
     "nbf": 0,
     "exp": security_conf['auth_token_exp_timeout'],
@@ -43,7 +43,7 @@ decoded_payload = {
 }
 
 original_payload = {
-    "iss": "wazuh",
+    "iss": "fortishield",
     "aud": "Fortishield API REST",
     "nbf": 0,
     "exp": security_conf['auth_token_exp_timeout'],
@@ -60,8 +60,8 @@ def test_check_user_master():
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('api.authentication.raise_if_exc', side_effect=None)
 async def test_check_user(mock_raise_if_exc, mock_distribute_function, mock_dapi):
     """Verify if result is as expected"""
@@ -85,8 +85,8 @@ def test_generate_keypair(mock_open, mock_chown, mock_chmod, mock_change_keypair
     assert result == ('-----BEGIN PRIVATE KEY-----',
                       '-----BEGIN PUBLIC KEY-----')
 
-    calls = [call(authentication._private_key_path, authentication.wazuh_uid(), authentication.wazuh_gid()),
-             call(authentication._public_key_path, authentication.wazuh_uid(), authentication.wazuh_gid())]
+    calls = [call(authentication._private_key_path, authentication.fortishield_uid(), authentication.fortishield_gid()),
+             call(authentication._public_key_path, authentication.fortishield_uid(), authentication.fortishield_gid())]
     mock_chown.assert_has_calls(calls)
     calls = [call(authentication._private_key_path, 0o640),
              call(authentication._public_key_path, 0o640)]
@@ -130,8 +130,8 @@ def test_get_security_conf():
 @patch('api.authentication.jwt.encode', return_value='test_token')
 @patch('api.authentication.generate_keypair', return_value=('-----BEGIN PRIVATE KEY-----',
                                                             '-----BEGIN PUBLIC KEY-----'))
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('api.authentication.raise_if_exc', side_effect=None)
 async def test_generate_token(mock_raise_if_exc, mock_distribute_function, mock_dapi, mock_generate_keypair,
                         mock_encode, auth_context):
@@ -160,7 +160,7 @@ async def test_generate_token(mock_raise_if_exc, mock_distribute_function, mock_
 
 @patch('api.authentication.TokenManager')
 def test_check_token(mock_tokenmanager):
-    result = authentication.check_token(username='wazuh_user', roles=tuple([1]), token_nbf_time=3600, run_as=False,
+    result = authentication.check_token(username='fortishield_user', roles=tuple([1]), token_nbf_time=3600, run_as=False,
                                         origin_node_type='master')
     assert result == {'valid': ANY, 'policies': ANY}
 
@@ -169,8 +169,8 @@ def test_check_token(mock_tokenmanager):
 @patch('api.authentication.jwt.decode')
 @patch('api.authentication.generate_keypair', return_value=('-----BEGIN PRIVATE KEY-----',
                                                             '-----BEGIN PUBLIC KEY-----'))
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', return_value=True)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.distribute_function', return_value=True)
 @patch('api.authentication.raise_if_exc', side_effect=None)
 async def test_decode_token(mock_raise_if_exc, mock_distribute_function, mock_dapi, mock_generate_keypair,
                       mock_decode):
@@ -198,7 +198,7 @@ async def test_decode_token(mock_raise_if_exc, mock_distribute_function, mock_da
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
+@patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.distribute_function', side_effect=None)
 @patch('api.authentication.raise_if_exc', side_effect=None)
 @patch('api.authentication.generate_keypair', return_value=('-----BEGIN PRIVATE KEY-----',
                                                             '-----BEGIN PUBLIC KEY-----'))
@@ -211,8 +211,8 @@ async def test_decode_token_ko(mock_generate_keypair, mock_raise_if_exc, mock_di
         with patch('api.authentication.generate_keypair',
                    return_value=('-----BEGIN PRIVATE KEY-----',
                                  '-----BEGIN PUBLIC KEY-----')):
-            with patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None):
-                with patch('wazuh.core.cluster.dapi.dapi.DistributedAPI.distribute_function'):
+            with patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.__init__', return_value=None):
+                with patch('fortishield.core.cluster.dapi.dapi.DistributedAPI.distribute_function'):
                     with patch('api.authentication.raise_if_exc') as mock_raise_if_exc:
                         mock_decode.return_value = deepcopy(original_payload)
 

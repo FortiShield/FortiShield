@@ -21,7 +21,7 @@ set_target_properties(
 target_link_libraries(OS_MAILD_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 # Include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate tests
 list(APPEND os_maild_names "test_printtable")

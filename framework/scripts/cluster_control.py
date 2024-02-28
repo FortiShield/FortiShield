@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -13,11 +13,11 @@ import sys
 from os import path
 from typing import Union
 
-import wazuh.core.cluster.cluster
-import wazuh.core.cluster.utils
-from wazuh.core.cluster import control, local_client
-from wazuh.core.common import DECIMALS_DATE_FORMAT
-from wazuh.core.utils import get_utc_strptime
+import fortishield.core.cluster.cluster
+import fortishield.core.cluster.utils
+from fortishield.core.cluster import control, local_client
+from fortishield.core.common import DECIMALS_DATE_FORMAT
+from fortishield.core.utils import get_utc_strptime
 
 
 def __print_table(data: map, headers: dict, show_header: bool = False):
@@ -265,13 +265,13 @@ def main():
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.ERROR, format='%(levelname)s: %(message)s')
 
-    cluster_status = wazuh.core.cluster.utils.get_cluster_status()
+    cluster_status = fortishield.core.cluster.utils.get_cluster_status()
     if cluster_status['enabled'] == 'no' or cluster_status['running'] == 'no':
         logging.error("Cluster is not running.")
         sys.exit(1)
 
-    cluster_config = wazuh.core.cluster.utils.read_config()
-    wazuh.core.cluster.cluster.check_cluster_config(config=cluster_config)
+    cluster_config = fortishield.core.cluster.utils.read_config()
+    fortishield.core.cluster.cluster.check_cluster_config(config=cluster_config)
     try:
         if args.filter_status and not args.list_agents:
             logging.error("Wrong arguments.")

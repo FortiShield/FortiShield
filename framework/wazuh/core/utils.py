@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import errno
@@ -26,11 +26,11 @@ from cachetools import cached, TTLCache
 from defusedxml.ElementTree import fromstring
 from defusedxml.minidom import parseString
 
-import wazuh.core.results as results
+import fortishield.core.results as results
 from api import configuration
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError, FortishieldInternalError
-from wazuh.core.wdb import FortishieldDBConnection
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError, FortishieldInternalError
+from fortishield.core.wdb import FortishieldDBConnection
 
 # Python 2/3 compatibility
 if sys.version_info[0] == 3:
@@ -324,7 +324,7 @@ def sort_array(array: list, sort_by: list = None, sort_ascending: bool = True,
                               for a in sort_by),
                           reverse=not sort_ascending)
     else:
-        if type(array) is set or (type(array[0]) is not dict and 'class \'wazuh' not in str(type(array[0]))):
+        if type(array) is set or (type(array[0]) is not dict and 'class \'fortishield' not in str(type(array[0]))):
             return sorted(array, reverse=not sort_ascending)
         else:
             return array
@@ -624,7 +624,7 @@ def chown_r(file_path: str, uid: int, gid: int):
                 chown_r(item_path, uid, gid)
 
 
-def delete_wazuh_file(full_path: str) -> bool:
+def delete_fortishield_file(full_path: str) -> bool:
     """Delete a Fortishield file.
 
     Parameters
@@ -884,7 +884,7 @@ def check_remote_commands(data: str):
         check_section(command_section, section='wodle_command', split_section='<wodle name=\"command\">')
 
 
-def check_wazuh_limits_unchanged(new_conf, original_conf):
+def check_fortishield_limits_unchanged(new_conf, original_conf):
     """Check if Fortishield limits remain unchanged.
 
     Parameters
@@ -967,7 +967,7 @@ def check_agents_allow_higher_versions(data: str):
         check_section(auth_section, split_section='</auth>')
 
 
-def load_wazuh_xml(xml_path, data=None):
+def load_fortishield_xml(xml_path, data=None):
     if not data:
         with open(xml_path) as f:
             try:
@@ -1309,7 +1309,7 @@ class AbstractDatabaseBackend:
 
 class FortishieldDBBackend(AbstractDatabaseBackend):
     """
-    This class describes a wazuh db backend that executes database queries.
+    This class describes a fortishield db backend that executes database queries.
     """
 
     def __init__(self, agent_id=None, query_format='agent', request_slice=500):
@@ -1372,7 +1372,7 @@ class FortishieldDBBackend(AbstractDatabaseBackend):
 
 
 class FortishieldDBQuery(object):
-    """This class describes a database query for wazuh."""
+    """This class describes a database query for fortishield."""
 
     def __init__(self, offset: int, limit: int, table: str, sort: dict, search: dict, select: list, query: str,
                  fields: dict, default_sort_field: str, count: bool, get_data: bool, backend: str,
@@ -1444,8 +1444,8 @@ class FortishieldDBQuery(object):
         self.special_characters = "\'\""
         self.wildcard_equal_fields = set()
         # To correctly turn a query into SQL, a regex is used. This regex will extract all necessary information:
-        # For example, the following regex -> (name!=wazuh;id>5),group=webserver <- would return 3 different matches:
-        #   (name != wazuh ;
+        # For example, the following regex -> (name!=fortishield;id>5),group=webserver <- would return 3 different matches:
+        #   (name != fortishield ;
         #    id   > 5      ),
         #    group=webserver
         self.query_regex = re.compile(
@@ -1968,7 +1968,7 @@ def add_dynamic_detail(detail: str, value: str, attribs: dict, details: dict):
     details[detail].update(attribs)
 
 
-def validate_wazuh_xml(content: str, config_file: bool = False):
+def validate_fortishield_xml(content: str, config_file: bool = False):
     """Validate Fortishield XML files (rules, decoders and ossec.conf)
 
     Parameters
@@ -2006,10 +2006,10 @@ def validate_wazuh_xml(content: str, config_file: bool = False):
             check_remote_commands(final_xml)
             with open(common.OSSEC_CONF, 'r') as f:
                 current_xml = f.read()
-            check_wazuh_limits_unchanged(final_xml, current_xml)
+            check_fortishield_limits_unchanged(final_xml, current_xml)
             check_agents_allow_higher_versions(final_xml)
         # Check xml format
-        load_wazuh_xml(xml_path='', data=final_xml)
+        load_fortishield_xml(xml_path='', data=final_xml)
     except ExpatError:
         raise FortishieldError(1113)
     except FortishieldError as e:
@@ -2078,7 +2078,7 @@ def upload_file(content: str, file_path: str, check_xml_formula_values: bool = T
     # Move temporary file to group folder
     try:
         new_conf_path = path.join(common.FORTISHIELD_PATH, file_path)
-        safe_move(tmp_file_path, new_conf_path, ownership=(common.wazuh_uid(), common.wazuh_gid()), permissions=0o660)
+        safe_move(tmp_file_path, new_conf_path, ownership=(common.fortishield_uid(), common.fortishield_gid()), permissions=0o660)
     except PermissionError as exc:
         raise FortishieldError(1006) from exc
     except Error as exc:

@@ -1959,9 +1959,9 @@ void * w_output_thread(void * args){
             if (result != 0) {
                 if (result != 1) {
 #ifdef CLIENT
-                    merror("Unable to send message to '%s' (wazuh-agentd might be down). Attempting to reconnect.", DEFAULTQUEUE);
+                    merror("Unable to send message to '%s' (fortishield-agentd might be down). Attempting to reconnect.", DEFAULTQUEUE);
 #else
-                    merror("Unable to send message to '%s' (wazuh-analysisd might be down). Attempting to reconnect.", DEFAULTQUEUE);
+                    merror("Unable to send message to '%s' (fortishield-analysisd might be down). Attempting to reconnect.", DEFAULTQUEUE);
 #endif
                 }
                 // Retry to connect infinitely.

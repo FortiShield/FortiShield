@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -16,9 +16,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
-    - wazuh-modulesd
+    - fortishield-authd
+    - fortishield-db
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -41,10 +41,10 @@ import time
 import pytest
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -95,14 +95,14 @@ def read_random_pass():
 
 # Test
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_use_password(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_use_password(test_configuration, test_metadata, set_fortishield_configuration,
                              reset_password, truncate_monitored_files, daemons_handler, configure_sockets_environment,
                              wait_for_authd_startup, connect_to_sockets):
     '''
     description:
         Checks that every input message in authd port generates the adequate output.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -114,9 +114,9 @@ def test_authd_use_password(test_configuration, test_metadata, set_wazuh_configu
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_sockets_environment:
             type: fixture
             brief: Configure the socket listener to receive and send messages on the sockets.
@@ -125,7 +125,7 @@ def test_authd_use_password(test_configuration, test_metadata, set_wazuh_configu
             brief: Write the password file.
         - daemons_handler:
             type: fixture
-            brief: Restarts wazuh or a specific daemon passed.
+            brief: Restarts fortishield or a specific daemon passed.
         - wait_for_authd_startup:
             type: fixture
             brief: Waits until Authd is accepting connections.

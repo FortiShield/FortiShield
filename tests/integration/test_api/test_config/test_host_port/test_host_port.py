@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,12 +21,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -43,8 +43,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html#api-configuration-options
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html#api-configuration-options
 
 tags:
     - api
@@ -54,10 +54,10 @@ import requests
 from pathlib import Path
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import get_base_url, login
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import CONFIGURATION_TYPES
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import get_base_url, login
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -87,7 +87,7 @@ def test_host_port(test_configuration, test_metadata, add_configuration, truncat
                  combinations of host and port, verify that the 'aiohttp' http framework correctly
                  publishes that value in the 'api.log' and check that the request returns the expected one.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     test_phases:
         - setup:

@@ -9,7 +9,7 @@
  * Foundation.
  */
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_CONTENT = "content";
 static const char *XML_CONTENT_TYPE = "type";

@@ -18,19 +18,19 @@
 #include "../wrappers/posix/dirent_wrappers.h"
 #include "../wrappers/posix/pthread_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
-#include "../wrappers/wazuh/config/syscheck_config_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
-#include "../wrappers/wazuh/shared/fs_op_wrappers.h"
-#include "../wrappers/wazuh/shared/syscheck_op_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/fim_db_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/run_check_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/run_realtime_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/fim_diff_changes_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/registry.h"
-#include "../wrappers/wazuh/os_crypto/md5_op_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/config/syscheck_config_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/fs_op_wrappers.h"
+#include "../wrappers/fortishield/shared/syscheck_op_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/fim_db_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/run_check_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/run_realtime_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/fim_diff_changes_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/registry.h"
+#include "../wrappers/fortishield/os_crypto/md5_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
 
 #include "syscheck.h"
 #include "../../config/syscheck-config.h"
@@ -2038,7 +2038,7 @@ static void test_fim_scan_db_full_double_scan(void **state) {
 
     // fim_check_db_state
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     // fim_send_scan_info
@@ -2170,7 +2170,7 @@ static void test_fim_scan_realtime_enabled(void **state) {
     expect_string(__wrap__mdebug2, formatted_msg, debug_buffer);
 
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     expect_string(__wrap__minfo, formatted_msg, FIM_FREQUENCY_ENDED);
@@ -2767,7 +2767,7 @@ static void test_fim_check_db_state_empty_to_empty(void **state) {
 
 static void test_fim_check_db_state_empty_to_full(void **state) {
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_EMPTY);
@@ -2779,7 +2779,7 @@ static void test_fim_check_db_state_empty_to_full(void **state) {
 
 static void test_fim_check_db_state_full_to_empty(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_FULL);
@@ -2791,7 +2791,7 @@ static void test_fim_check_db_state_full_to_empty(void **state) {
 
 static void test_fim_check_db_state_empty_to_90_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6040): File database is 90% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_EMPTY);
@@ -2803,7 +2803,7 @@ static void test_fim_check_db_state_empty_to_90_percentage(void **state) {
 
 static void test_fim_check_db_state_90_percentage_to_empty(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_90_PERCENTAGE);
@@ -2815,7 +2815,7 @@ static void test_fim_check_db_state_90_percentage_to_empty(void **state) {
 
 static void test_fim_check_db_state_empty_to_80_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6038): File database is 80% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_EMPTY);
@@ -2827,7 +2827,7 @@ static void test_fim_check_db_state_empty_to_80_percentage(void **state) {
 
 static void test_fim_check_db_state_80_percentage_to_empty(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":0,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_80_PERCENTAGE);
@@ -2855,7 +2855,7 @@ static void test_fim_check_db_state_normal_to_normal(void **state) {
 
 static void test_fim_check_db_state_normal_to_full(void **state) {
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_NORMAL);
@@ -2867,7 +2867,7 @@ static void test_fim_check_db_state_normal_to_full(void **state) {
 
 static void test_fim_check_db_state_full_to_normal(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_FULL);
@@ -2880,7 +2880,7 @@ static void test_fim_check_db_state_full_to_normal(void **state) {
 static void test_fim_check_db_state_normal_to_90_percentage(void **state) {
 
     expect_string(__wrap__minfo, formatted_msg, "(6040): File database is 90% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_NORMAL);
@@ -2893,7 +2893,7 @@ static void test_fim_check_db_state_normal_to_90_percentage(void **state) {
 static void test_fim_check_db_state_90_percentage_to_normal(void **state) {
 
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_90_PERCENTAGE);
@@ -2905,7 +2905,7 @@ static void test_fim_check_db_state_90_percentage_to_normal(void **state) {
 
 static void test_fim_check_db_state_normal_to_80_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6038): File database is 80% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_NORMAL);
@@ -2925,7 +2925,7 @@ static void test_fim_check_db_state_80_percentage_to_80_percentage(void **state)
 
 static void test_fim_check_db_state_80_percentage_to_full(void **state) {
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_80_PERCENTAGE);
@@ -2938,7 +2938,7 @@ static void test_fim_check_db_state_80_percentage_to_full(void **state) {
 static void test_fim_check_db_state_full_to_80_percentage(void **state) {
 
     expect_string(__wrap__minfo, formatted_msg, "(6038): File database is 80% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_FULL);
@@ -2950,7 +2950,7 @@ static void test_fim_check_db_state_full_to_80_percentage(void **state) {
 
 static void test_fim_check_db_state_80_percentage_to_90_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6040): File database is 90% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_80_PERCENTAGE);
@@ -2970,7 +2970,7 @@ static void test_fim_check_db_state_90_percentage_to_90_percentage(void **state)
 
 static void test_fim_check_db_state_90_percentage_to_full(void **state) {
     expect_string(__wrap__mwarn, formatted_msg, "(6926): File database is 100% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":50000,\"alert_type\":\"full\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_90_PERCENTAGE);
@@ -2990,7 +2990,7 @@ static void test_fim_check_db_state_full_to_full(void **state) {
 
 static void test_fim_check_db_state_full_to_90_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6040): File database is 90% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":46000,\"alert_type\":\"90_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_FULL);
@@ -3002,7 +3002,7 @@ static void test_fim_check_db_state_full_to_90_percentage(void **state) {
 
 static void test_fim_check_db_state_90_percentage_to_80_percentage(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6038): File database is 80% full.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":41000,\"alert_type\":\"80_percentage\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_90_PERCENTAGE);
@@ -3014,7 +3014,7 @@ static void test_fim_check_db_state_90_percentage_to_80_percentage(void **state)
 
 static void test_fim_check_db_state_80_percentage_to_normal(void **state) {
     expect_string(__wrap__minfo, formatted_msg, "(6036): The file database status returns to normal.");
-    expect_string(__wrap_send_log_msg, msg, "wazuh: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
+    expect_string(__wrap_send_log_msg, msg, "fortishield: FIM DB: {\"fim_db_table\":\"file_entry\",\"file_limit\":50000,\"file_count\":10000,\"alert_type\":\"normal\"}");
     will_return(__wrap_send_log_msg, 1);
 
     assert_int_equal(_files_db_state, FIM_STATE_DB_80_PERCENTAGE);

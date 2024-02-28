@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import copy
@@ -16,14 +16,14 @@ from typing import Dict, Optional, Union
 
 import aiohttp
 import certifi
-import wazuh
+import fortishield
 from api import configuration
-from wazuh import FortishieldError, FortishieldException, FortishieldInternalError
-from wazuh.core import common
-from wazuh.core.cluster.utils import get_manager_status
-from wazuh.core.configuration import get_active_configuration, get_cti_url
-from wazuh.core.utils import get_utc_now, get_utc_strptime, tail
-from wazuh.core.wazuh_socket import FortishieldSocket
+from fortishield import FortishieldError, FortishieldException, FortishieldInternalError
+from fortishield.core import common
+from fortishield.core.cluster.utils import get_manager_status
+from fortishield.core.configuration import get_active_configuration, get_cti_url
+from fortishield.core.utils import get_utc_now, get_utc_strptime, tail
+from fortishield.core.fortishield_socket import FortishieldSocket
 
 
 _re_logtest = re.compile(r"^.*(?:ERROR: |CRITICAL: )(?:\[.*\] )?(.*)$")
@@ -32,8 +32,8 @@ OSSEC_LOG_FIELDS = ['timestamp', 'tag', 'level', 'description']
 CTI_URL = get_cti_url()
 RELEASE_UPDATES_URL = os.path.join(CTI_URL, 'api', 'v1', 'ping')
 ONE_DAY_SLEEP = 60 * 60 * 24
-FORTISHIELD_UID_KEY = 'wazuh-uid'
-FORTISHIELD_TAG_KEY = 'wazuh-tag'
+FORTISHIELD_UID_KEY = 'fortishield-uid'
+FORTISHIELD_TAG_KEY = 'fortishield-tag'
 
 
 class LoggingFormat(Enum):
@@ -92,12 +92,12 @@ def get_ossec_log_fields(log: str, log_format: LoggingFormat = LoggingFormat.pla
         return None
 
     if "rootcheck" in tag:  # Unify rootcheck category
-        tag = "wazuh-rootcheck"
+        tag = "fortishield-rootcheck"
 
     return get_utc_strptime(date, '%Y/%m/%d %H:%M:%S'), tag, level.lower(), description
 
 
-def get_wazuh_active_logging_format() -> LoggingFormat:
+def get_fortishield_active_logging_format() -> LoggingFormat:
     """Obtain the Fortishield active logging format.
 
     Returns
@@ -124,15 +124,15 @@ def get_ossec_logs(limit: int = 2000) -> list:
     """
     logs = []
 
-    log_format = get_wazuh_active_logging_format()
+    log_format = get_fortishield_active_logging_format()
     if log_format == LoggingFormat.plain and exists(common.FORTISHIELD_LOG):
-        wazuh_log_content = tail(common.FORTISHIELD_LOG, limit)
+        fortishield_log_content = tail(common.FORTISHIELD_LOG, limit)
     elif log_format == LoggingFormat.json and exists(common.FORTISHIELD_LOG_JSON):
-        wazuh_log_content = tail(common.FORTISHIELD_LOG_JSON, limit)
+        fortishield_log_content = tail(common.FORTISHIELD_LOG_JSON, limit)
     else:
         raise FortishieldInternalError(1020)
 
-    for line in wazuh_log_content:
+    for line in fortishield_log_content:
         log_fields = get_ossec_log_fields(line, log_format=log_format)
         if log_fields:
             date, tag, level, description = log_fields
@@ -282,7 +282,7 @@ def _get_connector() -> aiohttp.TCPConnector:
 
 def get_update_information_template(
         update_check: bool,
-        current_version: str = f"v{wazuh.__version__}",
+        current_version: str = f"v{fortishield.__version__}",
         last_check_date: Optional[datetime] = None
 ) -> dict:
     """Build and return a template for the update_information dict.
@@ -292,7 +292,7 @@ def get_update_information_template(
     update_check : bool
         Indicates if the check is enabled or not.
     current_version : str, optional
-        Indicates the current version of Fortishield, by default wazuh.__version__.
+        Indicates the current version of Fortishield, by default fortishield.__version__.
     last_check_date : Optional[datetime], optional
         Indicates the datetime of the last check, by default None.
 
@@ -324,7 +324,7 @@ async def query_update_check_service(installation_uid: str) -> dict:
     update_information : dict
         Updates information.
     """
-    current_version = f'v{wazuh.__version__}'
+    current_version = f'v{fortishield.__version__}'
     headers = {FORTISHIELD_UID_KEY: installation_uid, FORTISHIELD_TAG_KEY: current_version}
 
     update_information = get_update_information_template(

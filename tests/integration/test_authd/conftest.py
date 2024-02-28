@@ -1,6 +1,6 @@
 """
 Copyright (C) 2015-2023, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 import shutil
@@ -8,21 +8,21 @@ import pytest
 import time
 import os
 
-from wazuh_testing import logger
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, FORTISHIELD_API_LOG_FILE_PATH, FORTISHIELD_API_JSON_LOG_FILE_PATH
-from wazuh_testing.constants.paths.configurations import DEFAULT_AUTHD_PASS_PATH, DEFAULT_AUTHD_PASS_PATH, FORTISHIELD_CLIENT_KEYS_PATH
-from wazuh_testing.utils import file
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.utils.agent_groups import create_group, delete_group
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.constants.daemons import AUTHD_DAEMON
-from wazuh_testing.utils import mocking
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.constants.api import FORTISHIELD_API_PORT
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.modules.api.patterns import API_STARTED_MSG
-from wazuh_testing.tools.certificate_controller import CertificateController
+from fortishield_testing import logger
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, FORTISHIELD_API_LOG_FILE_PATH, FORTISHIELD_API_JSON_LOG_FILE_PATH
+from fortishield_testing.constants.paths.configurations import DEFAULT_AUTHD_PASS_PATH, DEFAULT_AUTHD_PASS_PATH, FORTISHIELD_CLIENT_KEYS_PATH
+from fortishield_testing.utils import file
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.utils.agent_groups import create_group, delete_group
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.constants.daemons import AUTHD_DAEMON
+from fortishield_testing.utils import mocking
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.constants.api import FORTISHIELD_API_PORT
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.modules.api.patterns import API_STARTED_MSG
+from fortishield_testing.tools.certificate_controller import CertificateController
 from . import utils
 
 

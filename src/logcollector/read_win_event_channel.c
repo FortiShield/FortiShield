@@ -43,7 +43,7 @@
 #include <sddl.h>
 
 #ifdef FORTISHIELD_UNIT_TESTING
-#include "../unit_tests/wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../unit_tests/wrappers/fortishield/shared/debug_op_wrappers.h"
 #include "../unit_tests/wrappers/windows/errhandlingapi_wrappers.h"
 #include "../unit_tests/wrappers/windows/winbase_wrappers.h"
 #include "../unit_tests/wrappers/windows/winevt_wrappers.h"

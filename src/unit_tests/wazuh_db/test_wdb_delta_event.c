@@ -15,11 +15,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wazuh_db/wdb.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../fortishield_db/wdb.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 #include "../wrappers/externals/sqlite/sqlite3_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
-#include "wazuhdb_op.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
+#include "fortishielddb_op.h"
 
 cJSON * wdb_dbsync_stmt_bind_from_json(sqlite3_stmt * stmt, int index, field_type_t type, const cJSON * value, const char * field_name,
                                        const char * table_name, bool convert_empty_string_as_null);

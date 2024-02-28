@@ -15,7 +15,7 @@
 #include "../addagent/manage_agents.h"
 #include "config/authd-config.h"
 #include "os_auth/auth.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
 
 #ifdef FORTISHIELD_UNIT_TESTING
 #define static

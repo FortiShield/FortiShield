@@ -1,10 +1,10 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest import TestCase
 
-from wazuh.core.InputValidator import InputValidator
+from fortishield.core.InputValidator import InputValidator
 import operator
 
 

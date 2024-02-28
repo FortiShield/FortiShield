@@ -89,20 +89,20 @@ endif
 PG_CONFIG?=pg_config
 MY_CONFIG?=mysql_config
 PRELUDE_CONFIG?=libprelude-config
-FORTISHIELD_GROUP?=wazuh
-FORTISHIELD_USER?=wazuh
+FORTISHIELD_GROUP?=fortishield
+FORTISHIELD_USER?=fortishield
 SHARED=so
-SELINUX_MODULE=selinux/wazuh.mod
-SELINUX_ENFORCEMENT=selinux/wazuh.te
-SELINUX_POLICY=selinux/wazuh.pp
+SELINUX_MODULE=selinux/fortishield.mod
+SELINUX_ENFORCEMENT=selinux/fortishield.te
+SELINUX_POLICY=selinux/fortishield.pp
 SHARED_MODULES=shared_modules/
-FORTISHIELD_MODULES=wazuh_modules/
+FORTISHIELD_MODULES=fortishield_modules/
 DBSYNC=${SHARED_MODULES}dbsync/
 RSYNC=${SHARED_MODULES}rsync/
-SYSCOLLECTOR=wazuh_modules/syscollector/
+SYSCOLLECTOR=fortishield_modules/syscollector/
 ROUTER=shared_modules/router/
 CONTENT_MANAGER=shared_modules/content_manager/
-VULNERABILITY_SCANNER=wazuh_modules/vulnerability_scanner/
+VULNERABILITY_SCANNER=fortishield_modules/vulnerability_scanner/
 SYSINFO=data_provider/
 SYSCHECK=syscheckd/
 USE_PRELUDE?=no
@@ -297,8 +297,8 @@ ifeq (${uname_S},HP-UX)
 		DEFINES+=-DHIGHFIRST
 		DEFINES+=-DOS_BIG_ENDIAN
 		OSSEC_CFLAGS+=-pthread
-		OSSEC_LDFLAGS+=-lrt -pthread -L. -lwazuhext
-		AR_LDFLAGS+=-lrt -pthread -L. -lwazuhext -lwazuhshared
+		OSSEC_LDFLAGS+=-lrt -pthread -L. -lfortishieldext
+		AR_LDFLAGS+=-lrt -pthread -L. -lfortishieldext -lfortishieldshared
 ifeq ($(INSTALLDIR),)
 	INSTALLDIR = /var/ossec
 endif
@@ -665,7 +665,7 @@ help: failtarget
 	@echo "General options: "
 	@echo "   make V=yes                   						Display full compiler messages. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
 	@echo "   make DEBUG=yes               						Build with symbols and without optimization. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
-	@echo "   make DEBUGAD=yes             						Enables extra debugging logging in wazuh-analysisd. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
+	@echo "   make DEBUGAD=yes             						Enables extra debugging logging in fortishield-analysisd. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
 	@echo "   make INSTALLDIR=/path        						Fortishield's installation path. Mandatory when compiling the python interpreter from sources using PYTHON_SOURCE."
 	@echo "   make ONEWAY=yes              						Disables manager's ACK towards agent. It allows connecting agents without backward connection from manager. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
 	@echo "   make CLEANFULL=yes           						Makes the alert mailing subject clear in the format: '<location> - <level> - <description>'. Allowed values are 1, yes, YES, y and Y, otherwise, the flag is ignored"
@@ -698,8 +698,8 @@ help: failtarget
 	@echo "   make USE_GEOIP=yes           Build with GeoIP support. Allowed values are auto 1, yes, YES, y and Y, otherwise, the flag is ignored"
 	@echo
 	@echo "User options: "
-	@echo "   make FORTISHIELD_GROUP=wazuh       Set wazuh group"
-	@echo "   make FORTISHIELD_USER=wazuh        Set wazuh user"
+	@echo "   make FORTISHIELD_GROUP=fortishield       Set fortishield group"
+	@echo "   make FORTISHIELD_USER=fortishield        Set fortishield user"
 	@echo
 	@echo "Examples: Client with debugging enabled"
 	@echo "   make TARGET=agent DEBUG=yes"
@@ -749,41 +749,41 @@ settings:
 	@echo "    CC                ${CC}"
 	@echo "    MAKE              ${MAKE}"
 
-BUILD_SERVER+=wazuh-maild -
-BUILD_SERVER+=wazuh-csyslogd -
-BUILD_SERVER+=wazuh-agentlessd -
-BUILD_SERVER+=wazuh-execd -
-BUILD_SERVER+=wazuh-logcollector -
-BUILD_SERVER+=wazuh-remoted
-BUILD_SERVER+=wazuh-agentd
+BUILD_SERVER+=fortishield-maild -
+BUILD_SERVER+=fortishield-csyslogd -
+BUILD_SERVER+=fortishield-agentlessd -
+BUILD_SERVER+=fortishield-execd -
+BUILD_SERVER+=fortishield-logcollector -
+BUILD_SERVER+=fortishield-remoted
+BUILD_SERVER+=fortishield-agentd
 BUILD_SERVER+=manage_agents
 BUILD_SERVER+=utils
 BUILD_SERVER+=active-responses
-BUILD_SERVER+=wazuh-syscheckd
-BUILD_SERVER+=wazuh-monitord
-BUILD_SERVER+=wazuh-reportd
-BUILD_SERVER+=wazuh-authd
-BUILD_SERVER+=wazuh-analysisd
-BUILD_SERVER+=wazuh-logtest-legacy
-BUILD_SERVER+=wazuh-dbd -
-BUILD_SERVER+=wazuh-integratord
-BUILD_SERVER+=wazuh-modulesd
-BUILD_SERVER+=wazuh-db
-BUILD_SERVER+=wazuh-keystore
+BUILD_SERVER+=fortishield-syscheckd
+BUILD_SERVER+=fortishield-monitord
+BUILD_SERVER+=fortishield-reportd
+BUILD_SERVER+=fortishield-authd
+BUILD_SERVER+=fortishield-analysisd
+BUILD_SERVER+=fortishield-logtest-legacy
+BUILD_SERVER+=fortishield-dbd -
+BUILD_SERVER+=fortishield-integratord
+BUILD_SERVER+=fortishield-modulesd
+BUILD_SERVER+=fortishield-db
+BUILD_SERVER+=fortishield-keystore
 
-BUILD_AGENT+=wazuh-agentd
+BUILD_AGENT+=fortishield-agentd
 BUILD_AGENT+=agent-auth
-BUILD_AGENT+=wazuh-logcollector
-BUILD_AGENT+=wazuh-syscheckd
-BUILD_AGENT+=wazuh-execd
+BUILD_AGENT+=fortishield-logcollector
+BUILD_AGENT+=fortishield-syscheckd
+BUILD_AGENT+=fortishield-execd
 BUILD_AGENT+=manage_agents
 BUILD_AGENT+=active-responses
-BUILD_AGENT+=wazuh-modulesd
+BUILD_AGENT+=fortishield-modulesd
 
 BUILD_CMAKE_PROJECTS+=build_sysinfo
 BUILD_CMAKE_PROJECTS+=build_shared_modules
 ifeq (${TARGET},server)
-BUILD_CMAKE_PROJECTS+=build_wazuh_cmake
+BUILD_CMAKE_PROJECTS+=build_fortishield_cmake
 endif
 ifeq (,$(filter ${DISABLE_SYSC},YES yes y Y 1))
 ifneq (${uname_S},HP-UX)
@@ -847,8 +847,8 @@ $(SELINUX_MODULE): $(SELINUX_ENFORCEMENT)
 	checkmodule -M -m -o $@ $?
 
 WINDOWS_LIBS:=win32/syscollector win32/syscheck
-WINDOWS_BINS:=win32/wazuh-agent.exe win32/wazuh-agent-eventchannel.exe win32/manage_agents.exe win32/setup-windows.exe win32/setup-syscheck.exe win32/setup-iis.exe win32/os_win32ui.exe win32/agent-auth.exe
-WINDOWS_ACTIVE_RESPONSES:=win32/restart-wazuh.exe win32/route-null.exe win32/netsh.exe
+WINDOWS_BINS:=win32/fortishield-agent.exe win32/fortishield-agent-eventchannel.exe win32/manage_agents.exe win32/setup-windows.exe win32/setup-syscheck.exe win32/setup-iis.exe win32/os_win32ui.exe win32/agent-auth.exe
+WINDOWS_ACTIVE_RESPONSES:=win32/restart-fortishield.exe win32/route-null.exe win32/netsh.exe
 
 ifeq (${MAKECMDGOALS},winagent)
 $(error Do not use 'winagent' directly, use 'TARGET=winagent')
@@ -866,7 +866,7 @@ winagent: external win32/libwinpthread-1.dll win32/libwinpthreadpatched.a ${FORT
 	cd win32/ && ./unix2dos.pl ../../LICENSE > LICENSE.txt
 	cd win32/ && ./unix2dos.pl ../VERSION > VERSION
 	cd win32/ && ./unix2dos.pl ../REVISION > REVISION
-	cd win32/ && makensis wazuh-installer.nsi
+	cd win32/ && makensis fortishield-installer.nsi
 
 win32/shared_modules: $(FORTISHIELDEXT_LIB)
 	cd ${DBSYNC} && mkdir -p build && cd build && cmake ${CMAKE_OPTS} ${DBSYNC_TEST} ${SHARED_MODULES_RELEASE_TYPE} ${WIN_RESOURCE_OBJ} .. && ${MAKE}
@@ -1297,7 +1297,7 @@ GUNZIP := gunzip
 GZIP := gzip
 CURL := curl -so
 DEPS_VERSION = 27
-RESOURCES_URL_BASE := https://packages.wazuh.com/deps/
+RESOURCES_URL_BASE := https://packages.fortishield.com/deps/
 RESOURCES_URL := $(RESOURCES_URL_BASE)$(DEPS_VERSION)
 CPYTHON := cpython
 PYTHON_SOURCE := no
@@ -1470,7 +1470,7 @@ external-precompiled/%.tar.gz:
 endif
 
 # Shared tools
-HTTP_REQUEST_URL := https://github.com/fortishield/wazuh-http-request/tarball/$(HTTP_REQUEST_BRANCH)
+HTTP_REQUEST_URL := https://github.com/fortishield/fortishield-http-request/tarball/$(HTTP_REQUEST_BRANCH)
 
 shared_modules/http-request.tar.gz:
 	find $(patsubst %.tar.gz,%,$@) -type f -exec false {} + &&\
@@ -1483,19 +1483,19 @@ shared_modules/http-request.tar.gz:
 #### OSSEC Libs ####
 ####################
 ifeq (${TARGET}, winagent)
-# libwazuhext
-FORTISHIELDEXT_DLL = libwazuhext.$(SHARED)
-FORTISHIELDEXT_LIB = libwazuhext.lib
-FORTISHIELDEXT_LIB_DEF = libwazuhext.def
-# libwazuhshared
-FORTISHIELD_DLL = libwazuhshared.$(SHARED)
-FORTISHIELD_LIB = libwazuhshared.lib
-FORTISHIELD_DEF = libwazuhshared.def
+# libfortishieldext
+FORTISHIELDEXT_DLL = libfortishieldext.$(SHARED)
+FORTISHIELDEXT_LIB = libfortishieldext.lib
+FORTISHIELDEXT_LIB_DEF = libfortishieldext.def
+# libfortishieldshared
+FORTISHIELD_DLL = libfortishieldshared.$(SHARED)
+FORTISHIELD_LIB = libfortishieldshared.lib
+FORTISHIELD_DEF = libfortishieldshared.def
 else
-FORTISHIELDEXT_LIB = libwazuhext.$(SHARED)
-FORTISHIELD_LIB = libwazuhshared.$(SHARED)
+FORTISHIELDEXT_LIB = libfortishieldext.$(SHARED)
+FORTISHIELD_LIB = libfortishieldshared.$(SHARED)
 endif
-BUILD_LIBS = libwazuh.a $(FORTISHIELDEXT_LIB)
+BUILD_LIBS = libfortishield.a $(FORTISHIELDEXT_LIB)
 
 $(BUILD_SERVER) $(BUILD_AGENT) $(WINDOWS_BINS) $(WINDOWS_BINS): $(BUILD_LIBS)
 
@@ -1574,55 +1574,55 @@ wrappers_macos_posix_o := $(wrappers_macos_posix_c:.c=.o)
 wrappers_posix_c := $(wildcard unit_tests/wrappers/posix/*.c)
 wrappers_posix_o := $(wrappers_posix_c:.c=.o)
 
-wrappers_wazuh_c := $(wildcard unit_tests/wrappers/wazuh/*.c)
-wrappers_wazuh_o := $(wrappers_wazuh_c:.c=.o)
+wrappers_fortishield_c := $(wildcard unit_tests/wrappers/fortishield/*.c)
+wrappers_fortishield_o := $(wrappers_fortishield_c:.c=.o)
 
-wrappers_wazuh_os_crypto_c := $(wildcard unit_tests/wrappers/wazuh/os_crypto/*.c)
-wrappers_wazuh_os_crypto_o := $(wrappers_wazuh_os_crypto_c:.c=.o)
+wrappers_fortishield_os_crypto_c := $(wildcard unit_tests/wrappers/fortishield/os_crypto/*.c)
+wrappers_fortishield_os_crypto_o := $(wrappers_fortishield_os_crypto_c:.c=.o)
 
-wrappers_wazuh_os_execd_c := $(wildcard unit_tests/wrappers/wazuh/os_execd/*.c)
-wrappers_wazuh_os_execd_o := $(wrappers_wazuh_os_execd_c:.c=.o)
+wrappers_fortishield_os_execd_c := $(wildcard unit_tests/wrappers/fortishield/os_execd/*.c)
+wrappers_fortishield_os_execd_o := $(wrappers_fortishield_os_execd_c:.c=.o)
 
-wrappers_wazuh_os_net_c := $(wildcard unit_tests/wrappers/wazuh/os_net/*.c)
-wrappers_wazuh_os_net_o := $(wrappers_wazuh_os_net_c:.c=.o)
+wrappers_fortishield_os_net_c := $(wildcard unit_tests/wrappers/fortishield/os_net/*.c)
+wrappers_fortishield_os_net_o := $(wrappers_fortishield_os_net_c:.c=.o)
 
-wrappers_wazuh_os_regex_c := $(wildcard unit_tests/wrappers/wazuh/os_regex/*.c)
-wrappers_wazuh_os_regex_o := $(wrappers_wazuh_os_regex_c:.c=.o)
+wrappers_fortishield_os_regex_c := $(wildcard unit_tests/wrappers/fortishield/os_regex/*.c)
+wrappers_fortishield_os_regex_o := $(wrappers_fortishield_os_regex_c:.c=.o)
 
-wrappers_wazuh_os_xml_c := $(wildcard unit_tests/wrappers/wazuh/os_xml/*.c)
-wrappers_wazuh_os_xml_o := $(wrappers_wazuh_os_xml_c:.c=.o)
+wrappers_fortishield_os_xml_c := $(wildcard unit_tests/wrappers/fortishield/os_xml/*.c)
+wrappers_fortishield_os_xml_o := $(wrappers_fortishield_os_xml_c:.c=.o)
 
-wrappers_wazuh_shared_c := $(wildcard unit_tests/wrappers/wazuh/shared/*.c)
-wrappers_wazuh_shared_o := $(wrappers_wazuh_shared_c:.c=.o)
+wrappers_fortishield_shared_c := $(wildcard unit_tests/wrappers/fortishield/shared/*.c)
+wrappers_fortishield_shared_o := $(wrappers_fortishield_shared_c:.c=.o)
 
-wrappers_wazuh_syscheckd_c := $(wildcard unit_tests/wrappers/wazuh/syscheckd/*.c)
-wrappers_wazuh_syscheckd_o := $(wrappers_wazuh_syscheckd_c:.c=.o)
+wrappers_fortishield_syscheckd_c := $(wildcard unit_tests/wrappers/fortishield/syscheckd/*.c)
+wrappers_fortishield_syscheckd_o := $(wrappers_fortishield_syscheckd_c:.c=.o)
 
-wrappers_wazuh_wazuh_db_c := $(wildcard unit_tests/wrappers/wazuh/wazuh_db/*.c)
-wrappers_wazuh_wazuh_db_o := $(wrappers_wazuh_wazuh_db_c:.c=.o)
+wrappers_fortishield_fortishield_db_c := $(wildcard unit_tests/wrappers/fortishield/fortishield_db/*.c)
+wrappers_fortishield_fortishield_db_o := $(wrappers_fortishield_fortishield_db_c:.c=.o)
 
-wrappers_wazuh_wazuh_modules_c := $(wildcard unit_tests/wrappers/wazuh/wazuh_modules/*.c)
-wrappers_wazuh_wazuh_modules_o := $(wrappers_wazuh_wazuh_modules_c:.c=.o)
+wrappers_fortishield_fortishield_modules_c := $(wildcard unit_tests/wrappers/fortishield/fortishield_modules/*.c)
+wrappers_fortishield_fortishield_modules_o := $(wrappers_fortishield_fortishield_modules_c:.c=.o)
 
-wrappers_wazuh_monitord_c := $(wildcard unit_tests/wrappers/wazuh/monitord/*.c)
-wrappers_wazuh_monitord_o := $(wrappers_wazuh_monitord_c:.c=.o)
+wrappers_fortishield_monitord_c := $(wildcard unit_tests/wrappers/fortishield/monitord/*.c)
+wrappers_fortishield_monitord_o := $(wrappers_fortishield_monitord_c:.c=.o)
 
-wrappers_wazuh_os_auth_c := $(wildcard unit_tests/wrappers/wazuh/os_auth/*.c)
-wrappers_wazuh_os_auth_o := $(wrappers_wazuh_os_auth_c:.c=.o)
+wrappers_fortishield_os_auth_c := $(wildcard unit_tests/wrappers/fortishield/os_auth/*.c)
+wrappers_fortishield_os_auth_o := $(wrappers_fortishield_os_auth_c:.c=.o)
 
-wrappers_wazuh_addagent_c := $(wildcard unit_tests/wrappers/wazuh/addagent/*.c)
-wrappers_wazuh_addagent_o := $(wrappers_wazuh_addagent_c:.c=.o)
+wrappers_fortishield_addagent_c := $(wildcard unit_tests/wrappers/fortishield/addagent/*.c)
+wrappers_fortishield_addagent_o := $(wrappers_fortishield_addagent_c:.c=.o)
 
-wrappers_client_agent_c := $(wildcard unit_tests/wrappers/wazuh/client-agent/*.c)
+wrappers_client_agent_c := $(wildcard unit_tests/wrappers/fortishield/client-agent/*.c)
 wrappers_client_agent_o := $(wrappers_client_agent_c:.c=.o)
 
-wrappers_wazuh_config_c := $(wildcard unit_tests/wrappers/wazuh/config/*.c)
-wrappers_wazuh_config_o := $(wrappers_wazuh_config_c:.c=.o)
+wrappers_fortishield_config_c := $(wildcard unit_tests/wrappers/fortishield/config/*.c)
+wrappers_fortishield_config_o := $(wrappers_fortishield_config_c:.c=.o)
 
-wrappers_data_provider_c := $(wildcard unit_tests/wrappers/wazuh/data_provider/*.c)
+wrappers_data_provider_c := $(wildcard unit_tests/wrappers/fortishield/data_provider/*.c)
 wrappers_data_provider_o := $(wrappers_data_provider_c:.c=.o)
 
-wrappers_logcollector_c := $(wildcard unit_tests/wrappers/wazuh/logcollector/*.c)
+wrappers_logcollector_c := $(wildcard unit_tests/wrappers/fortishield/logcollector/*.c)
 wrappers_logcollector_o := $(wrappers_logcollector_c:.c=.o)
 
 wrappers_windows_c := $(wildcard unit_tests/wrappers/windows/*.c)
@@ -1634,14 +1634,14 @@ wrappers_windows_lib_o := $(wrappers_windows_lib_c:.c=.o)
 wrappers_windows_posix_c := $(wildcard unit_tests/wrappers/windows/posix/*.c)
 wrappers_windows_posix_o := $(wrappers_windows_posix_c:.c=.o)
 
-wrappers_wazuh_remoted_c := $(wildcard unit_tests/wrappers/wazuh/remoted/*.c)
-wrappers_wazuh_remoted_o := $(wrappers_wazuh_remoted_c:.c=.o)
+wrappers_fortishield_remoted_c := $(wildcard unit_tests/wrappers/fortishield/remoted/*.c)
+wrappers_fortishield_remoted_o := $(wrappers_fortishield_remoted_c:.c=.o)
 
-wrappers_wazuh_analysisd_c := $(wildcard unit_tests/wrappers/wazuh/analysisd/*.c)
-wrappers_wazuh_analysisd_o := $(wrappers_wazuh_analysisd_c:.c=.o)
+wrappers_fortishield_analysisd_c := $(wildcard unit_tests/wrappers/fortishield/analysisd/*.c)
+wrappers_fortishield_analysisd_o := $(wrappers_fortishield_analysisd_c:.c=.o)
 
-wrappers_wazuh_shared_modules_c := $(wildcard unit_tests/wrappers/wazuh/shared_modules/*.c)
-wrappers_wazuh_shared_modules_o := $(wrappers_wazuh_shared_modules_c:.c=.o)
+wrappers_fortishield_shared_modules_c := $(wildcard unit_tests/wrappers/fortishield/shared_modules/*.c)
+wrappers_fortishield_shared_modules_o := $(wrappers_fortishield_shared_modules_c:.c=.o)
 
 ifneq (,$(filter ${TEST},YES yes y Y 1))
 	OSSEC_CFLAGS+=${CFLAGS_TEST}
@@ -1659,23 +1659,23 @@ ifneq (,$(filter ${TEST},YES yes y Y 1))
 	UNIT_TEST_WRAPPERS+=${wrappers_externals_pcre2_o}
 	UNIT_TEST_WRAPPERS+=${wrappers_libc_o}
 	UNIT_TEST_WRAPPERS+=${wrappers_posix_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_crypto_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_execd_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_net_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_regex_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_xml_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_shared_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_syscheckd_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_wazuh_db_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_wazuh_modules_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_monitord_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_os_auth_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_addagent_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_config_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_crypto_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_execd_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_net_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_regex_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_xml_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_shared_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_syscheckd_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_fortishield_db_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_fortishield_modules_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_monitord_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_os_auth_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_addagent_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_config_o}
 	UNIT_TEST_WRAPPERS+=${wrappers_client_agent_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_remoted_o}
-	UNIT_TEST_WRAPPERS+=${wrappers_wazuh_analysisd_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_remoted_o}
+	UNIT_TEST_WRAPPERS+=${wrappers_fortishield_analysisd_o}
 	UNIT_TEST_WRAPPERS+=${wrappers_data_provider_o}
 	UNIT_TEST_WRAPPERS+=${wrappers_logcollector_o}
 
@@ -1694,7 +1694,7 @@ ifneq (,$(filter ${TEST},YES yes y Y 1))
 	endif
 
 	ifeq (${TARGET},server)
-		UNIT_TEST_WRAPPERS+=${wrappers_wazuh_shared_modules_o}
+		UNIT_TEST_WRAPPERS+=${wrappers_fortishield_shared_modules_o}
 	endif
 endif #TEST
 
@@ -1702,30 +1702,30 @@ shared_c := $(wildcard shared/*.c)
 shared_o := $(shared_c:.c=.o)
 
 shared/%.o: shared/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DARGV0=\"wazuh-remoted\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DARGV0=\"fortishield-remoted\" -c $^ -o $@
 
 shared/debug_op_proc.o: shared/debug_op.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DMA -DARGV0=\"wazuh-remoted\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DMA -DARGV0=\"fortishield-remoted\" -c $^ -o $@
 
 shared/file_op_proc.o: shared/file_op.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DCLIENT -DARGV0=\"wazuh-remoted\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -fPIC -DCLIENT -DARGV0=\"fortishield-remoted\" -c $^ -o $@
 
 #### Fortishield DB ####
 
-wdb_sql := $(wildcard wazuh_db/*.sql)
-wdblib_c := $(wildcard wazuh_db/wdb*.c)
-wdbhelpers_c := $(wildcard wazuh_db/helpers/*.c)
-wdbshared_c := wazuh_db/wdb_shared.c
+wdb_sql := $(wildcard fortishield_db/*.sql)
+wdblib_c := $(wildcard fortishield_db/wdb*.c)
+wdbhelpers_c := $(wildcard fortishield_db/helpers/*.c)
+wdbshared_c := fortishield_db/wdb_shared.c
 wdblib_o := $(wdblib_c:.c=.o) $(wdb_sql:.sql=.o)
-wdb_o := wazuh_db/main.o $(wdblib_o:.c=.o) $(wdb_c:.c=.o) $(wdb_sql:.sql=.o) $(wdbshared_c:.c=.o)
+wdb_o := fortishield_db/main.o $(wdblib_o:.c=.o) $(wdb_c:.c=.o) $(wdb_sql:.sql=.o) $(wdbshared_c:.c=.o)
 
-wazuh_db/schema_%.o: wazuh_db/schema_%.sql
+fortishield_db/schema_%.o: fortishield_db/schema_%.sql
 	${QUIET_CC}echo 'const char *'$(word 2, $(subst /, ,$(subst .,_,$<))) '= "'"`cat $< | tr -d \"\n\"`"'";' | ${MING_BASE}${CC} ${OSSEC_CFLAGS} -xc -c -o $@ -
 
-wazuh_db/%.o: wazuh_db/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-db\" -c $^ -o $@
+fortishield_db/%.o: fortishield_db/%.c
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-db\" -c $^ -o $@
 
-wazuh-db: ${wdb_o}
+fortishield-db: ${wdb_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} ${FORTISHIELD_LDFLAGS} $^ ${OSSEC_LIBS} ${FORTISHIELD_LIBS} -o $@
 
 #### Config ##########
@@ -1751,27 +1751,27 @@ build_syscollector: build_shared_modules build_sysinfo
 endif
 
 #### Fortishield cmake ###
-build_wazuh_cmake: $(FORTISHIELDEXT_LIB) $(EXTERNAL_LIBS_NO_WHOLE) build_syscollector
+build_fortishield_cmake: $(FORTISHIELDEXT_LIB) $(EXTERNAL_LIBS_NO_WHOLE) build_syscollector
 	mkdir -p build && cd build && cmake .. -DTARGET=${TARGET} ${CMAKE_OPTS} ${FORTISHIELD_RELEASE_TYPE} ${FORTISHIELD_TEST} && ${MAKE}
 
 #### Fortishield modules ##
-wmodules_c := $(wildcard wazuh_modules/wm*.c) $(wildcard wazuh_modules/agent_upgrade/*.c)
+wmodules_c := $(wildcard fortishield_modules/wm*.c) $(wildcard fortishield_modules/agent_upgrade/*.c)
 
 ifeq (${TARGET},agent)
-	wmodules_c := ${wmodules_c} $(wildcard wazuh_modules/agent_upgrade/agent/*.c)
+	wmodules_c := ${wmodules_c} $(wildcard fortishield_modules/agent_upgrade/agent/*.c)
 else ifeq (${TARGET},winagent)
-	wmodules_c := ${wmodules_c} $(wildcard wazuh_modules/agent_upgrade/agent/*.c)
+	wmodules_c := ${wmodules_c} $(wildcard fortishield_modules/agent_upgrade/agent/*.c)
 else
-	wmodules_c := ${wmodules_c} $(wildcard wazuh_modules/task_manager/*.c)
-	wmodules_c := ${wmodules_c} $(wildcard wazuh_modules/agent_upgrade/manager/*.c)
+	wmodules_c := ${wmodules_c} $(wildcard fortishield_modules/task_manager/*.c)
+	wmodules_c := ${wmodules_c} $(wildcard fortishield_modules/agent_upgrade/manager/*.c)
 endif
 
 wmodules_o := $(wmodules_c:.c=.o)
 
-wazuh_modules/%.o: wazuh_modules/%.c
+fortishield_modules/%.o: fortishield_modules/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} -c $^ -o $@
 
-wmodules_dep := ${wmodules_o} ${wdbhelpers_c:.c=.o} wazuh_db/wdb_shared.o
+wmodules_dep := ${wmodules_o} ${wdbhelpers_c:.c=.o} fortishield_db/wdb_shared.o
 
 ifeq (${uname_S},HP-UX)
 	wmodules_dep := ${wmodules_dep} ${config_o}
@@ -1861,16 +1861,16 @@ crypto_o := ${crypto_blowfish_o} \
 					 ${crypto_hmac_o} \
 					 ${crypto_signature_o}
 
-#### libwazuh #########
+#### libfortishield #########
 
-libwazuh.a: ${config_o} ${wmodules_dep} ${crypto_o} ${shared_o} ${os_net_o} ${os_regex_o} ${os_xml_o} ${os_zlib_o} ${UNIT_TEST_WRAPPERS} os_auth/ssl.o os_auth/check_cert.o addagent/validate.o ${manage_agents} analysisd/logmsg.o
+libfortishield.a: ${config_o} ${wmodules_dep} ${crypto_o} ${shared_o} ${os_net_o} ${os_regex_o} ${os_xml_o} ${os_zlib_o} ${UNIT_TEST_WRAPPERS} os_auth/ssl.o os_auth/check_cert.o addagent/validate.o ${manage_agents} analysisd/logmsg.o
 	${OSSEC_LINK} $@ $^
 	${OSSEC_RANLIB} $@
 
-### libwazuhext #########
+### libfortishieldext #########
 
 ifeq (${uname_S},Darwin)
-FORTISHIELD_SHFLAGS=-install_name @rpath/libwazuhext.$(SHARED)
+FORTISHIELD_SHFLAGS=-install_name @rpath/libfortishieldext.$(SHARED)
 
 $(FORTISHIELDEXT_LIB): $(EXTERNAL_LIBS)
 	$(OSSEC_SHARED) $(OSSEC_CFLAGS) $(FORTISHIELD_SHFLAGS) -o $@ -Wl,-all_load $^ -Wl,-noall_load $(OSSEC_LIBS)
@@ -1900,23 +1900,23 @@ endif
 else
 ifeq (${uname_S},AIX)
 $(FORTISHIELDEXT_LIB): $(EXTERNAL_LIBS)
-	mkdir -p libwazuhext;
-	find external/ -name \*.a -exec cp {} libwazuhext/ \;
+	mkdir -p libfortishieldext;
+	find external/ -name \*.a -exec cp {} libfortishieldext/ \;
 	for lib in libcjson.a libz.a libmsgpack.a libssl.a libcrypto.a libsqlite3.a libyaml.a libpcre2-8.a ; do \
-		ar -x libwazuhext/$$lib; \
-		mv *.o libwazuhext/; \
+		ar -x libfortishieldext/$$lib; \
+		mv *.o libfortishieldext/; \
 	done
-	$(OSSEC_SHARED) $(OSSEC_CFLAGS) libwazuhext/*.o -o $@ -static-libgcc -latomic
+	$(OSSEC_SHARED) $(OSSEC_CFLAGS) libfortishieldext/*.o -o $@ -static-libgcc -latomic
 else
 ifeq (${uname_S},HP-UX)
 $(FORTISHIELDEXT_LIB): $(EXTERNAL_LIBS)
-	mkdir -p libwazuhext;
-	find external/ -name \*.a -exec cp {} libwazuhext/ \;
+	mkdir -p libfortishieldext;
+	find external/ -name \*.a -exec cp {} libfortishieldext/ \;
 	for lib in libcjson.a libz.a libmsgpack.a libssl.a libcrypto.a libsqlite3.a libyaml.a libpcre2-8.a ; do \
-		ar -x libwazuhext/$$lib; \
-		mv *.o libwazuhext/; \
+		ar -x libfortishieldext/$$lib; \
+		mv *.o libfortishieldext/; \
 	done
-	$(OSSEC_SHARED) $(OSSEC_CFLAGS) libwazuhext/*.o -o $@ -static-libgcc
+	$(OSSEC_SHARED) $(OSSEC_CFLAGS) libfortishieldext/*.o -o $@ -static-libgcc
 else
 $(FORTISHIELDEXT_LIB): $(EXTERNAL_LIBS)
 	$(OSSEC_SHARED) $(OSSEC_CFLAGS) -o $@ -Wl,--whole-archive $^ -Wl,--no-whole-archive ${OSSEC_LIBS}
@@ -1932,9 +1932,9 @@ os_maild_c := $(wildcard os_maild/*.c)
 os_maild_o := $(os_maild_c:.c=.o)
 
 os_maild/%.o: os_maild/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-maild\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-maild\" -c $^ -o $@
 
-wazuh-maild: ${os_maild_o}
+fortishield-maild: ${os_maild_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### os_dbd ##########
@@ -1943,9 +1943,9 @@ os_dbd_c := $(wildcard os_dbd/*.c)
 os_dbd_o := $(os_dbd_c:.c=.o)
 
 os_dbd/%.o: os_dbd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} ${MI} ${PI} -DARGV0=\"wazuh-dbd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} ${MI} ${PI} -DARGV0=\"fortishield-dbd\" -c $^ -o $@
 
-wazuh-dbd: ${os_dbd_o}
+fortishield-dbd: ${os_dbd_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} ${MI} ${PI} $^  ${OSSEC_LIBS} -o $@
 
 
@@ -1955,9 +1955,9 @@ os_csyslogd_c := $(wildcard os_csyslogd/*.c)
 os_csyslogd_o := $(os_csyslogd_c:.c=.o)
 
 os_csyslogd/%.o: os_csyslogd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-csyslogd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-csyslogd\" -c $^ -o $@
 
-wazuh-csyslogd: ${os_csyslogd_o}
+fortishield-csyslogd: ${os_csyslogd_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 
@@ -1967,9 +1967,9 @@ os_agentlessd_c := $(wildcard agentlessd/*.c)
 os_agentlessd_o := $(os_agentlessd_c:.c=.o)
 
 agentlessd/%.o: agentlessd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-agentlessd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-agentlessd\" -c $^ -o $@
 
-wazuh-agentlessd: ${os_agentlessd_o}
+fortishield-agentlessd: ${os_agentlessd_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### os_execd #####
@@ -1978,9 +1978,9 @@ os_execd_c := $(wildcard os_execd/*.c)
 os_execd_o := $(os_execd_c:.c=.o)
 
 os_execd/%.o: os_execd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-execd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-execd\" -c $^ -o $@
 
-wazuh-execd: ${os_execd_o} active-response/active_responses.o
+fortishield-execd: ${os_execd_o} active-response/active_responses.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 
@@ -1991,12 +1991,12 @@ os_logcollector_o := $(os_logcollector_c:.c=.o)
 os_logcollector_eventchannel_o := $(os_logcollector_c:.c=-event.o)
 
 logcollector/%.o: logcollector/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-logcollector\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-logcollector\" -c $^ -o $@
 
 logcollector/%-event.o: logcollector/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DEVENTCHANNEL_SUPPORT -DARGV0=\"wazuh-logcollector\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DEVENTCHANNEL_SUPPORT -DARGV0=\"fortishield-logcollector\" -c $^ -o $@
 
-wazuh-logcollector: ${os_logcollector_o}
+fortishield-logcollector: ${os_logcollector_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### remoted #########
@@ -2005,20 +2005,20 @@ remoted_c := $(wildcard remoted/*.c)
 remoted_o := $(remoted_c:.c=.o)
 
 remoted/%.o: remoted/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS}  -DPORTABLE_UNALIGNED_ACCESS=0 -I./remoted -DARGV0=\"wazuh-remoted\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS}  -DPORTABLE_UNALIGNED_ACCESS=0 -I./remoted -DARGV0=\"fortishield-remoted\" -c $^ -o $@
 
-wazuh-remoted: ${remoted_o}
+fortishield-remoted: ${remoted_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} ${FORTISHIELD_LDFLAGS} $^ ${OSSEC_LIBS} ${FORTISHIELD_LIBS} -o $@
 
-#### wazuh-agentd ####
+#### fortishield-agentd ####
 
 client_agent_c := $(wildcard client-agent/*.c)
 client_agent_o := $(client_agent_c:.c=.o)
 
 client-agent/%.o: client-agent/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -I./client-agent -DARGV0=\"wazuh-agentd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -I./client-agent -DARGV0=\"fortishield-agentd\" -c $^ -o $@
 
-wazuh-agentd: ${client_agent_o} monitord/rotate_log.o monitord/compress_log.o
+fortishield-agentd: ${client_agent_o} monitord/rotate_log.o monitord/compress_log.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### addagent ######
@@ -2035,7 +2035,7 @@ manage_agents: ${addagent_o}
 
 #### Active Response ####
 
-active_response_programs = default-firewall-drop pf npf ipfw firewalld-drop disable-account host-deny ip-customblock restart-wazuh route-null kaspersky wazuh-slack
+active_response_programs = default-firewall-drop pf npf ipfw firewalld-drop disable-account host-deny ip-customblock restart-fortishield route-null kaspersky fortishield-slack
 
 $(active_response_programs): ${FORTISHIELD_LIB} ${FORTISHIELDEXT_LIB}
 
@@ -2086,7 +2086,7 @@ host-deny: active-response/host-deny.o active-response/active_responses.o
 ip-customblock: active-response/ip-customblock.o active-response/active_responses.o
 	${OSSEC_CCBIN} ${AR_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-restart-wazuh: active-response/restart-wazuh.o active-response/active_responses.o
+restart-fortishield: active-response/restart-fortishield.o active-response/active_responses.o
 	${OSSEC_CCBIN} ${AR_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 route-null: active-response/route-null.o active-response/active_responses.o
@@ -2095,14 +2095,14 @@ route-null: active-response/route-null.o active-response/active_responses.o
 kaspersky: active-response/kaspersky.o active-response/active_responses.o
 	${OSSEC_CCBIN} ${AR_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-wazuh-slack: active-response/wazuh-slack.o active-response/active_responses.o
+fortishield-slack: active-response/fortishield-slack.o active-response/active_responses.o
 	${OSSEC_CCBIN} ${AR_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 
-### libwazuhshared.so #########
+### libfortishieldshared.so #########
 
 ifeq (${uname_S},Darwin)
-FORTISHIELD_SHARED_SHFLAGS=-install_name @rpath/libwazuhshared.$(SHARED)
+FORTISHIELD_SHARED_SHFLAGS=-install_name @rpath/libfortishieldshared.$(SHARED)
 
 $(FORTISHIELD_LIB): $(FORTISHIELDEXT_LIB) $(AR_PROGRAMS_DEPS)
 	$(OSSEC_SHARED) $(OSSEC_CFLAGS) $(FORTISHIELD_SHARED_SHFLAGS) -o $@ -Wl,-all_load $^ -Wl,-noall_load $(OSSEC_LIBS)
@@ -2144,7 +2144,7 @@ endif
 
 #### Util ##########
 
-util_programs = clear_stats agent_control verify-agent-conf wazuh-regex parallel-regex
+util_programs = clear_stats agent_control verify-agent-conf fortishield-regex parallel-regex
 
 $(util_programs): $(BUILD_LIBS)
 
@@ -2166,7 +2166,7 @@ verify-agent-conf: util/verify-agent-conf.o
 agent_control: util/agent_control.o addagent/validate.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-wazuh-regex: util/wazuh-regex.o
+fortishield-regex: util/fortishield-regex.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 parallel-regex: util/parallel-regex.o
@@ -2190,7 +2190,7 @@ librootcheck.a: ${rootcheck_o_lib}
 
 #### FIM ######
 
-wazuh-syscheckd: librootcheck.a libwazuh.a ${FORTISHIELDEXT_LIB} build_shared_modules
+fortishield-syscheckd: librootcheck.a libfortishield.a ${FORTISHIELDEXT_LIB} build_shared_modules
 	cd syscheckd && mkdir -p build && cd build && cmake ${CMAKE_OPTS} -DCMAKE_C_FLAGS="${DEFINES} -pipe -Wall -Wextra -std=gnu99" ${SYSCHECK_TEST} ${SYSCHECK_RELEASE_TYPE} .. && ${MAKE}
 
 #### Monitor #######
@@ -2199,9 +2199,9 @@ monitor_c := $(wildcard monitord/*.c)
 monitor_o := $(monitor_c:.c=.o)
 
 monitord/%.o: monitord/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-monitord\" -c $< -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-monitord\" -c $< -o $@
 
-wazuh-monitord: ${monitor_o} os_maild/sendcustomemail.o
+fortishield-monitord: ${monitor_o} os_maild/sendcustomemail.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 
@@ -2211,9 +2211,9 @@ report_c := reportd/report.c
 report_o := $(report_c:.c=.o)
 
 reportd/%.o: reportd/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-reportd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-reportd\" -c $^ -o $@
 
-wazuh-reportd: ${report_o}
+fortishield-reportd: ${report_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 
@@ -2223,12 +2223,12 @@ os_auth_c := ${wildcard os_auth/*.c}
 os_auth_o := $(os_auth_c:.c=.o)
 
 os_auth/%.o: os_auth/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -I./os_auth -DARGV0=\"wazuh-authd\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -I./os_auth -DARGV0=\"fortishield-authd\" -c $^ -o $@
 
 agent-auth: addagent/validate.o os_auth/main-client.o os_auth/ssl.o os_auth/check_cert.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-wazuh-authd: addagent/validate.o os_auth/main-server.o os_auth/local-server.o os_auth/ssl.o os_auth/check_cert.o os_auth/config.o os_auth/authcom.o os_auth/auth.o os_auth/key_request.o os_auth/generate_cert.o
+fortishield-authd: addagent/validate.o os_auth/main-server.o os_auth/local-server.o os_auth/ssl.o os_auth/check_cert.o os_auth/config.o os_auth/authcom.o os_auth/auth.o os_auth/key_request.o os_auth/generate_cert.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### integratord #####
@@ -2237,9 +2237,9 @@ integrator_c := ${wildcard os_integrator/*.c}
 integrator_o := $(integrator_c:.c=.o)
 
 os_integrator/%.o: os_integrator/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS}  -I./os_integrator -DARGV0=\"wazuh-integratord\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS}  -I./os_integrator -DARGV0=\"fortishield-integratord\" -c $^ -o $@
 
-wazuh-integratord: ${integrator_o}
+fortishield-integratord: ${integrator_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
 #### analysisd #####
@@ -2250,7 +2250,7 @@ all_analysisd_o += ${cdb_o}
 all_analysisd_libs += cdb.a
 
 analysisd/cdb/%.o: analysisd/cdb/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/cdb -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/cdb -c $^ -o $@
 
 cdb.a: ${cdb_o}
 	${OSSEC_LINK} $@ $^
@@ -2263,7 +2263,7 @@ all_analysisd_o += ${alerts_o}
 all_analysisd_libs += alerts.a
 
 analysisd/alerts/%.o: analysisd/alerts/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/alerts -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/alerts -c $^ -o $@
 
 alerts.a: ${alerts_o}
 	${OSSEC_LINK} $@ $^
@@ -2279,26 +2279,26 @@ all_analysisd_libs += decoders.a decoders-test.a decoders-live.a
 
 
 analysisd/decoders/%-test.o: analysisd/decoders/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 analysisd/decoders/%-live.o: analysisd/decoders/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 analysisd/decoders/plugins/%-test.o: analysisd/decoders/plugins/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 
 analysisd/decoders/plugins/%-live.o: analysisd/decoders/plugins/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 analysisd/compiled_rules/compiled_rules.h: analysisd/compiled_rules/.function_list analysisd/compiled_rules/register_rule.sh
 	./analysisd/compiled_rules/register_rule.sh build
 
 analysisd/compiled_rules/%-test.o: analysisd/compiled_rules/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 analysisd/compiled_rules/%-live.o: analysisd/compiled_rules/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 decoders-live.a: ${decoders_live_o}
 	${OSSEC_LINK} $@ $^
@@ -2311,14 +2311,14 @@ format_o := ${format_c:.c=.o}
 all_analysisd_o += ${format_o}
 
 analysisd/format/%.o: analysisd/format/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 output_c := ${wildcard analysisd/output/*c}
 output_o := ${output_c:.c=.o}
 all_analysisd_o += ${output_o}
 
 analysisd/output/%.o: analysisd/output/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -I./analysisd/decoders -c $^ -o $@
 
 analysisd_c := ${filter-out analysisd/logmsg.c, ${filter-out analysisd/analysisd.c, ${filter-out analysisd/testrule.c, ${filter-out analysisd/makelists.c, ${wildcard analysisd/*.c}}}}}
 analysisd_o := ${analysisd_c:.c=.o}
@@ -2329,20 +2329,20 @@ analysisd_live_o := $(analysisd_o:.o=-live.o)
 all_analysisd_o += ${analysisd_test_o} ${analysisd_live_o} analysisd/testrule-test.o analysisd/analysisd-live.o analysisd/analysisd-test.o analysisd/makelists-live.o
 
 analysisd/%-live.o: analysisd/%.c analysisd/compiled_rules/compiled_rules.h
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-analysisd\" -I./analysisd -c $< -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-analysisd\" -I./analysisd -c $< -o $@
 
 analysisd/%-test.o: analysisd/%.c analysisd/compiled_rules/compiled_rules.h
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"wazuh-analysisd\" -I./analysisd -c $< -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DTESTRULE -DARGV0=\"fortishield-analysisd\" -I./analysisd -c $< -o $@
 
-wazuh-logtest-legacy: ${analysisd_test_o} ${output_o} ${format_o} analysisd/testrule-test.o analysisd/analysisd-test.o alerts.a cdb.a decoders-test.a
+fortishield-logtest-legacy: ${analysisd_test_o} ${output_o} ${format_o} analysisd/testrule-test.o analysisd/analysisd-test.o alerts.a cdb.a decoders-test.a
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-wazuh-analysisd: ${analysisd_live_o} analysisd/analysisd-live.o ${output_o} ${format_o} alerts.a cdb.a decoders-live.a analysisd/logmsg.o
+fortishield-analysisd: ${analysisd_live_o} analysisd/analysisd-live.o ${output_o} ${format_o} alerts.a cdb.a decoders-live.a analysisd/logmsg.o
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
 
-### wazuh-modulesd ##
+### fortishield-modulesd ##
 
-wmodulesd_c := wazuh_modules/main.c
+wmodulesd_c := fortishield_modules/main.c
 wmodulesd_o := $(wmodulesd_c:.c=.o)
 
 ifeq (${TARGET},server)
@@ -2351,20 +2351,20 @@ ifeq (,$(filter ${DISABLE_JEMALLOC},YES yes y Y 1))
 endif
 endif
 
-wazuh-modulesd: ${wmodulesd_o}
+fortishield-modulesd: ${wmodulesd_o}
 	${OSSEC_CCBIN} ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} ${MODULESD_LDFLAGS} -o $@
 
-### wazuh-gtest-gmock ###
+### fortishield-gtest-gmock ###
 
 build_gtest:
 	cd $(EXTERNAL_GOOGLE_TEST) && mkdir -p build && cd build && cmake .. ${CMAKE_OPTS} ${GTEST_RELEASE_TYPE}  -DBUILD_GMOCK=ON -DBUILD_SHARED_LIBS=0 && ${MAKE} && cp -r lib ..
 
-### wazuh-google-benchmark ###
+### fortishield-google-benchmark ###
 
 build_benchmark:
 	cd $(EXTERNAL_GOOGLE_BENCHMARK) && mkdir -p build && cd build && cmake .. -DBENCHMARK_ENABLE_TESTING=0 ${CMAKE_OPTS} && ${MAKE}
 
-### wazuh-python ###
+### fortishield-python ###
 
 WPYTHON_DIR := ${INSTALLDIR}/framework/python
 OPTIMIZE_CPYTHON?=no
@@ -2383,7 +2383,7 @@ ifeq (,${INSTALLDIR})
 endif
 
 ifeq (,$(wildcard ${EXTERNAL_CPYTHON}/python))
-	export WPATH_LIB="'\$$\$$ORIGIN/../../../lib'" && export SOURCE_PATH=${ROUTE_PATH} && export FORTISHIELD_FFI_PATH=${EXTERNAL_LIBFFI} && export LD_LIBRARY_PATH=${ROUTE_PATH} && cd ${EXTERNAL_CPYTHON} && ./configure --prefix="${WPYTHON_DIR}" --libdir="${WPYTHON_DIR}/lib" --enable-shared --with-openssl="${ROUTE_PATH}/${EXTERNAL_OPENSSL}" LDFLAGS="${ARCH_FLAGS} -L${ROUTE_PATH} -lwazuhext -Wl,-rpath,'\$$\$$ORIGIN/../../../lib',--disable-new-dtags" CPPFLAGS="-I${ROUTE_PATH}/${EXTERNAL_OPENSSL}" $(CPYTHON_FLAGS) && ${MAKE}
+	export WPATH_LIB="'\$$\$$ORIGIN/../../../lib'" && export SOURCE_PATH=${ROUTE_PATH} && export FORTISHIELD_FFI_PATH=${EXTERNAL_LIBFFI} && export LD_LIBRARY_PATH=${ROUTE_PATH} && cd ${EXTERNAL_CPYTHON} && ./configure --prefix="${WPYTHON_DIR}" --libdir="${WPYTHON_DIR}/lib" --enable-shared --with-openssl="${ROUTE_PATH}/${EXTERNAL_OPENSSL}" LDFLAGS="${ARCH_FLAGS} -L${ROUTE_PATH} -lfortishieldext -Wl,-rpath,'\$$\$$ORIGIN/../../../lib',--disable-new-dtags" CPPFLAGS="-I${ROUTE_PATH}/${EXTERNAL_OPENSSL}" $(CPYTHON_FLAGS) && ${MAKE}
 endif
 
 build_python: $(FORTISHIELDEXT_LIB)
@@ -2468,43 +2468,43 @@ unit_tests/wrappers/macos/libc/%.o: unit_tests/wrappers/macos/libc/%.c
 unit_tests/wrappers/posix/%.o: unit_tests/wrappers/posix/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/%.o: unit_tests/wrappers/wazuh/%.c
+unit_tests/wrappers/fortishield/%.o: unit_tests/wrappers/fortishield/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/os_crypto/%.o: unit_tests/wrappers/wazuh/os_crypto/%.c
+unit_tests/wrappers/fortishield/os_crypto/%.o: unit_tests/wrappers/fortishield/os_crypto/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/os_execd/%.o: unit_tests/wrappers/wazuh/os_execd/%.c
+unit_tests/wrappers/fortishield/os_execd/%.o: unit_tests/wrappers/fortishield/os_execd/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/os_net/%.o: unit_tests/wrappers/wazuh/os_net/%.c
+unit_tests/wrappers/fortishield/os_net/%.o: unit_tests/wrappers/fortishield/os_net/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/os_regex/%.o: unit_tests/wrappers/wazuh/os_regex/%.c
+unit_tests/wrappers/fortishield/os_regex/%.o: unit_tests/wrappers/fortishield/os_regex/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/shared/%.o: unit_tests/wrappers/wazuh/shared/%.c
+unit_tests/wrappers/fortishield/shared/%.o: unit_tests/wrappers/fortishield/shared/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/syscheckd/%.o: unit_tests/wrappers/wazuh/syscheckd/%.c
+unit_tests/wrappers/fortishield/syscheckd/%.o: unit_tests/wrappers/fortishield/syscheckd/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/wazuh_db/%.o: unit_tests/wrappers/wazuh/wazuh_db/%.c
+unit_tests/wrappers/fortishield/fortishield_db/%.o: unit_tests/wrappers/fortishield/fortishield_db/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/wazuh_modules/%.o: unit_tests/wrappers/wazuh/wazuh_modules/%.c
+unit_tests/wrappers/fortishield/fortishield_modules/%.o: unit_tests/wrappers/fortishield/fortishield_modules/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/monitord/%.o: unit_tests/wrappers/wazuh/monitord/%.c
+unit_tests/wrappers/fortishield/monitord/%.o: unit_tests/wrappers/fortishield/monitord/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/os_auth/%.o: unit_tests/wrappers/wazuh/os_auth/%.c
+unit_tests/wrappers/fortishield/os_auth/%.o: unit_tests/wrappers/fortishield/os_auth/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/addagent/%.o: unit_tests/wrappers/wazuh/addagent/%.c
+unit_tests/wrappers/fortishield/addagent/%.o: unit_tests/wrappers/fortishield/addagent/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/config/%.o: unit_tests/wrappers/wazuh/config/%.c
+unit_tests/wrappers/fortishield/config/%.o: unit_tests/wrappers/fortishield/config/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
 unit_tests/wrappers/windows/%.o: unit_tests/wrappers/windows/%.c
@@ -2513,10 +2513,10 @@ unit_tests/wrappers/windows/%.o: unit_tests/wrappers/windows/%.c
 unit_tests/wrappers/windows/libc/%.o: unit_tests/wrappers/windows/libc/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/remoted/%.o: unit_tests/wrappers/wazuh/remoted/%.c
+unit_tests/wrappers/fortishield/remoted/%.o: unit_tests/wrappers/fortishield/remoted/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
-unit_tests/wrappers/wazuh/analysisd/%.o: unit_tests/wrappers/wazuh/analysisd/%.c
+unit_tests/wrappers/fortishield/analysisd/%.o: unit_tests/wrappers/fortishield/analysisd/%.c
 	${OSSEC_CC} ${OSSEC_CFLAGS} ${DEFINES_EVENTCHANNEL} -c $^ -o $@
 
 .PHONY: test
@@ -2547,13 +2547,13 @@ win32/ui_resource.o: win32/ui/win32ui.rc
 win32/auth_resource.o: win32/agent-auth.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
-win32/wazuh_agent_resource.o: win32/wazuh-agent.rc
+win32/fortishield_agent_resource.o: win32/fortishield-agent.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
 win32/manage_agents_resource.o: win32/manage_agents.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
-win32/restart_wazuh_resource.o: win32/restart-wazuh.rc
+win32/restart_fortishield_resource.o: win32/restart-fortishield.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
 win32/route_null_resource.o: win32/route-null.rc
@@ -2562,7 +2562,7 @@ win32/route_null_resource.o: win32/route-null.rc
 win32/netsh_resource.o: win32/netsh.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
-win32/wazuh_agent_eventchannel_resource.o: win32/wazuh-agent-eventchannel.rc
+win32/fortishield_agent_eventchannel_resource.o: win32/fortishield-agent-eventchannel.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
 win32/icon.o: win32/icofile.rc
@@ -2572,22 +2572,22 @@ win32_c := $(wildcard win32/*.c)
 win32_o := $(win32_c:.c=.o)
 
 win32/%.o: win32/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"wazuh-agent\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -DARGV0=\"fortishield-agent\" -c $^ -o $@
 
 win32/%_rk.o: win32/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -UOSSECHIDS -DARGV0=\"wazuh-agent\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -UOSSECHIDS -DARGV0=\"fortishield-agent\" -c $^ -o $@
 
 win32_ui_c := $(wildcard win32/ui/*.c)
 win32_ui_o := $(win32_ui_c:.c=.o)
 
 win32/ui/%.o: win32/ui/%.c
-	${OSSEC_CC} ${OSSEC_CFLAGS} -UOSSECHIDS -DARGV0=\"wazuh-win32ui\" -c $^ -o $@
+	${OSSEC_CC} ${OSSEC_CFLAGS} -UOSSECHIDS -DARGV0=\"fortishield-win32ui\" -c $^ -o $@
 
-win32/wazuh-agent.exe: win32/wazuh_agent_resource.o win32/version-app.o win32/icon.o win32/win_agent.o win32/win_service.o win32/win_utils.o os_crypto/md5_sha1_sha256/md5_sha1_sha256_op.o ${rootcheck_o} $(filter-out wazuh_modules/main.o, ${wmodulesd_o}) $(filter-out client-agent/main.o, $(filter-out client-agent/agentd.o, $(filter-out client-agent/event-forward.o, ${client_agent_o}))) $(filter-out logcollector/main.o, ${os_logcollector_o}) $(filter-out os_execd/main.o, ${os_execd_o}) active-response/active_responses.o monitord/rotate_log.o monitord/compress_log.o
-	${OSSEC_CCBIN} -DARGV0=\"wazuh-agent\" -DOSSECHIDS ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} ${DBSYNC_LIB} ${RSYNC_LIB} -lwazuh-syscheckd -l:libfimdb.lib libwazuh.a -o $@
+win32/fortishield-agent.exe: win32/fortishield_agent_resource.o win32/version-app.o win32/icon.o win32/win_agent.o win32/win_service.o win32/win_utils.o os_crypto/md5_sha1_sha256/md5_sha1_sha256_op.o ${rootcheck_o} $(filter-out fortishield_modules/main.o, ${wmodulesd_o}) $(filter-out client-agent/main.o, $(filter-out client-agent/agentd.o, $(filter-out client-agent/event-forward.o, ${client_agent_o}))) $(filter-out logcollector/main.o, ${os_logcollector_o}) $(filter-out os_execd/main.o, ${os_execd_o}) active-response/active_responses.o monitord/rotate_log.o monitord/compress_log.o
+	${OSSEC_CCBIN} -DARGV0=\"fortishield-agent\" -DOSSECHIDS ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} ${DBSYNC_LIB} ${RSYNC_LIB} -lfortishield-syscheckd -l:libfimdb.lib libfortishield.a -o $@
 
-win32/wazuh-agent-eventchannel.exe: win32/wazuh_agent_eventchannel_resource.o win32/version-app.o win32/icon.o win32/win_agent.o win32/win_service.o win32/win_utils.o os_crypto/md5_sha1_sha256/md5_sha1_sha256_op.o ${rootcheck_o} $(filter-out wazuh_modules/main.o, ${wmodulesd_o}) $(filter-out client-agent/main.o, $(filter-out client-agent/agentd.o, $(filter-out client-agent/event-forward.o, ${client_agent_o}))) $(filter-out logcollector/main-event.o, ${os_logcollector_eventchannel_o}) $(filter-out os_execd/main.o, ${os_execd_o}) active-response/active_responses.o monitord/rotate_log.o monitord/compress_log.o
-	${OSSEC_CCBIN} -DARGV0=\"wazuh-agent\" -DOSSECHIDS -DEVENTCHANNEL_SUPPORT ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} ${DBSYNC_LIB} ${RSYNC_LIB} -lwazuh-syscheckd-event -l:libfimdb.lib libwazuh.a -lwevtapi -o $@
+win32/fortishield-agent-eventchannel.exe: win32/fortishield_agent_eventchannel_resource.o win32/version-app.o win32/icon.o win32/win_agent.o win32/win_service.o win32/win_utils.o os_crypto/md5_sha1_sha256/md5_sha1_sha256_op.o ${rootcheck_o} $(filter-out fortishield_modules/main.o, ${wmodulesd_o}) $(filter-out client-agent/main.o, $(filter-out client-agent/agentd.o, $(filter-out client-agent/event-forward.o, ${client_agent_o}))) $(filter-out logcollector/main-event.o, ${os_logcollector_eventchannel_o}) $(filter-out os_execd/main.o, ${os_execd_o}) active-response/active_responses.o monitord/rotate_log.o monitord/compress_log.o
+	${OSSEC_CCBIN} -DARGV0=\"fortishield-agent\" -DOSSECHIDS -DEVENTCHANNEL_SUPPORT ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} ${DBSYNC_LIB} ${RSYNC_LIB} -lfortishield-syscheckd-event -l:libfimdb.lib libfortishield.a -lwevtapi -o $@
 
 win32/manage_agents.exe: win32/manage_agents_resource.o win32/version-app.o win32/win_service_rk.o ${addagent_o}
 	${OSSEC_CCBIN} -DARGV0=\"manage-agents\" -DMA ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -o $@
@@ -2608,13 +2608,13 @@ win32/auth_resource.o: win32/agent-auth.rc
 	${OSSEC_WINDRES} -i $< -o $@
 
 win32/os_win32ui.exe: win32/ui_resource.o win32/version-app.o win32/win_service_rk.o ${win32_ui_o}
-	${OSSEC_CCBIN} -DARGV0=\"wazuh-win32ui\" ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -I./syscheckd/include -mwindows -o $@
+	${OSSEC_CCBIN} -DARGV0=\"fortishield-win32ui\" ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -I./syscheckd/include -mwindows -o $@
 
 win32/agent-auth.exe: win32/auth_resource.o win32/version-app.o win32/win_service_rk.o os_auth/main-client.o os_auth/ssl.o os_auth/check_cert.o addagent/validate.o
 	${OSSEC_CCBIN} -DARGV0=\"agent-auth\" -DOSSECHIDS ${OSSEC_LDFLAGS} $^ ${OSSEC_LIBS} -lshlwapi -lwsock32 -lsecur32 -lws2_32 -flto -o $@
 
-win32/restart-wazuh.exe: win32/restart_wazuh_resource.o win32/version-app.o active-response/active_responses.o active-response/restart-wazuh.o shared/cryptography.o shared/dll_load_notify.o shared/debug_op_proc.o shared/time_op.o shared/file_op_proc.o ${FORTISHIELD_LIB} ${FORTISHIELDEXT_LIB}
-	${OSSEC_CCBIN} -DARGV0=\"restart-wazuh\" ${AR_LDFLAGS} $^ -lwintrust -lpsapi -lcrypt32 -lshlwapi -o $@
+win32/restart-fortishield.exe: win32/restart_fortishield_resource.o win32/version-app.o active-response/active_responses.o active-response/restart-fortishield.o shared/cryptography.o shared/dll_load_notify.o shared/debug_op_proc.o shared/time_op.o shared/file_op_proc.o ${FORTISHIELD_LIB} ${FORTISHIELDEXT_LIB}
+	${OSSEC_CCBIN} -DARGV0=\"restart-fortishield\" ${AR_LDFLAGS} $^ -lwintrust -lpsapi -lcrypt32 -lshlwapi -o $@
 
 win32/route-null.exe: win32/route_null_resource.o win32/version-app.o active-response/active_responses.o active-response/route-null.o shared/cryptography.o shared/dll_load_notify.o shared/debug_op_proc.o shared/time_op.o shared/file_op_proc.o ${FORTISHIELD_LIB} ${FORTISHIELDEXT_LIB}
 	${OSSEC_CCBIN} -DARGV0=\"route-null\" ${AR_LDFLAGS} $^ -lwintrust -lpsapi -lcrypt32 -lshlwapi -o $@
@@ -2714,10 +2714,10 @@ clean-internals: clean-unit-tests
 	rm -f ${os_auth_o}
 	rm -f ${all_analysisd_o} ${all_analysisd_libs} analysisd/compiled_rules/compiled_rules.h analysisd/logmsg.o
 	rm -f ${integrator_o}
-	rm -f ${wmodulesd_o} ${wmodules_o} $(wildcard wazuh_modules/agent_upgrade/agent/*.o)
+	rm -f ${wmodulesd_o} ${wmodules_o} $(wildcard fortishield_modules/agent_upgrade/agent/*.o)
 	rm -f ${wdb_o}
-	rm -f wazuh_db/*.o
-	rm -f wazuh_db/helpers/*.o
+	rm -f fortishield_db/*.o
+	rm -f fortishield_db/helpers/*.o
 	rm -f ${SELINUX_MODULE}
 	rm -f ${SELINUX_POLICY}
 	rm -f $(FORTISHIELD_LIB)
@@ -2730,10 +2730,10 @@ clean-internals: clean-unit-tests
 	rm -rf $(SYSCHECK)build
 	rm -rf ${SHARED_MODULES}http-request/build
 	rm -rf build
-	rm -rf libwazuhext
+	rm -rf libfortishieldext
 	rm -rf libstdc++.so.6
 	rm -rf libgcc_s.so.1
-	rm -f libwazuh.a
+	rm -f libfortishield.a
 	rm -f shared/*.o
 
 
@@ -2756,26 +2756,26 @@ clean-unit-tests:
 	rm -f ${wrappers_macos_libc_o}
 	rm -f ${wrappers_macos_posix_o}
 	rm -f ${wrappers_posix_o}
-	rm -f ${wrappers_wazuh_o}
-	rm -f ${wrappers_wazuh_os_crypto_o}
-	rm -f ${wrappers_wazuh_os_execd_o}
-	rm -f ${wrappers_wazuh_os_net_o}
-	rm -f ${wrappers_wazuh_os_regex_o}
-	rm -f ${wrappers_wazuh_os_xml_o}
-	rm -f ${wrappers_wazuh_shared_o}
-	rm -f ${wrappers_wazuh_syscheckd_o}
-	rm -f ${wrappers_wazuh_wazuh_db_o}
-	rm -f ${wrappers_wazuh_wazuh_modules_o}
-	rm -f ${wrappers_wazuh_monitord_o}
-	rm -f ${wrappers_wazuh_os_auth_o}
-	rm -f ${wrappers_wazuh_addagent_o}
-	rm -f ${wrappers_wazuh_config_o}
+	rm -f ${wrappers_fortishield_o}
+	rm -f ${wrappers_fortishield_os_crypto_o}
+	rm -f ${wrappers_fortishield_os_execd_o}
+	rm -f ${wrappers_fortishield_os_net_o}
+	rm -f ${wrappers_fortishield_os_regex_o}
+	rm -f ${wrappers_fortishield_os_xml_o}
+	rm -f ${wrappers_fortishield_shared_o}
+	rm -f ${wrappers_fortishield_syscheckd_o}
+	rm -f ${wrappers_fortishield_fortishield_db_o}
+	rm -f ${wrappers_fortishield_fortishield_modules_o}
+	rm -f ${wrappers_fortishield_monitord_o}
+	rm -f ${wrappers_fortishield_os_auth_o}
+	rm -f ${wrappers_fortishield_addagent_o}
+	rm -f ${wrappers_fortishield_config_o}
 	rm -f ${wrappers_windows_o}
 	rm -f ${wrappers_windows_lib_o}
 	rm -f ${wrappers_windows_posix_o}
 	rm -f ${wrappers_client_agent_o}
-	rm -f ${wrappers_wazuh_remoted_o}
-	rm -f ${wrappers_wazuh_analysisd_o}
+	rm -f ${wrappers_fortishield_remoted_o}
+	rm -f ${wrappers_fortishield_analysisd_o}
 	rm -f ${wrappers_logcollector_o}
 	rm -f ${wrappers_macos_o}
 	rm -f ${wrappers_data_provider_o}
@@ -2784,10 +2784,10 @@ clean-framework:
 	${MAKE} -C ../framework clean
 
 clean-windows:
-	rm -f libwazuh.a
-	rm -f libwazuhshared.*
-	rm -f libwazuhext.*
-	rm -f wazuh_modules/syscollector/*.o wazuh_modules/syscollector/*.obj
+	rm -f libfortishield.a
+	rm -f libfortishieldshared.*
+	rm -f libfortishieldext.*
+	rm -f fortishield_modules/syscollector/*.o fortishield_modules/syscollector/*.obj
 	rm -f win32/LICENSE.txt
 	rm -f win32/help_win.txt
 	rm -f win32/internal_options.conf
@@ -2799,13 +2799,13 @@ clean-windows:
 	rm -f win32/netsh.cmd
 	rm -f win32/netsh-win-2016.cmd
 	rm -f win32/default-ossec-pre6.conf
-	rm -f win32/restart-wazuh.exe
+	rm -f win32/restart-fortishield.exe
 	rm -f win32/route-null.exe
 	rm -f win32/netsh.exe
 	rm -f ${win32_o} ${win32_ui_o} win32/win_service_rk.o
 	rm -f win32/icon.o win32/resource.o
 	rm -f ${WINDOWS_BINS}
-	rm -f win32/wazuh-agent-*.exe
+	rm -f win32/fortishield-agent-*.exe
 	rm -f win32/libwinpthread-1.dll
 	rm -f win32/*.o
 	rm -f win32/version-*.o

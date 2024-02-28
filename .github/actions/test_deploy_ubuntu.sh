@@ -21,16 +21,16 @@ TAGS1=( "<address>" "<port>" "<protocol>" "<manager_address>" "<port>" "<passwor
 TAGS2=( "</address>" "</port>" "</protocol>" "</manager_address>" "</port>" "</password>" "</notify_time>" "</time-reconnect>" "</server_ca_path>" "</agent_certificate_path>" "</agent_key_path>" "</agent_name>" "</groups>" "</delay_after_enrollment>" )
 FORTISHIELD_REGISTRATION_PASSWORD_PATH="/var/ossec/etc/authd.pass"
 
-function install_wazuh(){
+function install_fortishield(){
 
   echo "Testing the following variables $*"
-  eval "${*} apt install -y ./wazuh-agent_${VERSION}-0.commit${SHA}_amd64.deb > /dev/null 2>&1"
+  eval "${*} apt install -y ./fortishield-agent_${VERSION}-0.commit${SHA}_amd64.deb > /dev/null 2>&1"
   
 }
 
-function remove_wazuh () {
+function remove_fortishield () {
 
-  apt purge -y wazuh-agent > /dev/null 2>&1
+  apt purge -y fortishield-agent > /dev/null 2>&1
 
 }
 
@@ -68,65 +68,65 @@ function test() {
 
 }
 
-echo "Download package: https://s3.us-west-1.amazonaws.com/packages-dev.wazuh.com/warehouse/pullrequests/${MAJOR}.${MINOR}/deb/var/wazuh-agent_${VERSION}-0.commit${SHA}_amd64.deb"
-wget "https://s3.us-west-1.amazonaws.com/packages-dev.wazuh.com/warehouse/pullrequests/${MAJOR}.${MINOR}/deb/var/wazuh-agent_${VERSION}-0.commit${SHA}_amd64.deb" > /dev/null 2>&1
+echo "Download package: https://s3.us-west-1.amazonaws.com/packages-dev.fortishield.com/warehouse/pullrequests/${MAJOR}.${MINOR}/deb/var/fortishield-agent_${VERSION}-0.commit${SHA}_amd64.deb"
+wget "https://s3.us-west-1.amazonaws.com/packages-dev.fortishield.com/warehouse/pullrequests/${MAJOR}.${MINOR}/deb/var/fortishield-agent_${VERSION}-0.commit${SHA}_amd64.deb" > /dev/null 2>&1
 
-install_wazuh "FORTISHIELD_MANAGER=1.1.1.1 FORTISHIELD_MANAGER_PORT=7777 FORTISHIELD_PROTOCOL=udp FORTISHIELD_REGISTRATION_SERVER=2.2.2.2 FORTISHIELD_REGISTRATION_PORT=8888 FORTISHIELD_REGISTRATION_PASSWORD=password FORTISHIELD_KEEP_ALIVE_INTERVAL=10 FORTISHIELD_TIME_RECONNECT=10 FORTISHIELD_REGISTRATION_CA=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_CERTIFICATE=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_KEY=/var/ossec/etc/testsslmanager.key FORTISHIELD_AGENT_NAME=test-agent FORTISHIELD_AGENT_GROUP=test-group ENROLLMENT_DELAY=10" 
+install_fortishield "FORTISHIELD_MANAGER=1.1.1.1 FORTISHIELD_MANAGER_PORT=7777 FORTISHIELD_PROTOCOL=udp FORTISHIELD_REGISTRATION_SERVER=2.2.2.2 FORTISHIELD_REGISTRATION_PORT=8888 FORTISHIELD_REGISTRATION_PASSWORD=password FORTISHIELD_KEEP_ALIVE_INTERVAL=10 FORTISHIELD_TIME_RECONNECT=10 FORTISHIELD_REGISTRATION_CA=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_CERTIFICATE=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_KEY=/var/ossec/etc/testsslmanager.key FORTISHIELD_AGENT_NAME=test-agent FORTISHIELD_AGENT_GROUP=test-group ENROLLMENT_DELAY=10" 
 test "FORTISHIELD_MANAGER FORTISHIELD_MANAGER_PORT FORTISHIELD_PROTOCOL FORTISHIELD_REGISTRATION_SERVER FORTISHIELD_REGISTRATION_PORT FORTISHIELD_REGISTRATION_PASSWORD FORTISHIELD_KEEP_ALIVE_INTERVAL FORTISHIELD_TIME_RECONNECT FORTISHIELD_REGISTRATION_CA FORTISHIELD_REGISTRATION_CERTIFICATE FORTISHIELD_REGISTRATION_KEY FORTISHIELD_AGENT_NAME FORTISHIELD_AGENT_GROUP ENROLLMENT_DELAY" 
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_MANAGER=1.1.1.1"
+install_fortishield "FORTISHIELD_MANAGER=1.1.1.1"
 test "FORTISHIELD_MANAGER"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_MANAGER_PORT=7777"
+install_fortishield "FORTISHIELD_MANAGER_PORT=7777"
 test "FORTISHIELD_MANAGER_PORT"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_PROTOCOL=udp"
+install_fortishield "FORTISHIELD_PROTOCOL=udp"
 test "FORTISHIELD_PROTOCOL"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_SERVER=2.2.2.2"
+install_fortishield "FORTISHIELD_REGISTRATION_SERVER=2.2.2.2"
 test "FORTISHIELD_REGISTRATION_SERVER"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_PORT=8888"
+install_fortishield "FORTISHIELD_REGISTRATION_PORT=8888"
 test "FORTISHIELD_REGISTRATION_PORT"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_PASSWORD=password"
+install_fortishield "FORTISHIELD_REGISTRATION_PASSWORD=password"
 test "FORTISHIELD_REGISTRATION_PASSWORD"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_KEEP_ALIVE_INTERVAL=10"
+install_fortishield "FORTISHIELD_KEEP_ALIVE_INTERVAL=10"
 test "FORTISHIELD_KEEP_ALIVE_INTERVAL"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_TIME_RECONNECT=10"
+install_fortishield "FORTISHIELD_TIME_RECONNECT=10"
 test "FORTISHIELD_TIME_RECONNECT"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_CA=/var/ossec/etc/testsslmanager.cert"
+install_fortishield "FORTISHIELD_REGISTRATION_CA=/var/ossec/etc/testsslmanager.cert"
 test "FORTISHIELD_REGISTRATION_CA"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_CERTIFICATE=/var/ossec/etc/testsslmanager.cert"
+install_fortishield "FORTISHIELD_REGISTRATION_CERTIFICATE=/var/ossec/etc/testsslmanager.cert"
 test "FORTISHIELD_REGISTRATION_CERTIFICATE"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_REGISTRATION_KEY=/var/ossec/etc/testsslmanager.key"
+install_fortishield "FORTISHIELD_REGISTRATION_KEY=/var/ossec/etc/testsslmanager.key"
 test "FORTISHIELD_REGISTRATION_KEY"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_AGENT_NAME=test-agent"
+install_fortishield "FORTISHIELD_AGENT_NAME=test-agent"
 test "FORTISHIELD_AGENT_NAME"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "FORTISHIELD_AGENT_GROUP=test-group"
+install_fortishield "FORTISHIELD_AGENT_GROUP=test-group"
 test "FORTISHIELD_AGENT_GROUP"
-remove_wazuh
+remove_fortishield
 
-install_wazuh "ENROLLMENT_DELAY=10"
+install_fortishield "ENROLLMENT_DELAY=10"
 test "ENROLLMENT_DELAY"
-remove_wazuh
+remove_fortishield

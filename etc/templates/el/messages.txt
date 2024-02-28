@@ -91,9 +91,9 @@ yesrunauthd="τρέχουσα υπηρεσία Auth"
 
 # Part 4
 installing="Το σύστημα εγκαθίσταται"
-startwazuh="Θέλετε να ξεκινήσετε το Fortishield μετά την εγκατάσταση;"
-nowazuhstart="Το Fortishield δεν θα ξεκινήσει στο τέλος της εγκατάστασης."
-yeswazuhstart="Το Fortishield θα ξεκινήσει στο τέλος της εγκατάστασης."
+startfortishield="Θέλετε να ξεκινήσετε το Fortishield μετά την εγκατάσταση;"
+nofortishieldstart="Το Fortishield δεν θα ξεκινήσει στο τέλος της εγκατάστασης."
+yesfortishieldstart="Το Fortishield θα ξεκινήσει στο τέλος της εγκατάστασης."
 runningmake="Το Makefile εκτελείται"
 
 # Final

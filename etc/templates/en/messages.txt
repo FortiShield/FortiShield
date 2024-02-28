@@ -94,9 +94,9 @@ yesrunauthd="Running Auth daemon"
 
 # Part 4
 installing="Installing the system"
-startwazuh="Do you want to start Fortishield after the installation?"
-nowazuhstart="Fortishield will not start at the end of installation."
-yeswazuhstart="Fortishield will start at the end of installation."
+startfortishield="Do you want to start Fortishield after the installation?"
+nofortishieldstart="Fortishield will not start at the end of installation."
+yesfortishieldstart="Fortishield will start at the end of installation."
 runningmake="Running the Makefile"
 
 # Final

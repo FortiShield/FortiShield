@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import importlib.util
@@ -13,13 +13,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 from connexion import ProblemException
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
         sys.modules['api.authentication'] = MagicMock()
         from api.models import base_model_ as bm
         from api.models import event_ingest_model
         from api.util import deserialize_model
-        from wazuh import FortishieldError
+        from fortishield import FortishieldError
 
         del sys.modules['api.authentication']
 

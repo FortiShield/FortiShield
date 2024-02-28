@@ -1,13 +1,13 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-analysisd' daemon uses a series of decoders and rules to analyze and interpret logs and events and
+brief: The 'fortishield-analysisd' daemon uses a series of decoders and rules to analyze and interpret logs and events and
        generate alerts when the decoded information matches the established rules. There is a feature to limit the
        number of events that the manager can process, in order to allow the correct functioning of the daemon. These
        tests check if this feature is enabled/disabled when desired.
@@ -21,7 +21,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
+    - fortishield-analysisd
 
 os_platform:
     - linux
@@ -38,16 +38,16 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/ruleset/ruleset-xml-syntax/rules.html#if-sid
+    - https://documentation.fortishield.com/current/user-manual/ruleset/ruleset-xml-syntax/rules.html#if-sid
 '''
 import pytest
 
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.analysisd import patterns
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils import configuration, callbacks
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.analysisd import patterns
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils import configuration, callbacks
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -74,7 +74,7 @@ daemons_handler_configuration = {'all_daemons': True}
 
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_enabled(test_configuration, test_metadata, load_wazuh_basic_configuration, set_wazuh_configuration,
+def test_enabled(test_configuration, test_metadata, load_fortishield_basic_configuration, set_fortishield_configuration,
                  truncate_monitored_files, daemons_handler):
     """
     description: Check whether the event analysis limitation is activated after its activation in the configuration.
@@ -83,16 +83,16 @@ def test_enabled(test_configuration, test_metadata, load_wazuh_basic_configurati
         - setup:
             - Load Fortishield light configuration.
             - Apply ossec.conf configuration changes according to the configuration template and use case.
-            - Truncate wazuh logs.
-            - Restart wazuh-manager service to apply configuration changes.
+            - Truncate fortishield logs.
+            - Restart fortishield-manager service to apply configuration changes.
         - test:
             - Check in the ossec.log that a line has appeared indicating that EPS limiting has been enabled.
-            - Check that wazuh-analysisd is running (it has not been crashed).
+            - Check that fortishield-analysisd is running (it has not been crashed).
         - teardown:
-            - Truncate wazuh logs.
+            - Truncate fortishield logs.
             - Restore initial configuration.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     parameters:
         - test_configuration:
@@ -101,15 +101,15 @@ def test_enabled(test_configuration, test_metadata, load_wazuh_basic_configurati
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - load_wazuh_basic_configuration:
+        - load_fortishield_basic_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
-        - set_wazuh_configuration:
+            brief: Load basic fortishield configuration.
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
         - truncate_monitored_files:
             type: fixture
-            brief: Truncate wazuh logs.
+            brief: Truncate fortishield logs.
         - daemons_handler:
             type: fixture
             brief: Handler of Fortishield daemons.
@@ -133,7 +133,7 @@ def test_enabled(test_configuration, test_metadata, load_wazuh_basic_configurati
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(test2_configuration, test2_metadata), ids=test2_cases_ids)
-def test_disabled(test_configuration, test_metadata, load_wazuh_basic_configuration, set_wazuh_configuration,
+def test_disabled(test_configuration, test_metadata, load_fortishield_basic_configuration, set_fortishield_configuration,
                  truncate_monitored_files, daemons_handler):
     """
     description: Check if when the EPS limitation setting is not applied, the feature is not activated.
@@ -142,16 +142,16 @@ def test_disabled(test_configuration, test_metadata, load_wazuh_basic_configurat
         - setup:
             - Load Fortishield light configuration.
             - Apply ossec.conf configuration changes according to the configuration template and use case.
-            - Truncate wazuh logs.
-            - Restart wazuh-manager service to apply configuration changes.
+            - Truncate fortishield logs.
+            - Restart fortishield-manager service to apply configuration changes.
         - test:
             - Look in the ossec.log to see if the EPS limitation activation does not appear.
-            - Check that wazuh-analysisd is running (it has not been crashed).
+            - Check that fortishield-analysisd is running (it has not been crashed).
         - teardown:
-            - Truncate wazuh logs.
+            - Truncate fortishield logs.
             - Restore initial configuration.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     parameters:
         - test_configuration:
@@ -160,15 +160,15 @@ def test_disabled(test_configuration, test_metadata, load_wazuh_basic_configurat
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - load_wazuh_basic_configuration:
+        - load_fortishield_basic_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
-        - set_wazuh_configuration:
+            brief: Load basic fortishield configuration.
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
         - truncate_monitored_files:
             type: fixture
-            brief: Truncate wazuh logs.
+            brief: Truncate fortishield logs.
         - daemons_handler:
             type: fixture
             brief: Handler of Fortishield daemons.

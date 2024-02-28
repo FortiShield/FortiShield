@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import calendar
@@ -12,7 +12,7 @@ import re
 import shutil
 from datetime import date
 
-from wazuh.core import common, utils
+from fortishield.core import common, utils
 
 
 class TimeBasedFileRotatingHandler(logging.handlers.TimedRotatingFileHandler):
@@ -132,7 +132,7 @@ class FortishieldLogger:
     """
     Define attributes of a Python Fortishield daemon's logger.
     """
-    def __init__(self, foreground_mode: bool, log_path: str, debug_level: [int, str], logger_name: str = 'wazuh',
+    def __init__(self, foreground_mode: bool, log_path: str, debug_level: [int, str], logger_name: str = 'fortishield',
                  custom_formatter: callable = None, tag: str = '%(asctime)s %(levelname)s: %(message)s',
                  max_size: int = 0):
         """Constructor.

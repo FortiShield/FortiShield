@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -22,11 +22,11 @@ def create_memory_db(sql_file, session, test_data_path):
 
 
 def init_db(schema, test_data_path):
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    import wazuh.rbac.orm as orm
+                    import fortishield.rbac.orm as orm
 
                     # Clear mappers
                     sqlalchemy_orm.clear_mappers()
@@ -40,8 +40,8 @@ def init_db(schema, test_data_path):
                     orm.db_manager.connect(orm.DB_FILE)
                     orm.db_manager.create_database(orm.DB_FILE)
                     orm.db_manager.insert_default_resources(orm.DB_FILE)
-                    import wazuh.rbac.decorators as decorators
-                    from wazuh.tests.util import RBAC_bypasser
+                    import fortishield.rbac.decorators as decorators
+                    from fortishield.tests.util import RBAC_bypasser
 
                     decorators.expose_resources = RBAC_bypasser
     try:

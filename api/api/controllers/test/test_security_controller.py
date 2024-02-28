@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -10,10 +10,10 @@ from aiohttp import web_response
 
 from api.controllers.test.utils import CustomAffectedItems
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
         from api.controllers.security_controller import (
             add_policy, add_role, add_rule, create_user,
             delete_security_config, delete_users, edit_run_as, get_policies,
@@ -25,14 +25,14 @@ with patch('wazuh.common.wazuh_uid'):
             security_revoke_tokens, set_role_policy, set_role_rule,
             set_user_role, update_policy, update_role, update_rule,
             update_user)
-        from wazuh import security
-        from wazuh.core.exception import FortishieldException, FortishieldPermissionError
-        from wazuh.core.results import AffectedItemsFortishieldResult
-        from wazuh.rbac import preprocessor
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield import security
+        from fortishield.core.exception import FortishieldException, FortishieldPermissionError
+        from fortishield.core.results import AffectedItemsFortishieldResult
+        from fortishield.rbac import preprocessor
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        del sys.modules['wazuh.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
 
 
 @pytest.mark.asyncio

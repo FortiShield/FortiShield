@@ -11,7 +11,7 @@
 #include <shared.h>
 #include "os_net/os_net.h"
 #include "integrator.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 size_t intgcom_dispatch(char * command, char ** output) {
 

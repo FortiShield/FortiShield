@@ -16,7 +16,7 @@
 #include "mitre.h"
 #include "cJSON.h"
 #include "config.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 #define is_win_permission(x) (strchr(x, '|'))
 #define print_before_field(x, y) (x && *x && (!y || strcmp(x, y)))
@@ -69,7 +69,7 @@ char* Eventinfo_to_jsonstr(const Eventinfo* lf, bool force_full_log, OSList * li
         if(Config.cluster_name)
             cJSON_AddStringToObject(cluster, "name", Config.cluster_name);
         else
-            cJSON_AddStringToObject(cluster, "name", "wazuh");
+            cJSON_AddStringToObject(cluster, "name", "fortishield");
 
         if(Config.node_name)
             cJSON_AddStringToObject(cluster, "node", Config.node_name);

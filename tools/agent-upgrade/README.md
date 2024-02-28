@@ -54,20 +54,20 @@ pip install cryptography
 1. Download sources from GitHub at branch 3.0:
 
 ```
-curl -Lo wazuh-3.0.zip https://github.com/fortishield/wazuh/archive/3.0.zip
-unzip wazuh-3.0.zip
+curl -Lo fortishield-3.0.zip https://github.com/fortishield/fortishield/archive/3.0.zip
+unzip fortishield-3.0.zip
 ```
 
 2. Compile the project:
 
 ```
-make -C wazuh-3.0/src TARGET=agent
+make -C fortishield-3.0/src TARGET=agent
 ```
 
 3. Change to the base directory:
 
 ```
-cd wazuh-3.0
+cd fortishield-3.0
 ```
 
 4. Install the root CA, only if you want to **overwrite the root CA** with the file you created before:
@@ -138,7 +138,7 @@ Agent upgraded successfully
 
 WPK files must be named matching this pattern:
 
-> wazuh_agent_W_X_Y_Z
+> fortishield_agent_W_X_Y_Z
 
 - `W` is the version of the released version.
 - `X` is the name of the operating system.
@@ -147,7 +147,7 @@ WPK files must be named matching this pattern:
 
 For instance:
 
-> wazuh_agent_v3.0.0-beta7_centos_7_x86_64.wpk
+> fortishield_agent_v3.0.0-beta7_centos_7_x86_64.wpk
 
 Such files must also be classified in this folder tree:
 

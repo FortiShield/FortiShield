@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -12,26 +12,26 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.manager import *
-        from wazuh.core.manager import LoggingFormat
-        from wazuh.core.tests.test_manager import get_logs
-        from wazuh import FortishieldInternalError
+        from fortishield.manager import *
+        from fortishield.core.manager import LoggingFormat
+        from fortishield.core.tests.test_manager import get_logs
+        from fortishield import FortishieldInternalError
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 
 
 @pytest.fixture(scope='module', autouse=True)
-def mock_wazuh_path():
-    with patch('wazuh.core.common.FORTISHIELD_PATH', new=test_data_path):
+def mock_fortishield_path():
+    with patch('fortishield.core.common.FORTISHIELD_PATH', new=test_data_path):
         yield
 
 
@@ -58,15 +58,15 @@ def test_manager():
     return test_manager
 
 
-manager_status = {'wazuh-agentlessd': 'running', 'wazuh-analysisd': 'running', 'wazuh-authd': 'running',
- 'wazuh-csyslogd': 'running', 'wazuh-dbd': 'running', 'wazuh-monitord': 'running',
- 'wazuh-execd': 'running', 'wazuh-integratord': 'running', 'wazuh-logcollector': 'running',
- 'wazuh-maild': 'running', 'wazuh-remoted': 'running', 'wazuh-reportd': 'running',
- 'wazuh-syscheckd': 'running', 'wazuh-clusterd': 'running', 'wazuh-modulesd': 'running',
- 'wazuh-db': 'running', 'wazuh-apid': 'running'}
+manager_status = {'fortishield-agentlessd': 'running', 'fortishield-analysisd': 'running', 'fortishield-authd': 'running',
+ 'fortishield-csyslogd': 'running', 'fortishield-dbd': 'running', 'fortishield-monitord': 'running',
+ 'fortishield-execd': 'running', 'fortishield-integratord': 'running', 'fortishield-logcollector': 'running',
+ 'fortishield-maild': 'running', 'fortishield-remoted': 'running', 'fortishield-reportd': 'running',
+ 'fortishield-syscheckd': 'running', 'fortishield-clusterd': 'running', 'fortishield-modulesd': 'running',
+ 'fortishield-db': 'running', 'fortishield-apid': 'running'}
 
 
-@patch('wazuh.core.manager.status', return_value=manager_status)
+@patch('fortishield.core.manager.status', return_value=manager_status)
 def test_get_status(mock_status):
     """Tests get_status() function works"""
     result = get_status()
@@ -78,12 +78,12 @@ def test_get_status(mock_status):
 
 @pytest.mark.parametrize('tag, level, total_items, sort_by, sort_ascending', [
     (None, None, 13, None, None),
-    ('wazuh-modulesd:database', None, 2, None, None),
-    ('wazuh-modulesd:syscollector', None, 2, None, None),
-    ('wazuh-modulesd:syscollector', None, 2, None, None),
-    ('wazuh-modulesd:aws-s3', None, 5, None, None),
-    ('wazuh-execd', None, 1, None, None),
-    ('wazuh-csyslogd', None, 2, None, None),
+    ('fortishield-modulesd:database', None, 2, None, None),
+    ('fortishield-modulesd:syscollector', None, 2, None, None),
+    ('fortishield-modulesd:syscollector', None, 2, None, None),
+    ('fortishield-modulesd:aws-s3', None, 5, None, None),
+    ('fortishield-execd', None, 1, None, None),
+    ('fortishield-csyslogd', None, 2, None, None),
     ('random', None, 0, ['timestamp'], True),
     (None, 'info', 7, ['timestamp'], False),
     (None, 'error', 2, ['level'], True),
@@ -92,8 +92,8 @@ def test_get_status(mock_status):
     (None, 'random', 0, None, True),
     (None, 'warning', 2, None, False)
 ])
-@patch("wazuh.core.manager.get_wazuh_active_logging_format", return_value=LoggingFormat.plain)
-@patch("wazuh.core.manager.exists", return_value=True)
+@patch("fortishield.core.manager.get_fortishield_active_logging_format", return_value=LoggingFormat.plain)
+@patch("fortishield.core.manager.exists", return_value=True)
 def test_ossec_log(mock_exists, mock_active_logging_format, tag, level, total_items, sort_by, sort_ascending):
     """Test reading ossec.log file contents.
 
@@ -102,7 +102,7 @@ def test_ossec_log(mock_exists, mock_active_logging_format, tag, level, total_it
     level : str
         Filters by log type: all, error or info.
     tag : str
-        Filters by log category (i.e. wazuh-remoted).
+        Filters by log category (i.e. fortishield-remoted).
     total_items : int
         Expected items to be returned after calling ossec_log.
     sort_by : list
@@ -110,7 +110,7 @@ def test_ossec_log(mock_exists, mock_active_logging_format, tag, level, total_it
     sort_ascending : boolean
         Sort in ascending (true) or descending (false) order.
     """
-    with patch('wazuh.core.manager.tail') as tail_patch:
+    with patch('fortishield.core.manager.tail') as tail_patch:
         # Return ossec_log_file when calling tail() method
         ossec_log_file = get_logs()
         tail_patch.return_value = ossec_log_file.splitlines()
@@ -121,7 +121,7 @@ def test_ossec_log(mock_exists, mock_active_logging_format, tag, level, total_it
         assert isinstance(result, AffectedItemsFortishieldResult), 'No expected result type'
         assert result.render()['data']['total_affected_items'] == total_items
         assert all(log['description'][-1] != '\n' for log in result.render()['data']['affected_items'])
-        if tag is not None and level != 'wazuh-modulesd:syscollector':
+        if tag is not None and level != 'fortishield-modulesd:syscollector':
             assert all('\n' not in log['description'] for log in result.render()['data']['affected_items'])
         if sort_by:
             reversed_result = ossec_log(level=level, tag=tag, sort_by=sort_by, sort_ascending=not sort_ascending)
@@ -135,8 +135,8 @@ def test_ossec_log(mock_exists, mock_active_logging_format, tag, level, total_it
     ('timestamp=2019/03/26 19:49:15', 'timestamp', '=', '2019/03/26T19:49:15Z'),
     ('timestamp<2019/03/26 19:49:14', 'timestamp', '<', '2019/03/26T19:49:15Z'),
 ])
-@patch("wazuh.core.manager.get_wazuh_active_logging_format", return_value=LoggingFormat.plain)
-@patch("wazuh.core.manager.exists", return_value=True)
+@patch("fortishield.core.manager.get_fortishield_active_logging_format", return_value=LoggingFormat.plain)
+@patch("fortishield.core.manager.exists", return_value=True)
 def test_ossec_log_q(mock_exists, mock_active_logging_format, q, field, operation, values):
     """Check that the 'q' parameter is working correctly.
 
@@ -151,7 +151,7 @@ def test_ossec_log_q(mock_exists, mock_active_logging_format, q, field, operatio
     values : str
         Values used for the comparison.
     """
-    with patch('wazuh.core.manager.tail') as tail_patch:
+    with patch('fortishield.core.manager.tail') as tail_patch:
         ossec_log_file = get_logs()
         tail_patch.return_value = ossec_log_file.splitlines()
 
@@ -164,21 +164,21 @@ def test_ossec_log_q(mock_exists, mock_active_logging_format, q, field, operatio
             assert all(log[field] in values for log in result.render()['data']['affected_items'])
 
 
-@patch("wazuh.core.manager.get_wazuh_active_logging_format", return_value=LoggingFormat.plain)
-@patch("wazuh.core.manager.exists", return_value=True)
+@patch("fortishield.core.manager.get_fortishield_active_logging_format", return_value=LoggingFormat.plain)
+@patch("fortishield.core.manager.exists", return_value=True)
 def test_ossec_log_summary(mock_exists, mock_active_logging_format):
     """Tests ossec_log_summary function works and returned data match with expected"""
     expected_result = {
-        'wazuh-csyslogd': {'all': 2, 'info': 2, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0},
-        'wazuh-execd': {'all': 1, 'info': 0, 'error': 1, 'critical': 0, 'warning': 0, 'debug': 0},
-        'wazuh-modulesd:aws-s3': {'all': 5, 'info': 2, 'error': 1, 'critical': 0, 'warning': 2, 'debug': 0},
-        'wazuh-modulesd:database': {'all': 2, 'info': 0, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 2},
-        'wazuh-modulesd:syscollector': {'all': 2, 'info': 2, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0},
-        'wazuh-rootcheck': {'all': 1, 'info': 1, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0}
+        'fortishield-csyslogd': {'all': 2, 'info': 2, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0},
+        'fortishield-execd': {'all': 1, 'info': 0, 'error': 1, 'critical': 0, 'warning': 0, 'debug': 0},
+        'fortishield-modulesd:aws-s3': {'all': 5, 'info': 2, 'error': 1, 'critical': 0, 'warning': 2, 'debug': 0},
+        'fortishield-modulesd:database': {'all': 2, 'info': 0, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 2},
+        'fortishield-modulesd:syscollector': {'all': 2, 'info': 2, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0},
+        'fortishield-rootcheck': {'all': 1, 'info': 1, 'error': 0, 'critical': 0, 'warning': 0, 'debug': 0}
     }
 
     logs = get_logs().splitlines()
-    with patch('wazuh.core.manager.tail', return_value=logs):
+    with patch('fortishield.core.manager.tail', return_value=logs):
         result = ossec_log_summary()
 
         # Assert data match what was expected and type of the result.
@@ -197,8 +197,8 @@ def test_get_api_config():
 
 
 @patch('socket.socket')
-@patch('wazuh.core.cluster.utils.fcntl')
-@patch('wazuh.core.cluster.utils.open')
+@patch('fortishield.core.cluster.utils.fcntl')
+@patch('fortishield.core.cluster.utils.open')
 @patch('os.path.exists', return_value=True)
 def test_restart_ok(mock_exists, mock_path, mock_fcntl, mock_socket):
     """Tests restarting a manager"""
@@ -209,8 +209,8 @@ def test_restart_ok(mock_exists, mock_path, mock_fcntl, mock_socket):
     assert result.render()['data']['total_failed_items'] == 0
 
 
-@patch('wazuh.core.cluster.utils.open')
-@patch('wazuh.core.cluster.utils.fcntl')
+@patch('fortishield.core.cluster.utils.open')
+@patch('fortishield.core.cluster.utils.fcntl')
 @patch('os.path.exists', return_value=False)
 def test_restart_ko_socket(mock_exists, mock_fcntl, mock_open):
     """Tests restarting a manager exceptions"""
@@ -233,13 +233,13 @@ def test_restart_ko_socket(mock_exists, mock_fcntl, mock_open):
 
 @pytest.mark.parametrize('error_flag, error_msg', [
     (0, ""),
-    (1, "2019/02/27 11:30:07 wazuh-clusterd: ERROR: [Cluster] [Main] Error 3004 - Error in cluster configuration: "
+    (1, "2019/02/27 11:30:07 fortishield-clusterd: ERROR: [Cluster] [Main] Error 3004 - Error in cluster configuration: "
         "Unspecified key"),
-    (1, "2019/02/27 11:30:24 wazuh-authd: ERROR: (1230): Invalid element in the configuration: "
-        "'use_source_i'.\n2019/02/27 11:30:24 wazuh-authd: ERROR: (1202): Configuration error at "
+    (1, "2019/02/27 11:30:24 fortishield-authd: ERROR: (1230): Invalid element in the configuration: "
+        "'use_source_i'.\n2019/02/27 11:30:24 fortishield-authd: ERROR: (1202): Configuration error at "
         "'/var/ossec/etc/ossec.conf'.")
 ])
-@patch("wazuh.core.manager.exists", return_value=True)
+@patch("fortishield.core.manager.exists", return_value=True)
 def test_validation(mock_exists, error_flag, error_msg):
     """Test validation() method works as expected
 
@@ -255,7 +255,7 @@ def test_validation(mock_exists, error_flag, error_msg):
     error_msg : str
         Error message to be mocked in the socket response.
     """
-    with patch('wazuh.core.manager.FortishieldSocket') as sock:
+    with patch('fortishield.core.manager.FortishieldSocket') as sock:
         # Mock sock response
         json_response = json.dumps({'error': error_flag, 'message': error_msg}).encode()
         sock.return_value.receive.return_value = json_response
@@ -270,7 +270,7 @@ def test_validation(mock_exists, error_flag, error_msg):
     FortishieldInternalError(1013),
     FortishieldError(1013)
 ])
-@patch('wazuh.manager.validate_ossec_conf')
+@patch('fortishield.manager.validate_ossec_conf')
 def test_validation_ko(mock_validate, exception):
     mock_validate.side_effect = exception
 
@@ -283,7 +283,7 @@ def test_validation_ko(mock_validate, exception):
         assert result.total_failed_items == 1
 
 
-@patch('wazuh.core.configuration.get_active_configuration')
+@patch('fortishield.core.configuration.get_active_configuration')
 def test_get_config(mock_act_conf):
     """Tests get_config() method works as expected"""
     get_config('component', 'config')
@@ -328,13 +328,13 @@ def test_get_basic_info(mock_open):
     assert result.render()['data']['total_failed_items'] == 0
 
 
-@patch('wazuh.manager.validate_ossec_conf', return_value={'status': 'OK'})
-@patch('wazuh.manager.write_ossec_conf')
-@patch('wazuh.manager.validate_wazuh_xml')
-@patch('wazuh.manager.full_copy')
-@patch('wazuh.manager.exists', return_value=True)
-@patch('wazuh.manager.remove')
-@patch('wazuh.manager.safe_move')
+@patch('fortishield.manager.validate_ossec_conf', return_value={'status': 'OK'})
+@patch('fortishield.manager.write_ossec_conf')
+@patch('fortishield.manager.validate_fortishield_xml')
+@patch('fortishield.manager.full_copy')
+@patch('fortishield.manager.exists', return_value=True)
+@patch('fortishield.manager.remove')
+@patch('fortishield.manager.safe_move')
 def test_update_ossec_conf(move_mock, remove_mock, exists_mock, full_copy_mock, prettify_mock, write_mock,
                            validate_mock):
     """Test update_ossec_conf works as expected."""
@@ -349,13 +349,13 @@ def test_update_ossec_conf(move_mock, remove_mock, exists_mock, full_copy_mock, 
     None,
     "invalid configuration"
 ])
-@patch('wazuh.manager.validate_ossec_conf')
-@patch('wazuh.manager.write_ossec_conf')
-@patch('wazuh.manager.validate_wazuh_xml')
-@patch('wazuh.manager.full_copy')
-@patch('wazuh.manager.exists', return_value=True)
-@patch('wazuh.manager.remove')
-@patch('wazuh.manager.safe_move')
+@patch('fortishield.manager.validate_ossec_conf')
+@patch('fortishield.manager.write_ossec_conf')
+@patch('fortishield.manager.validate_fortishield_xml')
+@patch('fortishield.manager.full_copy')
+@patch('fortishield.manager.exists', return_value=True)
+@patch('fortishield.manager.remove')
+@patch('fortishield.manager.safe_move')
 def test_update_ossec_conf_ko(move_mock, remove_mock, exists_mock, full_copy_mock, prettify_mock, write_mock,
                               validate_mock, new_conf):
     """Test update_ossec_conf() function return an error and restore the configuration if the provided configuration

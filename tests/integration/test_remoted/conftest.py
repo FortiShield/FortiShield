@@ -1,18 +1,18 @@
 """
  Copyright (C) 2015-2023, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 
-from wazuh_testing.utils import services
-from wazuh_testing.utils.services import check_all_daemon_status
+from fortishield_testing.utils import services
+from fortishield_testing.utils.services import check_all_daemon_status
 from time import sleep
 
 
 @pytest.fixture
-def restart_wazuh_expect_error() -> None:
+def restart_fortishield_expect_error() -> None:
     try:
         sleep(1)
         if any(v == True for _, v in check_all_daemon_status().items()) :

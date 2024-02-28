@@ -336,7 +336,7 @@ TEST_F(SysInfoPackagesLinuxHelperTest, parsePacmanInformation)
     __alpm_handle_t dataHandle  {};
     __alpm_list_t   dataGroups  {};
 
-    constexpr auto PKG_GROUP    {"wazuh"};
+    constexpr auto PKG_GROUP    {"fortishield"};
     constexpr auto PKG_ARCH     {"x86_64"};
     constexpr auto PKG_NAME     {"firefox"};
     constexpr auto PKG_DESC     {"Standalone web browser from mozilla.org"};

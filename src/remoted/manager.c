@@ -12,7 +12,7 @@
 #include "remoted.h"
 #include "state.h"
 #include "remoted_op.h"
-#include "../wazuh_db/helpers/wdb_global_helpers.h"
+#include "../fortishield_db/helpers/wdb_global_helpers.h"
 #include "../os_net/os_net.h"
 #include "shared_download.h"
 #include "../os_crypto/sha256/sha256_op.h"
@@ -259,7 +259,7 @@ void save_controlmsg(const keyentry * key, char *r_msg, size_t msg_length, int *
     const char * agent_ip_label = "#\"_agent_ip\":";
     const char * manager_label = "#\"_manager_hostname\":";
     const char * node_label = "#\"_node_name\":";
-    const char * version_label = "#\"_wazuh_version\":";
+    const char * version_label = "#\"_fortishield_version\":";
     int is_startup = 0;
     int is_shutdown = 0;
     int agent_id = 0;
@@ -308,7 +308,7 @@ void save_controlmsg(const keyentry * key, char *r_msg, size_t msg_length, int *
                     // Update agent data to keep context of events to forward
                     OSHash_Set_ex(agent_data_hash, key->id, cJSON_Duplicate(agent_info, true));
                     if (!logr.allow_higher_versions &&
-                        compare_wazuh_versions(__ossec_version, version->valuestring, false) < 0) {
+                        compare_fortishield_versions(__ossec_version, version->valuestring, false) < 0) {
 
                         send_wrong_version_response(key->id, HC_INVALID_VERSION,
                                                     INVALID_VERSION, version->valuestring,

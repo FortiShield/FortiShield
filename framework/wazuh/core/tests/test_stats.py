@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,16 +10,16 @@ from unittest.mock import MagicMock, mock_open, patch, call
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.core import common, stats
-        from wazuh.core.exception import FortishieldError, FortishieldException, FortishieldInternalError
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.core import common, stats
+        from fortishield.core.exception import FortishieldError, FortishieldException, FortishieldInternalError
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'stats')
 
@@ -49,7 +49,7 @@ def test_totals_(date_):
 
 def test_totals_ko_():
     """Verify totals_() function exception with data problems works"""
-    with patch('wazuh.core.stats.open', side_effect=IOError):
+    with patch('fortishield.core.stats.open', side_effect=IOError):
         with pytest.raises(FortishieldException, match=".* 1308 .*"):
             stats.totals_(date(1996, 8, 13))
 
@@ -58,7 +58,7 @@ def test_totals_ko_():
             stats.totals_(date(1996, 8, 13))
 
 
-@patch('wazuh.core.common.STATS_PATH', new=test_data_path)
+@patch('fortishield.core.common.STATS_PATH', new=test_data_path)
 def test_weekly_():
     """Verify weekly_() function works as expected"""
     result = stats.weekly_()
@@ -67,7 +67,7 @@ def test_weekly_():
         assert day in [d for r in result for d in r.keys()], 'Data do not match'
 
 
-@patch('wazuh.core.common.STATS_PATH', new='')
+@patch('fortishield.core.common.STATS_PATH', new='')
 def test_weekly_data():
     """Verify weekly_() function works as expected"""
     result = stats.weekly_()
@@ -78,7 +78,7 @@ def test_weekly_data():
         assert 0 == result[days.index(day)][day]['interactions']
 
 
-@patch('wazuh.core.common.STATS_PATH', new=test_data_path)
+@patch('fortishield.core.common.STATS_PATH', new=test_data_path)
 def test_hourly_():
     """Verify hourly_() function works as expected"""
     result = stats.hourly_()
@@ -87,7 +87,7 @@ def test_hourly_():
         assert hour in result[0]['averages'], 'Data do not match'
 
 
-@patch('wazuh.core.common.STATS_PATH', new='')
+@patch('fortishield.core.common.STATS_PATH', new='')
 def test_hourly_data():
     """Test hourly_() function exceptions works"""
     result = stats.hourly_()
@@ -165,9 +165,9 @@ def test_check_if_daemon_exists_in_agent(agent, daemon, expected_value):
                'agents': [{'id': agent_id, 'uptime': datetime(2022, 7, 21, 10, 54, 10, tzinfo=timezone.utc)} for
                           agent_id in [1, 2, 3]]}})
 ])
-@patch('wazuh.core.wazuh_socket.FortishieldAsyncSocketJSON.close')
-@patch('wazuh.core.wazuh_socket.FortishieldAsyncSocketJSON.send')
-@patch('wazuh.core.wazuh_socket.FortishieldAsyncSocketJSON.connect')
+@patch('fortishield.core.fortishield_socket.FortishieldAsyncSocketJSON.close')
+@patch('fortishield.core.fortishield_socket.FortishieldAsyncSocketJSON.send')
+@patch('fortishield.core.fortishield_socket.FortishieldAsyncSocketJSON.connect')
 async def test_get_daemons_stats_socket(mock_connect, mock_send, mock_close, 
                                         agents_list, expected_socket_response,
                                         expected_result):
@@ -180,9 +180,9 @@ async def test_get_daemons_stats_socket(mock_connect, mock_send, mock_close,
         if agents_list == 'all':
             expected_msg['parameters'] |= {'last_id': 0}
 
-    with patch('wazuh.core.wazuh_socket.FortishieldAsyncSocketJSON.receive',
+    with patch('fortishield.core.fortishield_socket.FortishieldAsyncSocketJSON.receive',
                return_value=expected_socket_response) as mock_receive, \
-         patch('wazuh.core.wazuh_socket.FortishieldAsyncSocketJSON.receive_json',
+         patch('fortishield.core.fortishield_socket.FortishieldAsyncSocketJSON.receive_json',
                return_value=expected_socket_response) as mock_receive_json:
         result = await stats.get_daemons_stats_socket(socket, agents_list=agents_list,
                                                 last_id=0 if agents_list == 'all' else None)
@@ -217,11 +217,11 @@ def test_get_daemons_stats_():
 
 def test_get_daemons_stats_ko():
     """Test get_daemons_stats_() function exceptions works"""
-    with patch('wazuh.core.stats.open', side_effect=IOError):
+    with patch('fortishield.core.stats.open', side_effect=IOError):
         with pytest.raises(FortishieldException, match=".* 1308 .*"):
             stats.get_daemons_stats_('filename')
 
-    with patch('wazuh.core.stats.open'):
+    with patch('fortishield.core.stats.open'):
         with pytest.raises(FortishieldInternalError, match=".* 1104 .*"):
             stats.get_daemons_stats_('filename')
 
@@ -233,10 +233,10 @@ def test_get_daemons_stats_ko():
 ])
 def test_get_daemons_stats_from_socket(agent_id, daemon, response):
     """Check that get_daemons_stats_from_socket() function uses the expected params and returns expected result"""
-    with patch('wazuh.core.wazuh_socket.FortishieldSocket.__init__', return_value=None) as mock_socket:
-        with patch('wazuh.core.wazuh_socket.FortishieldSocket.send', side_effect=None) as mock_send:
-            with patch('wazuh.core.wazuh_socket.FortishieldSocket.receive', return_value=response.encode()):
-                with patch('wazuh.core.wazuh_socket.FortishieldSocket.close', side_effect=None):
+    with patch('fortishield.core.fortishield_socket.FortishieldSocket.__init__', return_value=None) as mock_socket:
+        with patch('fortishield.core.fortishield_socket.FortishieldSocket.send', side_effect=None) as mock_send:
+            with patch('fortishield.core.fortishield_socket.FortishieldSocket.receive', return_value=response.encode()):
+                with patch('fortishield.core.fortishield_socket.FortishieldSocket.close', side_effect=None):
                     stats.get_daemons_stats_from_socket(agent_id, daemon)
 
         if agent_id == '000':
@@ -288,10 +288,10 @@ def test_get_daemons_stats_from_socket(agent_id, daemon, response):
 def test_get_daemons_stats_from_socket(agent_id, daemon, responses, expected, expected_socket_calls,
                                        expected_arg_calls):
     """Check that get_daemons_stats_from_socket() function uses the pagination logic"""
-    with patch('wazuh.core.wazuh_socket.FortishieldSocket.__init__', return_value=None) as mock_socket:
-        with patch('wazuh.core.wazuh_socket.FortishieldSocket.send', side_effect=None) as mock_send:
-            with patch('wazuh.core.wazuh_socket.FortishieldSocket.receive', side_effect=responses):
-                with patch('wazuh.core.wazuh_socket.FortishieldSocket.close', side_effect=None):
+    with patch('fortishield.core.fortishield_socket.FortishieldSocket.__init__', return_value=None) as mock_socket:
+        with patch('fortishield.core.fortishield_socket.FortishieldSocket.send', side_effect=None) as mock_send:
+            with patch('fortishield.core.fortishield_socket.FortishieldSocket.receive', side_effect=responses):
+                with patch('fortishield.core.fortishield_socket.FortishieldSocket.close', side_effect=None):
                     result = stats.get_daemons_stats_from_socket(agent_id, daemon)
 
     assert result == expected
@@ -345,14 +345,14 @@ def test_get_daemons_stats_from_socket_ko():
     with pytest.raises(FortishieldInternalError, match=r'\b1121\b'):
         stats.get_daemons_stats_from_socket('000', 'logcollector')
 
-    with patch('wazuh.core.wazuh_socket.FortishieldSocket.__init__', return_value=None):
-        with patch('wazuh.core.wazuh_socket.FortishieldSocket.close', side_effect=None):
-            with patch('wazuh.core.wazuh_socket.FortishieldSocket.send', side_effect=None):
-                with patch('wazuh.core.wazuh_socket.FortishieldSocket.receive', side_effect=ValueError):
+    with patch('fortishield.core.fortishield_socket.FortishieldSocket.__init__', return_value=None):
+        with patch('fortishield.core.fortishield_socket.FortishieldSocket.close', side_effect=None):
+            with patch('fortishield.core.fortishield_socket.FortishieldSocket.send', side_effect=None):
+                with patch('fortishield.core.fortishield_socket.FortishieldSocket.receive', side_effect=ValueError):
                     with pytest.raises(FortishieldInternalError, match=r'\b1118\b'):
                         stats.get_daemons_stats_from_socket('000', 'logcollector')
 
-                with patch('wazuh.core.wazuh_socket.FortishieldSocket.receive',
+                with patch('fortishield.core.fortishield_socket.FortishieldSocket.receive',
                            return_value=json.dumps({'error': 1}).encode()):
                     with pytest.raises(FortishieldError, match=r'\b1117\b'):
                         stats.get_daemons_stats_from_socket('000', 'logcollector')

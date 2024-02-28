@@ -1,8 +1,8 @@
 {
   "order": 0,
   "index_patterns": [
-    "wazuh-alerts-4.x-*",
-    "wazuh-archives-4.x-*"
+    "fortishield-alerts-4.x-*",
+    "fortishield-archives-4.x-*"
   ],
   "settings": {
     "index.refresh_interval": "5s",

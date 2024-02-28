@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -22,12 +22,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -44,8 +44,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html
 
 tags:
     - api
@@ -54,10 +54,10 @@ import pytest
 from pathlib import Path
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import login
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import CONFIGURATION_TYPES
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import login
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -87,7 +87,7 @@ def test_request_timeout(test_configuration, test_metadata, add_configuration, t
                  For this purpose, a value of '0' seconds is set for the 'request_timeout'
                  setting, and a request is made to the API, expecting an error in the response.
 
-    wazuh_min_version: 4.3.0
+    fortishield_min_version: 4.3.0
 
     test_phases:
         - setup:

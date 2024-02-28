@@ -91,9 +91,9 @@ yesrunauthd="Запуск службы Auth"
 
 # Part 4
 installing="Производится установка"
-startwazuh="Вы хотите запустить Fortishield после установки?"
-nowazuhstart="Fortishield не запускается в конце установки."
-yeswazuhstart="Fortishield начнется в конце установки."
+startfortishield="Вы хотите запустить Fortishield после установки?"
+nofortishieldstart="Fortishield не запускается в конце установки."
+yesfortishieldstart="Fortishield начнется в конце установки."
 runningmake="Исполняется Makefile"
 
 # Final

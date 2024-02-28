@@ -1,12 +1,12 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 from json import loads, JSONDecodeError
 
-from wazuh.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_fields_to_nest, plain_dict_to_nested_dict, \
+from fortishield.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_fields_to_nest, plain_dict_to_nested_dict, \
     get_date_from_timestamp
-from wazuh.core.wdb import FortishieldDBConnection
+from fortishield.core.wdb import FortishieldDBConnection
 
 
 class FortishieldDBQuerySyscheck(FortishieldDBQuery):

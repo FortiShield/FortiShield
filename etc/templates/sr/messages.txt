@@ -91,9 +91,9 @@ yesrunauthd="Pokretanje Auth usluge"
 
 # Part 4
 installing="Instalira sistem"
-startwazuh="Želite li pokrenuti Fortishield nakon instalacije?"
-nowazuhstart="Fortishield neće početi na kraju instalacije."
-yeswazuhstart="Fortishield će započeti na kraju instalacije."
+startfortishield="Želite li pokrenuti Fortishield nakon instalacije?"
+nofortishieldstart="Fortishield neće početi na kraju instalacije."
+yesfortishieldstart="Fortishield će započeti na kraju instalacije."
 runningmake="Vrši Makefile"
 
 # Final

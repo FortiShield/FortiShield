@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -9,24 +9,24 @@ from unittest.mock import call, MagicMock, patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        import wazuh.stats as stats
-        from wazuh.core.results import AffectedItemsFortishieldResult
+        import fortishield.stats as stats
+        from fortishield.core.results import AffectedItemsFortishieldResult
         from api.util import remove_nones_to_dict
-        from wazuh.core.tests.test_agent import InitAgent
+        from fortishield.core.tests.test_agent import InitAgent
 
-SOCKET_PATH_DAEMONS_MAPPING = {'/var/ossec/queue/sockets/remote': 'wazuh-remoted',
-                               '/var/ossec/queue/sockets/analysis': 'wazuh-analysisd'}
-DAEMON_SOCKET_PATHS_MAPPING = {'wazuh-remoted': '/var/ossec/queue/sockets/remote',
-                               'wazuh-analysisd': '/var/ossec/queue/sockets/analysis'}
+SOCKET_PATH_DAEMONS_MAPPING = {'/var/ossec/queue/sockets/remote': 'fortishield-remoted',
+                               '/var/ossec/queue/sockets/analysis': 'fortishield-analysisd'}
+DAEMON_SOCKET_PATHS_MAPPING = {'fortishield-remoted': '/var/ossec/queue/sockets/remote',
+                               'fortishield-analysisd': '/var/ossec/queue/sockets/analysis'}
 
 test_data = InitAgent()
 
@@ -39,7 +39,7 @@ def send_msg_to_wdb(msg, raw=False):
 
 def test_totals():
     """Verify totals() function works and returns correct data"""
-    with patch('wazuh.stats.totals_', return_value=({})):
+    with patch('fortishield.stats.totals_', return_value=({})):
         response = stats.totals(date(2019, 8, 13))
         assert response.total_affected_items == len(response.affected_items)
         assert isinstance(response, AffectedItemsFortishieldResult), 'The result is not FortishieldResult type'
@@ -60,13 +60,13 @@ def test_weekly():
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
-@patch('wazuh.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
-@patch('wazuh.core.common.WDB_SOCKET', '/var/ossec/queue/db/wdb')
-@patch('wazuh.stats.get_daemons_stats_socket')
+@patch('fortishield.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
+@patch('fortishield.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
+@patch('fortishield.core.common.WDB_SOCKET', '/var/ossec/queue/db/wdb')
+@patch('fortishield.stats.get_daemons_stats_socket')
 async def test_get_daemons_stats(mock_get_daemons_stats_socket):
     """Makes sure get_daemons_stats() fit with the expected."""
-    response = await stats.get_daemons_stats(['wazuh-remoted', 'wazuh-analysisd', 'wazuh-db'])
+    response = await stats.get_daemons_stats(['fortishield-remoted', 'fortishield-analysisd', 'fortishield-db'])
 
     calls = [call('/var/ossec/queue/sockets/remote'), call('/var/ossec/queue/sockets/analysis'),
              call('/var/ossec/queue/db/wdb')]
@@ -77,10 +77,10 @@ async def test_get_daemons_stats(mock_get_daemons_stats_socket):
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/wrong_socket_name')
+@patch('fortishield.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/wrong_socket_name')
 async def test_get_daemons_stats_ko():
     """Makes sure get_daemons_stats() fit with the expected."""
-    response = await stats.get_daemons_stats(['wazuh-remoted'])
+    response = await stats.get_daemons_stats(['fortishield-remoted'])
 
     assert isinstance(response, AffectedItemsFortishieldResult), \
         'The result is not AffectedItemsFortishieldResult type'
@@ -95,16 +95,16 @@ def side_effect_test_get_daemons_stats(daemon_path, agents_list):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('daemons_list, expected_daemons_list', [
-    ([], ['wazuh-remoted', 'wazuh-analysisd']),
-    (['wazuh-remoted'], ['wazuh-remoted']),
-    (['wazuh-remoted', 'wazuh-analysisd'], ['wazuh-remoted', 'wazuh-analysisd'])
+    ([], ['fortishield-remoted', 'fortishield-analysisd']),
+    (['fortishield-remoted'], ['fortishield-remoted']),
+    (['fortishield-remoted', 'fortishield-analysisd'], ['fortishield-remoted', 'fortishield-analysisd'])
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
-@patch('wazuh.stats.get_agents_info', return_value={'000', '001', '002', '003', '004', '005'})
-@patch('wazuh.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
-@patch('wazuh.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
-@patch('wazuh.stats.get_daemons_stats_socket', side_effect=side_effect_test_get_daemons_stats)
+@patch('fortishield.stats.get_agents_info', return_value={'000', '001', '002', '003', '004', '005'})
+@patch('fortishield.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
+@patch('fortishield.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
+@patch('fortishield.stats.get_daemons_stats_socket', side_effect=side_effect_test_get_daemons_stats)
 async def test_get_daemons_stats_agents(mock_get_daemons_stats_socket, mock_get_agents_info, 
                                         mock_socket_connect, mock_send_wdb, 
                                         daemons_list, expected_daemons_list):
@@ -147,13 +147,13 @@ def side_effect_test_get_daemons_stats_all(daemon_path, agents_list, last_id):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('daemons_list, expected_daemons_list', [
-    ([], ['wazuh-remoted', 'wazuh-analysisd']),
-    (['wazuh-remoted'], ['wazuh-remoted']),
-    (['wazuh-remoted', 'wazuh-analysisd'], ['wazuh-remoted', 'wazuh-analysisd'])
+    ([], ['fortishield-remoted', 'fortishield-analysisd']),
+    (['fortishield-remoted'], ['fortishield-remoted']),
+    (['fortishield-remoted', 'fortishield-analysisd'], ['fortishield-remoted', 'fortishield-analysisd'])
 ])
-@patch('wazuh.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
-@patch('wazuh.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
-@patch('wazuh.stats.get_daemons_stats_socket', side_effect=side_effect_test_get_daemons_stats_all)
+@patch('fortishield.core.common.REMOTED_SOCKET', '/var/ossec/queue/sockets/remote')
+@patch('fortishield.core.common.ANALYSISD_SOCKET', '/var/ossec/queue/sockets/analysis')
+@patch('fortishield.stats.get_daemons_stats_socket', side_effect=side_effect_test_get_daemons_stats_all)
 async def test_get_daemons_stats_all_agents(mock_get_daemons_stats_socket, 
                                             daemons_list, expected_daemons_list):
     """Makes sure get_daemons_stats_agents() fit with the expected."""
@@ -179,7 +179,7 @@ async def test_get_daemons_stats_all_agents(mock_get_daemons_stats_socket,
         'The result is not an AffectedItemsFortishieldResult object'
 
 
-@patch('wazuh.stats.get_daemons_stats_', return_value=[{"events_decoded": 1.0}])
+@patch('fortishield.stats.get_daemons_stats_', return_value=[{"events_decoded": 1.0}])
 def test_deprecated_get_daemons_stats(mock_daemons_stats_):
     """Makes sure deprecated_get_daemons_stats() fit with the expected."""
     response = stats.deprecated_get_daemons_stats('filename')
@@ -190,8 +190,8 @@ def test_deprecated_get_daemons_stats(mock_daemons_stats_):
 @pytest.mark.parametrize('component', [
     'logcollector', 'test'
 ])
-@patch('wazuh.core.agent.Agent.get_stats')
-@patch('wazuh.stats.get_agents_info', return_value=['000', '001'])
+@patch('fortishield.core.agent.Agent.get_stats')
+@patch('fortishield.stats.get_agents_info', return_value=['000', '001'])
 def test_get_agents_component_stats_json(mock_agents_info, mock_getstats, component):
     """Test `get_agents_component_stats_json` function from agent module."""
     response = stats.get_agents_component_stats_json(agent_list=['001'], component=component)
@@ -199,8 +199,8 @@ def test_get_agents_component_stats_json(mock_agents_info, mock_getstats, compon
     mock_getstats.assert_called_once_with(component=component)
 
 
-@patch('wazuh.core.agent.Agent.get_stats')
-@patch('wazuh.stats.get_agents_info', return_value=['000', '001'])
+@patch('fortishield.core.agent.Agent.get_stats')
+@patch('fortishield.stats.get_agents_info', return_value=['000', '001'])
 def test_get_agents_component_stats_json_ko(mock_agents_info, mock_getstats):
     """Test `get_agents_component_stats_json` function from agent module."""
     response = stats.get_agents_component_stats_json(agent_list=['003'], component='logcollector')

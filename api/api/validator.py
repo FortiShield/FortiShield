@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,8 +10,8 @@ from typing import Dict, List
 from defusedxml import ElementTree as ET
 from jsonschema import draft4_format_checker
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError
 
 _alphanumeric_param = re.compile(r'^[\w,\-.+\s:]+$')
 _symbols_alphanumeric_param = re.compile(r'^[\w,*<>!\-.+\s:/()\[\]\'\"|=~#]+$')
@@ -35,8 +35,8 @@ _iso8601_date_time = re.compile(
 _names = re.compile(r'^[\w\-.%]+$', re.ASCII)
 _numbers = re.compile(r'^\d+$')
 _numbers_or_all = re.compile(r'^(\d+|all)$')
-_wazuh_key = re.compile(r'[a-zA-Z0-9]+$')
-_wazuh_version = re.compile(r'^(?:wazuh |)v?\d+\.\d+\.\d+$', re.IGNORECASE)
+_fortishield_key = re.compile(r'[a-zA-Z0-9]+$')
+_fortishield_version = re.compile(r'^(?:fortishield |)v?\d+\.\d+\.\d+$', re.IGNORECASE)
 _paths = re.compile(r'^[\w\-.\\/:]+$')
 _cdb_filename_path = re.compile(r'^[\-\w]+$')
 _xml_filename_path = re.compile(r'^[\w\-]+\.xml$')
@@ -225,7 +225,7 @@ FORTISHIELD_COMPONENT_CONFIGURATION_MAPPING = MappingProxyType(
         'monitor': {"global", "internal", "reports"},
         'request': {"global", "remote", "internal"},
         'syscheck': {"syscheck", "rootcheck", "internal"},
-        'wazuh-db': {"wdb", "internal"},
+        'fortishield-db': {"wdb", "internal"},
         'wmodules': {"wmodules"}
     }
 )
@@ -444,14 +444,14 @@ def format_timeframe(value):
     return check_exp(value, _timeframe_type)
 
 
-@draft4_format_checker.checks("wazuh_key")
-def format_wazuh_key(value):
-    return check_exp(value, _wazuh_key)
+@draft4_format_checker.checks("fortishield_key")
+def format_fortishield_key(value):
+    return check_exp(value, _fortishield_key)
 
 
-@draft4_format_checker.checks("wazuh_version")
-def format_wazuh_version(value):
-    return check_exp(value, _wazuh_version)
+@draft4_format_checker.checks("fortishield_version")
+def format_fortishield_version(value):
+    return check_exp(value, _fortishield_version)
 
 
 @draft4_format_checker.checks("date")

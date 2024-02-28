@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import csv
@@ -23,7 +23,7 @@ sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 import aws_tools
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
-import wazuh_integration
+import fortishield_integration
 
 
 class AWSS3LogHandler:
@@ -55,7 +55,7 @@ class AWSS3LogHandler:
         raise NotImplementedError
 
 
-class AWSSubscriberBucket(wazuh_integration.FortishieldIntegration, AWSS3LogHandler):
+class AWSSubscriberBucket(fortishield_integration.FortishieldIntegration, AWSS3LogHandler):
     """Class for processing events from AWS S3 buckets.
 
     Attributes
@@ -66,7 +66,7 @@ class AWSSubscriberBucket(wazuh_integration.FortishieldIntegration, AWSS3LogHand
         IAM Role.
     """
     def __init__(self, service_endpoint: str = None, sts_endpoint: str = None, profile: str = None, **kwargs):
-        wazuh_integration.FortishieldIntegration.__init__(self,
+        fortishield_integration.FortishieldIntegration.__init__(self,
                                                     profile=profile,
                                                     service_name='s3',
                                                     service_endpoint=service_endpoint,
@@ -238,7 +238,7 @@ class AWSSubscriberBucket(wazuh_integration.FortishieldIntegration, AWSS3LogHand
             self.send_msg(msg)
 
 
-class AWSSLSubscriberBucket(wazuh_integration.FortishieldIntegration, AWSS3LogHandler):
+class AWSSLSubscriberBucket(fortishield_integration.FortishieldIntegration, AWSS3LogHandler):
     """Class for processing AWS Security Lake events from S3.
 
     Attributes
@@ -250,7 +250,7 @@ class AWSSLSubscriberBucket(wazuh_integration.FortishieldIntegration, AWSS3LogHa
     """
 
     def __init__(self, service_endpoint: str = None, sts_endpoint: str = None, profile: str = None, **kwargs):
-        wazuh_integration.FortishieldIntegration.__init__(self,
+        fortishield_integration.FortishieldIntegration.__init__(self,
                                                     profile=profile,
                                                     service_name='s3',
                                                     service_endpoint=service_endpoint,

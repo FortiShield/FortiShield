@@ -15,8 +15,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../wazuh_db/wdb.h"
-#include "wazuhdb_op.h"
+#include "../fortishield_db/wdb.h"
+#include "fortishielddb_op.h"
 #include "hash_op.h"
 
 #include "../wrappers/common.h"
@@ -24,11 +24,11 @@
 #include "../wrappers/libc/string_wrappers.h"
 #include "../wrappers/posix/pthread_wrappers.h"
 #include "../wrappers/posix/time_wrappers.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
 
 int wdb_execute_non_select_query(wdb_t * wdb, const char *query);
 int wdb_select_from_temp_table(wdb_t * wdb);
@@ -81,13 +81,13 @@ int teardown_wdb(void **state) {
     return 0;
 }
 
-int wazuh_db_config_setup() {
+int fortishield_db_config_setup() {
     wdb_init_conf();
 
     return OS_SUCCESS;
 }
 
-int  wazuh_db_config_teardown() {
+int  fortishield_db_config_teardown() {
     wdb_free_conf();
 
     return OS_SUCCESS;
@@ -795,7 +795,7 @@ void test_wdb_get_internal_config() {
     cJSON *ret = wdb_get_internal_config();
     assert_true(cJSON_IsObject(ret));
 
-    cJSON* root = cJSON_GetObjectItem(ret, "wazuh_db");
+    cJSON* root = cJSON_GetObjectItem(ret, "fortishield_db");
     assert_true(cJSON_IsObject(root));
 
     cJSON *c1 = cJSON_GetObjectItem(root, "commit_time_max");
@@ -3155,10 +3155,10 @@ int main() {
         cmocka_unit_test_setup_teardown(test_wdb_init_stmt_in_cache_invalid_transaction, setup_wdb, teardown_wdb),
         cmocka_unit_test_setup_teardown(test_wdb_init_stmt_in_cache_invalid_statement, setup_wdb, teardown_wdb),
         // wdb_get_config
-        cmocka_unit_test_setup_teardown(test_wdb_get_config, wazuh_db_config_setup, wazuh_db_config_teardown),
+        cmocka_unit_test_setup_teardown(test_wdb_get_config, fortishield_db_config_setup, fortishield_db_config_teardown),
         // wdb_check_backup_enabled
-        cmocka_unit_test_setup_teardown(test_wdb_check_backup_enabled_enabled, wazuh_db_config_setup, wazuh_db_config_teardown),
-        cmocka_unit_test_setup_teardown(test_wdb_check_backup_enabled_disabled, wazuh_db_config_setup, wazuh_db_config_teardown),
+        cmocka_unit_test_setup_teardown(test_wdb_check_backup_enabled_enabled, fortishield_db_config_setup, fortishield_db_config_teardown),
+        cmocka_unit_test_setup_teardown(test_wdb_check_backup_enabled_disabled, fortishield_db_config_setup, fortishield_db_config_teardown),
         // wdb_get_internal_config
         cmocka_unit_test(test_wdb_get_internal_config),
         // wdb_exec_row_stmt_single_column

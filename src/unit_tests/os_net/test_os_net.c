@@ -23,7 +23,7 @@
 #include "../wrappers/common.h"
 #include "../wrappers/linux/socket_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
-#include "../wrappers/wazuh/shared/validate_op_wrappers.h"
+#include "../wrappers/fortishield/shared/validate_op_wrappers.h"
 
 #define IPV4 "127.0.0.1"
 #define IPV6 "::1"

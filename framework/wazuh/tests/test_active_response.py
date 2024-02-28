@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,17 +9,17 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.active_response import run_command
-        from wazuh.core.tests.test_active_response import agent_config, agent_info_exception_and_version
+        from fortishield.active_response import run_command
+        from fortishield.core.tests.test_active_response import agent_config, agent_info_exception_and_version
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'etc', 'shared', 'ar.conf')
 full_agent_list = ['000', '001', '002', '003', '004', '005', '006', '007', '008']
@@ -28,24 +28,24 @@ full_agent_list = ['000', '001', '002', '003', '004', '005', '006', '007', '008'
 # Tests
 
 @pytest.mark.parametrize('message_exception, send_exception, agent_id, command, arguments, alert, version', [
-    (1701, None, ['999'], 'restart-wazuh0', [], None, 'Fortishield v4.0.0'),
-    (1703, None, ['000'], 'restart-wazuh0', [], None, 'Fortishield v4.0.0'),
+    (1701, None, ['999'], 'restart-fortishield0', [], None, 'Fortishield v4.0.0'),
+    (1703, None, ['000'], 'restart-fortishield0', [], None, 'Fortishield v4.0.0'),
     (1650, None, ['001'], None, [], None, 'Fortishield v4.0.0'),
     (1652, None, ['002'], 'random', [], None, 'Fortishield v4.0.0'),
-    (None, 1707, ['003'], 'restart-wazuh0', [], None, None),
-    (None, 1750, ['004'], 'restart-wazuh0', [], None, 'Fortishield v4.0.0'),
-    (None, None, ['005'], 'restart-wazuh0', [], None, 'Fortishield v4.0.0'),
+    (None, 1707, ['003'], 'restart-fortishield0', [], None, None),
+    (None, 1750, ['004'], 'restart-fortishield0', [], None, 'Fortishield v4.0.0'),
+    (None, None, ['005'], 'restart-fortishield0', [], None, 'Fortishield v4.0.0'),
     (None, None, ['006'], '!custom-ar', [], None, 'Fortishield v4.0.0'),
-    (None, None, ['007'], 'restart-wazuh0', ["arg1", "arg2"], None, 'Fortishield v4.0.0'),
-    (None, None, ['001', '002', '003', '004', '005', '006'], 'restart-wazuh0', [], None, 'Fortishield v4.0.0'),
-    (None, None, ['001'], 'restart-wazuh0', ["arg1", "arg2"], None, 'Fortishield v4.2.0'),
-    (None, None, ['002'], 'restart-wazuh0', [], None, 'Fortishield v4.2.1'),
+    (None, None, ['007'], 'restart-fortishield0', ["arg1", "arg2"], None, 'Fortishield v4.0.0'),
+    (None, None, ['001', '002', '003', '004', '005', '006'], 'restart-fortishield0', [], None, 'Fortishield v4.0.0'),
+    (None, None, ['001'], 'restart-fortishield0', ["arg1", "arg2"], None, 'Fortishield v4.2.0'),
+    (None, None, ['002'], 'restart-fortishield0', [], None, 'Fortishield v4.2.1'),
 ])
-@patch("wazuh.core.wazuh_queue.FortishieldQueue._connect")
-@patch("wazuh.syscheck.FortishieldQueue._send", return_value='1')
-@patch("wazuh.core.wazuh_queue.FortishieldQueue.close")
-@patch('wazuh.core.common.AR_CONF', new=test_data_path)
-@patch('wazuh.active_response.get_agents_info', return_value=full_agent_list)
+@patch("fortishield.core.fortishield_queue.FortishieldQueue._connect")
+@patch("fortishield.syscheck.FortishieldQueue._send", return_value='1')
+@patch("fortishield.core.fortishield_queue.FortishieldQueue.close")
+@patch('fortishield.core.common.AR_CONF', new=test_data_path)
+@patch('fortishield.active_response.get_agents_info', return_value=full_agent_list)
 def test_run_command(mock_get_agents_info, mock_close, mock_send, mock_conn, message_exception,
                      send_exception, agent_id, command, arguments, alert, version):
     """Verify the proper operation of active_response module.
@@ -67,9 +67,9 @@ def test_run_command(mock_get_agents_info, mock_close, mock_send, mock_conn, mes
     version : list
         List with the agent version to test whether the message sent was the correct one or not.
     """
-    with patch('wazuh.core.agent.Agent.get_basic_information',
+    with patch('fortishield.core.agent.Agent.get_basic_information',
                return_value=agent_info_exception_and_version(send_exception, version)):
-        with patch('wazuh.core.agent.Agent.get_config', return_value=agent_config(send_exception)):
+        with patch('fortishield.core.agent.Agent.get_config', return_value=agent_config(send_exception)):
             if message_exception:
                 ret = run_command(agent_list=agent_id, command=command, arguments=arguments, alert=alert)
                 assert ret.render()['data']['failed_items'][0]['error']['code'] == message_exception

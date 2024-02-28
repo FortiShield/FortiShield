@@ -14,12 +14,12 @@
 #include <stdio.h>
 
 #include "../../wrappers/posix/pthread_wrappers.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_agent_upgrade_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_agent_upgrade_agent_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_agent_upgrade_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_agent_upgrade_agent_wrappers.h"
 
-#include "../../wazuh_modules/wmodules.h"
-#include "../../wazuh_modules/agent_upgrade/wm_agent_upgrade.h"
+#include "../../fortishield_modules/wmodules.h"
+#include "../../fortishield_modules/agent_upgrade/wm_agent_upgrade.h"
 #include "../../headers/shared.h"
 
 void* wm_agent_upgrade_main(wm_agent_upgrade* upgrade_config);
@@ -68,7 +68,7 @@ void test_wm_agent_upgrade_dump_enabled(void **state)
     config->enabled = 1;
 
     #ifdef TEST_SERVER
-    os_strdup("wazuh.com/packages", config->manager_config.wpk_repository);
+    os_strdup("fortishield.com/packages", config->manager_config.wpk_repository);
     config->manager_config.chunk_size = 512;
     config->manager_config.max_threads = 8;
     #else
@@ -91,7 +91,7 @@ void test_wm_agent_upgrade_dump_enabled(void **state)
     assert_int_equal(cJSON_GetObjectItem(conf, "max_threads")->valueint, 8);
     assert_int_equal(cJSON_GetObjectItem(conf, "chunk_size")->valueint, 512);
     assert_non_null(cJSON_GetObjectItem(conf, "wpk_repository"));
-    assert_string_equal(cJSON_GetObjectItem(conf, "wpk_repository")->valuestring, "wazuh.com/packages");
+    assert_string_equal(cJSON_GetObjectItem(conf, "wpk_repository")->valuestring, "fortishield.com/packages");
     #else
     assert_non_null(cJSON_GetObjectItem(conf, "ca_verification"));
     assert_string_equal(cJSON_GetObjectItem(conf, "ca_verification")->valuestring, "yes");
@@ -144,10 +144,10 @@ void test_wm_agent_upgrade_destroy(void **state)
     os_calloc(1, sizeof(wm_agent_upgrade), config);
 
     #ifdef TEST_SERVER
-    os_strdup("wazuh.com/packages", config->manager_config.wpk_repository);
+    os_strdup("fortishield.com/packages", config->manager_config.wpk_repository);
     #endif
 
-    expect_string(__wrap__mtinfo, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mtinfo, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mtinfo, formatted_msg, "(8154): Module Agent Upgrade finished.");
 
     wm_agent_upgrade_destroy(config);

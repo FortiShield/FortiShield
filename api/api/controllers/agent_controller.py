@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -16,13 +16,13 @@ from api.models.base_model_ import Body
 from api.models.agent_group_added_model import GroupAddedModel
 from api.util import parse_api_param, remove_nones_to_dict, raise_if_exc, deprecate_endpoint
 from api.validator import check_component_configuration_pair
-from wazuh import agent, stats
-from wazuh.core.cluster.control import get_system_nodes
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.common import DATABASE_LIMIT
-from wazuh.core.results import AffectedItemsFortishieldResult
+from fortishield import agent, stats
+from fortishield.core.cluster.control import get_system_nodes
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.common import DATABASE_LIMIT
+from fortishield.core.results import AffectedItemsFortishieldResult
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def delete_agents(request, pretty: bool = False, wait_for_complete: bool = False, agents_list: str = None,

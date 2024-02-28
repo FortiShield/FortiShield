@@ -21,8 +21,8 @@
 #include "../wrappers/libc/stdlib_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
 #include "../wrappers/externals/zlib/zlib_wrappers.h"
 
 /* setups/teardowns */
@@ -729,25 +729,25 @@ void test_w_uncompress_gzfile_success(void **state) {
 
 void test_w_homedir_first_attempt(void **state)
 {
-    char *argv0 = "/usr/share/wazuh/bin/test";
+    char *argv0 = "/usr/share/fortishield/bin/test";
     struct stat stat_buf = { .st_mode = 0040000 }; // S_IFDIR
     char *val = NULL;
 
     expect_string(__wrap_realpath, path, "/proc/self/exe");
     will_return(__wrap_realpath, argv0);
 
-    expect_string(__wrap_stat, __file, "/usr/share/wazuh");
+    expect_string(__wrap_stat, __file, "/usr/share/fortishield");
     will_return(__wrap_stat, &stat_buf);
     will_return(__wrap_stat, 0);
 
     val = w_homedir(argv0);
-    assert_string_equal(val, "/usr/share/wazuh");
+    assert_string_equal(val, "/usr/share/fortishield");
     free(val);
 }
 
 void test_w_homedir_second_attempt(void **state)
 {
-    char *argv0 = "/usr/share/wazuh/bin/test";
+    char *argv0 = "/usr/share/fortishield/bin/test";
     struct stat stat_buf = { .st_mode = 0040000 }; // S_IFDIR
     char *val = NULL;
 
@@ -757,18 +757,18 @@ void test_w_homedir_second_attempt(void **state)
     expect_string(__wrap_realpath, path, "/proc/curproc/file");
     will_return(__wrap_realpath, argv0);
 
-    expect_string(__wrap_stat, __file, "/usr/share/wazuh");
+    expect_string(__wrap_stat, __file, "/usr/share/fortishield");
     will_return(__wrap_stat, &stat_buf);
     will_return(__wrap_stat, 0);
 
     val = w_homedir(argv0);
-    assert_string_equal(val, "/usr/share/wazuh");
+    assert_string_equal(val, "/usr/share/fortishield");
     free(val);
 }
 
 void test_w_homedir_third_attempt(void **state)
 {
-    char *argv0 = "/usr/share/wazuh/bin/test";
+    char *argv0 = "/usr/share/fortishield/bin/test";
     struct stat stat_buf = { .st_mode = 0040000 }; // S_IFDIR
     char *val = NULL;
 
@@ -781,18 +781,18 @@ void test_w_homedir_third_attempt(void **state)
     expect_string(__wrap_realpath, path, "/proc/self/path/a.out");
     will_return(__wrap_realpath, argv0);
 
-    expect_string(__wrap_stat, __file, "/usr/share/wazuh");
+    expect_string(__wrap_stat, __file, "/usr/share/fortishield");
     will_return(__wrap_stat, &stat_buf);
     will_return(__wrap_stat, 0);
 
     val = w_homedir(argv0);
-    assert_string_equal(val, "/usr/share/wazuh");
+    assert_string_equal(val, "/usr/share/fortishield");
     free(val);
 }
 
 void test_w_homedir_check_argv0(void **state)
 {
-    char *argv0 = "/usr/share/wazuh/bin/test";
+    char *argv0 = "/usr/share/fortishield/bin/test";
     struct stat stat_buf = { .st_mode = 0040000 }; // S_IFDIR
     char *val = NULL;
 
@@ -807,12 +807,12 @@ void test_w_homedir_check_argv0(void **state)
     expect_string(__wrap_realpath, path, argv0);
     will_return(__wrap_realpath, argv0);
 
-    expect_string(__wrap_stat, __file, "/usr/share/wazuh");
+    expect_string(__wrap_stat, __file, "/usr/share/fortishield");
     will_return(__wrap_stat, &stat_buf);
     will_return(__wrap_stat, 0);
 
     val = w_homedir(argv0);
-    assert_string_equal(val, "/usr/share/wazuh");
+    assert_string_equal(val, "/usr/share/fortishield");
     free(val);
 }
 
@@ -832,14 +832,14 @@ void test_w_homedir_env_var(void **state)
     will_return(__wrap_realpath, NULL);
 
     expect_string(__wrap_getenv, name, FORTISHIELD_HOME_ENV);
-    will_return(__wrap_getenv, "/home/wazuh");
+    will_return(__wrap_getenv, "/home/fortishield");
 
-    expect_string(__wrap_stat, __file, "/home/wazuh");
+    expect_string(__wrap_stat, __file, "/home/fortishield");
     will_return(__wrap_stat, &stat_buf);
     will_return(__wrap_stat, 0);
 
     val = w_homedir(argv0);
-    assert_string_equal(val, "/home/wazuh");
+    assert_string_equal(val, "/home/fortishield");
     free(val);
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,22 +10,22 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from wazuh.tests.util import InitWDBSocketMock
+from fortishield.tests.util import InitWDBSocketMock
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh.syscheck import run, clear, last_scan, files
-        from wazuh.syscheck import AffectedItemsFortishieldResult
-        from wazuh import FortishieldError, FortishieldInternalError
-        from wazuh.core import common
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield.syscheck import run, clear, last_scan, files
+        from fortishield.syscheck import AffectedItemsFortishieldResult
+        from fortishield import FortishieldError, FortishieldInternalError
+        from fortishield.core import common
 
 callable_list = list()
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -67,12 +67,12 @@ test_result = [
                                         {'id': '003', 'status': ['disconnected']}]}],
      ['active', 'disconnected', 'disconnected'], test_result[2]),
 ])
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_data_path, 'client.keys'))
-@patch('wazuh.syscheck.FortishieldDBQueryAgents.__exit__')
-@patch('wazuh.syscheck.FortishieldDBQueryAgents.__init__', return_value=None)
-@patch('wazuh.syscheck.FortishieldQueue._connect')
-@patch('wazuh.syscheck.FortishieldQueue.send_msg_to_agent', side_effect=set_callable_list)
-@patch('wazuh.syscheck.FortishieldQueue.close')
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_data_path, 'client.keys'))
+@patch('fortishield.syscheck.FortishieldDBQueryAgents.__exit__')
+@patch('fortishield.syscheck.FortishieldDBQueryAgents.__init__', return_value=None)
+@patch('fortishield.syscheck.FortishieldQueue._connect')
+@patch('fortishield.syscheck.FortishieldQueue.send_msg_to_agent', side_effect=set_callable_list)
+@patch('fortishield.syscheck.FortishieldQueue.close')
 def test_syscheck_run(close_mock, send_mock, connect_mock, agent_init_mock, agent_exit_mock,
                       agent_list, failed_items, status_list, expected_result):
     """Test function `run` from syscheck module.
@@ -88,7 +88,7 @@ def test_syscheck_run(close_mock, send_mock, connect_mock, agent_init_mock, agen
     expected_result : list
         List of dicts with expected results for every test.
     """
-    with patch('wazuh.syscheck.FortishieldDBQueryAgents.run', return_value=failed_items[0]):
+    with patch('fortishield.syscheck.FortishieldDBQueryAgents.run', return_value=failed_items[0]):
         result = run(agent_list=agent_list)
         for args, kwargs in callable_list:
             assert (isinstance(a, str) for a in args)
@@ -108,9 +108,9 @@ def test_syscheck_run(close_mock, send_mock, connect_mock, agent_init_mock, agen
     (['001', '002'], test_result[0], ['001', '002']),
     (['003', '001', '008'], test_result[1], ['003', '008'])
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection.__init__', return_value=None)
-@patch('wazuh.core.wdb.FortishieldDBConnection.execute', return_value=None)
-@patch('wazuh.core.wdb.FortishieldDBConnection.close')
+@patch('fortishield.core.wdb.FortishieldDBConnection.__init__', return_value=None)
+@patch('fortishield.core.wdb.FortishieldDBConnection.execute', return_value=None)
+@patch('fortishield.core.wdb.FortishieldDBConnection.close')
 def test_syscheck_clear(wdb_close_mock, wdb_execute_mock, wdb_init_mock, agent_list, expected_result, agent_info_list,
                         agent_version):
     """Test function `clear` from syscheck module.
@@ -124,8 +124,8 @@ def test_syscheck_clear(wdb_close_mock, wdb_execute_mock, wdb_init_mock, agent_l
     agent_info_list : list
         List of agent IDs that `syscheck.get_agents_info` will return when mocked.
     """
-    with patch('wazuh.syscheck.get_agents_info', return_value=set(agent_info_list)), \
-            patch('wazuh.syscheck.FortishieldDBQueryAgents') as mock_wdbqa:
+    with patch('fortishield.syscheck.get_agents_info', return_value=set(agent_info_list)), \
+            patch('fortishield.syscheck.FortishieldDBQueryAgents') as mock_wdbqa:
         mock_wdbqa.return_value.run.return_value = {
             'items': [{'id': ag_id, 'version': agent_version} for ag_id in agent_info_list]}
 
@@ -149,9 +149,9 @@ def test_syscheck_clear(wdb_close_mock, wdb_execute_mock, wdb_init_mock, agent_l
 @pytest.mark.parametrize('agent_list, expected_result, agent_info_list', [
     (['001'], test_result[3], ['001']),
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection.__init__', return_value=None)
-@patch('wazuh.core.wdb.FortishieldDBConnection.execute', side_effect=FortishieldError(1000))
-@patch('wazuh.core.wdb.FortishieldDBConnection.close')
+@patch('fortishield.core.wdb.FortishieldDBConnection.__init__', return_value=None)
+@patch('fortishield.core.wdb.FortishieldDBConnection.execute', side_effect=FortishieldError(1000))
+@patch('fortishield.core.wdb.FortishieldDBConnection.close')
 def test_syscheck_clear_exception(wdb_close_mock, execute_mock, wdb_init_mock, agent_list, expected_result,
                                   agent_info_list, agent_version, expected_version_errcode):
     """Test function `clear` from syscheck module.
@@ -167,8 +167,8 @@ def test_syscheck_clear_exception(wdb_close_mock, execute_mock, wdb_init_mock, a
     agent_info_list : list
         List of agent IDs that `syscheck.get_agents_info` will return when mocked.
     """
-    with patch('wazuh.syscheck.get_agents_info', return_value=set(agent_info_list)), \
-            patch('wazuh.syscheck.FortishieldDBQueryAgents') as mock_wdbqa:
+    with patch('fortishield.syscheck.get_agents_info', return_value=set(agent_info_list)), \
+            patch('fortishield.syscheck.FortishieldDBQueryAgents') as mock_wdbqa:
         mock_wdbqa.return_value.run.return_value = {
             'items': [{'id': ag_id, 'version': agent_version} for ag_id in agent_info_list]}
 
@@ -184,28 +184,28 @@ def test_syscheck_clear_exception(wdb_close_mock, execute_mock, wdb_init_mock, a
         assert result.total_failed_items == expected_result['total_failed_items']
 
 
-@pytest.mark.parametrize('agent_id, wazuh_version', [
+@pytest.mark.parametrize('agent_id, fortishield_version', [
     (['001'], {'version': 'Fortishield v3.6.0'}),
     (['002'], {'version': 'Fortishield v3.8.3'}),
     (['005'], {'version': 'Fortishield v3.5.3'}),
     (['006'], {'version': 'Fortishield v3.9.4'}),
     (['004'], {}),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.path.exists', return_value=True)
 @patch('sqlite3.connect', side_effect=get_fake_syscheck_db('schema_syscheck_test.sql'))
-@patch("wazuh.syscheck.FortishieldDBConnection.execute", return_value=[{'end': '', 'start': ''}])
+@patch("fortishield.syscheck.FortishieldDBConnection.execute", return_value=[{'end': '', 'start': ''}])
 @patch('socket.socket.connect')
-def test_syscheck_last_scan(socket_mock, wdb_conn_mock, db_mock, exists_mock, agent_id, wazuh_version):
+def test_syscheck_last_scan(socket_mock, wdb_conn_mock, db_mock, exists_mock, agent_id, fortishield_version):
     """Test function `last_scan` from syscheck module.
 
     Parameters
     ----------
     agent_id : list
         Agent ID.
-    wazuh_version : dict
+    fortishield_version : dict
         Dict with the Fortishield version to be applied.
     """
-    with patch('wazuh.syscheck.Agent.get_basic_information', return_value=wazuh_version):
+    with patch('fortishield.syscheck.Agent.get_basic_information', return_value=fortishield_version):
         result = last_scan(agent_id)
         assert isinstance(result, AffectedItemsFortishieldResult)
         assert isinstance(result.affected_items, list)
@@ -229,9 +229,9 @@ def test_syscheck_last_scan(socket_mock, wdb_conn_mock, db_mock, exists_mock, ag
     (['000'], None, None, False, "file=HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters"
                                  "\\Interfaces\\{4473f692-67de-480d-a481-6de3e4a2813b};(type=file,type=registry_key)")
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
+@patch('fortishield.core.utils.path.exists', return_value=True)
 @patch('socket.socket.connect')
-@patch('wazuh.core.common.WDB_PATH', new=test_data_path)
+@patch('fortishield.core.common.WDB_PATH', new=test_data_path)
 def test_syscheck_files(socket_mock, exists_mock, agent_id, select, filters, distinct, q):
     """Test function `files` from syscheck module.
 
@@ -250,7 +250,7 @@ def test_syscheck_files(socket_mock, exists_mock, agent_id, select, filters, dis
                    'uid', 'type', 'changes', 'attributes', 'arch', 'value.name', 'value.type']
     nested_fields = ['value']
 
-    with patch('wazuh.core.utils.FortishieldDBConnection') as mock_wdb:
+    with patch('fortishield.core.utils.FortishieldDBConnection') as mock_wdb:
         mock_wdb.return_value = InitWDBSocketMock(sql_schema_file='schema_syscheck_test.sql')
         select = select if select else select_list
         result = files(agent_id, select=select, filters=filters, q=q)

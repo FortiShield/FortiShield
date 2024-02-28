@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -16,8 +16,8 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-clusterd
+    - fortishield-authd
+    - fortishield-clusterd
 
 os_platform:
     - linux
@@ -40,13 +40,13 @@ import time
 from pathlib import Path
 
 import pytest
-from wazuh_testing.modules.clusterd.utils import CLUSTER_DATA_HEADER_SIZE
-from wazuh_testing.constants.paths.logs import FORTISHIELD_CLUSTER_LOGS_PATH
-from wazuh_testing.constants.paths.sockets import MODULESD_C_INTERNAL_SOCKET_PATH
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, CLUSTER_DAEMON
-from wazuh_testing.tools.mitm import WorkerMID
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.modules.clusterd.utils import CLUSTER_DATA_HEADER_SIZE
+from fortishield_testing.constants.paths.logs import FORTISHIELD_CLUSTER_LOGS_PATH
+from fortishield_testing.constants.paths.sockets import MODULESD_C_INTERNAL_SOCKET_PATH
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, CLUSTER_DAEMON
+from fortishield_testing.tools.mitm import WorkerMID
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -73,7 +73,7 @@ daemons_handler_configuration = {'all_daemons': True, 'ignore_errors': True}
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_ossec_auth_messages(test_configuration, test_metadata, set_wazuh_configuration,
+def test_ossec_auth_messages(test_configuration, test_metadata, set_fortishield_configuration,
                              truncate_monitored_files, daemons_handler, configure_sockets_environment,
                              wait_for_authd_startup, connect_to_sockets):
     '''
@@ -81,7 +81,7 @@ def test_ossec_auth_messages(test_configuration, test_metadata, set_wazuh_config
         Checks that every message from the agent is correctly formatted for master,
         and every master response is correctly parsed for agent.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -93,9 +93,9 @@ def test_ossec_auth_messages(test_configuration, test_metadata, set_wazuh_config
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - truncate_monitored_files:
             type: fixture
             brief: Truncate all the log files and json alerts files before and after the test execution.

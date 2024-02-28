@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import socket
@@ -54,10 +54,10 @@ class FortishieldIntegration:
                  service_endpoint=None, iam_role_duration=None, external_id=None, skip_on_error=False):
 
         self.skip_on_error = skip_on_error
-        self.wazuh_path = utils.find_wazuh_path()
-        self.wazuh_version = utils.get_wazuh_version()
-        self.wazuh_queue = path.join(self.wazuh_path, "queue", "sockets", "queue")
-        self.wazuh_wodle = path.join(self.wazuh_path, "wodles", "aws")
+        self.fortishield_path = utils.find_fortishield_path()
+        self.fortishield_version = utils.get_fortishield_version()
+        self.fortishield_queue = path.join(self.fortishield_path, "queue", "sockets", "queue")
+        self.fortishield_wodle = path.join(self.fortishield_path, "wodles", "aws")
 
         self.connection_config = self.default_config(profile=profile)
         self.client = self.get_client(profile=profile,
@@ -248,7 +248,7 @@ class FortishieldIntegration:
             json_msg = json.dumps(msg, default=str)
             aws_tools.debug(json_msg, 3)
             s = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-            s.connect(self.wazuh_queue)
+            s.connect(self.fortishield_queue)
             encoded_msg = f"{MESSAGE_HEADER}{json_msg if dump_json else msg}".encode()
             # Logs warning if event is bigger than max size
             if len(encoded_msg) > utils.MAX_EVENT_SIZE:
@@ -264,10 +264,10 @@ class FortishieldIntegration:
                 aws_tools.debug('+++ ERROR: Message longer than buffer socket for Fortishield. Consider increasing rmem_max. '
                                 'Skipping message...', 1)
             else:
-                print("ERROR: Error sending message to wazuh: {}".format(e))
+                print("ERROR: Error sending message to fortishield: {}".format(e))
                 sys.exit(13)
         except Exception as e:
-            print("ERROR: Error sending message to wazuh: {}".format(e))
+            print("ERROR: Error sending message to fortishield: {}".format(e))
             sys.exit(13)
 
     def _decompress_gzip(self, raw_object: io.BytesIO):
@@ -397,13 +397,13 @@ class FortishieldAWSDatabase(FortishieldIntegration):
                         value)
                     VALUES (
                         'version',
-                        :wazuh_version);"""
+                        :fortishield_version);"""
 
         self.sql_update_version_metadata = """
                     UPDATE
                         metadata
                     SET
-                        value=:wazuh_version
+                        value=:fortishield_version
                     WHERE
                         key='version';
                     """
@@ -419,7 +419,7 @@ class FortishieldAWSDatabase(FortishieldIntegration):
                                   skip_on_error=skip_on_error)
 
         # db_name is an instance variable of subclass
-        self.db_path = "{0}/{1}.db".format(self.wazuh_wodle, db_name)
+        self.db_path = "{0}/{1}.db".format(self.fortishield_wodle, db_name)
         self.db_connector = sqlite3.connect(self.db_path)
         self.db_cursor = self.db_connector.cursor()
         self.check_metadata_version()
@@ -459,8 +459,8 @@ class FortishieldAWSDatabase(FortishieldIntegration):
                 # The table does not exist; update existing metadata value, if required
                 try:
                     metadata_version = self.db_cursor.execute(self.sql_get_metadata_version).fetchone()[0]
-                    if metadata_version != self.wazuh_version:
-                        self.db_cursor.execute(self.sql_update_version_metadata, {'wazuh_version': self.wazuh_version})
+                    if metadata_version != self.fortishield_version:
+                        self.db_cursor.execute(self.sql_update_version_metadata, {'fortishield_version': self.fortishield_version})
                 except (sqlite3.IntegrityError, sqlite3.OperationalError, sqlite3.Error) as err:
                     print(f'ERROR: Error attempting to update the metadata table: {err}')
                     sys.exit(5)
@@ -468,7 +468,7 @@ class FortishieldAWSDatabase(FortishieldIntegration):
                 # The table does not exist; create it and insert the metadata value
                 try:
                     self.db_cursor.execute(self.sql_create_metadata_table)
-                    self.db_cursor.execute(self.sql_insert_version_metadata, {'wazuh_version': self.wazuh_version})
+                    self.db_cursor.execute(self.sql_insert_version_metadata, {'fortishield_version': self.fortishield_version})
                     self.delete_deprecated_tables()
                 except (sqlite3.IntegrityError, sqlite3.OperationalError, sqlite3.Error) as err:
                     print(f'ERROR: Error attempting to create the metadata table: {err}')

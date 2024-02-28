@@ -8,7 +8,7 @@
  */
 
 #include "wmodules_scheduling_helpers.h"
-#include "../../wrappers/wazuh/shared/time_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/time_op_wrappers.h"
 #include <time.h>
 
 extern time_t __real_time(time_t *_time);
@@ -37,7 +37,7 @@ void set_current_time(time_t _time) {
  *          "<run_on_start>yes</run_on_start>\n"
  *          "<skip_on_error>yes</skip_on_error>\n"
  *          "<bucket type=\"config\">\n"
- *          "    <name>wazuh-aws-wodle</name>\n"
+ *          "    <name>fortishield-aws-wodle</name>\n"
  *          "    <path>config</path>\n"
  *          "   <aws_profile>default</aws_profile>\n"
  *          "</bucket>"

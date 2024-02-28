@@ -7,7 +7,7 @@ get_roles:
     result:
       affected_items:
         - id: 100
-          name: wazuh
+          name: fortishield
           rules:
             - 100
           policies:
@@ -107,12 +107,12 @@ add_role:
         "4005":
           - "ossec"
   - params:
-      name: wazuh
+      name: fortishield
     result:
       affected_items: []
       failed_items:
         "4005":
-          - wazuh
+          - fortishield
 update_role:
   - params:
       role_id:

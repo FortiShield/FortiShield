@@ -23,7 +23,7 @@
 #include "../../analysisd/decoders/decoder.h"
 #include "../../analysisd/decoders/plugin_decoders.h"
 #include "../../analysisd/config.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 void FreeDecoderInfo(OSDecoderInfo *pi);
 char *_loadmemory(char *at, char *str, OSList* log_msg);

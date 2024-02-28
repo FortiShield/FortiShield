@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from asyncio import Event, Transport
@@ -10,11 +10,11 @@ from unittest.mock import patch, AsyncMock, call
 import pytest
 from uvloop import EventLoopPolicy, new_event_loop
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        from wazuh.core.cluster.local_client import *
-        from wazuh.core.cluster.common import InBuffer
-        from wazuh.core.exception import FortishieldInternalError
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        from fortishield.core.cluster.local_client import *
+        from fortishield.core.cluster.common import InBuffer
+        from fortishield.core.exception import FortishieldInternalError
 
 asyncio.set_event_loop_policy(EventLoopPolicy())
 loop = new_event_loop()
@@ -115,7 +115,7 @@ def test_localclienthandler_connection_lost():
         mock_set_result.assert_called_once_with(True)
 
 
-@patch("wazuh.core.cluster.client.asyncio.get_running_loop")
+@patch("fortishield.core.cluster.client.asyncio.get_running_loop")
 def test_localclient_initialization(mock_get_running_loop):
     """Check the correct initialization of the LocalClient object."""
     lc = LocalClient()
@@ -134,7 +134,7 @@ async def test_localclient_start():
     with patch("uvloop.Loop.create_unix_connection", side_effect=create_unix_connection) as mock_create_unix_connection:
         mocked_loop = new_event_loop()
         with patch("os.path.join", return_value="path/test"):
-            with patch("wazuh.core.cluster.client.asyncio.get_running_loop", return_value=mocked_loop):
+            with patch("fortishield.core.cluster.client.asyncio.get_running_loop", return_value=mocked_loop):
                 lc = LocalClient()
                 await lc.start()
                 assert mock_create_unix_connection.call_count == 1
@@ -145,21 +145,21 @@ async def test_localclient_start():
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.client.asyncio.get_running_loop")
+@patch("fortishield.core.cluster.client.asyncio.get_running_loop")
 async def test_localclient_start_ko(mock_get_running_loop):
     """Check the behavior of the start function for the different types of exceptions that may occur."""
     with pytest.raises(FortishieldInternalError, match=r'.* 3009 .*'):
         await LocalClient().start()
 
-    with patch("wazuh.core.cluster.local_client.os.path.join", side_effect=MemoryError):
+    with patch("fortishield.core.cluster.local_client.os.path.join", side_effect=MemoryError):
         with pytest.raises(FortishieldInternalError, match=r'.* 1119 .*'):
             await LocalClient().start()
 
-    with patch("wazuh.core.cluster.local_client.os.path.join", side_effect=FileNotFoundError):
+    with patch("fortishield.core.cluster.local_client.os.path.join", side_effect=FileNotFoundError):
         with pytest.raises(FortishieldInternalError, match=r'.* 3012 .*'):
             await LocalClient().start()
 
-    with patch("wazuh.core.cluster.local_client.os.path.join", side_effect=ConnectionRefusedError):
+    with patch("fortishield.core.cluster.local_client.os.path.join", side_effect=ConnectionRefusedError):
         with pytest.raises(FortishieldInternalError, match=r'.* 3012 .*'):
             await LocalClient().start()
 
@@ -185,7 +185,7 @@ async def test_wait_for_response():
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.client.asyncio.get_running_loop")
+@patch("fortishield.core.cluster.client.asyncio.get_running_loop")
 async def test_localclient_send_api_request(mock_get_running_loop):
     """Check the correct operation of the send_api_request function by mocking the protocol attribute.
     Exceptions are not tested."""
@@ -215,7 +215,7 @@ async def test_localclient_send_api_request(mock_get_running_loop):
         assert await lc.send_api_request(command=b"dapi", data=result) == lc.protocol.response.decode()
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.client.asyncio.get_running_loop")
+@patch("fortishield.core.cluster.client.asyncio.get_running_loop")
 async def test_localclient_send_api_request_ko(mock_get_running_loop):
     """Check the behavior of the send_api_request function for the different types of exceptions that may occur."""
 
@@ -245,8 +245,8 @@ async def test_localclient_execute():
         async def testing():
             return "test"
 
-    with patch("wazuh.core.cluster.local_client.LocalClient.start"):
-        with patch("wazuh.core.cluster.local_client.LocalClient.send_api_request", return_value="Test"):
+    with patch("fortishield.core.cluster.local_client.LocalClient.start"):
+        with patch("fortishield.core.cluster.local_client.LocalClient.send_api_request", return_value="Test"):
             with patch("asyncio.transports.BaseTransport.close"):
                 lc = LocalClient()
                 lc.transport = BaseTransport()
@@ -258,7 +258,7 @@ async def test_localclient_execute():
 async def test_localclient_send_file():
     """Check that the function send_file returns the value returned by the
     function send_api_request called with the command 'send_file'."""
-    with patch("wazuh.core.cluster.local_client.LocalClient.start"):
-        with patch("wazuh.core.cluster.local_client.LocalClient.send_api_request", return_value=b"wazuh/test python"):
+    with patch("fortishield.core.cluster.local_client.LocalClient.start"):
+        with patch("fortishield.core.cluster.local_client.LocalClient.send_api_request", return_value=b"fortishield/test python"):
             lc = LocalClient()
-            assert await lc.send_file(path="wazuh/test", node_name="python") == b"wazuh/test python"
+            assert await lc.send_file(path="fortishield/test", node_name="python") == b"fortishield/test python"

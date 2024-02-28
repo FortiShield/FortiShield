@@ -17,8 +17,8 @@
 #include "../../addagent/manage_agents.h"
 #include "../wrappers/common.h"
 #include "../wrappers/libc/stdlib_wrappers.h"
-#include "../wrappers/wazuh/shared/b64_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/b64_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
 
 #define CLIENT_KEYS_FILENAME "tmp/client.keysXXXXXX"
 #define KEY_ENCODED "MDEzIHVidW50dTIyYWdlbnQgYW55IDVmMjIwMmI2MmVkNTJjYTY3ZWIwZGMyZmRmZDZmODlmNmNlMDllZjNjNTY3NTk2ZTNhMTU3MzEzNmI3NjNkYmY="

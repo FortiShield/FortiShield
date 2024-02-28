@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Product Id="*" Name="Fortishield Agent" Language="1033" Version="5.0.0" Manufacturer="Fortishield, Inc." UpgradeCode="F495AC57-7BDE-4C4B-92D8-DBE40A9AA5A0">
-        <Package Description="Fortishield helps you to gain security visibility into your infrastructure by monitoring hosts at an operating system and application level. It provides the following capabilities: log analysis, file integrity monitoring, intrusions detection and policy and compliance monitoring" Comments="wazuh-agent" InstallerVersion="200" Compressed="yes" />
+        <Package Description="Fortishield helps you to gain security visibility into your infrastructure by monitoring hosts at an operating system and application level. It provides the following capabilities: log analysis, file integrity monitoring, intrusions detection and policy and compliance monitoring" Comments="fortishield-agent" InstallerVersion="200" Compressed="yes" />
         <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" CompressionLevel="high" />
 
         <!-- Disable Restart Manager -->
@@ -192,10 +192,10 @@
                         <File Id="AGENT_AUTH.EXE.MANIFEST" Name="agent-auth.exe.manifest" Source="agent-auth.exe.manifest" />
                     </Component>
                     <Component Id="LIBFORTISHIELDEXT_DLL" DiskId="1" Guid="31F7B5FA-9678-427B-9536-88AAA897A82A">
-                        <File Id="LIBFORTISHIELDEXT_DLL" Name="libwazuhext.dll" Source="..\libwazuhext.dll" />
+                        <File Id="LIBFORTISHIELDEXT_DLL" Name="libfortishieldext.dll" Source="..\libfortishieldext.dll" />
                     </Component>
                     <Component Id="LIBFORTISHIELDSHARED_DLL" DiskId="1" Guid="A40D7FB4-8D7B-440E-B7CB-1D8CB1E277E6">
-                        <File Id="LIBFORTISHIELDSHARED_DLL" Name="libwazuhshared.dll" Source="..\libwazuhshared.dll" />
+                        <File Id="LIBFORTISHIELDSHARED_DLL" Name="libfortishieldshared.dll" Source="..\libfortishieldshared.dll" />
                     </Component>
                     <Component Id="DBSYNC_DLL" DiskId="1" Guid="E6DD27ED-1579-4369-B83D-FD618894B56C">
                         <File Id="DBSYNC_DLL" Name="dbsync.dll" Source="..\shared_modules\dbsync\build\bin\dbsync.dll" />
@@ -207,7 +207,7 @@
                         <File Id="SYSINFO_DLL" Name="sysinfo.dll" Source="..\data_provider\build\bin\sysinfo.dll" />
                     </Component>
                     <Component Id="SYSCOLLECTOR_DLL" DiskId="1" Guid="7CE63D8B-C959-43CC-A7B6-4226414EBADB">
-                        <File Id="SYSCOLLECTOR_DLL" Name="syscollector.dll" Source="..\wazuh_modules\syscollector\build\bin\syscollector.dll" />
+                        <File Id="SYSCOLLECTOR_DLL" Name="syscollector.dll" Source="..\fortishield_modules\syscollector\build\bin\syscollector.dll" />
                     </Component>
                     <Component Id="FIMDB_DLL" DiskId="1" Guid="15806BCA-876E-41D7-A82E-623EEEC63C3A">
                         <File Id="FIMDB_DLL" Name="libfimdb.dll" Source="..\syscheckd\build\bin\libfimdb.dll" />
@@ -241,13 +241,13 @@
                         <File Id="MANAGE_AGENTS.EXE" Name="manage_agents.exe" Source="manage_agents.exe" />
                     </Component>
                     <Component Id="FORTISHIELD_AGENT_EVENTCHANNEL.EXE" DiskId="1" Guid="044E7997-12B6-4178-BD00-B90500DBA53F">
-                        <File Id="FORTISHIELD_AGENT_EVENTCHANNEL.EXE" Name="wazuh-agent.exe" Source="wazuh-agent-eventchannel.exe" />
+                        <File Id="FORTISHIELD_AGENT_EVENTCHANNEL.EXE" Name="fortishield-agent.exe" Source="fortishield-agent-eventchannel.exe" />
                         <ServiceInstall Name="FortishieldSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Fortishield Windows Agent" DisplayName="Fortishield" Id="svc_install_eventchannel" />
                         <ServiceControl Id="svc_uninstall_eventchannel" Name="FortishieldSvc" Remove="uninstall" Stop="both" Wait="yes" />
                         <Condition>VersionNT &gt;= 600</Condition>
                     </Component>
                     <Component Id="FORTISHIELD_AGENT.EXE" DiskId="1" Guid="5CCEA6DC-8434-4137-9486-55AE3949266B">
-                        <File Id="FORTISHIELD_AGENT.EXE" Name="wazuh-agent.exe" Source="wazuh-agent.exe" />
+                        <File Id="FORTISHIELD_AGENT.EXE" Name="fortishield-agent.exe" Source="fortishield-agent.exe" />
                         <ServiceInstall Name="FortishieldSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Fortishield Windows Agent" DisplayName="Fortishield" Id="svc_install" />
                         <ServiceControl Id="ServiceControl" Name="FortishieldSvc" Stop="both" Remove="uninstall" Wait="yes" />
                         <Condition>VersionNT &lt; 600</Condition>
@@ -280,8 +280,8 @@
                         <RemoveFile Id="NSIS_MANAGE_AGENTS_EXE" Name="manage_agents.exe" On="install" />
                         <RemoveFile Id="NSIS_OSSEC_AGENT_EXE" Name="ossec-agent.exe" On="install" />
                         <RemoveFile Id="NSIS_OSSEC_AGENT_STATE" Name="ossec-agent.state" On="install" />
-                        <RemoveFile Id="NSIS_FORTISHIELD_AGENT_EXE" Name="wazuh-agent.exe" On="install" />
-                        <RemoveFile Id="NSIS_FORTISHIELD_AGENT_STATE" Name="wazuh-agent.state" On="install" />
+                        <RemoveFile Id="NSIS_FORTISHIELD_AGENT_EXE" Name="fortishield-agent.exe" On="install" />
+                        <RemoveFile Id="NSIS_FORTISHIELD_AGENT_STATE" Name="fortishield-agent.state" On="install" />
                         <RemoveFile Id="NSIS_VERSION_TXT" Name="VERSION.txt" On="install" />
                         <RemoveFile Id="NSIS_HELP_TXT" Name="help.txt" On="install" />
                     </Component>
@@ -368,7 +368,7 @@
                     <Directory Id="ACTIVE_RESPONSE" Name="active-response">
                         <Directory Id="BIN" Name="bin">
                             <Component Id="RESTART_FORTISHIELD.EXE" DiskId="1" Guid="5A405DD9-F4FF-4313-B242-A28DE03611CA">
-                                <File Id="RESTART_FORTISHIELD.EXE" Name="restart-wazuh.exe" Source="restart-wazuh.exe" />
+                                <File Id="RESTART_FORTISHIELD.EXE" Name="restart-fortishield.exe" Source="restart-fortishield.exe" />
                             </Component>
                             <Component Id="ROUTE_NULL.EXE" DiskId="1" Guid="249F3287-B69D-46F0-9EB8-3FED24998E07">
                                 <File Id="ROUTE_NULL.EXE" Name="route-null.exe" Source="route-null.exe" />
@@ -444,7 +444,7 @@
                         </Directory>
                         <Directory Id="SYSCOLLECTOR" Name="syscollector">
                             <Component Id="SYSCOLLECTOR_NORM_CONFIG" DiskId="1" Guid="40284747-C50C-4905-9A72-6236276E192E">
-                                <File Id="SYSCOLLECTOR_NORM_CONFIG" Name="norm_config.json" Source="..\wazuh_modules\syscollector\norm_config.json" />
+                                <File Id="SYSCOLLECTOR_NORM_CONFIG" Name="norm_config.json" Source="..\fortishield_modules\syscollector\norm_config.json" />
                             </Component>
                             <Directory Id="SYSCOLLECTOR_DB" Name="db" />
                         </Directory>
@@ -467,7 +467,7 @@
                         <Shortcut Id="EDIT_CONF" Name="Edit conf" Target="[APPLICATIONFOLDER]ossec.conf" WorkingDirectory="APPLICATIONFOLDER" />
                         <Shortcut Id="UninstallProduct" Name="Uninstall" Description="Uninstalls the application" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
                         <Shortcut Id="RUN_WIN32UI" Name="Manage Agent" Target="[APPLICATIONFOLDER]win32ui.exe" WorkingDirectory="APPLICATIONFOLDER" />
-                        <util:InternetShortcut Id="WebsiteShortcut" Name="Documentation" Target="https://documentation.wazuh.com" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" />
+                        <util:InternetShortcut Id="WebsiteShortcut" Name="Documentation" Target="https://documentation.fortishield.com" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" />
                     </Component>
                 </Directory>
             </Directory>

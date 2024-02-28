@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -7,17 +7,17 @@ from functools import wraps
 
 from aiohttp import web
 
-import wazuh.ciscat as ciscat
-import wazuh.rootcheck as rootcheck
-import wazuh.syscheck as syscheck
-import wazuh.syscollector as syscollector
+import fortishield.ciscat as ciscat
+import fortishield.rootcheck as rootcheck
+import fortishield.syscheck as syscheck
+import fortishield.syscollector as syscollector
 from api import configuration
 from api.encoder import dumps, prettify
 from api.util import remove_nones_to_dict, parse_api_param, raise_if_exc, deprecate_endpoint
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.exception import FortishieldResourceNotFound
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.exception import FortishieldResourceNotFound
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 def check_experimental_feature_value(func):

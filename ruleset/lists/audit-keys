@@ -1,5 +1,5 @@
-audit-wazuh-w:write
-audit-wazuh-r:read
-audit-wazuh-a:attribute
-audit-wazuh-x:execute
-audit-wazuh-c:command
+audit-fortishield-w:write
+audit-fortishield-r:read
+audit-fortishield-a:attribute
+audit-fortishield-x:execute
+audit-fortishield-c:command

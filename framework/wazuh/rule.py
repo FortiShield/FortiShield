@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from os import remove
@@ -9,18 +9,18 @@ from xml.parsers.expat import ExpatError
 
 import xmltodict
 
-import wazuh.core.configuration as configuration
-from wazuh.core import common
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.utils import read_cluster_config
-from wazuh.core.exception import FortishieldError
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.rule import check_status, load_rules_from_file, format_rule_decoder_file, REQUIRED_FIELDS, \
+import fortishield.core.configuration as configuration
+from fortishield.core import common
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.utils import read_cluster_config
+from fortishield.core.exception import FortishieldError
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.rule import check_status, load_rules_from_file, format_rule_decoder_file, REQUIRED_FIELDS, \
     RULE_REQUIREMENTS, SORT_FIELDS, RULE_FIELDS, RULE_FILES_FIELDS, RULE_FILES_REQUIRED_FIELDS
-from wazuh.core.utils import process_array, safe_move, \
-    validate_wazuh_xml, upload_file, full_copy, to_relative_path
-from wazuh.core.logtest import validate_dummy_logtest
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.utils import process_array, safe_move, \
+    validate_fortishield_xml, upload_file, full_copy, to_relative_path
+from fortishield.core.logtest import validate_dummy_logtest
+from fortishield.rbac.decorators import expose_resources
 
 cluster_enabled = not read_cluster_config(from_import=True)['disabled']
 node_id = get_node().get('node') if cluster_enabled else 'manager'
@@ -426,14 +426,14 @@ def validate_upload_delete_dir(relative_dirname: Union[str, None]) -> Tuple[str,
     ruleset_conf = configuration.get_ossec_conf(section='ruleset')['ruleset']
     relative_dirname = relative_dirname.rstrip('/') if relative_dirname \
         else to_relative_path(common.USER_RULES_PATH)
-    wazuh_error = None
+    fortishield_error = None
     if not relative_dirname in ruleset_conf['rule_dir']:
-        wazuh_error = FortishieldError(1209)
+        fortishield_error = FortishieldError(1209)
     elif commonpath([join(common.FORTISHIELD_PATH, relative_dirname), common.RULES_PATH]) == common.RULES_PATH:
-        wazuh_error = FortishieldError(1210)
+        fortishield_error = FortishieldError(1210)
     elif not exists(join(common.FORTISHIELD_PATH, relative_dirname)):
-        wazuh_error = FortishieldError(1211)
-    return relative_dirname, wazuh_error
+        fortishield_error = FortishieldError(1211)
+    return relative_dirname, fortishield_error
 
 
 @expose_resources(actions=['rules:update'], resources=['*:*:*'])
@@ -467,15 +467,15 @@ def upload_rule_file(filename: str, content: str, relative_dirname: str = None,
 
     backup_file = ''
     try:
-        relative_dirname, wazuh_error = validate_upload_delete_dir(
+        relative_dirname, fortishield_error = validate_upload_delete_dir(
             relative_dirname=relative_dirname)
         full_path = join(common.FORTISHIELD_PATH, relative_dirname, filename)
-        if wazuh_error:
-            raise wazuh_error
+        if fortishield_error:
+            raise fortishield_error
         if len(content) == 0:
             raise FortishieldError(1112)
 
-        validate_wazuh_xml(content)
+        validate_fortishield_xml(content)
 
         # If file already exists and overwrite is False, raise exception
         if not overwrite and exists(full_path):
@@ -533,11 +533,11 @@ def delete_rule_file(filename: Union[str, list], relative_dirname: str = None) -
                                       none_msg='Could not delete rule')
 
     try:
-        relative_dirname, wazuh_error = validate_upload_delete_dir(
+        relative_dirname, fortishield_error = validate_upload_delete_dir(
             relative_dirname=relative_dirname)
         full_path = join(common.FORTISHIELD_PATH, relative_dirname, file)
-        if wazuh_error:
-            raise wazuh_error
+        if fortishield_error:
+            raise fortishield_error
 
         if exists(full_path):
             try:

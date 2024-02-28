@@ -1,12 +1,12 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest.mock import patch
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        from wazuh.core.results import AffectedItemsFortishieldResult
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        from fortishield.core.results import AffectedItemsFortishieldResult
 
 
 class CustomAffectedItems(AffectedItemsFortishieldResult):

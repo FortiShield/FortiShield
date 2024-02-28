@@ -25,7 +25,7 @@ target_link_libraries(WIN32 ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 link_directories(${SRC_FOLDER}/syscheckd/build/bin)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate win32 tests
 list(APPEND win32_names "test_win_utils")

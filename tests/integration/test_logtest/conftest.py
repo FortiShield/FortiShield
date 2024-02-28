@@ -1,13 +1,13 @@
 # Copyright (C) 2015-2021, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import pytest
 
-from wazuh_testing.modules.analysisd.patterns import LOGTEST_STARTED
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.analysisd.patterns import LOGTEST_STARTED
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
 
 @pytest.fixture(scope='module')
 def wait_for_logtest_startup(request):

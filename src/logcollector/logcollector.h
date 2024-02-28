@@ -12,7 +12,7 @@
 #define LOGREADER_H
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-logcollector"
+#define ARGV0 "fortishield-logcollector"
 #endif
 
 #define N_MIN_INPUT_THREADS 1

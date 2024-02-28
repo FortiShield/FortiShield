@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 
@@ -10,11 +10,11 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
         from api import alogging
 
-REQUEST_HEADERS_TEST = {'authorization': 'Basic d2F6dWg6cGFzc3dvcmQxMjM='}  # wazuh:password123
+REQUEST_HEADERS_TEST = {'authorization': 'Basic d2F6dWg6cGFzc3dvcmQxMjM='}  # fortishield:password123
 AUTH_CONTEXT_TEST = {'auth_context': 'example'}
 HASH_AUTH_CONTEXT_TEST = '020efd3b53c1baf338cf143fad7131c3'
 
@@ -30,7 +30,7 @@ def test_accesslogger_log_credentials():
         def __init__(self):
             self['body'] = {'password': 'password_value',
                             'key': 'key_value'}
-            self['user'] = 'wazuh'
+            self['user'] = 'fortishield'
 
     with patch('logging.Logger.info') as mock_logger_info:
         test_access_logger = alogging.AccessLogger(logger=logging.getLogger('test'), log_format=MagicMock())
@@ -52,7 +52,7 @@ def test_accesslogger_log_credentials():
 @pytest.mark.parametrize('side_effect, user', [
     ('unknown', ''),
     (None, ''),
-    (None, 'wazuh')
+    (None, 'fortishield')
 ])
 @patch('api.alogging.json.dumps')
 def test_accesslogger_log_user(mock_dumps, side_effect, user):
@@ -85,7 +85,7 @@ def test_accesslogger_log_user(mock_dumps, side_effect, user):
         # If not user, decode_token must be called to get the user and logger.info must be called with the user
         # if we have token_info or UNKNOWN_USER if not
         if not user:
-            expected_user = 'wazuh' if side_effect is None else alogging.UNKNOWN_USER_STRING
+            expected_user = 'fortishield' if side_effect is None else alogging.UNKNOWN_USER_STRING
             assert json_call['user'] == expected_user
             assert log_call.split(" ")[0] == expected_user
         # If user, logger.info must be called with the user
@@ -221,8 +221,8 @@ def test_accesslogger_log_events_correctly(
     False,
     True
 ])
-@patch('wazuh.core.wlogging.FortishieldLogger.__init__')
-def test_apilogger_init(mock_wazuhlogger, json_log):
+@patch('fortishield.core.wlogging.FortishieldLogger.__init__')
+def test_apilogger_init(mock_fortishieldlogger, json_log):
     """Check parameters are as expected when calling __init__ method.
 
     Parameters
@@ -233,16 +233,16 @@ def test_apilogger_init(mock_wazuhlogger, json_log):
     log_name = 'testing.json' if json_log else 'testing.log'
     current_logger_path = os.path.join(os.path.dirname(__file__), log_name)
     alogging.APILogger(log_path=current_logger_path, foreground_mode=False, debug_level='info',
-                       logger_name='wazuh')
+                       logger_name='fortishield')
 
-    assert mock_wazuhlogger.call_args.kwargs['log_path'] == current_logger_path
-    assert not mock_wazuhlogger.call_args.kwargs['foreground_mode']
-    assert mock_wazuhlogger.call_args.kwargs['debug_level'] == 'info'
-    assert mock_wazuhlogger.call_args.kwargs['logger_name'] == 'wazuh'
+    assert mock_fortishieldlogger.call_args.kwargs['log_path'] == current_logger_path
+    assert not mock_fortishieldlogger.call_args.kwargs['foreground_mode']
+    assert mock_fortishieldlogger.call_args.kwargs['debug_level'] == 'info'
+    assert mock_fortishieldlogger.call_args.kwargs['logger_name'] == 'fortishield'
     if json_log:
-        assert mock_wazuhlogger.call_args.kwargs['custom_formatter'] == alogging.FortishieldJsonFormatter
+        assert mock_fortishieldlogger.call_args.kwargs['custom_formatter'] == alogging.FortishieldJsonFormatter
     else:
-        assert mock_wazuhlogger.call_args.kwargs['custom_formatter'] is None
+        assert mock_fortishieldlogger.call_args.kwargs['custom_formatter'] is None
 
     os.path.exists(current_logger_path) and os.remove(current_logger_path)
 
@@ -268,7 +268,7 @@ def test_apilogger_setup_logger(mock_logger, debug_level, expected_level):
     """
     current_logger_path = os.path.join(os.path.dirname(__file__), 'testing')
     logger = alogging.APILogger(log_path=current_logger_path, foreground_mode=False, debug_level=debug_level,
-                                logger_name='wazuh')
+                                logger_name='fortishield')
     logger.setup_logger()
     assert mock_logger.call_args == call(expected_level)
 
@@ -280,8 +280,8 @@ def test_apilogger_setup_logger(mock_logger, debug_level, expected_level):
     ('message_value', {'exc_info': 'traceback_value'}),
     ('message_value', {})
 ])
-def test_wazuhjsonformatter(message, dkt):
-    """Check wazuh json formatter is working as expected.
+def test_fortishieldjsonformatter(message, dkt):
+    """Check fortishield json formatter is working as expected.
 
     Parameters
     ----------

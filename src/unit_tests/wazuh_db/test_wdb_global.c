@@ -6,17 +6,17 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wazuh_db/wdb.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../fortishield_db/wdb.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 #include "../wrappers/externals/sqlite/sqlite3_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
-#include "../wrappers/wazuh/shared/time_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/time_op_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
 #include "../wrappers/posix/time_wrappers.h"
-#include "../wrappers/wazuh/shared/cluster_op_wrappers.h"
-#include "wazuhdb_op.h"
+#include "../wrappers/fortishield/shared/cluster_op_wrappers.h"
+#include "fortishielddb_op.h"
 
 #define GROUPS_SIZE 10
 #define AGENTS_SIZE 10

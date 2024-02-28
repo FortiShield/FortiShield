@@ -6,7 +6,7 @@
  * License (version 2) as published by the FSF - Free Software
  * Foundation.
  *
- * Test corresponding to the wazuh-modulesd shared functions
+ * Test corresponding to the fortishield-modulesd shared functions
  */
 
 #include <stdarg.h>
@@ -15,7 +15,7 @@
 #include <cmocka.h>
 #include <time.h>
 
-#include "../../../wazuh_modules/wmodules.h"
+#include "../../../fortishield_modules/wmodules.h"
 
 static size_t echo(void * module, char * query, char ** output) {
     (void)module;

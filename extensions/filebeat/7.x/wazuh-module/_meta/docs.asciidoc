@@ -1,4 +1,4 @@
-:modulename: wazuh
+:modulename: fortishield
 :has-dashboards: false
 
 == Fortishield module

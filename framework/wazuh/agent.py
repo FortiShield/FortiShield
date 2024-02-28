@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import hashlib
@@ -7,19 +7,19 @@ import operator
 from os import chmod, path, listdir
 from typing import Union
 
-from wazuh.core import common, configuration
-from wazuh.core.InputValidator import InputValidator
-from wazuh.core.agent import FortishieldDBQueryAgents, FortishieldDBQueryGroupByAgents, FortishieldDBQueryMultigroups, Agent, \
+from fortishield.core import common, configuration
+from fortishield.core.InputValidator import InputValidator
+from fortishield.core.agent import FortishieldDBQueryAgents, FortishieldDBQueryGroupByAgents, FortishieldDBQueryMultigroups, Agent, \
     FortishieldDBQueryGroup, create_upgrade_tasks, get_agents_info, get_groups, get_rbac_filters, send_restart_command, \
     GROUP_FIELDS, GROUP_REQUIRED_FIELDS, GROUP_FILES_FIELDS, GROUP_FILES_REQUIRED_FIELDS
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.utils import read_cluster_config
-from wazuh.core.exception import FortishieldError, FortishieldInternalError, FortishieldException, FortishieldResourceNotFound
-from wazuh.core.results import FortishieldResult, AffectedItemsFortishieldResult
-from wazuh.core.utils import chmod_r, chown_r, get_hash, mkdir_with_mode, md5, process_array, clear_temporary_caches, \
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.utils import read_cluster_config
+from fortishield.core.exception import FortishieldError, FortishieldInternalError, FortishieldException, FortishieldResourceNotFound
+from fortishield.core.results import FortishieldResult, AffectedItemsFortishieldResult
+from fortishield.core.utils import chmod_r, chown_r, get_hash, mkdir_with_mode, md5, process_array, clear_temporary_caches, \
     full_copy
-from wazuh.core.wazuh_queue import FortishieldQueue
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.fortishield_queue import FortishieldQueue
+from fortishield.rbac.decorators import expose_resources
 
 cluster_enabled = not read_cluster_config(from_import=True)['disabled']
 node_id = get_node().get('node') if cluster_enabled else None
@@ -772,7 +772,7 @@ def create_group(group_id: str) -> FortishieldResult:
         mkdir_with_mode(group_path)
         full_copy(agent_conf_template, path.join(group_path, 'agent.conf'))
 
-        chown_r(group_path, common.wazuh_uid(), common.wazuh_gid())
+        chown_r(group_path, common.fortishield_uid(), common.fortishield_gid())
         chmod_r(group_path, 0o660)
         chmod(group_path, 0o700)
         msg = f"Group '{group_id}' created."

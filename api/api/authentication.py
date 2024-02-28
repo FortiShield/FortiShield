@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -16,17 +16,17 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from werkzeug.exceptions import Unauthorized
 
 import api.configuration as conf
-import wazuh.core.utils as core_utils
-import wazuh.rbac.utils as rbac_utils
+import fortishield.core.utils as core_utils
+import fortishield.rbac.utils as rbac_utils
 from api.constants import SECURITY_CONFIG_PATH
 from api.constants import SECURITY_PATH
 from api.util import raise_if_exc
-from wazuh import FortishieldInternalError
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.cluster.utils import read_config
-from wazuh.core.common import wazuh_uid, wazuh_gid
-from wazuh.rbac.orm import AuthenticationManager, TokenManager, UserRolesManager
-from wazuh.rbac.preprocessor import optimize_resources
+from fortishield import FortishieldInternalError
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.cluster.utils import read_config
+from fortishield.core.common import fortishield_uid, fortishield_gid
+from fortishield.rbac.orm import AuthenticationManager, TokenManager, UserRolesManager
+from fortishield.rbac.preprocessor import optimize_resources
 
 pool = ThreadPoolExecutor(max_workers=1)
 
@@ -77,7 +77,7 @@ def check_user(user: str, password: str, required_scopes=None) -> Union[dict, No
                           request_type='local_master',
                           is_async=False,
                           wait_for_complete=False,
-                          logger=logging.getLogger('wazuh-api')
+                          logger=logging.getLogger('fortishield-api')
                           )
     data = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result())
 
@@ -88,7 +88,7 @@ def check_user(user: str, password: str, required_scopes=None) -> Union[dict, No
 
 
 # Set JWT settings
-JWT_ISSUER = 'wazuh'
+JWT_ISSUER = 'fortishield'
 JWT_ALGORITHM = 'ES512'
 _private_key_path = os.path.join(SECURITY_PATH, 'private_key.pem')
 _public_key_path = os.path.join(SECURITY_PATH, 'public_key.pem')
@@ -106,8 +106,8 @@ def generate_keypair():
         if not os.path.exists(_private_key_path) or not os.path.exists(_public_key_path):
             private_key, public_key = change_keypair()
             try:
-                os.chown(_private_key_path, wazuh_uid(), wazuh_gid())
-                os.chown(_public_key_path, wazuh_uid(), wazuh_gid())
+                os.chown(_private_key_path, fortishield_uid(), fortishield_gid())
+                os.chown(_public_key_path, fortishield_uid(), fortishield_gid())
             except PermissionError:
                 pass
             os.chmod(_private_key_path, 0o640)
@@ -177,7 +177,7 @@ def generate_token(user_id: str = None, data: dict = None, auth_context: dict = 
                           request_type='local_master',
                           is_async=False,
                           wait_for_complete=False,
-                          logger=logging.getLogger('wazuh-api')
+                          logger=logging.getLogger('fortishield-api')
                           )
     result = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result()).dikt
     timestamp = int(core_utils.get_utc_now().timestamp())
@@ -270,7 +270,7 @@ def decode_token(token: str) -> dict:
                               request_type='local_master',
                               is_async=False,
                               wait_for_complete=False,
-                              logger=logging.getLogger('wazuh-api')
+                              logger=logging.getLogger('fortishield-api')
                               )
         data = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result()).to_dict()
 
@@ -284,7 +284,7 @@ def decode_token(token: str) -> dict:
                               request_type='local_master',
                               is_async=False,
                               wait_for_complete=False,
-                              logger=logging.getLogger('wazuh-api')
+                              logger=logging.getLogger('fortishield-api')
                               )
         result = raise_if_exc(pool.submit(asyncio.run, dapi.distribute_function()).result())
 

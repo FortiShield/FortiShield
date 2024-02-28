@@ -4,7 +4,7 @@
 
 The [pub-sub publisher](../../src/components/pubSubPublisher.hpp) stage is part of the Content Manager orchestration and is in charge of publishing the Content Updater content data that will be then read by the consumers.
 
-> Note: The `pub-sub` prefix makes reference to the [Publish-Subscribe pattern](https://github.com/fortishield/wazuh/issues/16786).
+> Note: The `pub-sub` prefix makes reference to the [Publish-Subscribe pattern](https://github.com/fortishield/fortishield/issues/16786).
 
 The content data includes:
 - Content file paths: A list of paths of the files that hold the downloaded content from previous stages.

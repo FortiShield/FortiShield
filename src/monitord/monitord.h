@@ -13,7 +13,7 @@
 
 #include "hash_op.h"
 #ifndef ARGV0
-#define ARGV0 "wazuh-monitord"
+#define ARGV0 "fortishield-monitord"
 #endif
 
 #include "../config/reports-config.h"

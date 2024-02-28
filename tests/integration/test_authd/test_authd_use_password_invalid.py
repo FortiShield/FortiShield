@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -19,7 +19,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
+    - fortishield-authd
 
 os_platform:
     - linux
@@ -45,13 +45,13 @@ import pytest
 from pathlib import Path
 import re
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils import callbacks
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils import callbacks
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -69,7 +69,7 @@ local_internal_options = {AUTHD_DEBUG_CONFIG: '2'}
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_use_password_invalid(test_configuration, test_metadata, set_wazuh_configuration, truncate_monitored_files_module,
+def test_authd_use_password_invalid(test_configuration, test_metadata, set_fortishield_configuration, truncate_monitored_files_module,
                                     configure_local_internal_options, set_authd_pass):
     '''
     description:
@@ -78,7 +78,7 @@ def test_authd_use_password_invalid(test_configuration, test_metadata, set_wazuh
         to come from the cases yaml, this is done this way to handle easily
         the different error logs that could be raised from different inputs.
 
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 1
 
@@ -89,9 +89,9 @@ def test_authd_use_password_invalid(test_configuration, test_metadata, set_wazuh
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -104,7 +104,7 @@ def test_authd_use_password_invalid(test_configuration, test_metadata, set_wazuh
 
     assertions:
         - Error log 'Empty password provided.' is raised in ossec.log.
-        - wazuh-manager.service must not be able to restart.
+        - fortishield-manager.service must not be able to restart.
 
     input_description:
         ./data/configuration_template/config_authd_use_password_invalid.yaml: Fortishield config needed for the tests.
@@ -116,15 +116,15 @@ def test_authd_use_password_invalid(test_configuration, test_metadata, set_wazuh
     '''
     log = test_metadata['error']
     if log == 'Invalid password provided.':
-        pytest.xfail(reason="No password validation in authd.pass - Issue wazuh/wazuh#16282.")
+        pytest.xfail(reason="No password validation in authd.pass - Issue fortishield/fortishield#16282.")
 
-    # Verify wazuh-manager fails at restart.
+    # Verify fortishield-manager fails at restart.
     with pytest.raises(ValueError):
         control_service('restart')
 
     # Verify the error log is raised.
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     log = re.escape(log)
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
-    assert wazuh_log_monitor.callback_result, f'Error event not detected'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10)
+    assert fortishield_log_monitor.callback_result, f'Error event not detected'

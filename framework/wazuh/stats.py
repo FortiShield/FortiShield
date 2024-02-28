@@ -1,19 +1,19 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import contextlib
 import datetime
 
-from wazuh.core import common
-from wazuh.core import exception
-from wazuh.core.agent import Agent, get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.utils import read_cluster_config
-from wazuh.core.exception import FortishieldException
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.stats import get_daemons_stats_, get_daemons_stats_socket, hourly_, totals_, weekly_
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core import common
+from fortishield.core import exception
+from fortishield.core.agent import Agent, get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.utils import read_cluster_config
+from fortishield.core.exception import FortishieldException
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.stats import get_daemons_stats_, get_daemons_stats_socket, hourly_, totals_, weekly_
+from fortishield.rbac.decorators import expose_resources
 
 cluster_enabled = not read_cluster_config(from_import=True)['disabled']
 node_id = get_node().get('node') if cluster_enabled else None
@@ -106,8 +106,8 @@ async def get_daemons_stats_agents(daemons_list: list = None, agent_list: list =
         Dictionary with daemon's statistical information of the specified agents.
     """
     agent_list = agent_list or ["all"]
-    daemon_socket_mapping = {'wazuh-remoted': common.REMOTED_SOCKET,
-                             'wazuh-analysisd': common.ANALYSISD_SOCKET}
+    daemon_socket_mapping = {'fortishield-remoted': common.REMOTED_SOCKET,
+                             'fortishield-analysisd': common.ANALYSISD_SOCKET}
     result = AffectedItemsFortishieldResult(all_msg='Statistical information for each daemon was successfully read',
                                       some_msg='Could not read statistical information for some daemons',
                                       none_msg='Could not read statistical information for any daemon',
@@ -214,9 +214,9 @@ async def get_daemons_stats(daemons_list: list = None) -> AffectedItemsFortishie
     AffectedItemsFortishieldResult
         Dictionary with the stats of the input file.
     """
-    daemon_socket_mapping = {'wazuh-remoted': common.REMOTED_SOCKET,
-                             'wazuh-analysisd': common.ANALYSISD_SOCKET,
-                             'wazuh-db': common.WDB_SOCKET}
+    daemon_socket_mapping = {'fortishield-remoted': common.REMOTED_SOCKET,
+                             'fortishield-analysisd': common.ANALYSISD_SOCKET,
+                             'fortishield-db': common.WDB_SOCKET}
     result = AffectedItemsFortishieldResult(all_msg='Statistical information for each daemon was successfully read',
                                       some_msg='Could not read statistical information for some daemons',
                                       none_msg='Could not read statistical information for any daemon')

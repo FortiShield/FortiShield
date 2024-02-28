@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -14,7 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'))
 import aws_utils as utils
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-import wazuh_integration
+import fortishield_integration
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'subscribers'))
 import s3_log_handler
@@ -37,10 +37,10 @@ def test_method_raises_not_implemented():
         handler.process_file({"message": "test_message"})
 
 
-@patch('wazuh_integration.FortishieldIntegration.get_sts_client')
-@patch('wazuh_integration.FortishieldIntegration.get_client')
-@patch('wazuh_integration.FortishieldIntegration.__init__', side_effet=wazuh_integration.FortishieldIntegration.__init__)
-def test_aws_sl_subscriber_bucket_initializes_properly(mock_wazuh_integration, mock_client, mock_sts_client):
+@patch('fortishield_integration.FortishieldIntegration.get_sts_client')
+@patch('fortishield_integration.FortishieldIntegration.get_client')
+@patch('fortishield_integration.FortishieldIntegration.__init__', side_effet=fortishield_integration.FortishieldIntegration.__init__)
+def test_aws_sl_subscriber_bucket_initializes_properly(mock_fortishield_integration, mock_client, mock_sts_client):
     """Test if the instances of AWSSLSubscriberBucket are created properly."""
     kwargs = utils.get_aws_s3_log_handler_parameters(iam_role_arn=utils.TEST_IAM_ROLE_ARN,
                                                      iam_role_duration=utils.TEST_IAM_ROLE_DURATION,
@@ -49,7 +49,7 @@ def test_aws_sl_subscriber_bucket_initializes_properly(mock_wazuh_integration, m
 
     integration = s3_log_handler.AWSSLSubscriberBucket(**kwargs)
 
-    mock_wazuh_integration.assert_called_with(integration,
+    mock_fortishield_integration.assert_called_with(integration,
                                               profile=None,
                                               service_name='s3',
                                               sts_endpoint=kwargs["sts_endpoint"],
@@ -59,9 +59,9 @@ def test_aws_sl_subscriber_bucket_initializes_properly(mock_wazuh_integration, m
                                               )
 
 
-@patch('wazuh_integration.FortishieldIntegration.get_sts_client')
-@patch('wazuh_integration.FortishieldIntegration.__init__', side_effect=wazuh_integration.FortishieldIntegration.__init__)
-def test_aws_sl_subscriber_bucket_obtain_logs(mock_wazuh_integration, mock_sts_client):
+@patch('fortishield_integration.FortishieldIntegration.get_sts_client')
+@patch('fortishield_integration.FortishieldIntegration.__init__', side_effect=fortishield_integration.FortishieldIntegration.__init__)
+def test_aws_sl_subscriber_bucket_obtain_logs(mock_fortishield_integration, mock_sts_client):
     """Test 'obtain_information_from_parquet' fetches parquets from a bucket and retrieves the expected list of
     events."""
     instance = utils.get_mocked_aws_sl_subscriber_bucket()
@@ -74,9 +74,9 @@ def test_aws_sl_subscriber_bucket_obtain_logs(mock_wazuh_integration, mock_sts_c
     mock_get_object.assert_called_with(Bucket=utils.TEST_BUCKET, Key=SAMPLE_PARQUET_KEY)
 
 
-@patch('wazuh_integration.FortishieldIntegration.get_sts_client')
-@patch('wazuh_integration.FortishieldIntegration.__init__', side_effect=wazuh_integration.FortishieldIntegration.__init__)
-def test_aws_sl_subscriber_bucket_obtain_logs_handles_exception(mock_wazuh_integration,
+@patch('fortishield_integration.FortishieldIntegration.get_sts_client')
+@patch('fortishield_integration.FortishieldIntegration.__init__', side_effect=fortishield_integration.FortishieldIntegration.__init__)
+def test_aws_sl_subscriber_bucket_obtain_logs_handles_exception(mock_fortishield_integration,
                                                                                     mock_sts_client):
     """Test 'obtain_information_from_parquet' handles exceptions raised when failing to process a parquet file."""
     instance = utils.get_mocked_aws_sl_subscriber_bucket()
@@ -89,10 +89,10 @@ def test_aws_sl_subscriber_bucket_obtain_logs_handles_exception(mock_wazuh_integ
 
 
 @patch('s3_log_handler.AWSSLSubscriberBucket.obtain_logs')
-@patch('wazuh_integration.FortishieldIntegration.send_msg')
-@patch('wazuh_integration.FortishieldIntegration.get_sts_client')
-@patch('wazuh_integration.FortishieldIntegration.__init__', side_effect=wazuh_integration.FortishieldIntegration.__init__)
-def test_aws_sl_subscriber_bucket_process_file(mock_wazuh_integration, mock_sts_client, mock_send, mock_obtain):
+@patch('fortishield_integration.FortishieldIntegration.send_msg')
+@patch('fortishield_integration.FortishieldIntegration.get_sts_client')
+@patch('fortishield_integration.FortishieldIntegration.__init__', side_effect=fortishield_integration.FortishieldIntegration.__init__)
+def test_aws_sl_subscriber_bucket_process_file(mock_fortishield_integration, mock_sts_client, mock_send, mock_obtain):
     """Test 'process_file' method sends the events inside the given message to AnalysisD."""
     instance = utils.get_mocked_aws_sl_subscriber_bucket()
 
@@ -168,7 +168,7 @@ def test_protected_remove_none_fields(content, expected):
 )
 def test_obtain_logs_processes_different_data_types(bucket_name, log_path, content, expected_logs):
     """Test the 'obtain_logs' function of AWSSubscriberBucket class."""
-    with patch('s3_log_handler.wazuh_integration.FortishieldIntegration.__init__'):
+    with patch('s3_log_handler.fortishield_integration.FortishieldIntegration.__init__'):
         with patch('s3_log_handler.AWSSubscriberBucket.decompress_file', return_value=io.StringIO(content)):
             formatted_logs = s3_log_handler.AWSSubscriberBucket().obtain_logs(bucket=bucket_name, log_path=log_path)
 
@@ -179,7 +179,7 @@ def test_obtain_logs_processes_different_data_types(bucket_name, log_path, conte
 @patch('s3_log_handler.aws_tools.debug')
 def test_process_file_sends_expected_messages(mock_debug):
     """Test the 'process_file' function of AWSSubscriberBucket class."""
-    with patch('s3_log_handler.wazuh_integration.FortishieldIntegration.__init__'):
+    with patch('s3_log_handler.fortishield_integration.FortishieldIntegration.__init__'):
         processor = s3_log_handler.AWSSubscriberBucket()
         processor.discard_regex = re.compile('your_regex_pattern_here')
         processor.discard_field = 'your_discard_field_value'

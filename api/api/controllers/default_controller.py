@@ -1,5 +1,5 @@
 # # Copyright (C) 2015, Fortishield Inc.
-# # Created by Fortishield, Inc. <info@wazuh.com>.
+# # Created by Fortishield, Inc. <info@fortishield.com>.
 # # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -10,12 +10,12 @@ from aiohttp import web
 
 from api.encoder import dumps, prettify
 from api.models.basic_info_model import BasicInfo
-from wazuh.core.common import DATE_FORMAT
-from wazuh.core.results import FortishieldResult
-from wazuh.core.security import load_spec
-from wazuh.core.utils import get_utc_now
+from fortishield.core.common import DATE_FORMAT
+from fortishield.core.results import FortishieldResult
+from fortishield.core.security import load_spec
+from fortishield.core.utils import get_utc_now
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def default_info(pretty: bool = False) -> web.Response:

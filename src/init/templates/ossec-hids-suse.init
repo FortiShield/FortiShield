@@ -44,9 +44,9 @@ rc_reset
 # with force-reload (in case signalling is not supported) are
 # considered a success.
 
-# Just to make sure wazuh is installed ...
+# Just to make sure fortishield is installed ...
 FORTISHIELD_HOME=FORTISHIELD_HOME_TMP
-FORTISHIELD_CONTROL="$FORTISHIELD_HOME/bin/wazuh-control"
+FORTISHIELD_CONTROL="$FORTISHIELD_HOME/bin/fortishield-control"
 
 test -x $FORTISHIELD_CONTROL || { echo "$FORTISHIELD_CONTROL not installed";
     if [ "$1" = "stop" ]; then exit 0;

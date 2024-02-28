@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -8,20 +8,20 @@ import sys
 import glob
 from unittest.mock import patch, MagicMock
 import pytest
-from wazuh.core.common import USER_DECODERS_PATH
+from fortishield.core.common import USER_DECODERS_PATH
 
 
-with patch('wazuh.core.common.getgrnam'):
-    with patch('wazuh.core.common.getpwnam'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+with patch('fortishield.core.common.getgrnam'):
+    with patch('fortishield.core.common.getpwnam'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.core.exception import FortishieldInternalError, FortishieldError
-        from wazuh.core.results import AffectedItemsFortishieldResult
-        from wazuh import decoder
+        from fortishield.core.exception import FortishieldInternalError, FortishieldError
+        from fortishield.core.results import AffectedItemsFortishieldResult
+        from fortishield import decoder
 
 
 # Variables
@@ -48,31 +48,31 @@ decoder_ossec_conf_2 = {
 # Module patches
 
 @pytest.fixture(scope='module', autouse=True)
-def mock_wazuh_paths():
-    """Mock wazuh paths."""
-    with patch('wazuh.core.common.FORTISHIELD_PATH', new=test_data_path):
-        with patch('wazuh.core.configuration.get_ossec_conf', return_value=decoder_ossec_conf):
-            with patch('wazuh.core.common.DECODERS_PATH',
+def mock_fortishield_paths():
+    """Mock fortishield paths."""
+    with patch('fortishield.core.common.FORTISHIELD_PATH', new=test_data_path):
+        with patch('fortishield.core.configuration.get_ossec_conf', return_value=decoder_ossec_conf):
+            with patch('fortishield.core.common.DECODERS_PATH',
                        new=os.path.join(test_data_path, "tests", "data", "decoders")):
-                with patch('wazuh.core.common.USER_DECODERS_PATH',
+                with patch('fortishield.core.common.USER_DECODERS_PATH',
                            new=os.path.join(test_data_path, "tests", "data", "etc", "decoders")):
-                    with patch('wazuh.decoder.to_relative_path',
-                               side_effect=lambda x: os.path.relpath(x, wazuh.core.common.FORTISHIELD_PATH)):
+                    with patch('fortishield.decoder.to_relative_path',
+                               side_effect=lambda x: os.path.relpath(x, fortishield.core.common.FORTISHIELD_PATH)):
                         yield
 
 
 # Tests
 
 @pytest.mark.parametrize('names, status, filename, relative_dirname, parents, expected_names, expected_total_failed', [
-    (None, None, None, None, False, {'agent-buffer', 'json', 'agent-upgrade', 'wazuh', 'agent-restart'}, 0),
+    (None, None, None, None, False, {'agent-buffer', 'json', 'agent-upgrade', 'fortishield', 'agent-restart'}, 0),
     (['agent-buffer'], None, None, None, False, {'agent-buffer'}, 0),
     (['agent-buffer', 'non_existing'], None, None, None, False, {'agent-buffer'}, 1),
-    (None, 'enabled', None, None, False, {'agent-buffer', 'agent-upgrade', 'wazuh', 'agent-restart'}, 0),
+    (None, 'enabled', None, None, False, {'agent-buffer', 'agent-upgrade', 'fortishield', 'agent-restart'}, 0),
     (None, 'disabled', None, None, False, {'json'}, 0),
     (['agent-upgrade', 'non_existing', 'json'], 'enabled', None, None, False, {'agent-upgrade'}, 1),
-    (None, None, 'test1_decoders.xml', None, False, {'agent-buffer', 'agent-upgrade', 'wazuh', 'agent-restart'}, 0),
+    (None, None, 'test1_decoders.xml', None, False, {'agent-buffer', 'agent-upgrade', 'fortishield', 'agent-restart'}, 0),
     (None, None, 'test2_decoders.xml', 'tests/data/decoders', False, {'json'}, 0),
-    (None, 'all', None, 'tests/data/decoders', True, {'wazuh', 'json'}, 0),
+    (None, 'all', None, 'tests/data/decoders', True, {'fortishield', 'json'}, 0),
     (None, 'all', None, 'nothing_here', False, set(), 0)
 ])
 def test_get_decoders(names, status, filename, relative_dirname, parents, expected_names, expected_total_failed):
@@ -99,7 +99,7 @@ def test_get_decoders(names, status, filename, relative_dirname, parents, expect
 ])
 def test_get_decoders_files(conf, exception):
     """Test get_decoders_files function"""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=conf):
         try:
             # UUT call
             result = decoder.get_decoders_files()
@@ -149,11 +149,11 @@ def test_get_decoders_files_filters(status, relative_dirname, filename, expected
     ('test3_decoders.xml', 'tests/data/etc/decoders/subpath/', 'tests/data/etc/decoders/subpath/test3_decoders.xml'),
     ('not_found.xml', None, ''),
 ])
-def test_get_decoder_file_path(filename, relative_dirname, result, mock_wazuh_paths):
+def test_get_decoder_file_path(filename, relative_dirname, result, mock_fortishield_paths):
     """Test get_decoder_file_path function."""
     res = decoder.get_decoder_file_path(filename=filename, 
                                          relative_dirname=relative_dirname)
-    assert res == os.path.join(wazuh.core.common.FORTISHIELD_PATH, result) if result else not res and isinstance(res, str)
+    assert res == os.path.join(fortishield.core.common.FORTISHIELD_PATH, result) if result else not res and isinstance(res, str)
 
 
 @pytest.mark.parametrize('filename, raw, relative_dirname, contains', [
@@ -166,7 +166,7 @@ def test_get_decoder_file_path(filename, relative_dirname, result, mock_wazuh_pa
     ('test3_decoders.xml', True, 'tests/data/etc/decoders/subpath/',
      'DECODER IN USER_DECODERS_PATH/subpath'),
 ])
-def test_get_decoder_file(filename, raw, relative_dirname, contains, mock_wazuh_paths):
+def test_get_decoder_file(filename, raw, relative_dirname, contains, mock_fortishield_paths):
     """Test get file function.
 
     Parameters
@@ -251,15 +251,15 @@ def test_validate_upload_delete_dir(relative_dirname, res_path, err_code):
     ('test_new_decoders.xml', 'tests/data/etc/decoders/subpath/', False,
      'tests/data/etc/decoders/subpath/test_new_decoders.xml'),
 ])
-@patch('wazuh.decoder.delete_decoder_file')
-@patch('wazuh.decoder.full_copy')
-@patch('wazuh.decoder.validate_wazuh_xml')
-@patch('wazuh.decoder.upload_file')
-@patch('wazuh.decoder.remove')
-@patch('wazuh.decoder.safe_move')
-@patch('wazuh.decoder.validate_dummy_logtest')
+@patch('fortishield.decoder.delete_decoder_file')
+@patch('fortishield.decoder.full_copy')
+@patch('fortishield.decoder.validate_fortishield_xml')
+@patch('fortishield.decoder.upload_file')
+@patch('fortishield.decoder.remove')
+@patch('fortishield.decoder.safe_move')
+@patch('fortishield.decoder.validate_dummy_logtest')
 def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_upload_file,
-                     mock_xml, mock_full_copy, mock_delete, mock_wazuh_paths,
+                     mock_xml, mock_full_copy, mock_delete, mock_fortishield_paths,
                      file, relative_dirname, overwrite, decoder_path):
     """Test uploading a decoder file.
 
@@ -277,10 +277,10 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_upload_file
 
     content = 'test'
     ret_validation = decoder.validate_upload_delete_dir(relative_dirname=relative_dirname)
-    with patch('wazuh.decoder.validate_upload_delete_dir', return_value=ret_validation):
-        with patch('wazuh.decoder.exists', return_value=overwrite):
-            with patch('wazuh.decoder.to_relative_path',
-                    side_effect=lambda x: os.path.relpath(x, wazuh.core.common.FORTISHIELD_PATH)):
+    with patch('fortishield.decoder.validate_upload_delete_dir', return_value=ret_validation):
+        with patch('fortishield.decoder.exists', return_value=overwrite):
+            with patch('fortishield.decoder.to_relative_path',
+                    side_effect=lambda x: os.path.relpath(x, fortishield.core.common.FORTISHIELD_PATH)):
                 result = decoder.upload_decoder_file(filename=file, content=content,
                                                         relative_dirname=relative_dirname,
                                                         overwrite=overwrite)
@@ -292,7 +292,7 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_upload_file
             mock_xml.assert_called_once_with(content)
             mock_upload_file.assert_called_once_with(content, decoder_path)
             if overwrite:
-                full_path = os.path.join(wazuh.common.FORTISHIELD_PATH, decoder_path)
+                full_path = os.path.join(fortishield.common.FORTISHIELD_PATH, decoder_path)
                 backup_file = full_path+'.backup'
                 mock_full_copy.assert_called_once_with(full_path, backup_file), \
                 'full_copy function not called with expected parameters'
@@ -303,15 +303,15 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_upload_file
                 mock_safe_move.assert_called_once()
 
 
-@patch('wazuh.decoder.delete_decoder_file', side_effect=FortishieldError(1019))
-@patch('wazuh.decoder.upload_file')
-@patch('wazuh.decoder.safe_move')
-@patch('wazuh.core.utils.check_remote_commands')
+@patch('fortishield.decoder.delete_decoder_file', side_effect=FortishieldError(1019))
+@patch('fortishield.decoder.upload_file')
+@patch('fortishield.decoder.safe_move')
+@patch('fortishield.core.utils.check_remote_commands')
 def test_upload_file_ko(*_):
     """Test exceptions on upload function."""
     ret_validation = decoder.validate_upload_delete_dir(relative_dirname=None)
-    with patch('wazuh.decoder.validate_upload_delete_dir', return_value=ret_validation):
-        with patch('wazuh.decoder.exists'):
+    with patch('fortishield.decoder.validate_upload_delete_dir', return_value=ret_validation):
+        with patch('fortishield.decoder.exists'):
             # Error when file exists and overwrite is not True
             result = decoder.upload_decoder_file(filename='test_decoders.xml',
                                                 content='test', overwrite=False)
@@ -357,7 +357,7 @@ def test_upload_file_ko(*_):
         'Error code not expected.'
     
     # clean backup files
-    search_pattern = os.path.join(wazuh.core.common.FORTISHIELD_PATH, "**", "*.backup")
+    search_pattern = os.path.join(fortishield.core.common.FORTISHIELD_PATH, "**", "*.backup")
     for bkp in glob.glob(search_pattern, recursive=True):
         os.remove(bkp)
 
@@ -371,9 +371,9 @@ def test_upload_file_ko(*_):
 ])
 def test_delete_decoder_file(filename, relative_dirname):
     """Test deleting a decoder file."""
-    with patch('wazuh.decoder.exists', return_value=True):
+    with patch('fortishield.decoder.exists', return_value=True):
         # Assert returned type is AffectedItemsFortishieldResult when everything is correct
-        with patch('wazuh.decoder.remove'):
+        with patch('fortishield.decoder.remove'):
             assert(isinstance(decoder.delete_decoder_file(filename=filename, 
                                                           relative_dirname=relative_dirname),
                                                           AffectedItemsFortishieldResult))
@@ -382,8 +382,8 @@ def test_delete_decoder_file(filename, relative_dirname):
 def test_delete_decoder_file_ko():
     """Test exceptions on delete method."""
     # Assert error code when remove() method returns IOError
-    with patch('wazuh.decoder.exists', return_value=True):
-        with patch('wazuh.decoder.remove', side_effect=IOError()):
+    with patch('fortishield.decoder.exists', return_value=True):
+        with patch('fortishield.decoder.remove', side_effect=IOError()):
             result = decoder.delete_decoder_file(filename='file')
             assert isinstance(result, AffectedItemsFortishieldResult), 'No expected result type'
             assert result.render()['data']['failed_items'][0]['error']['code'] == 1907,\

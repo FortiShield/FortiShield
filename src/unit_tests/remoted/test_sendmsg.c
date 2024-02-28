@@ -20,11 +20,11 @@
 
 #include "../wrappers/common.h"
 #include "../wrappers/posix/pthread_wrappers.h"
-#include "../wrappers/wazuh/os_crypto/keys_wrappers.h"
-#include "../wrappers/wazuh/os_crypto/msgs_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/time_op_wrappers.h"
-#include "../wrappers/wazuh/remoted/netbuffer_wrappers.h"
+#include "../wrappers/fortishield/os_crypto/keys_wrappers.h"
+#include "../wrappers/fortishield/os_crypto/msgs_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/time_op_wrappers.h"
+#include "../wrappers/fortishield/remoted/netbuffer_wrappers.h"
 
 extern remoted_state_t remoted_state;
 

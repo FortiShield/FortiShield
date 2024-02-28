@@ -1,12 +1,12 @@
 # Copyright (C) 2015-2021, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import pytest
 import os
 from shutil import copy
 
-from wazuh_testing.constants.paths import FORTISHIELD_PATH
+from fortishield_testing.constants.paths import FORTISHIELD_PATH
 from . import TEST_RULES_DECODERS_PATH
 
 @pytest.fixture()

@@ -54,7 +54,7 @@ static int read_main_elements(const OS_XML *xml, int modules,
     const char *wlogtest = "rule_test";                         /* Fortishield Logtest */
     const char *agent_upgrade = "agent-upgrade";                /* Agent Upgrade Module */
     const char *task_manager = "task-manager";                  /* Task Manager Module */
-    const char *wazuh_db = "wdb";                               /* Fortishield-DB Daemon */
+    const char *fortishield_db = "wdb";                               /* Fortishield-DB Daemon */
 #ifndef WIN32
     const char *osfluent_forward = "fluent-forward";            /* Fluent forwarder */
     const char *osauthd = "auth";                               /* Authd Config */
@@ -262,7 +262,7 @@ static int read_main_elements(const OS_XML *xml, int modules,
             #else
                 mwarn("%s configuration is only set in the manager.", node[i]->element);
             #endif
-        }  else if (chld_node && (strcmp(node[i]->element, wazuh_db) == 0)) {
+        }  else if (chld_node && (strcmp(node[i]->element, fortishield_db) == 0)) {
             #if !defined(CLIENT)
                 if ((modules & FORTISHIELDDB) && (Read_FortishieldDB(xml, chld_node) < 0)) {
                     goto fail;

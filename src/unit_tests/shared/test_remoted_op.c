@@ -8,7 +8,7 @@
 #include <cmocka.h>
 
 #include "../wrappers/posix/dirent_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 #include "shared.h"
 #include "remoted_op.h"

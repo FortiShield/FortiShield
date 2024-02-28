@@ -172,6 +172,6 @@ extern int run_foreground;
 extern keystore keys;
 extern agent *agt;
 
-static const char AG_IN_UNMERGE[] = "wazuh: Could not unmerge shared file.";
+static const char AG_IN_UNMERGE[] = "fortishield: Could not unmerge shared file.";
 
 #endif /* AGENTD_H */

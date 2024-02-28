@@ -1,14 +1,14 @@
 """
  Copyright (C) 2015-2023, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 import time
 
-from wazuh_testing.tools.simulators import agent_simulator
-from wazuh_testing.utils.agent_groups import create_group, delete_group, add_agent_to_group
+from fortishield_testing.tools.simulators import agent_simulator
+from fortishield_testing.utils.agent_groups import create_group, delete_group, add_agent_to_group
 
 
 @pytest.fixture(scope='function')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,12 +9,12 @@ import shutil
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core import common
-        from wazuh.core.cdb_list import check_path, get_list_from_file, iterate_lists, \
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core import common
+        from fortishield.core.cdb_list import check_path, get_list_from_file, iterate_lists, \
             split_key_value_with_quotes, validate_cdb_list, create_list_file, delete_list, get_filenames_paths
-        from wazuh.core.exception import FortishieldError, FortishieldException, FortishieldInternalError
+        from fortishield.core.exception import FortishieldError, FortishieldException, FortishieldInternalError
 
 
 # Variables
@@ -25,14 +25,14 @@ PERMISSION_ERROR_CODE = 1803
 INVALID_FILEPATH_ERROR_CODE = 1804
 
 ABSOLUTE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "test_cdb_list")
-RELATIVE_PATH = os.path.join("framework", "wazuh", "core", "tests", "data", "test_cdb_list")
+RELATIVE_PATH = os.path.join("framework", "fortishield", "core", "tests", "data", "test_cdb_list")
 PATH_FILE = os.path.join(RELATIVE_PATH, "test_lists")
 
-CONTENT_FILE = {'test-wazuh-w': 'write',
-                'test-wazuh-r': 'read',
-                'test-wazuh-a': 'attribute',
-                'test-wazuh-x': 'execute',
-                'test-wazuh-c': 'command',
+CONTENT_FILE = {'test-fortishield-w': 'write',
+                'test-fortishield-r': 'read',
+                'test-fortishield-a': 'attribute',
+                'test-fortishield-x': 'execute',
+                'test-fortishield-c': 'command',
                 'test-key': 'value:1',
                 'test-key:1': 'value',
                 'test-key:2': 'value:2',
@@ -150,14 +150,14 @@ def test_get_list_from_file(raw):
         assert get_list_from_file(full_path, raw) == CONTENT_FILE
 
 
-@pytest.mark.parametrize("error_to_raise, wazuh_error_code", [
+@pytest.mark.parametrize("error_to_raise, fortishield_error_code", [
     (OSError(2, "No such file or directory"), LIST_FILE_NOT_FOUND_ERROR_CODE),
     (OSError(13, "Permission denied"), PERMISSION_ERROR_CODE),
     (OSError(21, "Is a directory"), INVALID_FILEPATH_ERROR_CODE),
     (OSError(1, "Random"), None),
     (ValueError(), BAD_CDB_FORMAT_ERROR_CODE)
 ])
-def test_get_list_from_file_with_errors(error_to_raise, wazuh_error_code):
+def test_get_list_from_file_with_errors(error_to_raise, fortishield_error_code):
     """Test `get_list_from_file` core functionality when using invalid files or paths as parameter.
 
     `get_list_from_file` must raise the proper FortishieldError when facing certain scenarios like a Permission Denied error
@@ -167,7 +167,7 @@ def test_get_list_from_file_with_errors(error_to_raise, wazuh_error_code):
     ----------
     error_to_raise : OSError
         The `OSError` that `get_list_from_file` must catch when trying to open a file.
-    wazuh_error_code : int
+    fortishield_error_code : int
         Error code of the `FortishieldError` that must be raised by `get_list_from_file` when the specified `OSError` occurrs.
     """
     with patch("builtins.open", mock_open()) as mock:
@@ -176,7 +176,7 @@ def test_get_list_from_file_with_errors(error_to_raise, wazuh_error_code):
             get_list_from_file("some_path")
             pytest.fail("No exception was raised hence failing the test")
         except FortishieldError as e:
-            assert e.code == wazuh_error_code
+            assert e.code == fortishield_error_code
         except Exception as e:
             assert e.args == (1, "Random")
 
@@ -184,10 +184,10 @@ def test_get_list_from_file_with_errors(error_to_raise, wazuh_error_code):
 def test_validate_cdb_list():
     """Test validate_cdb function"""
     with open(os.path.join(common.FORTISHIELD_PATH, PATH_FILE)) as f:
-        wazuh_cdb_list = f.read()
+        fortishield_cdb_list = f.read()
 
     try:
-        validate_cdb_list(wazuh_cdb_list)
+        validate_cdb_list(fortishield_cdb_list)
     except FortishieldError:
         pytest.fail('validate_cdb_list raised an exception but no exception was expected')
 
@@ -203,17 +203,17 @@ def test_validate_cdb_list_ko():
         validate_cdb_list("test:key:testvalue\n")
 
 
-@patch('wazuh.core.cdb_list.chmod')
-@patch('wazuh.core.cdb_list.delete_wazuh_file')
+@patch('fortishield.core.cdb_list.chmod')
+@patch('fortishield.core.cdb_list.delete_fortishield_file')
 def test_create_list_file(mock_delete, mock_chmod):
     """Test that create_list_file function works as expected"""
 
     with open(os.path.join(common.FORTISHIELD_PATH, PATH_FILE)) as f:
-        with patch('wazuh.core.cdb_list.common.FORTISHIELD_PATH', new='/var/ossec'):
+        with patch('fortishield.core.cdb_list.common.FORTISHIELD_PATH', new='/var/ossec'):
             with patch('builtins.open') as mock_open:
-                wazuh_cdb_list = f.read()
-                result = create_list_file('/test/path', wazuh_cdb_list, permissions=0o660)
-                assert mock_open.return_value.__enter__().write.call_count == len(wazuh_cdb_list.split('\n'))-1
+                fortishield_cdb_list = f.read()
+                result = create_list_file('/test/path', fortishield_cdb_list, permissions=0o660)
+                assert mock_open.return_value.__enter__().write.call_count == len(fortishield_cdb_list.split('\n'))-1
 
     mock_chmod.assert_called_once_with('/test/path', 0o660)
 
@@ -224,13 +224,13 @@ def test_create_list_file_ko():
         create_list_file(full_path='/test/path', content=' ')
 
 
-@patch('wazuh.core.cdb_list.remove')
-@patch('wazuh.core.cdb_list.delete_wazuh_file')
-def test_delete_list(mock_delete_wazuh_file, mock_remove):
+@patch('fortishield.core.cdb_list.remove')
+@patch('fortishield.core.cdb_list.delete_fortishield_file')
+def test_delete_list(mock_delete_fortishield_file, mock_remove):
     """Check that delete_list function uses expected params."""
     path = 'etc/list/test_list'
     delete_list(path)
-    mock_delete_wazuh_file.assert_called_once_with(os.path.join(common.FORTISHIELD_PATH, path))
+    mock_delete_fortishield_file.assert_called_once_with(os.path.join(common.FORTISHIELD_PATH, path))
     mock_remove.assert_called_once_with(os.path.join(common.FORTISHIELD_PATH, path + '.cdb'))
 
 

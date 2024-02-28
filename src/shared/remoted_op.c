@@ -178,7 +178,7 @@ int parse_agent_update_msg (char *msg,
             }
             break;
         default:
-            // uname - wazuh version / config sum
+            // uname - fortishield version / config sum
             if (str_tmp = strstr(line, " - "), str_tmp)
             {
                 *str_tmp = '\0';

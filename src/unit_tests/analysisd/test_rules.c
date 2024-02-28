@@ -17,8 +17,8 @@
 #include "../../analysisd/config.h"
 #include "../../analysisd/eventinfo.h"
 #include "../../analysisd/analysisd.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/os_xml/os_xml_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_xml/os_xml_wrappers.h"
 
 char *loadmemory(char *at, const char *str, OSList* log_msg);
 int get_info_attributes(char **attributes, char **values, OSList* log_msg);

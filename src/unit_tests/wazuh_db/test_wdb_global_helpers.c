@@ -16,17 +16,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../wazuh_db/helpers/wdb_global_helpers.h"
-#include "wazuhdb_op.h"
+#include "../fortishield_db/helpers/wdb_global_helpers.h"
+#include "fortishielddb_op.h"
 
 #include "../wrappers/posix/dirent_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/rbtree_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/rbtree_op_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
 #include "../wrappers/libc/string_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
 
 extern int test_mode;

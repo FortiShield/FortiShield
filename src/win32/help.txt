@@ -7,7 +7,7 @@ make sure that you have an instance of the Fortishield manager running and confi
 to accept this system as an agent.
 
 For more information on how to install the server version of Fortishield, look at:
-https://documentation.wazuh.com
+https://documentation.fortishield.com
 
 
 
@@ -24,7 +24,7 @@ https://documentation.wazuh.com
 1- How to obtain more information
 
 You can obtain more information about FORTISHIELD on the following links:
-https://documentation.wazuh.com
+https://documentation.fortishield.com
 
 
 2- What this agent does
@@ -45,4 +45,4 @@ The Windows agent does the following tasks:
 Visit the following link for information on how to get help or
 support for FORTISHIELD:
 
-https://wazuh.com/
+https://fortishield.com/

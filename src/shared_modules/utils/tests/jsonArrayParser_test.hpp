@@ -29,7 +29,7 @@ public:
 protected:
     /// Folder for the temporary files used in the tests
     const std::filesystem::path m_testFolder {std::filesystem::temp_directory_path() /
-                                              "wazuh/test_files/json_array_parser"};
+                                              "fortishield/test_files/json_array_parser"};
 
     /**
      * @brief Helper function to create a test file.

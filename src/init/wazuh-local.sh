@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2015, Fortishield Inc.
-# wazuh-control        This shell script takes care of starting
+# fortishield-control        This shell script takes care of starting
 #                      or stopping ossec-hids
 # Author: Daniel B. Cid <daniel.cid@gmail.com>
 
@@ -26,7 +26,7 @@ if [ $? = 0 ]; then
 fi
 
 AUTHOR="Fortishield Inc."
-DAEMONS="wazuh-modulesd wazuh-monitord wazuh-logcollector wazuh-syscheckd wazuh-analysisd wazuh-maild wazuh-execd wazuh-db wazuh-agentlessd wazuh-integratord wazuh-dbd wazuh-csyslogd"
+DAEMONS="fortishield-modulesd fortishield-monitord fortishield-logcollector fortishield-syscheckd fortishield-analysisd fortishield-maild fortishield-execd fortishield-db fortishield-agentlessd fortishield-integratord fortishield-dbd fortishield-csyslogd"
 
 # Reverse order of daemons
 SDAEMONS=$(echo $DAEMONS | awk '{ for (i=NF; i>1; i--) printf("%s ",$i); print $1; }')
@@ -218,12 +218,12 @@ testconfig()
 start_service()
 {
     echo "Starting Fortishield $VERSION..."
-    TEST=$(${DIR}/bin/wazuh-logtest-legacy -t  2>&1)
+    TEST=$(${DIR}/bin/fortishield-logtest-legacy -t  2>&1)
     echo $TEST
 
     if [ ! -z "$TEST" ]; then
-        echo "wazuh-analysisd: Configuration error. Exiting."
-        touch ${DIR}/var/run/wazuh-analysisd.failed
+        echo "fortishield-analysisd: Configuration error. Exiting."
+        touch ${DIR}/var/run/fortishield-analysisd.failed
         exit 1;
     fi
 
@@ -264,7 +264,7 @@ start_service()
     if [ $? = 0 ]; then
         echo ""
         echo "Starting sub agent directory (for hybrid mode)"
-        ${DIR}/ossec-agent/bin/wazuh-control start
+        ${DIR}/ossec-agent/bin/fortishield-control start
     fi
 
     echo "Completed."
@@ -344,7 +344,7 @@ stop_service()
     if [ $? = 0 ]; then
         echo ""
         echo "Stopping sub agent directory (for hybrid mode)"
-        ${DIR}/ossec-agent/bin/wazuh-control stop
+        ${DIR}/ossec-agent/bin/fortishield-control stop
     fi
     echo "Fortishield $VERSION Stopped"
 }
@@ -394,7 +394,7 @@ restart)
     restart_service
     ;;
 reload)
-    DAEMONS=$(echo $DAEMONS | sed 's/wazuh-execd//')
+    DAEMONS=$(echo $DAEMONS | sed 's/fortishield-execd//')
     restart_service
     ;;
 status)

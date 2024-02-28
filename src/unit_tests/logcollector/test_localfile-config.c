@@ -16,7 +16,7 @@
 #include "shared.h"
 #include "../config/localfile-config.h"
 #include "../config/config.h"
-#include "../wrappers/wazuh/os_xml/os_xml_wrappers.h"
+#include "../wrappers/fortishield/os_xml/os_xml_wrappers.h"
 
 const char * multiline_attr_match_str(w_multiline_match_type_t match_type);
 const char * multiline_attr_replace_str(w_multiline_replace_type_t replace_type);

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from datetime import datetime
@@ -8,16 +8,16 @@ from unittest.mock import patch, ANY
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core import syscheck
-        from wazuh.core.utils import get_date_from_timestamp
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core import syscheck
+        from fortishield.core.utils import get_date_from_timestamp
 
 
 @pytest.mark.parametrize('agent', ['002', '080'])
-@patch("wazuh.core.syscheck.FortishieldDBBackend")
-@patch("wazuh.core.syscheck.FortishieldDBQuery.__init__")
-def test_wazuh_db_query_syscheck__init__(mock_wdbquery, mock_backend, agent):
+@patch("fortishield.core.syscheck.FortishieldDBBackend")
+@patch("fortishield.core.syscheck.FortishieldDBQuery.__init__")
+def test_fortishield_db_query_syscheck__init__(mock_wdbquery, mock_backend, agent):
     """Test if FortishieldDBQuery and FortishieldDBBackend are called with the expected parameters.
 
     Parameters
@@ -40,8 +40,8 @@ def test_wazuh_db_query_syscheck__init__(mock_wdbquery, mock_backend, agent):
              '"read_data", "write_data", "append_data", "read_ea", "write_ea", "execute"]}}'},
      True)
 ])
-@patch("wazuh.core.syscheck.FortishieldDBBackend")
-def test_wazuh_db_syscheck_format_data_into_dictionary(mock_backend, data, is_json):
+@patch("fortishield.core.syscheck.FortishieldDBBackend")
+def test_fortishield_db_syscheck_format_data_into_dictionary(mock_backend, data, is_json):
     """Test if _format_data_into_dictionary() returns the expected element."""
     test = syscheck.FortishieldDBQuerySyscheck('002', offset=0, limit=1000, sort=None, search='test',
                                          select=['end', 'start', 'module', 'date', 'mtime', 'perm'],
@@ -66,7 +66,7 @@ def test_wazuh_db_syscheck_format_data_into_dictionary(mock_backend, data, is_js
 
 
 @pytest.mark.parametrize('agent', ['001', '002', '003'])
-@patch('wazuh.core.wdb.FortishieldDBConnection')
+@patch('fortishield.core.wdb.FortishieldDBConnection')
 def test_syscheck_delete_agent(mock_db_conn, agent):
     """Test if proper parameters are being sent to the wdb socket.
 
@@ -75,7 +75,7 @@ def test_syscheck_delete_agent(mock_db_conn, agent):
     agent : str
         Agent whose information is being deleted from the db.
     mock_db_conn : FortishieldDBConnection
-        Object used to send the delete message to the wazuhdb socket.
+        Object used to send the delete message to the fortishielddb socket.
     """
     syscheck.syscheck_delete_agent(agent, mock_db_conn)
     mock_db_conn.execute.assert_any_call(f"agent {agent} sql delete from fim_entry", delete=True)

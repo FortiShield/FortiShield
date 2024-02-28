@@ -17,8 +17,8 @@
 #include "../headers/shared.h"
 #include "../headers/sec.h"
 #include "../../wrappers/common.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/shared/rbtree_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/rbtree_op_wrappers.h"
 #include "../../wrappers/libc/stdio_wrappers.h"
 
 int OS_IsAllowedID(keystore *keys, const char *id);

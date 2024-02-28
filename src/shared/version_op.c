@@ -1033,7 +1033,7 @@ int get_nproc() {
 #endif
 }
 
-int compare_wazuh_versions(const char *version1, const char *version2, bool compare_patch) {
+int compare_fortishield_versions(const char *version1, const char *version2, bool compare_patch) {
     char ver1[10];
     char ver2[10];
     char *tmp_v1 = NULL;

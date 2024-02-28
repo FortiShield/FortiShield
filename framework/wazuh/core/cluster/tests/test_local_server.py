@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -13,18 +13,18 @@ from unittest.mock import patch
 import pytest
 from uvloop import Loop
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh.core.cluster.local_server import *
-        from wazuh.core.cluster.dapi import dapi
-        from wazuh.core.exception import FortishieldClusterError
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield.core.cluster.local_server import *
+        from fortishield.core.cluster.dapi import dapi
+        from fortishield.core.exception import FortishieldClusterError
 
 async def wait_function_called(func_mock):
     while not func_mock.call_count:
@@ -41,7 +41,7 @@ async def test_LocalServerHandler_connection_made(event_loop):
     transport = "testing"
     logger = logging.getLogger("connection_made")
     with patch.object(logger, "debug") as logger_debug_mock:
-        with patch("wazuh.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+        with patch("fortishield.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
             lsh = LocalServerHandler(server=ServerMock(), loop=event_loop, fernet_key=None, cluster_items={}, logger=logger)
             lsh.connection_made(transport=transport)
             assert isinstance(lsh.name, str)
@@ -54,7 +54,7 @@ async def test_LocalServerHandler_connection_made(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.local_server.server.AbstractServerHandler.process_request")
+@patch("fortishield.core.cluster.local_server.server.AbstractServerHandler.process_request")
 async def test_LocalServerHandler_process_request(process_request_mock, event_loop):
     """Check the functions that are executed according to the command received."""
     lsh = LocalServerHandler(server=None, loop=event_loop, fernet_key=None, cluster_items={})
@@ -132,7 +132,7 @@ async def test_LocalServerHandler_get_ruleset_hashes(event_loop):
             self.node = MagicMock()
 
     lsh = LocalServerHandler(server=ServerMock(), loop=event_loop, fernet_key=None, cluster_items={})
-    with patch("wazuh.core.cluster.local_server.cluster.get_ruleset_status",
+    with patch("fortishield.core.cluster.local_server.cluster.get_ruleset_status",
                return_value={'test_path': 'hash'}) as get_ruleset_status_mock:
         assert lsh.get_ruleset_hashes() == (b'ok', json.dumps({'test_path': 'hash'}).encode())
         get_ruleset_status_mock.assert_called_once()
@@ -147,7 +147,7 @@ async def test_LocalServerHandler_send_file_request(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.local_server.LocalServerHandler.send_request", return_value='changed')
+@patch("fortishield.core.cluster.local_server.LocalServerHandler.send_request", return_value='changed')
 async def test_LocalServerHandler_get_send_file_response(send_request_mock:AsyncMock, event_loop: Loop):
     """Check that send_file response is sent to the API."""
 
@@ -258,7 +258,7 @@ async def test_LocalServer_start(join_mock, gather_mock, event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.local_server.server.AbstractServerHandler.process_request")
+@patch("fortishield.core.cluster.local_server.server.AbstractServerHandler.process_request")
 async def test_LocalServerHandlerMaster_process_request(process_request_mock, event_loop):
     """Check that all available responses are defined on the local master server."""
 
@@ -282,7 +282,7 @@ async def test_LocalServerHandlerMaster_process_request(process_request_mock, ev
     server_mock = ServerMock()
     lshm = LocalServerHandlerMaster(server=server_mock, loop=event_loop, fernet_key=None, cluster_items={})
 
-    with patch("wazuh.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         lshm.name = "test1"
         lshm.process_request(command=b"hello", data=b"bye")
         assert mock_contextvar.get() == f"Local {lshm.name}"
@@ -388,7 +388,7 @@ async def test_LocalServerMaster_init(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.local_server.LocalServerHandler.process_request")
+@patch("fortishield.core.cluster.local_server.LocalServerHandler.process_request")
 async def test_LocalServerHandlerWorker_process_request(process_request_mock, event_loop):
     """Check that all available responses are defined on the local worker server."""
 
@@ -412,7 +412,7 @@ async def test_LocalServerHandlerWorker_process_request(process_request_mock, ev
     server_mock = ServerMock()
     lshw = LocalServerHandlerWorker(server=server_mock, loop=event_loop, fernet_key=None, cluster_items={}, logger=logger)
 
-    with patch("wazuh.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.local_server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         lshw.name = "test1"
         lshw.process_request(command=b"hello", data=b"bye")
         assert mock_contextvar.get() == f"Local {lshw.name}"
@@ -486,11 +486,11 @@ async def test_LocalServerHandlerWorker_send_request_to_master(event_loop):
     with patch.object(ls.node.client, "send_request", return_value='') as send_request_mock:
         with patch.object(lshw, 'log_exceptions', return_value='') as log_exceptions_mock:
             with patch.object(lshw, 'get_api_response', return_value='') as callback_mock:
-                assert lshw.send_request_to_master(command=b"test", arguments=b"wazuh") == \
+                assert lshw.send_request_to_master(command=b"test", arguments=b"fortishield") == \
                     (b"ok", b"Sent request to master node")
                 await wait_function_called(callback_mock)
                 await wait_function_called(log_exceptions_mock)
-                send_request_mock.assert_called_once_with(b"test", b"wazuh")
+                send_request_mock.assert_called_once_with(b"test", b"fortishield")
 
 
 @pytest.mark.asyncio

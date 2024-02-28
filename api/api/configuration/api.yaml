@@ -48,7 +48,7 @@
 #  block_time: 300
 #  max_request_per_minute: 300
 
-# Drop privileges (Run as wazuh user)
+# Drop privileges (Run as fortishield user)
 # drop_privileges: yes
 
 # Enable features under development

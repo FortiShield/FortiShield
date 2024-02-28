@@ -10,7 +10,7 @@
 
 #include "shared.h"
 #include "rootcheck_op.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
 
 /* Get rootcheck title from log */
 char* rk_get_title(const char *log) {
@@ -84,16 +84,16 @@ char* rk_get_file(const char *log) {
 }
 
 int send_rootcheck_log(const char* agent_id, long int date, const char* log, char* response) {
-    char wazuhdb_query[OS_SIZE_6144];
+    char fortishielddb_query[OS_SIZE_6144];
     int db_result;
     int socket = -1;
 
-    snprintf(wazuhdb_query, OS_SIZE_6144, "agent %s rootcheck save %li %s", agent_id, date, log);
-    db_result = wdbc_query_ex(&socket, wazuhdb_query, response, OS_SIZE_6144);
+    snprintf(fortishielddb_query, OS_SIZE_6144, "agent %s rootcheck save %li %s", agent_id, date, log);
+    db_result = wdbc_query_ex(&socket, fortishielddb_query, response, OS_SIZE_6144);
     close(socket);
 
     if (db_result == -2) {
-        merror("Bad load query: '%s'.", wazuhdb_query);
+        merror("Bad load query: '%s'.", fortishielddb_query);
     }
 
     return db_result;

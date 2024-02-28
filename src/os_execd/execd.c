@@ -12,7 +12,7 @@
 #include "list_op.h"
 #include "os_regex/os_regex.h"
 #include "os_net/os_net.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include "../external/cJSON/cJSON.h"
 #include "execd.h"
 #include "active-response/active_responses.h"
@@ -210,7 +210,7 @@ void ExecdRun(char *exec_msg, int *childcount)
     }
 
 #ifndef WIN32
-    if (!strcmp(name, "restart-wazuh")) {
+    if (!strcmp(name, "restart-fortishield")) {
         char *cmd_api[MAX_ARGS] = {0};
 
         cJSON_Delete(json_root);

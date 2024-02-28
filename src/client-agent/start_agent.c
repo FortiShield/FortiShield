@@ -16,7 +16,7 @@
     // Remove static qualifier when unit testing
     #define STATIC
     #ifdef WIN32
-            #include "unit_tests/wrappers/wazuh/client-agent/start_agent.h"
+            #include "unit_tests/wrappers/fortishield/client-agent/start_agent.h"
             #undef CloseSocket
             #define CloseSocket wrap_closesocket
             #define recv wrap_recv
@@ -404,7 +404,7 @@ STATIC void send_msg_on_startup(void) {
     snprintf(msg, OS_MAXSTR, OS_AG_STARTED,
             keys.keyentries[0]->name,
             keys.keyentries[0]->ip->ip);
-    os_snprintf(fmsg, OS_MAXSTR, "%c:%s:%s", LOCALFILE_MQ, "wazuh-agent", msg);
+    os_snprintf(fmsg, OS_MAXSTR, "%c:%s:%s", LOCALFILE_MQ, "fortishield-agent", msg);
 
     send_msg(fmsg, -1);
 }

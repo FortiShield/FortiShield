@@ -35,13 +35,13 @@ link_directories(${SRC_FOLDER}/external/rocksdb/build)
 
 add_library(keystore STATIC ${KEYSTORE_SRC})
 
-target_link_libraries(keystore rocksdb wazuhext)
+target_link_libraries(keystore rocksdb fortishieldext)
 
-add_executable(wazuh-keystore src/main.cpp)
+add_executable(fortishield-keystore src/main.cpp)
 
-target_link_libraries(wazuh-keystore keystore)
+target_link_libraries(fortishield-keystore keystore)
 
-set_target_properties(wazuh-keystore PROPERTIES
+set_target_properties(fortishield-keystore PROPERTIES
     BUILD_RPATH_USE_ORIGIN TRUE
     BUILD_RPATH "$ORIGIN/../lib"
 )

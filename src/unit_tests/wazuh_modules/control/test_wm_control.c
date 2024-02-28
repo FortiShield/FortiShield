@@ -12,9 +12,9 @@
 #include <setjmp.h>
 #include <cmocka.h>
 #include <stdio.h>
-#include "../../wrappers/wazuh/data_provider/sysInfo_wrappers.h"
+#include "../../wrappers/fortishield/data_provider/sysInfo_wrappers.h"
 #include "../../../data_provider/include/sysInfo.h"
-#include "../../../wazuh_modules/wm_control.h"
+#include "../../../fortishield_modules/wm_control.h"
 
 extern sysinfo_networks_func sysinfo_network_ptr;
 extern sysinfo_free_result_func sysinfo_free_result_ptr;
@@ -43,7 +43,7 @@ static void test_wm_control_getPrimaryIP_sysinfo_network_return_error(void ** st
 
     will_return(__wrap_sysinfo_networks, networks);
     will_return(__wrap_sysinfo_networks, 1234);
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:control");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:control");
     expect_string(__wrap__mterror, formatted_msg, "Unable to get system network information. Error code: 1234.");
 
     char * ip = getPrimaryIP();

@@ -15,12 +15,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../wazuh_db/wdb.h"
+#include "../fortishield_db/wdb.h"
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_metadata_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_global_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_metadata_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_global_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
 #include "../wrappers/posix/stat_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"

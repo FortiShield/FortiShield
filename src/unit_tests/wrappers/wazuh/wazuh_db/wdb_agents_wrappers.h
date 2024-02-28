@@ -11,7 +11,7 @@
 #ifndef WDB_AGENTS_WRAPPERS_H
 #define WDB_AGENTS_WRAPPERS_H
 
-#include "../wazuh_db/wdb.h"
+#include "../fortishield_db/wdb.h"
 
 cJSON* __wrap_wdb_agents_get_sys_osinfo(wdb_t *wdb);
 bool __wrap_wdb_agents_find_package(wdb_t *wdb, const char* reference);

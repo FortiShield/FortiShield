@@ -14,7 +14,7 @@
 
 #include "shared.h"
 
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
 
 /* setup/teardown */

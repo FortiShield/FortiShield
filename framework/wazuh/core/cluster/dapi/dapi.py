@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -20,17 +20,17 @@ from typing import Callable, Dict, Tuple, List
 from sqlalchemy.exc import OperationalError
 
 import api.configuration as aconf
-import wazuh.core.cluster.cluster
-import wazuh.core.cluster.utils
-import wazuh.core.manager
-import wazuh.core.results as wresults
-from wazuh import agent
-from wazuh.cluster import get_node_wrapper, get_nodes_info
-from wazuh.core import common, exception
-from wazuh.core.cluster import local_client, common as c_common
-from wazuh.core.cluster.cluster import check_cluster_status
-from wazuh.core.exception import FortishieldException, FortishieldClusterError, FortishieldError
-from wazuh.core.wazuh_socket import wazuh_sendsync
+import fortishield.core.cluster.cluster
+import fortishield.core.cluster.utils
+import fortishield.core.manager
+import fortishield.core.results as wresults
+from fortishield import agent
+from fortishield.cluster import get_node_wrapper, get_nodes_info
+from fortishield.core import common, exception
+from fortishield.core.cluster import local_client, common as c_common
+from fortishield.core.cluster.cluster import check_cluster_status
+from fortishield.core.exception import FortishieldException, FortishieldClusterError, FortishieldError
+from fortishield.core.fortishield_socket import fortishield_sendsync
 
 pools = common.mp_pools.get()
 
@@ -89,9 +89,9 @@ class DistributedAPI:
         self.f = f
         self.f_kwargs = f_kwargs if f_kwargs is not None else {}
         self.node = node if node is not None else local_client
-        self.cluster_items = wazuh.core.cluster.utils.get_cluster_items() if node is None else node.cluster_items
+        self.cluster_items = fortishield.core.cluster.utils.get_cluster_items() if node is None else node.cluster_items
         self.debug = debug
-        self.node_info = wazuh.core.cluster.cluster.get_node() if node is None else node.get_node()
+        self.node_info = fortishield.core.cluster.cluster.get_node() if node is None else node.get_node()
         self.request_type = request_type
         self.wait_for_complete = wait_for_complete
         self.from_cluster = from_cluster
@@ -102,7 +102,7 @@ class DistributedAPI:
         self.origin_module = 'API'
         self.nodes = nodes if nodes is not None else list()
         if not basic_services:
-            self.basic_services = ('wazuh-modulesd', 'wazuh-analysisd', 'wazuh-execd', 'wazuh-db', 'wazuh-remoted')
+            self.basic_services = ('fortishield-modulesd', 'fortishield-analysisd', 'fortishield-execd', 'fortishield-db', 'fortishield-remoted')
         else:
             self.basic_services = basic_services
 
@@ -120,7 +120,7 @@ class DistributedAPI:
         message : str
             Full log message.
         """
-        if self.logger.name == 'wazuh-api':
+        if self.logger.name == 'fortishield-api':
             self.logger.debug2(message)
         else:
             self.logger.debug(message)
@@ -168,7 +168,7 @@ class DistributedAPI:
                 response = await self.execute_remote_request()
 
             try:
-                response = json.loads(response, object_hook=c_common.as_wazuh_object) \
+                response = json.loads(response, object_hook=c_common.as_fortishield_object) \
                     if isinstance(response, str) else response
             except json.decoder.JSONDecodeError:
                 response = {'message': response}
@@ -200,22 +200,22 @@ class DistributedAPI:
             return exception.FortishieldInternalError(1000,
                                                 dapi_errors=self.get_error_info(e))
 
-    def check_wazuh_status(self):
+    def check_fortishield_status(self):
         """
-        There are some services that are required for wazuh to correctly process API requests. If any of those services
+        There are some services that are required for fortishield to correctly process API requests. If any of those services
         is not running, the API must raise an exception indicating that:
             * It's not ready yet to process requests if services are restarting
             * There's an error in any of those services that must be addressed before using the API if any service is
               in failed status.
             * Fortishield must be started before using the API is the services are stopped.
 
-        The basic services wazuh needs to be running are: wazuh-modulesd, wazuh-remoted, wazuh-analysisd, wazuh-execd
-        and wazuh-db
+        The basic services fortishield needs to be running are: fortishield-modulesd, fortishield-remoted, fortishield-analysisd, fortishield-execd
+        and fortishield-db
         """
-        if self.f == wazuh.core.manager.status:
+        if self.f == fortishield.core.manager.status:
             return
 
-        status = wazuh.core.manager.status()
+        status = fortishield.core.manager.status()
 
         not_ready_daemons = {k: status[k] for k in self.basic_services if status[k] in ('failed',
                                                                                         'restarting',
@@ -253,7 +253,7 @@ class DistributedAPI:
                 del self.f_kwargs['agent_list']
 
             before = time.time()
-            self.check_wazuh_status()
+            self.check_fortishield_status()
 
             timeout = self.api_request_timeout if not self.wait_for_complete else None
 
@@ -395,7 +395,7 @@ class DistributedAPI:
         res = json.loads(await client.send_file(os.path.join(common.FORTISHIELD_PATH,
                                                              self.f_kwargs['tmp_file']),
                                                 node_name),
-                         object_hook=c_common.as_wazuh_object)
+                         object_hook=c_common.as_fortishield_object)
         os.remove(os.path.join(common.FORTISHIELD_PATH, self.f_kwargs['tmp_file']))
 
     async def execute_remote_request(self) -> Dict:
@@ -414,7 +414,7 @@ class DistributedAPI:
                                              data=json.dumps(self.to_dict(),
                                                              cls=c_common.FortishieldJSONEncoder).encode())
         return json.loads(node_response,
-                          object_hook=c_common.as_wazuh_object)
+                          object_hook=c_common.as_fortishield_object)
 
     async def forward_request(self) -> [wresults.AbstractFortishieldResult, exception.FortishieldException]:
         """Forward a request to the node who has all available information to answer it.
@@ -461,7 +461,7 @@ class DistributedAPI:
                                                                                        cls=c_common.FortishieldJSONEncoder)
                                                                             ).encode()
                                                              ),
-                                        object_hook=c_common.as_wazuh_object)
+                                        object_hook=c_common.as_fortishield_object)
                 except FortishieldClusterError as e:
                     if e.code == 3022:
                         result = e
@@ -661,8 +661,8 @@ class APIRequestQueue(FortishieldRequestQueue):
 
     def __init__(self, server):
         super().__init__(server)
-        self.logger = logging.getLogger('wazuh').getChild('dapi')
-        self.logger.addFilter(wazuh.core.cluster.utils.ClusterFilter(tag='Cluster', subtag='D API'))
+        self.logger = logging.getLogger('fortishield').getChild('dapi')
+        self.logger.addFilter(fortishield.core.cluster.utils.ClusterFilter(tag='Cluster', subtag='D API'))
 
     async def run(self):
         while True:
@@ -682,7 +682,7 @@ class APIRequestQueue(FortishieldRequestQueue):
                 continue
 
             try:
-                request = json.loads(request, object_hook=c_common.as_wazuh_object)
+                request = json.loads(request, object_hook=c_common.as_fortishield_object)
                 self.logger.info("Receiving request: {} from {}".format(
                     request['f'].__name__, names[0] if not name_2 else '{} ({})'.format(names[0], names[1])))
                 result = await DistributedAPI(**request,
@@ -708,8 +708,8 @@ class SendSyncRequestQueue(FortishieldRequestQueue):
 
     def __init__(self, server):
         super().__init__(server)
-        self.logger = logging.getLogger('wazuh').getChild('sendsync')
-        self.logger.addFilter(wazuh.core.cluster.utils.ClusterFilter(tag='Cluster', subtag='SendSync'))
+        self.logger = logging.getLogger('fortishield').getChild('sendsync')
+        self.logger.addFilter(fortishield.core.cluster.utils.ClusterFilter(tag='Cluster', subtag='SendSync'))
 
     async def run(self):
         while True:
@@ -727,9 +727,9 @@ class SendSyncRequestQueue(FortishieldRequestQueue):
                 continue
 
             try:
-                request = json.loads(request, object_hook=c_common.as_wazuh_object)
+                request = json.loads(request, object_hook=c_common.as_fortishield_object)
                 self.logger.debug(f"Receiving SendSync request ({request['daemon_name']}) from {names[0]} ({names[1]})")
-                result = await wazuh_sendsync(**request)
+                result = await fortishield_sendsync(**request)
                 task_id = await node.send_string(result.encode())
             except Exception as e:
                 self.logger.error(f"Error in SendSync (parameters {request}): {str(e)}", exc_info=False)

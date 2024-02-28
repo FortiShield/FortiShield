@@ -14,9 +14,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/config_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/fim_sync_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/config_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/fim_sync_wrappers.h"
 #include "../../syscheckd/include/syscheck.h"
 #include "../../config/syscheck-config.h"
 

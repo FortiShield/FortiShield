@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -11,19 +11,19 @@ from unittest.mock import MagicMock, patch, call
 import pytest
 from freezegun import freeze_time
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        import wazuh.core.cluster.client as client
-        from wazuh import FortishieldException
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        import fortishield.core.cluster.client as client
+        from fortishield import FortishieldException
 
-from wazuh.core.exception import FortishieldClusterError
+from fortishield.core.exception import FortishieldClusterError
 
 fernet_key = "00000000000000000000000000000000"
 
@@ -80,7 +80,7 @@ def test_acm_init():
     assert abstract_client_manager.concurrency_test == 10
     assert abstract_client_manager.file == "/file/path"
     assert abstract_client_manager.string == 1000
-    assert abstract_client_manager.logger == logging.getLogger("wazuh")
+    assert abstract_client_manager.logger == logging.getLogger("fortishield")
     assert abstract_client_manager.tag == "Client Manager"
     assert abstract_client_manager.tasks == []
     assert abstract_client_manager.handler_class == client.AbstractClient
@@ -126,7 +126,7 @@ def test_acm_add_tasks():
 @pytest.mark.asyncio
 @patch('asyncio.sleep')
 @patch('itertools.starmap', return_value="")
-@patch('wazuh.core.cluster.client.AbstractClientManager.add_tasks', return_value=[])
+@patch('fortishield.core.cluster.client.AbstractClientManager.add_tasks', return_value=[])
 async def test_acm_start(add_tasks_mock, starmap_mock, asyncio_sleep_mock):
     """Check that the 'start' method allow a connection to the server and wait until this connection is closed."""
 
@@ -148,8 +148,8 @@ async def test_acm_start(add_tasks_mock, starmap_mock, asyncio_sleep_mock):
         abstract_client_manager.loop = LoopMock()
         abstract_client_manager.tasks = [(0, 0), (1, 1)]
 
-        with patch.object(logging.getLogger("wazuh"), "info") as logger_info_mock:
-            with patch.object(logging.getLogger("wazuh"), "error") as logger_error_mock:
+        with patch.object(logging.getLogger("fortishield"), "info") as logger_info_mock:
+            with patch.object(logging.getLogger("fortishield"), "error") as logger_error_mock:
                 # Test the try
                 try:
                     await abstract_client_manager.start()
@@ -196,7 +196,7 @@ async def test_ac_connection_result():
             pass
 
     # Check first condition
-    with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
+    with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
         abstract_client.transport = CloseMock()
 
         with patch.object(abstract_client.transport, "close") as close_mock:
@@ -207,7 +207,7 @@ async def test_ac_connection_result():
             close_mock.assert_called_once()
 
     # Check second condition
-    with patch.object(logging.getLogger('wazuh'), "info") as logger_mock:
+    with patch.object(logging.getLogger('fortishield'), "info") as logger_mock:
         abstract_client.transport = CloseMock()
         future = asyncio.Future()
         future.set_result(['OK'])
@@ -245,7 +245,7 @@ async def test_ac_connection_made():
             log_mock.assert_called_with("Successfully connected to master.")
             assert abstract_client.connected is True
 
-@patch('wazuh.core.cluster.client.AbstractClient._cancel_all_tasks')
+@patch('fortishield.core.cluster.client.AbstractClient._cancel_all_tasks')
 def test_ac_connection_lost(cancel_tasks_mock):
     """Check the behavior when the master closes the connection and when the connection is lost due some problems."""
 
@@ -254,7 +254,7 @@ def test_ac_connection_lost(cancel_tasks_mock):
     abstract_client.on_con_lost = future_mock_nested
 
     # Test the first condition
-    with patch.object(logging.getLogger('wazuh'), "info") as logger_mock:
+    with patch.object(logging.getLogger('fortishield'), "info") as logger_mock:
         with patch.object(FutureMock, "done", return_value=False) as done_mock:
             with patch.object(FutureMock, "set_result") as set_result_mock:
                 abstract_client.connection_lost(exc=None)
@@ -264,7 +264,7 @@ def test_ac_connection_lost(cancel_tasks_mock):
                 set_result_mock.assert_called_once_with(True)
 
     # Test the second condition
-    with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
+    with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
         abstract_client.connection_lost(exc=FortishieldException(1001))
         logger_mock.assert_called_once_with(f"Connection closed due to an unhandled error: {FortishieldException(1001)}\n",
                                             exc_info=False)
@@ -291,7 +291,7 @@ def test_ac_cancel_all_tasks():
     client_mock = MagicMock()
     mock_manager = ParentManager(client_mock)
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager):
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager):
         with patch('asyncio.all_tasks', return_value=[task_mock]) as all_tasks_mock:
             with patch.object(TaskMock, "cancel") as cancel_mock:
                 abstract_client._cancel_all_tasks()
@@ -308,7 +308,7 @@ def test_ac_process_response():
                                              payload=b"payload") == b"Successful response from master: " + b"payload")
 
     # Test the second condition
-    with patch('wazuh.core.cluster.common.Handler.process_response', return_value=b'ok') as pr_mock:
+    with patch('fortishield.core.cluster.common.Handler.process_response', return_value=b'ok') as pr_mock:
         assert abstract_client.process_response(command=b'ok', payload=b"payload") == b'ok'
         pr_mock.assert_called_once_with(b'ok', b"payload")
 
@@ -317,12 +317,12 @@ def test_ac_process_request():
     """Check the command available in clients depending on the input command."""
 
     # Test the fist condition
-    with patch('wazuh.core.cluster.client.AbstractClient.echo_client', return_value=b'ok') as echo_mock:
+    with patch('fortishield.core.cluster.client.AbstractClient.echo_client', return_value=b'ok') as echo_mock:
         assert (abstract_client.process_request(command=b"echo-m", data=b"data") == b'ok')
         echo_mock.assert_called_once_with(b'data')
 
     # Test the second condition
-    with patch('wazuh.core.cluster.common.Handler.process_request', return_value=b'ok') as pr_mock:
+    with patch('fortishield.core.cluster.common.Handler.process_request', return_value=b'ok') as pr_mock:
         assert abstract_client.process_request(command=b'ok', data=b"data") == b'ok'
         pr_mock.assert_called_once_with(b'ok', b"data")
 
@@ -336,7 +336,7 @@ def test_ac_echo_client():
 @pytest.mark.asyncio
 @patch('asyncio.sleep')
 @patch.object(FutureMock, "done", return_value=False)
-@patch('wazuh.core.cluster.client.AbstractClient.send_request', return_value=b"ok")
+@patch('fortishield.core.cluster.client.AbstractClient.send_request', return_value=b"ok")
 async def test_ac_client_echo_ok(send_request_mock, done_mock, asyncio_sleep_mock):
     """Test if a keepalive is being send to the server every couple of seconds until the connection is lost."""
 
@@ -359,9 +359,9 @@ async def test_ac_client_echo_ok(send_request_mock, done_mock, asyncio_sleep_moc
     asyncio_sleep_mock.side_effect = sleep_mock
 
     # Test try
-    with patch.object(logging.getLogger("wazuh"), "info") as logger_mock:
-        with patch('wazuh.core.cluster.common.Handler.setup_task_logger',
-                   return_value=logging.getLogger("wazuh")) as setup_logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "info") as logger_mock:
+        with patch('fortishield.core.cluster.common.Handler.setup_task_logger',
+                   return_value=logging.getLogger("fortishield")) as setup_logger_mock:
             try:
                 await abstract_client.client_echo()
             except Exception:
@@ -370,9 +370,9 @@ async def test_ac_client_echo_ok(send_request_mock, done_mock, asyncio_sleep_moc
                 logger_mock.assert_called_with("ok")
 
     # Test except
-    with patch.object(logging.getLogger("wazuh"), "error") as logger_mock:
-        with patch('wazuh.core.cluster.common.Handler.setup_task_logger',
-                   return_value=logging.getLogger("wazuh")) as setup_logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "error") as logger_mock:
+        with patch('fortishield.core.cluster.common.Handler.setup_task_logger',
+                   return_value=logging.getLogger("fortishield")) as setup_logger_mock:
             with patch.object(TransportMock, "close") as close_mock:
                 abstract_client.transport = TransportMock()
                 done_mock.return_value = False
@@ -389,8 +389,8 @@ async def test_ac_client_echo_ok(send_request_mock, done_mock, asyncio_sleep_moc
 @pytest.mark.asyncio
 @freeze_time("2022-01-01")
 @patch.object(FutureMock, "done", return_value=False)
-@patch('wazuh.core.cluster.client.perf_counter', return_value=0)
-@patch('wazuh.core.cluster.client.AbstractClient.send_request', return_value="ok")
+@patch('fortishield.core.cluster.client.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.client.AbstractClient.send_request', return_value="ok")
 async def test_ac_performance_test_client(send_request_mock, perf_counter_mock, done_mock):
     """Test is the master replies with aa payload of the same length as the one that was sent."""
 
@@ -399,7 +399,7 @@ async def test_ac_performance_test_client(send_request_mock, perf_counter_mock, 
         raise Exception()
 
     with patch('asyncio.sleep', asyncio_sleep_mock):
-        with patch.object(logging.getLogger("wazuh"), "error") as logger_mock:
+        with patch.object(logging.getLogger("fortishield"), "error") as logger_mock:
             try:
                 await asyncio.create_task(abstract_client.performance_test_client(10))
             except Exception:
@@ -408,7 +408,7 @@ async def test_ac_performance_test_client(send_request_mock, perf_counter_mock, 
             logger_mock.assert_called_with("ok", exc_info=False)
             send_request_mock.assert_called_with(b'echo', b'a' * 10)
 
-        with patch.object(logging.getLogger("wazuh"), "info") as logger_mock:
+        with patch.object(logging.getLogger("fortishield"), "info") as logger_mock:
             done_mock.return_value = False
             try:
                 await asyncio.create_task(abstract_client.performance_test_client(2))
@@ -423,8 +423,8 @@ async def test_ac_performance_test_client(send_request_mock, perf_counter_mock, 
 @pytest.mark.asyncio
 @freeze_time("2022-01-01")
 @patch.object(FutureMock, "done", return_value=False)
-@patch('wazuh.core.cluster.client.perf_counter', return_value=0)
-@patch('wazuh.core.cluster.client.AbstractClient.send_request', return_value="ok")
+@patch('fortishield.core.cluster.client.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.client.AbstractClient.send_request', return_value="ok")
 async def test_ac_concurrency_test_client(send_request_mock, perf_counter_mock, done_mock):
     """Check how the server reply to all requests until the connection is lost."""
 
@@ -435,7 +435,7 @@ async def test_ac_concurrency_test_client(send_request_mock, perf_counter_mock, 
         raise Exception()
 
     with patch('asyncio.sleep', asyncio_sleep_mock):
-        with patch.object(logging.getLogger("wazuh"), "info") as logger_mock:
+        with patch.object(logging.getLogger("fortishield"), "info") as logger_mock:
             try:
                 await asyncio.create_task(abstract_client.concurrency_test_client(n_msgs))
             except Exception:
@@ -449,12 +449,12 @@ async def test_ac_concurrency_test_client(send_request_mock, perf_counter_mock, 
 
 @pytest.mark.asyncio
 @freeze_time("2022-01-01")
-@patch('wazuh.core.cluster.client.perf_counter', return_value=0)
-@patch('wazuh.core.cluster.client.AbstractClient.send_file', return_value="ok")
+@patch('fortishield.core.cluster.client.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.client.AbstractClient.send_file', return_value="ok")
 async def test_ac_send_file_task(send_file_mock, perf_counter_mock):
     """Test the 'send_file' protocol."""
 
-    with patch.object(logging.getLogger("wazuh"), "debug") as logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "debug") as logger_mock:
         await abstract_client.send_file_task("filename")
         send_file_mock.assert_called_once_with("filename")
         logger_mock.assert_any_call("ok")
@@ -463,12 +463,12 @@ async def test_ac_send_file_task(send_file_mock, perf_counter_mock):
 
 @pytest.mark.asyncio
 @freeze_time("2022-01-01")
-@patch('wazuh.core.cluster.client.perf_counter', return_value=0)
-@patch('wazuh.core.cluster.client.AbstractClient.send_string', return_value="ok")
+@patch('fortishield.core.cluster.client.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.client.AbstractClient.send_string', return_value="ok")
 async def test_ac_send_string_task(send_string_mock, perf_counter_mock):
     """Test the 'send_string' protocol."""
 
-    with patch.object(logging.getLogger("wazuh"), "debug") as logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "debug") as logger_mock:
         await abstract_client.send_string_task(10)
         send_string_mock.assert_called_once_with(my_str=b'a' * 10)
         logger_mock.assert_any_call("ok")

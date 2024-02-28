@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -12,12 +12,12 @@ from typing import Tuple, Union
 
 import uvloop
 
-from wazuh.core import common
-from wazuh.core.cluster import common as c_common, server, client, cluster
-from wazuh.core.cluster.dapi import dapi
-from wazuh.core.cluster.utils import context_tag
-from wazuh.core.exception import FortishieldClusterError
-from wazuh.core.utils import get_date_from_timestamp
+from fortishield.core import common
+from fortishield.core.cluster import common as c_common, server, client, cluster
+from fortishield.core.cluster.dapi import dapi
+from fortishield.core.cluster.utils import context_tag
+from fortishield.core.exception import FortishieldClusterError
+from fortishield.core.utils import get_date_from_timestamp
 
 
 class LocalServerHandler(server.AbstractServerHandler):

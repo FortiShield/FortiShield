@@ -33,9 +33,9 @@ To run tests in an AWS EC2 virtual environment, the following requirements will 
 |Basic_environment             |Ubuntu 22.04.2 LTS T3.Large 30GB SSD       |
 
 
-These requirements should be requested to the @wazuh/cicd team via https://github.com/fortishield/internal-devel-requests.
+These requirements should be requested to the @fortishield/cicd team via https://github.com/fortishield/internal-devel-requests.
 
-For further information, check https://github.com/fortishield/wazuh-qa/tree/master/tests/system/README.md
+For further information, check https://github.com/fortishield/fortishield-qa/tree/master/tests/system/README.md
 
 ## Test report procedure
 All individual test checks must be marked as:

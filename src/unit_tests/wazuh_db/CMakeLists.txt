@@ -1,6 +1,6 @@
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 list(APPEND wdb_tests_names "test_wdb_integrity")
 list(APPEND wdb_tests_flags "-Wl,--wrap,_mdebug1 -Wl,--wrap,wdb_stmt_cache -Wl,--wrap,sqlite3_step -Wl,--wrap,sqlite3_errmsg \
@@ -180,10 +180,10 @@ list(APPEND wdb_tests_flags "-Wl,--wrap,wdb_get_cache_stmt -Wl,--wrap,wdb_step -
                             -Wl,--wrap,sqlite3_bind_text -Wl,--wrap,sqlite3_step -Wl,--wrap,sqlite3_bind_double -Wl,--wrap,sqlite3_changes \
                             -Wl,--wrap,sqlite3_bind_null -Wl,--wrap,sqlite3_errmsg ${DEBUG_OP_WRAPPERS}")
 
-list(APPEND wdb_tests_names "test_wazuh_db-config")
+list(APPEND wdb_tests_names "test_fortishield_db-config")
 list(APPEND wdb_tests_flags "${DEBUG_OP_WRAPPERS}")
 
-list(APPEND wdb_tests_names "test_wazuh_db_state")
+list(APPEND wdb_tests_names "test_fortishield_db_state")
 list(APPEND wdb_tests_flags "")
 
 list(APPEND wdb_tests_names "test_wdb_com")
@@ -194,8 +194,8 @@ add_compile_options(-Wall)
 link_directories(${SRC_FOLDER}/build/shared_modules/router)
 
 # Fortishield-DB objects
-FILE(GLOB wazuh_db_objects ${SRC_FOLDER}/wazuh_db/*.o)
-list(REMOVE_ITEM wazuh_db_objects ${SRC_FOLDER}/wazuh_db/main.o ${SRC_FOLDER}/wazuh_db/wdb_shared.o)
+FILE(GLOB fortishield_db_objects ${SRC_FOLDER}/fortishield_db/*.o)
+list(REMOVE_ITEM fortishield_db_objects ${SRC_FOLDER}/fortishield_db/main.o ${SRC_FOLDER}/fortishield_db/wdb_shared.o)
 
 # Compilig tests
 list(LENGTH wdb_tests_names count)
@@ -204,7 +204,7 @@ foreach(counter RANGE ${count})
     list(GET wdb_tests_names ${counter} test_name)
     list(GET wdb_tests_flags ${counter} test_flags)
 
-    add_executable(${test_name} ${test_name}.c ${wazuh_db_objects})
+    add_executable(${test_name} ${test_name}.c ${fortishield_db_objects})
 
     target_link_libraries(
         ${test_name}

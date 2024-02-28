@@ -15,7 +15,7 @@
 #include <winsvc.h>
 #include "syscheckd/src/db/include/db.h"
 #ifndef ARGV0
-#define ARGV0 "wazuh-agent"
+#define ARGV0 "fortishield-agent"
 #endif
 
 /**************************************************************************************
@@ -90,7 +90,7 @@ int os_stop_service()
 
     /*
     * Sleep for a short period of time to avoid possible race-conditions with
-    * newer instances of wazuh-agent.
+    * newer instances of fortishield-agent.
     */
     Sleep(300); //milliseconds
 
@@ -267,7 +267,7 @@ VOID WINAPI OssecServiceCtrlHandler(DWORD dwOpcode)
                 SetServiceStatus (ossecServiceStatusHandle, &ossecServiceStatus);
                 plain_minfo("Set pending exit signal.");
 
-                // Kill children processes spawned by modules, only in wazuh-agent
+                // Kill children processes spawned by modules, only in fortishield-agent
                 wm_kill_children();
                 stop_wmodules();
                 is_fim_shutdown = true;

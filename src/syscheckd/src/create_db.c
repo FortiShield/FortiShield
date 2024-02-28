@@ -1147,7 +1147,7 @@ void fim_check_db_state(int nodes_limit, int nodes_count, fim_state_db* db_state
 
     json_plain = cJSON_PrintUnformatted(json_event);
 
-    snprintf(alert_msg, OS_SIZE_256, "wazuh: FIM DB: %s", json_plain);
+    snprintf(alert_msg, OS_SIZE_256, "fortishield: FIM DB: %s", json_plain);
 
     send_log_msg(alert_msg);
 

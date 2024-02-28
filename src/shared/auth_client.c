@@ -14,7 +14,7 @@
 #include "shared.h"
 #include <os_net/os_net.h>
 #include <external/cJSON/cJSON.h>
-#include "wazuhdb_op.h"
+#include "fortishielddb_op.h"
 
 // Remove agent. Returns 0 on success or -1 on error.
 int auth_remove_agent(int sock, const char *id, int json_format) {
@@ -72,7 +72,7 @@ int auth_remove_agent(int sock, const char *id, int json_format) {
             int wdb_sock = -1;
             int error;
 
-            snprintf(wdbquery, OS_SIZE_128, "wazuhdb remove %s", id);
+            snprintf(wdbquery, OS_SIZE_128, "fortishielddb remove %s", id);
             os_calloc(OS_SIZE_6144, sizeof(char), wdboutput);
             if (error = wdbc_query_ex(&wdb_sock, wdbquery, wdboutput, OS_SIZE_6144), error) {
                 merror("Could not remove the agent %s. Error: %d.", id, error);

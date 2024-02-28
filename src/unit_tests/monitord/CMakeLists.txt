@@ -39,7 +39,7 @@ target_link_libraries(MONITOR_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 target_link_libraries(MAILD_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 list(APPEND monitord_tests_names "test_monitord")
 list(APPEND monitord_tests_flags "-Wl,--wrap,time\

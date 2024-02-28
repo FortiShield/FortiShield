@@ -13,11 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../wazuh_modules/wmodules.h"
-#include "../../wazuh_modules/wm_fluent.h"
-#include "../../wazuh_modules/wm_fluent.c"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
+#include "../../fortishield_modules/wmodules.h"
+#include "../../fortishield_modules/wm_fluent.h"
+#include "../../fortishield_modules/wm_fluent.c"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
 
 typedef struct test_struct {
     wm_fluent_t *fluent;

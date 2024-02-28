@@ -1,11 +1,11 @@
 # Fortishield
 
-[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://wazuh.com/community/join-us-on-slack/)
-[![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
-[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
-[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
-[![Coverity](https://scan.coverity.com/projects/10992/badge.svg)](https://scan.coverity.com/projects/wazuh-wazuh)
-[![Twitter](https://img.shields.io/twitter/follow/wazuh?style=social)](https://twitter.com/wazuh)
+[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://fortishield.com/community/join-us-on-slack/)
+[![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/fortishield)
+[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.fortishield.com)
+[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://fortishield.com)
+[![Coverity](https://scan.coverity.com/projects/10992/badge.svg)](https://scan.coverity.com/projects/fortishield-fortishield)
+[![Twitter](https://img.shields.io/twitter/follow/fortishield?style=social)](https://twitter.com/fortishield)
 [![YouTube](https://img.shields.io/youtube/views/peTSzcAueEc?style=social)](https://www.youtube.com/watch?v=peTSzcAueEc)
 
 
@@ -77,51 +77,51 @@ The Fortishield WUI provides a powerful user interface for data visualization an
 
 **Modules overview**
 
-![Modules overview](https://github.com/fortishield/wazuh-dashboard-plugins/raw/master/screenshots/app.png)
+![Modules overview](https://github.com/fortishield/fortishield-dashboard-plugins/raw/master/screenshots/app.png)
 
 **Security events**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app2.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app2.png)
 
 **Integrity monitoring**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app3.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app3.png)
 
 **Vulnerability detection**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app4.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app4.png)
 
 **Regulatory compliance**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app5.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app5.png)
 
 **Agents overview**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app6.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app6.png)
 
 **Agent summary**
 
-![Overview](https://github.com/fortishield/wazuh-dashboard-plugins/blob/master/screenshots/app7.png)
+![Overview](https://github.com/fortishield/fortishield-dashboard-plugins/blob/master/screenshots/app7.png)
 
 ## Orchestration
 
 Here you can find all the automation tools maintained by the Fortishield team.
 
-* [Fortishield AWS CloudFormation](https://github.com/fortishield/wazuh-cloudformation)
+* [Fortishield AWS CloudFormation](https://github.com/fortishield/fortishield-cloudformation)
 
-* [Docker containers](https://github.com/fortishield/wazuh-docker)
+* [Docker containers](https://github.com/fortishield/fortishield-docker)
 
-* [Fortishield Ansible](https://github.com/fortishield/wazuh-ansible)
+* [Fortishield Ansible](https://github.com/fortishield/fortishield-ansible)
 
-* [Fortishield Chef](https://github.com/fortishield/wazuh-chef)
+* [Fortishield Chef](https://github.com/fortishield/fortishield-chef)
 
-* [Fortishield Puppet](https://github.com/fortishield/wazuh-puppet)
+* [Fortishield Puppet](https://github.com/fortishield/fortishield-puppet)
 
-* [Fortishield Kubernetes](https://github.com/fortishield/wazuh-kubernetes)
+* [Fortishield Kubernetes](https://github.com/fortishield/fortishield-kubernetes)
 
-* [Fortishield Bosh](https://github.com/fortishield/wazuh-bosh)
+* [Fortishield Bosh](https://github.com/fortishield/fortishield-bosh)
 
-* [Fortishield Salt](https://github.com/fortishield/wazuh-salt)
+* [Fortishield Salt](https://github.com/fortishield/fortishield-salt)
 
 ## Branches
 
@@ -159,25 +159,25 @@ Here you can find all the automation tools maintained by the Fortishield team.
 
 ## Documentation
 
-* [Full documentation](http://documentation.wazuh.com)
-* [Fortishield installation guide](https://documentation.wazuh.com/current/installation-guide/index.html)
+* [Full documentation](http://documentation.fortishield.com)
+* [Fortishield installation guide](https://documentation.fortishield.com/current/installation-guide/index.html)
 
 ## Get involved
 
-Become part of the [Fortishield's community](https://wazuh.com/community/) to learn from other users, participate in discussions, talk to our developers and contribute to the project.
+Become part of the [Fortishield's community](https://fortishield.com/community/) to learn from other users, participate in discussions, talk to our developers and contribute to the project.
 
 If you want to contribute to our project please don’t hesitate to make pull-requests, submit issues or send commits, we will review all your questions.
 
-You can also join our [Slack community channel](https://wazuh.com/community/join-us-on-slack/) and [mailing list](https://groups.google.com/d/forum/wazuh) by sending an email to [wazuh+subscribe@googlegroups.com](mailto:wazuh+subscribe@googlegroups.com), to ask questions and participate in discussions.
+You can also join our [Slack community channel](https://fortishield.com/community/join-us-on-slack/) and [mailing list](https://groups.google.com/d/forum/fortishield) by sending an email to [fortishield+subscribe@googlegroups.com](mailto:fortishield+subscribe@googlegroups.com), to ask questions and participate in discussions.
 
 Stay up to date on news, releases, engineering articles and more.
 
-* [Fortishield website](http://wazuh.com)
-* [Linkedin](https://www.linkedin.com/company/wazuh)
-* [YouTube](https://www.youtube.com/c/wazuhsecurity)
-* [Twitter](https://twitter.com/wazuh)
-* [Fortishield blog](https://wazuh.com/blog/)
-* [Slack announcements channel](https://wazuh.com/community/join-us-on-slack/)
+* [Fortishield website](http://fortishield.com)
+* [Linkedin](https://www.linkedin.com/company/fortishield)
+* [YouTube](https://www.youtube.com/c/fortishieldsecurity)
+* [Twitter](https://twitter.com/fortishield)
+* [Fortishield blog](https://fortishield.com/blog/)
+* [Slack announcements channel](https://fortishield.com/community/join-us-on-slack/)
 
 ## Authors
 

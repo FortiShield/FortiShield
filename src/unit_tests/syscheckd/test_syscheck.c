@@ -14,11 +14,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/fs_op_wrappers.h"
-#include "../wrappers/wazuh/shared/validate_op_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/create_db_wrappers.h"
-#include "../wrappers/wazuh/syscheckd/fim_db_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/fs_op_wrappers.h"
+#include "../wrappers/fortishield/shared/validate_op_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/create_db_wrappers.h"
+#include "../wrappers/fortishield/syscheckd/fim_db_wrappers.h"
 
 #include "syscheck.h"
 

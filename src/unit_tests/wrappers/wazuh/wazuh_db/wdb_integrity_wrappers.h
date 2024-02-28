@@ -11,7 +11,7 @@
 #ifndef WDB_INTEGRITY_WRAPPERS_H
 #define WDB_INTEGRITY_WRAPPERS_H
 
-#include "wazuh_db/wdb.h"
+#include "fortishield_db/wdb.h"
 
 void __wrap_wdbi_remove_by_pk(wdb_t *wdb, wdb_component_t component, const char *pk_value);
 

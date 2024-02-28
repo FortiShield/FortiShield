@@ -93,9 +93,9 @@ yesrunauthd="Auth habilitado"
 
 # Parte 4
 installing="Instalando o sistema"
-startwazuh="Deseja iniciar o Fortishield após a instalação?"
-nowazuhstart="Fortishield não iniciará no final da instalação."
-yeswazuhstart="Fortishield começará no final da instalação."
+startfortishield="Deseja iniciar o Fortishield após a instalação?"
+nofortishieldstart="Fortishield não iniciará no final da instalação."
+yesfortishieldstart="Fortishield começará no final da instalação."
 runningmake="Executando o Makefile"
 
 # Final

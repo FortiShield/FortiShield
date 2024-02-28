@@ -1,14 +1,14 @@
-# Find the wazuh shared library
-find_library(FORTISHIELDEXT NAMES libwazuhext.dylib HINTS "${SRC_FOLDER}")
+# Find the fortishield shared library
+find_library(FORTISHIELDEXT NAMES libfortishieldext.dylib HINTS "${SRC_FOLDER}")
 if(FORTISHIELDEXT)
   set(uname "Darwin")
 else()
   set(uname "Linux")
 endif()
-find_library(FORTISHIELDEXT NAMES libwazuhext.so HINTS "${SRC_FOLDER}")
+find_library(FORTISHIELDEXT NAMES libfortishieldext.so HINTS "${SRC_FOLDER}")
 
 if(NOT FORTISHIELDEXT)
-    message(FATAL_ERROR "libwazuhext not found! Aborting...")
+    message(FATAL_ERROR "libfortishieldext not found! Aborting...")
 endif()
 
 # # Add compiling flags and set tests dependencies
@@ -27,4 +27,4 @@ if(NOT ${uname} STREQUAL "Darwin")
   add_subdirectory(os_execd)
 endif()
 
-add_subdirectory(wazuh_modules)
+add_subdirectory(fortishield_modules)

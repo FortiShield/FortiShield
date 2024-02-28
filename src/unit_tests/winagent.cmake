@@ -8,16 +8,16 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 # Setup the compiling toolchain
-# Find the wazuh shared library
-find_library(FORTISHIELDEXT NAMES wazuhext HINTS "${SRC_FOLDER}")
+# Find the fortishield shared library
+find_library(FORTISHIELDEXT NAMES fortishieldext HINTS "${SRC_FOLDER}")
 set(uname "Win32")
 
 if(NOT FORTISHIELDEXT)
-  message(FATAL_ERROR "FORTISHIELDEXT is set to '${FORTISHIELDEXT}', but did not find any file matching ${SRC_FOLDER}/${CMAKE_FIND_LIBRARY_PREFIXES}wazuhext${CMAKE_FIND_LIBRARY_SUFFIXES}")
-  message(FATAL_ERROR "libwazuhext not found in ${SRC_FOLDER} Aborting...")
+  message(FATAL_ERROR "FORTISHIELDEXT is set to '${FORTISHIELDEXT}', but did not find any file matching ${SRC_FOLDER}/${CMAKE_FIND_LIBRARY_PREFIXES}fortishieldext${CMAKE_FIND_LIBRARY_SUFFIXES}")
+  message(FATAL_ERROR "libfortishieldext not found in ${SRC_FOLDER} Aborting...")
 endif()
 
-# Find the wazuh sysinfo library
+# Find the fortishield sysinfo library
 find_library(SYSINFO NAMES sysinfo HINTS "${SRC_FOLDER}/data_provider/build/bin")
 set(uname "Win32")
 
@@ -86,7 +86,7 @@ set(TEST_DEPS -Wl,--start-group ${FORTISHIELDLIB} ${FORTISHIELDEXT} ${SYSINFO} D
 set(TEST_EVENT_DEPS -Wl,--start-group ${FORTISHIELDLIB} ${FORTISHIELDEXT} ${SYSINFO} DEPENDENCIES_O -Wl,--end-group ${PTHREAD} ${STATIC_CMOCKA} wsock32 wevtapi shlwapi comctl32 advapi32 kernel32 psapi gdi32 iphlpapi ws2_32 crypt32 -fprofile-arcs -ftest-coverage)
 
 add_subdirectory(client-agent)
-add_subdirectory(wazuh_modules)
+add_subdirectory(fortishield_modules)
 add_subdirectory(os_execd)
 add_subdirectory(win32)
 add_subdirectory(logcollector)

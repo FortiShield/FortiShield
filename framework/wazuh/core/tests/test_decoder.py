@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,10 +9,10 @@ from unittest.mock import patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.exception import FortishieldError, FortishieldInternalError, FortishieldException
-        from wazuh.core import decoder
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.exception import FortishieldError, FortishieldInternalError, FortishieldException
+        from fortishield.core import decoder
 
 
 # Variables
@@ -22,7 +22,7 @@ test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data
 # Tests
 
 @pytest.mark.parametrize("detail, value, details, expected_result", [
-    ("parent", "wazuh", {'regex': ['regex00']}, {'parent': 'wazuh', 'regex': ['regex00']}),
+    ("parent", "fortishield", {'regex': ['regex00']}, {'parent': 'fortishield', 'regex': ['regex00']}),
     ("prematch", "^Agent buffer:", {}, {'prematch': "^Agent buffer:"}),
     ("regex", "regex01", {}, {'regex': ['regex01']}),
     ("regex", "regex02", {'regex': ['regex03']}, {'regex': ['regex03', 'regex02']}),
@@ -58,7 +58,7 @@ def test_check_status(status, expected_result):
     ('non_existing.xml', 'decoders', "disabled", 777, FortishieldError(1502)),
     ('test1_decoders.xml', 'decoders', "all", 000, FortishieldError(1502)),
 ])
-@patch('wazuh.core.common.FORTISHIELD_PATH', new=test_data_path)
+@patch('fortishield.core.common.FORTISHIELD_PATH', new=test_data_path)
 def test_load_decoders_from_file(filename, relative_dirname, status, permissions, exception):
     full_file_path = os.path.join(test_data_path, relative_dirname, filename)
     try:
@@ -84,7 +84,7 @@ def test_load_decoders_from_file(filename, relative_dirname, status, permissions
         os.path.exists(full_file_path) and os.chmod(full_file_path, old_permissions)
 
 
-@patch('wazuh.core.common.FORTISHIELD_PATH', new=test_data_path)
+@patch('fortishield.core.common.FORTISHIELD_PATH', new=test_data_path)
 def test_load_decoders_from_file_details():
     decoder_file = 'test3_decoders.xml'
     decoder_path = 'decoders'

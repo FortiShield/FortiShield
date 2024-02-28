@@ -1,17 +1,17 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
 import socket
 from typing import Any
 
-from wazuh.core.common import origin_module
-from wazuh.core.exception import FortishieldError, FortishieldInternalError
-from wazuh.core.wazuh_socket import create_wazuh_socket_message
+from fortishield.core.common import origin_module
+from fortishield.core.exception import FortishieldError, FortishieldInternalError
+from fortishield.core.fortishield_socket import create_fortishield_socket_message
 
 
-def create_wazuh_queue_socket_msg(flag: str, str_agent_id: str, msg: str, is_restart: bool = False) -> str:
+def create_fortishield_queue_socket_msg(flag: str, str_agent_id: str, msg: str, is_restart: bool = False) -> str:
     """Create message that will be sent to the FortishieldQueue socket.
 
     Parameters
@@ -94,8 +94,8 @@ class FortishieldQueue(BaseQueue):
     HC_SK_RESTART = "syscheck restart"  # syscheck restart
     HC_FORCE_RECONNECT = "force_reconnect"  # force reconnect command
     RESTART_AGENTS = "restart-ossec0"  # Agents, not manager (000)
-    RESTART_AGENTS_JSON = json.dumps(create_wazuh_socket_message(origin={'module': origin_module.get()},
-                                                                 command="restart-wazuh0",
+    RESTART_AGENTS_JSON = json.dumps(create_fortishield_socket_message(origin={'module': origin_module.get()},
+                                                                 command="restart-fortishield0",
                                                                  parameters={"extra_args": [],
                                                                              "alert": {}}))  # Agents, not manager (000)
 
@@ -155,7 +155,7 @@ class FortishieldQueue(BaseQueue):
 
         # AR
         if msg_type == FortishieldQueue.AR_TYPE:
-            socket_msg = create_wazuh_queue_socket_msg(flag, str_agent_id, msg) if agent_id != '000' else msg
+            socket_msg = create_fortishield_queue_socket_msg(flag, str_agent_id, msg) if agent_id != '000' else msg
             # Return message
             ret_msg = "Command sent."
 
@@ -165,7 +165,7 @@ class FortishieldQueue(BaseQueue):
             # If msg is not a non active-response command and not a restart command, raises FortishieldInternalError
             if not msg_is_no_ar and not msg_is_restart:
                 raise FortishieldInternalError(1012, msg)
-            socket_msg = create_wazuh_queue_socket_msg(flag, str_agent_id, msg, is_restart=msg_is_restart)
+            socket_msg = create_fortishield_queue_socket_msg(flag, str_agent_id, msg, is_restart=msg_is_restart)
             # Return message
             if msg == FortishieldQueue.HC_SK_RESTART:
                 ret_msg = "Restarting Syscheck on agent" if agent_id else "Restarting Syscheck on all agents"

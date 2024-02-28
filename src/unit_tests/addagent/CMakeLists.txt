@@ -22,7 +22,7 @@ set_target_properties(
 target_link_libraries(ADDAGENT_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 list(APPEND addagent_names "test_manage_keys")
 list(APPEND addagent_flags "${DEBUG_OP_WRAPPERS} ${STDIO_OP_WRAPPERS} \

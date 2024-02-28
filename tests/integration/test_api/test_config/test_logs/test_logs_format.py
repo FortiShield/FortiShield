@@ -1,6 +1,6 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
@@ -16,12 +16,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -46,7 +46,7 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html#logs
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html#logs
 
 tags:
     - api
@@ -57,14 +57,14 @@ import pytest
 from pathlib import Path
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES, FORTISHIELD_API_USER, LOGIN_ROUTE
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.constants.paths.logs import FORTISHIELD_API_JSON_LOG_FILE_PATH, FORTISHIELD_API_LOG_FILE_PATH
-from wazuh_testing.modules.api.patterns import API_TIMEOUT_ERROR_MSG, API_LOGIN_REQUEST_MSG
-from wazuh_testing.modules.api.utils import login
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import CONFIGURATION_TYPES, FORTISHIELD_API_USER, LOGIN_ROUTE
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.constants.paths.logs import FORTISHIELD_API_JSON_LOG_FILE_PATH, FORTISHIELD_API_LOG_FILE_PATH
+from fortishield_testing.modules.api.patterns import API_TIMEOUT_ERROR_MSG, API_LOGIN_REQUEST_MSG
+from fortishield_testing.modules.api.utils import login
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -93,7 +93,7 @@ def test_logs_formats(test_configuration, test_metadata, add_configuration, trun
     description: Check if the logs of the API are stored in the specified formats and the content of the log
                  files are the expected.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     test_phases:
         - setup:

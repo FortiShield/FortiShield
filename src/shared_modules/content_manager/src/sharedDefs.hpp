@@ -12,7 +12,7 @@
 #ifndef _SHARED_DEFS_H
 #define _SHARED_DEFS_H
 
-#define WM_CONTENTUPDATER "wazuh-modulesd:content-updater"
+#define WM_CONTENTUPDATER "fortishield-modulesd:content-updater"
 
 #include "loggerHelper.h"
 #endif // _SHARED_DEFS_H

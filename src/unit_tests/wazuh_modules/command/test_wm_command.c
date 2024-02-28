@@ -17,14 +17,14 @@
 #include <time.h>
 
 #include "shared.h"
-#include "../../../wazuh_modules/wmodules.h"
-#include "../../../wazuh_modules/wm_command.h"
+#include "../../../fortishield_modules/wmodules.h"
+#include "../../../fortishield_modules/wm_command.h"
 
 #include "../scheduling/wmodules_scheduling_helpers.h"
 #include "../../wrappers/common.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_exec_wrappers.h"
-#include "../../wrappers/wazuh/shared/mq_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_exec_wrappers.h"
+#include "../../wrappers/fortishield/shared/mq_op_wrappers.h"
 
 #define TEST_MAX_DATES 5
 

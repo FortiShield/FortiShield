@@ -8,10 +8,10 @@ Copyright (C) 2014 Trend Micro Inc.
 ** Reporting bugs **
 
 Bugs should be sent to the Fortishield mailling list
-(https://groups.google.com/forum/#!forum/wazuh). Please, make sure to include
+(https://groups.google.com/forum/#!forum/fortishield). Please, make sure to include
 the following information:
 
--Output of "FORTISHIELD_HOME/bin/wazuh-control info"
+-Output of "FORTISHIELD_HOME/bin/fortishield-control info"
 -Content of FORTISHIELD_HOME/etc/ossec.conf
 -Content of FORTISHIELD_HOME/logs/ossec.log
 -Operating system name/version (uname -a if Unix)
@@ -19,4 +19,4 @@ the following information:
 
 
 If you prefer to contact us privately or want to report a
-security issue, send an e-mail to Fortishield (support@wazuh.com).
+security issue, send an e-mail to Fortishield (support@fortishield.com).

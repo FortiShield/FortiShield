@@ -1,6 +1,6 @@
 <!---
 Copyright (C) 2015, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 -->
 
@@ -22,7 +22,7 @@ Sequence diagram shows the basic flow of Fortishield Github integration based on
 2. Generate a request with configuration information.
 3. Execute the request.
 4. Process answered request and audit logs.
-5. Insert events into wazuh DB.
+5. Insert events into fortishield DB.
 
 
 ## Findings

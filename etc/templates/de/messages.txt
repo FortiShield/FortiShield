@@ -93,9 +93,9 @@ yesrunauthd="Auth-Dienst ausführen"
 
 # Part 4
 installing="Installiere das System"
-startwazuh="Möchten Sie Fortishield nach der Installation starten?"
-nowazuhstart="Fortishield startet nicht am Ende der Installation."
-yeswazuhstart="Fortishield wird am Ende der Installation starten."
+startfortishield="Möchten Sie Fortishield nach der Installation starten?"
+nofortishieldstart="Fortishield startet nicht am Ende der Installation."
+yesfortishieldstart="Fortishield wird am Ende der Installation starten."
 runningmake="make wird ausgeführt"
 
 # Final

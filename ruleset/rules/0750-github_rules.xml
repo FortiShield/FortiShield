@@ -3203,11 +3203,11 @@ ID: 91100 - 91449
     </rule>
 
     <!-- This rule capture internal event, 3 request fail.
-        {"integration":"github","github":{"actor":"wazuh","organization":"wazuh","response":"@response"}}
+        {"integration":"github","github":{"actor":"fortishield","organization":"fortishield","response":"@response"}}
     -->
     <rule id="91448" level="3">
         <if_sid>91100</if_sid>
-        <field name="github.actor">wazuh</field>
+        <field name="github.actor">fortishield</field>
         <description>GitHub module internal event, 3 request fail.</description>
         <options>no_full_log</options>
     </rule>

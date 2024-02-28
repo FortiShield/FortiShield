@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -16,9 +16,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
-    - wazuh-modulesd
+    - fortishield-authd
+    - fortishield-db
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -41,9 +41,9 @@ import time
 import pytest
 from pathlib import Path
 
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.modules.authd.utils import validate_authd_response
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.modules.authd.utils import validate_authd_response
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -66,14 +66,14 @@ daemons_handler_configuration = {'all_daemons': True, 'ignore_errors': True}
 
 # Test
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_use_source_ip(test_configuration, test_metadata, set_wazuh_configuration, configure_receiver_sockets,
+def test_authd_use_source_ip(test_configuration, test_metadata, set_fortishield_configuration, configure_receiver_sockets,
                              truncate_monitored_files, daemons_handler,
                              configure_sockets_environment, wait_for_authd_startup, connect_to_sockets):
     '''
     description:
         Checks that every input message in authd port generates the adequate output
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -85,9 +85,9 @@ def test_authd_use_source_ip(test_configuration, test_metadata, set_wazuh_config
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_receiver_sockets
             type: fixture
             brief: Set receiver sockets from configuration.

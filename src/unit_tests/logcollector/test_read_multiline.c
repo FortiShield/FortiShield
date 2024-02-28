@@ -17,7 +17,7 @@
 #include "../../logcollector/logcollector.h"
 #include "../../headers/shared.h"
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
 
 /* Setup & Teardown */

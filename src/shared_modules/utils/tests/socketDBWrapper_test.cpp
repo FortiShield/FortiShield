@@ -14,7 +14,7 @@
 #include "socketDBWrapper.hpp"
 
 // temp header
-#include "wazuhDBQueryBuilder.hpp"
+#include "fortishieldDBQueryBuilder.hpp"
 #include <chrono>
 #include <thread>
 

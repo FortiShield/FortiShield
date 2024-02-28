@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -7,18 +7,18 @@ from unittest.mock import call, ANY, patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
         import scripts.agent_upgrade as agent_upgrade
-        from wazuh.core.exception import FortishieldError
-        from wazuh.core.results import AffectedItemsFortishieldResult
+        from fortishield.core.exception import FortishieldError
+        from fortishield.core.results import AffectedItemsFortishieldResult
 
 
 @patch('scripts.agent_upgrade.exit')
@@ -34,7 +34,7 @@ def test_get_script_arguments(mock_ArgumentParser):
     mock_ArgumentParser.assert_called_once_with()
     mock_ArgumentParser.return_value.add_argument.assert_has_calls([
         call('-a', '--agents', nargs='+', help='Agent IDs to upgrade.'),
-        call('-r', '--repository', type=str, help='Specify a repository URL. [Default: packages.wazuh.com/4.x/wpk/]'),
+        call('-r', '--repository', type=str, help='Specify a repository URL. [Default: packages.fortishield.com/4.x/wpk/]'),
         call('-v', '--version', type=str, help='Version to upgrade. [Default: latest Fortishield version]'),
         call('-F', '--force', action='store_true', help='Forces the agents to upgrade, ignoring version validations.'),
         call('-s', '--silent', action='store_true', help='Do not show output.'),
@@ -64,7 +64,7 @@ def test_list_outdated(capfd, api_response, total_affected_items):
     result.affected_items = [api_response]
     result.total_affected_items = total_affected_items
 
-    with patch('wazuh.agent.get_outdated_agents', return_value=result):
+    with patch('fortishield.agent.get_outdated_agents', return_value=result):
         agent_upgrade.list_outdated()
         out, err = capfd.readouterr()
         if total_affected_items:

@@ -1,18 +1,18 @@
 """
  Copyright (C) 2015-2043, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 import time
-from wazuh_testing.tools.thread_executor import ThreadExecutor
+from fortishield_testing.tools.thread_executor import ThreadExecutor
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.analysisd.patterns import ANALYSISD_STARTED
-from wazuh_testing.utils import callbacks
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.tools.simulators.agent_simulator import connect
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.analysisd.patterns import ANALYSISD_STARTED
+from fortishield_testing.utils import callbacks
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.tools.simulators.agent_simulator import connect
 
 @pytest.fixture(scope='module')
 def waiting_for_analysisd_startup(request):

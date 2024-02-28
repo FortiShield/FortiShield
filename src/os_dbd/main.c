@@ -12,7 +12,7 @@
 #include "dbd.h"
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-dbd"
+#define ARGV0 "fortishield-dbd"
 #endif
 
 /* Prototypes */

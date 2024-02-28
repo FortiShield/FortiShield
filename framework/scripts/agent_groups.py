@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -15,14 +15,14 @@ from sys import exit, argv
 debug = False
 
 try:
-    import wazuh.agent as agent
-    from wazuh.core.exception import FortishieldError
-    from wazuh.core.cluster import utils as cluster_utils
+    import fortishield.agent as agent
+    from fortishield.core.exception import FortishieldError
+    from fortishield.core.cluster import utils as cluster_utils
 except Exception as e:
     print("Error importing 'Fortishield' package.\n\n{0}\n".format(e))
     exit()
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 
 # Functions

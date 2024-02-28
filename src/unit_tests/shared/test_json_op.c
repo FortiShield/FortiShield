@@ -20,8 +20,8 @@
 
 #include "../../headers/json_op.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
 #include "../wrappers/common.h"
 #include "../../headers/shared.h"

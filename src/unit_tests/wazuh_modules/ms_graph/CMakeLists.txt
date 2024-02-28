@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Tests list and flags
 list(APPEND tests_names "test_wm_ms_graph")
@@ -22,9 +22,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB ms_graph ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM ms_graph ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB ms_graph ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM ms_graph ../../../fortishield_modules/main.o)
 
 add_library(MS_GRAPH_O STATIC ${ms_graph})
 

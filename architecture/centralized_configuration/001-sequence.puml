@@ -1,5 +1,5 @@
 ' Copyright (C) 2015, Fortishield Inc.
-' Created by Fortishield, Inc. <info@wazuh.com>.
+' Created by Fortishield, Inc. <info@fortishield.com>.
 ' This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 @startuml centralized_configuration
@@ -7,14 +7,14 @@
 hide footbox
 
 box "**Fortishield Master Node**"
-participant "wazuh-remoted" as masterremote
-participant "wazuh-clusterd" as mclusterd
+participant "fortishield-remoted" as masterremote
+participant "fortishield-clusterd" as mclusterd
 end box
 box "**Fortishield Worker Node**"
-participant "wazuh-clusterd" as wclusterd
-participant "wazuh-remoted" as workerremote
+participant "fortishield-clusterd" as wclusterd
+participant "fortishield-remoted" as workerremote
 end box
-participant "**Fortishield Agent**\nwazuh-agentd" as agent
+participant "**Fortishield Agent**\nfortishield-agentd" as agent
 
 masterremote++
 mclusterd++
@@ -30,7 +30,7 @@ end
 
 loop
     wclusterd -> mclusterd: sync
-    rnote over wclusterd, mclusterd: [[https://github.com/fortishield/wazuh/blob/master/framework/wazuh/core/cluster/cluster.json sync file list]]
+    rnote over wclusterd, mclusterd: [[https://github.com/fortishield/fortishield/blob/master/framework/fortishield/core/cluster/cluster.json sync file list]]
     mclusterd --> wclusterd: delta
 end
 

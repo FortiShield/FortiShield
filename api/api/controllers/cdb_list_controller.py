@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -11,11 +11,11 @@ from connexion.lifecycle import ConnexionResponse
 from api.encoder import dumps, prettify
 from api.models.base_model_ import Body
 from api.util import remove_nones_to_dict, parse_api_param, raise_if_exc
-from wazuh import cdb_list
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.results import AffectedItemsFortishieldResult
+from fortishield import cdb_list
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.results import AffectedItemsFortishieldResult
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def get_lists(request, pretty: bool = False, wait_for_complete: bool = False, offset: int = 0, limit: int = None,

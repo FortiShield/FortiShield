@@ -29,7 +29,7 @@ char* rk_get_title(const char *log);
 char* rk_get_file(const char *log);
 
 /**
- * Sends a rootcheck log through wazuh database
+ * Sends a rootcheck log through fortishield database
  * @param agent_id [In] string containing the agent id
  * @param date [In] timestamp of when the log has been updated
  * @param log [In] log entry string

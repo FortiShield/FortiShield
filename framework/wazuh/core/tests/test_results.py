@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from copy import deepcopy
@@ -8,10 +8,10 @@ from unittest.mock import patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.results import FortishieldResult, AffectedItemsFortishieldResult, _goes_before_than, nested_itemgetter, merge
-        from wazuh import FortishieldException, FortishieldError
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.results import FortishieldResult, AffectedItemsFortishieldResult, _goes_before_than, nested_itemgetter, merge
+        from fortishield import FortishieldException, FortishieldError
 
 param_name = ['affected_items', 'total_affected_items', 'sort_fields', 'sort_casting', 'sort_ascending',
               'all_msg', 'some_msg', 'none_msg']
@@ -20,13 +20,13 @@ FAILED_AGENT_ID = '999'
 
 
 @pytest.fixture(scope='function')
-def get_wazuh_result():
+def get_fortishield_result():
     return FortishieldResult(dct={"data": {"items": [{"item1": "data1"}, {"item2": "OK"}], "message": "Everything ok"}},
                        str_priority=['KO', 'OK'])
 
 
 @pytest.fixture(scope='function')
-def get_wazuh_affected_item():
+def get_fortishield_affected_item():
     def _get_affected(params=None):
         kwargs = {p_name: param for p_name, param in zip(param_name, params)}
         return AffectedItemsFortishieldResult(**kwargs)
@@ -35,7 +35,7 @@ def get_wazuh_affected_item():
 
 
 @pytest.fixture(scope='function')
-def get_wazuh_failed_item():
+def get_fortishield_failed_item():
     item = AffectedItemsFortishieldResult()
     item.add_failed_item(id_=FAILED_AGENT_ID, error=FortishieldException(FORTISHIELD_EXCEPTION_CODE))
     return item
@@ -45,7 +45,7 @@ def get_wazuh_failed_item():
     ({"data": {"items": [{"item1": "data1"}, {"item2": "OK"}], "message": "Everything ok"}}, ['KO', 'OK']),
     ({"data": {"items": [{"item1": "data1"}, {"item2": "data2"}], "message": "Everything ok"}}, None),
 ])
-def test_results_FortishieldResult__merge_str(dikt, priority, get_wazuh_affected_item):
+def test_results_FortishieldResult__merge_str(dikt, priority, get_fortishield_affected_item):
     """Test method `_merge_str` from `FortishieldResult`.
 
         Parameters
@@ -55,32 +55,32 @@ def test_results_FortishieldResult__merge_str(dikt, priority, get_wazuh_affected
         priority : list
             Used to set the FortishieldResult priority.
         """
-    wazuh_result = FortishieldResult(deepcopy(dikt), str_priority=priority)
-    assert isinstance(wazuh_result, FortishieldResult)
-    item2 = wazuh_result.dikt['data']['items'][1]['item2']
-    merge_result = wazuh_result._merge_str(item2, 'KO')
+    fortishield_result = FortishieldResult(deepcopy(dikt), str_priority=priority)
+    assert isinstance(fortishield_result, FortishieldResult)
+    item2 = fortishield_result.dikt['data']['items'][1]['item2']
+    merge_result = fortishield_result._merge_str(item2, 'KO')
     assert merge_result == priority[0] if priority else '{}|{}'.format(item2, 'KO')
 
 
-def test_results_FortishieldResult_to_dict(get_wazuh_result):
+def test_results_FortishieldResult_to_dict(get_fortishield_result):
     """Test method `to_dict` from `FortishieldResult`."""
-    dict_result = get_wazuh_result.to_dict()
+    dict_result = get_fortishield_result.to_dict()
     assert isinstance(dict_result, dict)
     assert (key == result_key for key, result_key in zip(['str_priority', 'result'], dict_result.keys()))
 
 
-def test_results_FortishieldResult_render(get_wazuh_result):
+def test_results_FortishieldResult_render(get_fortishield_result):
     """Test method `render` from `FortishieldResult`."""
-    render_result = get_wazuh_result.render()
+    render_result = get_fortishield_result.render()
     assert isinstance(render_result, dict)
-    assert render_result == get_wazuh_result.dikt
+    assert render_result == get_fortishield_result.dikt
 
 
-def test_results_FortishieldResult_decode_json(get_wazuh_result):
+def test_results_FortishieldResult_decode_json(get_fortishield_result):
     """Test class method `decode_json` from `FortishieldResult`."""
-    wazuh_result = get_wazuh_result
-    decoded_result = FortishieldResult.decode_json(wazuh_result.to_dict())
-    assert decoded_result == wazuh_result
+    fortishield_result = get_fortishield_result
+    decoded_result = FortishieldResult.decode_json(fortishield_result.to_dict())
+    assert decoded_result == fortishield_result
 
 
 @pytest.mark.parametrize('param_value', [
@@ -91,7 +91,7 @@ def test_results_FortishieldResult_decode_json(get_wazuh_result):
     [[], 0, None, None, ['int'], None, 'Sample message', 'Sample message', 'Sample message'],
     [['001'], None, None, ['str'], None, 'Sample message', 'Sample message', 'Sample message']
 ])
-def test_results_AffectedItemsFortishieldResult(get_wazuh_affected_item, param_value):
+def test_results_AffectedItemsFortishieldResult(get_fortishield_affected_item, param_value):
     """Test class `AffectedItemsFortishieldResult`.
 
     Parameters
@@ -99,7 +99,7 @@ def test_results_AffectedItemsFortishieldResult(get_wazuh_affected_item, param_v
     param_value : list
         List with param values for _init_.
     """
-    affected_result = get_wazuh_affected_item(param_value)
+    affected_result = get_fortishield_affected_item(param_value)
     assert isinstance(affected_result, AffectedItemsFortishieldResult)
     for value, dikt_value in zip(param_value, affected_result.dikt.values()):
         assert value == dikt_value
@@ -117,10 +117,10 @@ def test_results_AffectedItemsFortishieldResult_add_failed_item():
     assert set(id_list) == next(iter(affected_result.failed_items.values()))
 
 
-def test_results_AffectedItemsFortishieldResult_add_failed_items_from(get_wazuh_failed_item):
+def test_results_AffectedItemsFortishieldResult_add_failed_items_from(get_fortishield_failed_item):
     """Test method `add_failed_items_from` from class `AffectedItemsFortishieldResult`."""
     affected_result = AffectedItemsFortishieldResult()
-    failed_result = get_wazuh_failed_item
+    failed_result = get_fortishield_failed_item
     affected_result.add_failed_items_from(failed_result)
     assert affected_result.failed_items == failed_result.failed_items
 
@@ -132,20 +132,20 @@ def test_results_AffectedItemsFortishieldResult_add_failed_items_from_exception(
         affected_result.add_failed_items_from('Invalid type')
 
 
-def test_results_AffectedItemsFortishieldResult_remove_failed_items(get_wazuh_failed_item):
+def test_results_AffectedItemsFortishieldResult_remove_failed_items(get_fortishield_failed_item):
     """Test method `remove_failed_items` from class `AffectedItemsFortishieldResult`."""
-    failed_result = get_wazuh_failed_item
+    failed_result = get_fortishield_failed_item
     failed_result.remove_failed_items(code={FORTISHIELD_EXCEPTION_CODE})
     assert not failed_result.failed_items
 
 
-def test_results_AffectedItemsFortishieldResult___or__(get_wazuh_failed_item):
+def test_results_AffectedItemsFortishieldResult___or__(get_fortishield_failed_item):
     """Test method `__or__` from class `AffectedItemsFortishieldResult`."""
     agent_list_1 = ['001', '002']
     agent_list_2 = ['004', '003']
     affected_item_1 = AffectedItemsFortishieldResult(affected_items=deepcopy(agent_list_1))
     affected_item_2 = AffectedItemsFortishieldResult(affected_items=deepcopy(agent_list_2))
-    failed_item = get_wazuh_failed_item
+    failed_item = get_fortishield_failed_item
 
     # Expect 'affected_items': ['001', '002', '003']
     or_result_1 = affected_item_1 | affected_item_2
@@ -200,10 +200,10 @@ def test_results_AffectedItemsFortishieldResult_properties():
         assert value == getattr(affected_result, key)
 
 
-def test_results_AffectedItemsFortishieldResult_failed_items_properties(get_wazuh_failed_item):
+def test_results_AffectedItemsFortishieldResult_failed_items_properties(get_fortishield_failed_item):
     """Test `failed_items` properties from class `AffectedItemsFortishieldResult`."""
-    fail_items = get_wazuh_failed_item.failed_items
-    total_fail_items = get_wazuh_failed_item.total_failed_items
+    fail_items = get_fortishield_failed_item.failed_items
+    total_fail_items = get_fortishield_failed_item.total_failed_items
     assert isinstance(fail_items, dict)
     assert total_fail_items == 1
 
@@ -233,10 +233,10 @@ def test_results_AffectedItemsFortishieldResult__merge_str(self_field, other_fie
     assert merge_result == expected_result
 
 
-def test_results_AffectedItemsFortishieldResult_encode_decode_json(get_wazuh_affected_item):
+def test_results_AffectedItemsFortishieldResult_encode_decode_json(get_fortishield_affected_item):
     """Test methods `encode_json` and `decode_json` from class `AffectedItemsFortishieldResult`."""
     param_list = [['001', '002'], 2, None, ['int'], [True, True], 'Sample message', 'Sample message', 'Sample message']
-    affected_result = get_wazuh_affected_item(param_list)
+    affected_result = get_fortishield_affected_item(param_list)
     affected_result.add_failed_item(id_=FAILED_AGENT_ID, error=FortishieldException(FORTISHIELD_EXCEPTION_CODE))
     # Use a complete AffectedIemsFortishieldResult to encode a json and then decode it
     json_item = affected_result.encode_json()
@@ -244,10 +244,10 @@ def test_results_AffectedItemsFortishieldResult_encode_decode_json(get_wazuh_aff
     assert affected_result == decoded_json
 
 
-def test_results_AffectedItemsFortishieldResult_render(get_wazuh_affected_item):
+def test_results_AffectedItemsFortishieldResult_render(get_fortishield_affected_item):
     """Test method `render` from class `AffectedItemsFortishieldResult`."""
     param_list = [['001', '002'], 2, None, ['int'], [True, True], 'Sample message', 'Sample message', 'Sample message']
-    affected_result = get_wazuh_affected_item(param_list)
+    affected_result = get_fortishield_affected_item(param_list)
     for agent_id in [FAILED_AGENT_ID, 'Invalid ID']:
         affected_result.add_failed_item(id_=agent_id, error=FortishieldException(FORTISHIELD_EXCEPTION_CODE))
     # Render a valid AffectedItemsFortishieldResult and check it has all the expected fields

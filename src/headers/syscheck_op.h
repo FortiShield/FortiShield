@@ -235,7 +235,7 @@ typedef struct sk_sum_t {
 int sk_decode_sum(sk_sum_t *sum, char *c_sum, char *w_sum);
 
 /**
- * @brief Parse fields changes and date_alert only provide for wazuh_db
+ * @brief Parse fields changes and date_alert only provide for fortishield_db
  *
  * @param [out] sum
  * @param [in] c_sum

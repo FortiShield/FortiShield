@@ -1,16 +1,16 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
 
-from wazuh import FortishieldInternalError
-from wazuh.core import common
-from wazuh.core.agent import Agent
-from wazuh.core.cluster import local_client
-from wazuh.core.cluster.common import as_wazuh_object, FortishieldJSONEncoder
-from wazuh.core.exception import FortishieldError
-from wazuh.core.utils import filter_array_by_query
+from fortishield import FortishieldInternalError
+from fortishield.core import common
+from fortishield.core.agent import Agent
+from fortishield.core.cluster import local_client
+from fortishield.core.cluster.common import as_fortishield_object, FortishieldJSONEncoder
+from fortishield.core.exception import FortishieldError
+from fortishield.core.utils import filter_array_by_query
 
 
 async def get_nodes(lc: local_client.LocalClient, filter_node=None, offset=0, limit=common.DATABASE_LIMIT,
@@ -54,7 +54,7 @@ async def get_nodes(lc: local_client.LocalClient, filter_node=None, offset=0, li
                      'select': select, 'filter_type': filter_type, 'distinct': distinct}
 
     response = await lc.execute(command=b'get_nodes', data=json.dumps(arguments).encode())
-    result = json.loads(response, object_hook=as_wazuh_object)
+    result = json.loads(response, object_hook=as_fortishield_object)
 
     if isinstance(result, Exception):
         raise result
@@ -90,7 +90,7 @@ async def get_node(lc: local_client.LocalClient, filter_node=None, select=None):
                  'select': select, 'filter_type': 'all'}
 
     response = await lc.execute(command=b'get_nodes', data=json.dumps(arguments).encode())
-    node_info_array = json.loads(response, object_hook=as_wazuh_object)
+    node_info_array = json.loads(response, object_hook=as_fortishield_object)
 
     if isinstance(node_info_array, Exception):
         raise node_info_array
@@ -117,7 +117,7 @@ async def get_health(lc: local_client.LocalClient, filter_node=None):
         Basic information of each node and synchronization process related information.
     """
     response = await lc.execute(command=b'get_health', data=json.dumps(filter_node).encode())
-    result = json.loads(response, object_hook=as_wazuh_object)
+    result = json.loads(response, object_hook=as_fortishield_object)
 
     if isinstance(result, Exception):
         raise result
@@ -157,7 +157,7 @@ async def get_agents(lc: local_client.LocalClient, filter_node=None, filter_stat
                   }
 
     response = await lc.execute(command=b'dapi', data=json.dumps(input_json, cls=FortishieldJSONEncoder).encode())
-    result = json.loads(response, object_hook=as_wazuh_object)
+    result = json.loads(response, object_hook=as_fortishield_object)
 
     if isinstance(result, Exception):
         raise result
@@ -200,7 +200,7 @@ async def get_node_ruleset_integrity(lc: local_client.LocalClient) -> dict:
         Dictionary with results
     """
     response = await lc.execute(command=b"get_hash", data=b"")
-    result = json.loads(response, object_hook=as_wazuh_object)
+    result = json.loads(response, object_hook=as_fortishield_object)
 
     if isinstance(result, Exception):
         raise result

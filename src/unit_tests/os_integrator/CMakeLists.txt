@@ -20,7 +20,7 @@ set_target_properties(
 target_link_libraries(OS_INTEGRATOR_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 list(APPEND os_integrator_names "test_integrator")
 list(APPEND os_integrator_flags "-Wl,--wrap,jqueue_open -Wl,--wrap,jqueue_next -Wl,--wrap,FOREVER -Wl,--wrap,time ${DEBUG_OP_WRAPPERS} \

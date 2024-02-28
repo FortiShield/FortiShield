@@ -11,7 +11,7 @@
 #include <shared.h>
 #include "csyslogd.h"
 #include "os_net/os_net.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 size_t csyscom_dispatch(const char * command, char ** output){
 

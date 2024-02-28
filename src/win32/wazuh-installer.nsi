@@ -27,7 +27,7 @@
 
 ; output file
 !ifndef OutFile
-    !define OutFile "wazuh-agent-${VERSION}.exe"
+    !define OutFile "fortishield-agent-${VERSION}.exe"
 !endif
 
 Var is_upgrade
@@ -185,8 +185,8 @@ Section "Fortishield Agent (required)" MainSec
     CreateDirectory "$INSTDIR\ruleset\sca"
 
     ; install files
-    File wazuh-agent.exe
-    File wazuh-agent-eventchannel.exe
+    File fortishield-agent.exe
+    File fortishield-agent-eventchannel.exe
     File default-ossec.conf
     File manage_agents.exe
     File /oname=win32ui.exe os_win32ui.exe
@@ -206,21 +206,21 @@ Section "Fortishield Agent (required)" MainSec
     File /oname=help.txt help_win.txt
     File vista_sec.txt
     File /oname=active-response\bin\route-null.exe route-null.exe
-    File /oname=active-response\bin\restart-wazuh.exe restart-wazuh.exe
+    File /oname=active-response\bin\restart-fortishield.exe restart-fortishield.exe
     File /oname=active-response\bin\netsh.exe netsh.exe
     File /oname=libwinpthread-1.dll libwinpthread-1.dll
     File /oname=libgcc_s_dw2-1.dll libgcc_s_dw2-1.dll
     File /oname=libstdc++-6.dll libstdc++-6.dll
     File agent-auth.exe
     File /oname=wpk_root.pem ..\..\etc\wpk_root.pem
-    File /oname=libwazuhext.dll ..\libwazuhext.dll
-    File /oname=libwazuhshared.dll ..\libwazuhshared.dll
+    File /oname=libfortishieldext.dll ..\libfortishieldext.dll
+    File /oname=libfortishieldshared.dll ..\libfortishieldshared.dll
     File /oname=dbsync.dll ..\shared_modules\dbsync\build\bin\dbsync.dll
     File /oname=rsync.dll ..\shared_modules\rsync\build\bin\rsync.dll
     File /oname=sysinfo.dll ..\data_provider\build\bin\sysinfo.dll
-    File /oname=syscollector.dll ..\wazuh_modules\syscollector\build\bin\syscollector.dll
+    File /oname=syscollector.dll ..\fortishield_modules\syscollector\build\bin\syscollector.dll
     File /oname=libfimdb.dll ..\syscheckd/build/bin/libfimdb.dll
-    File /oname=queue\syscollector\norm_config.json ..\wazuh_modules\syscollector\norm_config.json
+    File /oname=queue\syscollector\norm_config.json ..\fortishield_modules\syscollector\norm_config.json
     File VERSION
     File REVISION
 
@@ -228,12 +228,12 @@ Section "Fortishield Agent (required)" MainSec
     FileOpen $0 "$INSTDIR\active-response\active-responses.log" w
     FileClose $0
 
-    ; use appropriate version of "wazuh-agent.exe"
+    ; use appropriate version of "fortishield-agent.exe"
     ${If} ${AtLeastWinVista}
-        Delete "$INSTDIR\wazuh-agent.exe"
-        Rename "$INSTDIR\wazuh-agent-eventchannel.exe" "$INSTDIR\wazuh-agent.exe"
+        Delete "$INSTDIR\fortishield-agent.exe"
+        Rename "$INSTDIR\fortishield-agent-eventchannel.exe" "$INSTDIR\fortishield-agent.exe"
     ${Else}
-        Delete "$INSTDIR\wazuh-agent-eventchannel.exe"
+        Delete "$INSTDIR\fortishield-agent-eventchannel.exe"
     ${Endif}
 
     ; write registry keys
@@ -242,8 +242,8 @@ Section "Fortishield Agent (required)" MainSec
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "DisplayVersion" "${VERSION}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "Publisher" "Fortishield, Inc."
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "DisplayIcon" '"$INSTDIR\favicon.ico"'
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "HelpLink" "https://wazuh.com"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "URLInfoAbout" "https://wazuh.com"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "HelpLink" "https://fortishield.com"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "URLInfoAbout" "https://fortishield.com"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OSSEC" "UninstallString" '"$INSTDIR\uninstall.exe"'
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
@@ -342,7 +342,7 @@ Section "Fortishield Agent (required)" MainSec
 
     ; install OSSEC service
     ServiceInstall:
-        nsExec::ExecToLog '"$INSTDIR\wazuh-agent.exe" install-service'
+        nsExec::ExecToLog '"$INSTDIR\fortishield-agent.exe" install-service'
         Pop $0
         ${If} $0 <> 1
             MessageBox MB_ABORTRETRYIGNORE|MB_ICONSTOP "$\r$\n\
@@ -421,7 +421,7 @@ Section "Uninstall"
     ; uninstall the services
     ; this also stops the service as well so it should be done early
     ServiceUninstall:
-        nsExec::ExecToLog '"$INSTDIR\wazuh-agent.exe" uninstall-service'
+        nsExec::ExecToLog '"$INSTDIR\fortishield-agent.exe" uninstall-service'
         Pop $0
         ${If} $0 <> 1
             MessageBox MB_ABORTRETRYIGNORE|MB_ICONSTOP "$\r$\n\
@@ -478,7 +478,7 @@ Section "Uninstall"
     DeleteRegKey HKLM SOFTWARE\OSSEC
 
     ; remove files and uninstaller
-    Delete "$INSTDIR\wazuh-agent.exe"
+    Delete "$INSTDIR\fortishield-agent.exe"
     Delete "$INSTDIR\agent-auth.exe"
     Delete "$INSTDIR\manage_agents.exe"
     Delete "$INSTDIR\ossec.conf"

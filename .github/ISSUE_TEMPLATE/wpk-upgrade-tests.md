@@ -147,21 +147,21 @@ For each operating system and version, check the following points and add a comm
 ## Linux:
 ###  UPGRADE FAIL
 
-- [ ] The wazuh home backup is restored correctly (no traces of the installation, but only the `.tar.gz` backup and the logs).
+- [ ] The fortishield home backup is restored correctly (no traces of the installation, but only the `.tar.gz` backup and the logs).
 - [ ] The permissions and owners of the following directories did NOT change:
       - `/`
       - `/var`
       - `/usr`, `/usr/lib/`, `/usr/lib/systemd/`, `/usr/lib/systemd/system/`
       - `/etc`, `/etc/systemd/`, `/etc/systemd/system/`, `/etc/rc.d`, `/etc/initd.d/`, `/etc/initd.d/rc.d/`
-- [ ] Fortishield service runs wazuh-control (`systemctl cat wazuh-agent.service`)
-- [ ] Fortishield service runs ossec-control (`systemctl cat wazuh-agent.service`)
-- [ ] The service was enabled (`systemctl is-enabled wazuh-agent.service`)
-- [ ] Init file runs wazuh-control (`cat /etc/rc.d/init.d/wazuh-agent`)
-- [ ] Init file runs ossec-control (`cat /etc/rc.d/init.d/wazuh-agent`)
+- [ ] Fortishield service runs fortishield-control (`systemctl cat fortishield-agent.service`)
+- [ ] Fortishield service runs ossec-control (`systemctl cat fortishield-agent.service`)
+- [ ] The service was enabled (`systemctl is-enabled fortishield-agent.service`)
+- [ ] Init file runs fortishield-control (`cat /etc/rc.d/init.d/fortishield-agent`)
+- [ ] Init file runs ossec-control (`cat /etc/rc.d/init.d/fortishield-agent`)
 - [ ] Fortishield as service is enabled `chkconfig --list` 
 - [ ] Fortishield starts and connects when the backup is restored (`cat /var/ossec/var/run/ossec-agentd.state`)
 - [ ] Fortishield starts and connects automatically when the system is rebooted.
-- [ ] Restore SELinux policies (`semodule -l | grep -i wazuh`) (DISABLED)
+- [ ] Restore SELinux policies (`semodule -l | grep -i fortishield`) (DISABLED)
 
 ###  UPGRADE OK
 

@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -20,12 +20,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -50,8 +50,8 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/reference.html (Get Fortishield daemon stats)
-    - https://documentation.wazuh.com/current/user-manual/api/reference.html (Get Fortishield daemon stats from an agent)
+    - https://documentation.fortishield.com/current/user-manual/api/reference.html (Get Fortishield daemon stats)
+    - https://documentation.fortishield.com/current/user-manual/api/reference.html (Get Fortishield daemon stats from an agent)
 
 tags:
     - api
@@ -61,10 +61,10 @@ import requests
 from pathlib import Path
 
 from . import CONFIGURATION_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing import DATA_PATH
-from wazuh_testing.constants.api import DAEMONS_STATS_ROUTE
-from wazuh_testing.modules.api.utils import get_base_url, login, validate_statistics
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing import DATA_PATH
+from fortishield_testing.constants.api import DAEMONS_STATS_ROUTE
+from fortishield_testing.modules.api.utils import get_base_url, login, validate_statistics
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 pytestmark = [pytest.mark.server, pytest.mark.tier(level=0)]
@@ -92,8 +92,8 @@ test2_configuration, test2_metadata, test2_cases_ids = get_test_cases_data(test2
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test1_configuration, test1_metadata),
                          ids=test1_cases_ids)
-def test_manager_statistics_format(test_configuration, test_metadata, load_wazuh_basic_configuration,
-                                   set_wazuh_configuration, daemons_handler):
+def test_manager_statistics_format(test_configuration, test_metadata, load_fortishield_basic_configuration,
+                                   set_fortishield_configuration, daemons_handler):
     """
     description: Check if the statistics returned by the API have the expected format.
 
@@ -101,15 +101,15 @@ def test_manager_statistics_format(test_configuration, test_metadata, load_wazuh
         - setup:
             - Load Fortishield light configuration
             - Apply ossec.conf configuration changes according to the configuration template and use case
-            - Restart wazuh-manager service to apply configuration changes
+            - Restart fortishield-manager service to apply configuration changes
         - test:
             - Request the statistics of a particular daemon from the API
             - Compare the obtained statistics with the json schema
         - teardown:
             - Restore initial configuration
-            - Stop wazuh-manager
+            - Stop fortishield-manager
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     parameters:
         - test_configuration:
@@ -118,10 +118,10 @@ def test_manager_statistics_format(test_configuration, test_metadata, load_wazuh
         - test_metadata:
             type: dict
             brief: Metadata from the test case.
-        - load_wazuh_basic_configuration:
+        - load_fortishield_basic_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
-        - set_wazuh_configuration:
+            brief: Load basic fortishield configuration.
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
         - daemons_handler:
@@ -155,16 +155,16 @@ def test_agent_statistics_format(test_metadata, daemons_handler, simulate_agent)
 
     test_phases:
         - setup:
-            - Restart wazuh-manager service to apply configuration changes
+            - Restart fortishield-manager service to apply configuration changes
         - test:
             - Simulate and connect an agent
             - Request the statistics of a particular daemon and agent from the API
             - Compare the obtained statistics with the json schema
             - Stop and delete the simulated agent
         - teardown:
-            - Stop wazuh-manager
+            - Stop fortishield-manager
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     parameters:
         - test_metadata:

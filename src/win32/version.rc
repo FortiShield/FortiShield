@@ -49,7 +49,7 @@ BEGIN
 		VALUE "LegalCopyright",     "Copyright (C) Fortishield, Inc."
 		VALUE "ProductName",        "Fortishield Windows Agent"
 		VALUE "ProductVersion",     QUOTE(VER_PRODUCTVERSION_STR)
-         VALUE "Info",               "https://www.wazuh.com"
+         VALUE "Info",               "https://www.fortishield.com"
          VALUE "License",            "GPLv2"
         END
 	END

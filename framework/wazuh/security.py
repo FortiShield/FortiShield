@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import re
@@ -7,16 +7,16 @@ from copy import deepcopy
 from functools import lru_cache
 
 from api.authentication import get_security_conf
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError, FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult, FortishieldResult
-from wazuh.core.security import invalid_users_tokens, invalid_roles_tokens, invalid_run_as_tokens, revoke_tokens, \
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError, FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult, FortishieldResult
+from fortishield.core.security import invalid_users_tokens, invalid_roles_tokens, invalid_run_as_tokens, revoke_tokens, \
     load_spec, sanitize_rbac_policy, update_security_conf, REQUIRED_FIELDS, SORT_FIELDS, SORT_FIELDS_GET_USERS
-from wazuh.core.utils import process_array
-from wazuh.rbac.decorators import expose_resources
-from wazuh.rbac.orm import AuthenticationManager, PoliciesManager, RolesManager, RolesPoliciesManager
-from wazuh.rbac.orm import SecurityError, MAX_ID_RESERVED
-from wazuh.rbac.orm import UserRolesManager, RolesRulesManager, RulesManager
+from fortishield.core.utils import process_array
+from fortishield.rbac.decorators import expose_resources
+from fortishield.rbac.orm import AuthenticationManager, PoliciesManager, RolesManager, RolesPoliciesManager
+from fortishield.rbac.orm import SecurityError, MAX_ID_RESERVED
+from fortishield.rbac.orm import UserRolesManager, RolesRulesManager, RulesManager
 
 # Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:
 _user_password = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$')

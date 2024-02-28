@@ -1,12 +1,12 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core.common import QUEUE_SOCKET
-from wazuh.core.exception import FortishieldError
-from wazuh.core.results import FortishieldResult, AffectedItemsFortishieldResult
-from wazuh.core.wazuh_queue import FortishieldAnalysisdQueue
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.common import QUEUE_SOCKET
+from fortishield.core.exception import FortishieldError
+from fortishield.core.results import FortishieldResult, AffectedItemsFortishieldResult
+from fortishield.core.fortishield_queue import FortishieldAnalysisdQueue
+from fortishield.rbac.decorators import expose_resources
 
 MSG_HEADER = '1:API-Webhook:'
 

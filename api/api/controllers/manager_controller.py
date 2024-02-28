@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import datetime
@@ -9,8 +9,8 @@ from typing import Union
 from aiohttp import web
 from connexion.lifecycle import ConnexionResponse
 
-import wazuh.manager as manager
-import wazuh.stats as stats
+import fortishield.manager as manager
+import fortishield.stats as stats
 from api.constants import INSTALLATION_UID_KEY, UPDATE_INFORMATION_KEY
 from api.encoder import dumps, prettify
 from api.models.base_model_ import Body
@@ -18,13 +18,13 @@ from api.util import (
     deprecate_endpoint, deserialize_date, only_master_endpoint, parse_api_param, raise_if_exc, remove_nones_to_dict
 )
 from api.validator import check_component_configuration_pair
-from wazuh.core import common
-from wazuh.core import configuration
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.manager import query_update_check_service
-from wazuh.core.results import AffectedItemsFortishieldResult
+from fortishield.core import common
+from fortishield.core import configuration
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.manager import query_update_check_service
+from fortishield.core.results import AffectedItemsFortishieldResult
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def get_status(request, pretty: bool = False, wait_for_complete: bool = False) -> web.Response:
@@ -102,7 +102,7 @@ async def get_configuration(request, pretty: bool = False, wait_for_complete: bo
     wait_for_complete : bool, optional
         Disable response timeout or not. Default `False`
     section : str
-        Indicates the wazuh configuration section
+        Indicates the fortishield configuration section
     field : str
         Indicates a section child, e.g, fields for rule section are include, decoder_dir, etc.
     raw : bool, optional
@@ -346,7 +346,7 @@ async def get_stats_remoted(request, pretty: bool = False, wait_for_complete: bo
 async def get_log(request, pretty: bool = False, wait_for_complete: bool = False, offset: int = 0, limit: int = None,
                   sort: str = None, search: str = None, tag: str = None, level: str = None,
                   q: str = None, select: str = None, distinct: bool = False) -> web.Response:
-    """Get manager's or local_node's last 2000 wazuh log entries.
+    """Get manager's or local_node's last 2000 fortishield log entries.
 
     Parameters
     ----------
@@ -406,7 +406,7 @@ async def get_log(request, pretty: bool = False, wait_for_complete: bool = False
 
 
 async def get_log_summary(request, pretty: bool = False, wait_for_complete: bool = False) -> web.Response:
-    """Get manager's or local_node's summary of the last 2000 wazuh log entries.
+    """Get manager's or local_node's summary of the last 2000 fortishield log entries.
 
     Parameters
     ----------

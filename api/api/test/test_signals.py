@@ -57,8 +57,8 @@ async def test_cancel_signal_handler_catch_cancelled_error_and_dont_rise():
 
 @patch('api.signals.os.chmod')
 @patch('api.signals.os.chown')
-@patch('api.signals.common.wazuh_gid')
-@patch('api.signals.common.wazuh_uid')
+@patch('api.signals.common.fortishield_gid')
+@patch('api.signals.common.fortishield_uid')
 @pytest.mark.asyncio
 async def test_check_installation_uid_populate_uid_if_not_exists(
     uid_mock, gid_mock, chown_mock, chmod_mock, installation_uid_mock, application_mock

@@ -1,16 +1,16 @@
 # Copyright (C) 2015-2023, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 import pytest
 
-from wazuh_testing.constants.paths.configurations import AR_CONF
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.agentd.patterns import AGENTD_CONNECTED_TO_SERVER
-from wazuh_testing.modules.execd.patterns import EXECD_RECEIVED_MESSAGE
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.tools.simulators.remoted_simulator import RemotedSimulator
-from wazuh_testing.utils import file
-from wazuh_testing.utils.callbacks import generate_callback
+from fortishield_testing.constants.paths.configurations import AR_CONF
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.agentd.patterns import AGENTD_CONNECTED_TO_SERVER
+from fortishield_testing.modules.execd.patterns import EXECD_RECEIVED_MESSAGE
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.tools.simulators.remoted_simulator import RemotedSimulator
+from fortishield_testing.utils import file
+from fortishield_testing.utils.callbacks import generate_callback
 
 
 @pytest.fixture()

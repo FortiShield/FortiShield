@@ -16,9 +16,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB docker ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM docker ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB docker ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM docker ../../../fortishield_modules/main.o)
 
 add_library(DOCKER_O STATIC ${docker})
 

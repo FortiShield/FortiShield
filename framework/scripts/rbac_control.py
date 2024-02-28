@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -9,9 +9,9 @@ from os import path
 from signal import signal, SIGINT
 
 try:
-    from wazuh import FortishieldError
-    from wazuh.core.results import AffectedItemsFortishieldResult
-    from wazuh.core.cluster import utils as cluster_utils
+    from fortishield import FortishieldError
+    from fortishield.core.results import AffectedItemsFortishieldResult
+    from fortishield.core.cluster import utils as cluster_utils
 except Exception as e:
     print("Error importing 'Fortishield' package.\n\n{0}\n".format(e))
     sys.exit(1)
@@ -26,8 +26,8 @@ async def restore_default_passwords(script_args):
     """Try to update all RBAC default users passwords with console prompt."""
     import yaml
     from getpass import getpass
-    from wazuh.core.common import DEFAULT_RBAC_RESOURCES
-    from wazuh.security import update_user
+    from fortishield.core.common import DEFAULT_RBAC_RESOURCES
+    from fortishield.security import update_user
 
     default_users_file = path.join(DEFAULT_RBAC_RESOURCES, 'users.yaml')
     with open(default_users_file) as f:
@@ -56,7 +56,7 @@ async def reset_rbac_database(script_args):
         print("\tRBAC database reset aborted.")
         sys.exit(0)
 
-    from wazuh.core.security import rbac_db_factory_reset
+    from fortishield.core.security import rbac_db_factory_reset
 
     response = await cluster_utils.forward_function(rbac_db_factory_reset, request_type="local_master")
 

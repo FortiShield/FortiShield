@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -12,8 +12,8 @@ from typing import Tuple, Dict, List
 
 import uvloop
 
-from wazuh.core.cluster import common
-from wazuh.core.cluster.utils import context_tag
+from fortishield.core.cluster import common
+from fortishield.core.cluster.utils import context_tag
 
 
 class AbstractClientManager:
@@ -55,7 +55,7 @@ class AbstractClientManager:
         self.concurrency_test = concurrency_test
         self.file = file
         self.string = string
-        self.logger = logging.getLogger('wazuh') if not logger else logger
+        self.logger = logging.getLogger('fortishield') if not logger else logger
         self.tag = tag
         # Modify filter tags with context vars.
         context_tag.set(self.tag)

@@ -9,8 +9,8 @@
 
 #ifndef WIN32
 
-#include "wazuh_modules/wmodules.h"
-#include "wazuh_modules/wm_gcp.h"
+#include "fortishield_modules/wmodules.h"
+#include "fortishield_modules/wm_gcp.h"
 
 static const char *XML_ENABLED = "enabled";
 static const char *XML_PROJECT_ID = "project_id";

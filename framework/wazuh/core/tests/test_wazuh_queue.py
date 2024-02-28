@@ -1,16 +1,16 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest.mock import patch
 import socket
 
 import pytest
-from wazuh.core.exception import FortishieldException
-from wazuh.core.wazuh_queue import BaseQueue, FortishieldAnalysisdQueue, FortishieldQueue
+from fortishield.core.exception import FortishieldException
+from fortishield.core.fortishield_queue import BaseQueue, FortishieldAnalysisdQueue, FortishieldQueue
 
 
-@patch('wazuh.core.wazuh_queue.BaseQueue._connect')
+@patch('fortishield.core.fortishield_queue.BaseQueue._connect')
 def test_BaseQueue__init__(mock_conn):
     """Test BaseQueue.__init__ function."""
 
@@ -19,16 +19,16 @@ def test_BaseQueue__init__(mock_conn):
     mock_conn.assert_called_once_with()
 
 
-@patch('wazuh.core.wazuh_queue.BaseQueue.close')
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.BaseQueue.close')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
 def test_BaseQueue__enter__(mock_conn, mock_close):
     """Test BaseQueue.__enter__ function."""
     with BaseQueue('test_path') as wq:
         assert isinstance(wq, BaseQueue)
 
 
-@patch('wazuh.core.wazuh_queue.BaseQueue.close')
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.BaseQueue.close')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
 def test_BaseQueue__exit__(mock_connect, mock_close):
     """Test BaseQueue.__exit__ function."""
     with BaseQueue('test_path'):
@@ -37,21 +37,21 @@ def test_BaseQueue__exit__(mock_connect, mock_close):
     mock_close.assert_called_once()
 
 
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.socket.socket.setsockopt')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.socket.socket.setsockopt')
 def test_BaseQueue_protected_connect(mock_set, mock_conn):
     """Test BaseQueue._connect function."""
 
     BaseQueue('test_path')
 
-    with patch('wazuh.core.wazuh_queue.socket.socket.getsockopt', return_value=1):
+    with patch('fortishield.core.fortishield_queue.socket.socket.getsockopt', return_value=1):
         BaseQueue('test_path')
 
     mock_conn.assert_called_with('test_path')
     mock_set.assert_called_once_with(1, 7, 6400)
 
 
-@patch('wazuh.core.wazuh_queue.socket.socket.connect', side_effect=Exception)
+@patch('fortishield.core.fortishield_queue.socket.socket.connect', side_effect=Exception)
 def test_BaseQueue_protected_connect_ko(mock_conn):
     """Test BaseQueue._connect function exceptions."""
 
@@ -63,8 +63,8 @@ def test_BaseQueue_protected_connect_ko(mock_conn):
     (1, False),
     (0, True)
 ])
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.BaseQueue.MAX_MSG_SIZE', new=0)
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.BaseQueue.MAX_MSG_SIZE', new=0)
 def test_BaseQueue_protected_send(mock_conn, send_response, error):
     """Test BaseQueue._send function.
 
@@ -92,8 +92,8 @@ def test_BaseQueue_protected_send(mock_conn, send_response, error):
         "errno,match",
         [(1, ".* 1011 .*")]
 )
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.BaseQueue.MAX_MSG_SIZE', new=0)
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.BaseQueue.MAX_MSG_SIZE', new=0)
 @patch('socket.socket.send')
 def test_BaseQueue_protected_send_ko(mock_send, mock_conn, errno, match):
     """Test BaseQueue._send function exceptions."""
@@ -108,8 +108,8 @@ def test_BaseQueue_protected_send_ko(mock_send, mock_conn, errno, match):
     mock_conn.assert_called_with('test_path')
 
 
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.socket.socket.close')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.socket.socket.close')
 def test_BaseQueue_close(mock_close, mock_conn):
     """Test BaseQueue.close function."""
 
@@ -131,8 +131,8 @@ def test_BaseQueue_close(mock_close, mock_conn):
     ('force_reconnect', None, None),
     ('restart-ossec0', None, None)
 ])
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.FortishieldQueue._send')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.FortishieldQueue._send')
 def test_FortishieldQueue_send_msg_to_agent(mock_send, mock_conn, msg, agent_id, msg_type):
     """Test FortishieldQueue.send_msg_to_agent function.
 
@@ -158,8 +158,8 @@ def test_FortishieldQueue_send_msg_to_agent(mock_send, mock_conn, msg, agent_id,
     ('test_msg', '000', None, 1012),
     ('syscheck restart', None, None, 1014),
 ])
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.FortishieldQueue._send', side_effect=Exception)
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.FortishieldQueue._send', side_effect=Exception)
 def test_FortishieldQueue_send_msg_to_agent_ko(mock_send, mock_conn, msg, agent_id, msg_type, expected_exception):
     """Test FortishieldQueue.send_msg_to_agent function exceptions.
 
@@ -183,8 +183,8 @@ def test_FortishieldQueue_send_msg_to_agent_ko(mock_send, mock_conn, msg, agent_
     mock_conn.assert_called_once_with('test_path')
 
 
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.FortishieldAnalysisdQueue._send')
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.FortishieldAnalysisdQueue._send')
 def test_FortishieldAnalysisdQueue_send_msg(mock_send, mock_conn):
     """Test FortishieldAnalysisdQueue.send_msg function."""
 
@@ -203,8 +203,8 @@ def test_FortishieldAnalysisdQueue_send_msg(mock_send, mock_conn):
         "max_msg_size,expected_error_code",
         ([20, 1014], [1, 1012])
 )
-@patch('wazuh.core.wazuh_queue.socket.socket.connect')
-@patch('wazuh.core.wazuh_queue.FortishieldAnalysisdQueue._send', side_effect=Exception)
+@patch('fortishield.core.fortishield_queue.socket.socket.connect')
+@patch('fortishield.core.fortishield_queue.FortishieldAnalysisdQueue._send', side_effect=Exception)
 def test_FortishieldAnalysisdQueue_send_msg_ko(mock_send, mock_conn, max_msg_size, expected_error_code):
     """Test FortishieldAnalysisdQueue.send_msg function exceptions."""
 

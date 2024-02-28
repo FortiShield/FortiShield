@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Copyright (C) 2015, Fortishield Inc.
-# wazuh-control        This shell script takes care of starting
+# fortishield-control        This shell script takes care of starting
 #                      or stopping ossec-hids
 # Author: Daniel B. Cid <daniel.cid@gmail.com>
 
@@ -17,7 +17,7 @@ TYPE="agent"
 
 ###  Do not modify below here ###
 AUTHOR="Fortishield Inc."
-DAEMONS="wazuh-modulesd wazuh-logcollector wazuh-syscheckd wazuh-agentd wazuh-execd"
+DAEMONS="fortishield-modulesd fortishield-logcollector fortishield-syscheckd fortishield-agentd fortishield-execd"
 
 # Reverse order of daemons
 SDAEMONS=$(echo $DAEMONS | awk '{ for (i=NF; i>1; i--) printf("%s ",$i); print $1; }')
@@ -133,7 +133,7 @@ check_folders()
 
     if [ ! -d $ALERTS_FOLDER ]
     then
-        if rm -rf $ALERTS_FOLDER && mkdir -p $ALERTS_FOLDER && chown wazuh:wazuh $ALERTS_FOLDER && chmod 770 $ALERTS_FOLDER
+        if rm -rf $ALERTS_FOLDER && mkdir -p $ALERTS_FOLDER && chown fortishield:fortishield $ALERTS_FOLDER && chmod 770 $ALERTS_FOLDER
         then
             echo "WARNING: missing folder 'queue/alerts'. Restored back."
         else
@@ -313,7 +313,7 @@ restart)
     restart_service
     ;;
 reload)
-    DAEMONS=$(echo $DAEMONS | sed 's/wazuh-execd//')
+    DAEMONS=$(echo $DAEMONS | sed 's/fortishield-execd//')
     restart_service
     ;;
 status)

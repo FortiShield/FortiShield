@@ -1,12 +1,12 @@
 <!---
 Copyright (C) 2015, Fortishield Inc.
-Created by Fortishield, Inc. <info@wazuh.com>.
+Created by Fortishield, Inc. <info@fortishield.com>.
 This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 -->
 
 # Fortishield DB
 ## Index
-- [Fortishield DB](#wazuh-db)
+- [Fortishield DB](#fortishield-db)
   - [Index](#index)
   - [Purpose](#purpose)
   - [Activity diagrams](#activity-diagrams)

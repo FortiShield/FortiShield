@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,9 +21,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
-    - wazuh-monitord
-    - wazuh-modulesd
+    - fortishield-analysisd
+    - fortishield-monitord
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -45,15 +45,15 @@ tags:
 import pytest
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.modulesd.configuration import MODULESD_DEBUG
-from wazuh_testing.modules.modulesd import patterns
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.configuration import get_test_cases_data
-from wazuh_testing.utils.configuration import load_configuration_template
-from wazuh_testing.utils import callbacks
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.utils.file import truncate_file
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.modulesd.configuration import MODULESD_DEBUG
+from fortishield_testing.modules.modulesd import patterns
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.utils.configuration import load_configuration_template
+from fortishield_testing.utils import callbacks
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.utils.file import truncate_file
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
 # Marks
@@ -115,11 +115,11 @@ local_internal_options = {MODULESD_DEBUG: '2'}
 
 # Tests
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t1_configurations, t1_configuration_metadata), ids=t1_case_ids)
-def test_future_events_yes(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_future_events_yes(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `only_future_events` tag is set to yes.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -130,7 +130,7 @@ def test_future_events_yes(test_configuration, test_metadata, set_wazuh_configur
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -158,30 +158,30 @@ def test_future_events_yes(test_configuration, test_metadata, set_wazuh_configur
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*Bookmark updated'
-        - r'.*wazuh-modulesd:ms-graph.*seconds to run first scan'
+        - r'.*fortishield-modulesd:ms-graph.*Bookmark updated'
+        - r'.*fortishield-modulesd:ms-graph.*seconds to run first scan'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*Bookmark updated"))
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*Bookmark updated"))
 
-    if(wazuh_log_monitor.callback_result != None):
+    if(fortishield_log_monitor.callback_result != None):
         control_service('stop')
         truncate_file(FORTISHIELD_LOG_PATH)
         control_service('start')
-        wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*seconds to run first scan"))
-        assert (wazuh_log_monitor.callback_result != None), f'Error, `first scan` not found in log'
+        fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*seconds to run first scan"))
+        assert (fortishield_log_monitor.callback_result != None), f'Error, `first scan` not found in log'
     else:
         assert (False), f'Error `Bookmark updated` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t2_configurations, t2_configuration_metadata), ids=t2_case_ids)
-def test_future_events_no(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_future_events_no(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `only_future_events` tag is set to no.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -192,7 +192,7 @@ def test_future_events_no(test_configuration, test_metadata, set_wazuh_configura
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -220,34 +220,34 @@ def test_future_events_no(test_configuration, test_metadata, set_wazuh_configura
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*Bookmark updated'
-        - r'.*wazuh-modulesd:ms-graph.*seconds to run next scan'
+        - r'.*fortishield-modulesd:ms-graph.*Bookmark updated'
+        - r'.*fortishield-modulesd:ms-graph.*seconds to run next scan'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*Bookmark updated"))
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*Bookmark updated"))
 
-    if(wazuh_log_monitor.callback_result != None):
+    if(fortishield_log_monitor.callback_result != None):
         control_service('stop')
         truncate_file(FORTISHIELD_LOG_PATH)
         control_service('start')
 
-        wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*seconds to run next scan"))
-        assert (wazuh_log_monitor.callback_result != None), f'Error, `next scan` not found in log'
+        fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*seconds to run next scan"))
+        assert (fortishield_log_monitor.callback_result != None), f'Error, `next scan` not found in log'
 
-        wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*seconds to run first scan"), timeout=10)
-        assert (wazuh_log_monitor.callback_result == None), f'Error, `first scan` not found in log'
+        fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*seconds to run first scan"), timeout=10)
+        assert (fortishield_log_monitor.callback_result == None), f'Error, `first scan` not found in log'
     else:
         assert (False), f'Error `Bookmark updated` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t3_configurations, t3_configuration_metadata), ids=t3_case_ids)
-def test_curl_max_size(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_curl_max_size(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `curl_max_size` is reached.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -258,7 +258,7 @@ def test_curl_max_size(test_configuration, test_metadata, set_wazuh_configuratio
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -285,21 +285,21 @@ def test_curl_max_size(test_configuration, test_metadata, set_wazuh_configuratio
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*Reached maximum CURL size'
+        - r'.*fortishield-modulesd:ms-graph.*Reached maximum CURL size'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*Reached maximum CURL size"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `maximum CURL size` not found in log'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*Reached maximum CURL size"))
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `maximum CURL size` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t4_configurations, t4_configuration_metadata), ids=t4_case_ids)
-def test_valid_resource(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_valid_resource(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `resource` tags `name` and `relationship` are valid.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -310,7 +310,7 @@ def test_valid_resource(test_configuration, test_metadata, set_wazuh_configurati
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -338,25 +338,25 @@ def test_valid_resource(test_configuration, test_metadata, set_wazuh_configurati
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*microsoft.graph.security.alert'
-        - r'.*wazuh-modulesd:ms-graph.*microsoft.graph.security.incident'
+        - r'.*fortishield-modulesd:ms-graph.*microsoft.graph.security.alert'
+        - r'.*fortishield-modulesd:ms-graph.*microsoft.graph.security.incident'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*microsoft.graph.security.alert"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `security.alert` not found in log'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*microsoft.graph.security.alert"))
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `security.alert` not found in log'
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*microsoft.graph.security.incident"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `security.incident` not found in log'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*microsoft.graph.security.incident"))
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `security.incident` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t5_configurations, t5_configuration_metadata), ids=t5_case_ids)
-def test_invalid_resource(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_invalid_resource(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `resource` tags `name` and `relationship` are invalid.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -367,7 +367,7 @@ def test_invalid_resource(test_configuration, test_metadata, set_wazuh_configura
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -395,24 +395,24 @@ def test_invalid_resource(test_configuration, test_metadata, set_wazuh_configura
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*Received unsuccessful status
+        - r'.*fortishield-modulesd:ms-graph.*Received unsuccessful status
             code when attempting to get relationship \'invalid\'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(
-        callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*Received unsuccessful "\
+    fortishield_log_monitor.start(
+        callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*Received unsuccessful "\
                                              r"status code when attempting to get relationship \'invalid\'"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `unsuccessful status code` not found in log'
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `unsuccessful status code` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t6_configurations, t6_configuration_metadata), ids=t6_case_ids)
-def test_valid_auth(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_valid_auth(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `tenant_id` tag is valid.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -423,7 +423,7 @@ def test_valid_auth(test_configuration, test_metadata, set_wazuh_configuration, 
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -450,21 +450,21 @@ def test_valid_auth(test_configuration, test_metadata, set_wazuh_configuration, 
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*INFO: Scanning tenant'
+        - r'.*fortishield-modulesd:ms-graph.*INFO: Scanning tenant'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*INFO: Scanning tenant"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `Scanning tenant` not found in log'
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*INFO: Scanning tenant"))
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `Scanning tenant` not found in log'
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t7_configurations, t7_configuration_metadata), ids=t7_case_ids)
-def test_invalid_auth(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_invalid_auth(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_msgraph_start, proxy_setup):
     '''
     description: Check 'ms-graph' behavior when `resource` tags `name` and `relationship` are invalid.
-    wazuh_min_version: 4.6.0
+    fortishield_min_version: 4.6.0
 
     tier: 0
 
@@ -475,7 +475,7 @@ def test_invalid_auth(test_configuration, test_metadata, set_wazuh_configuration
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -502,13 +502,13 @@ def test_invalid_auth(test_configuration, test_metadata, set_wazuh_configuration
                        the module. Those include configuration settings for the 'ms-graph' module.
 
     expected_output:
-        - r'.*wazuh-modulesd:ms-graph.*WARNING: Recieved unsuccessful
+        - r'.*fortishield-modulesd:ms-graph.*WARNING: Recieved unsuccessful
             status code when attempting to obtain access token'
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
-    wazuh_log_monitor.start(
-        callback=callbacks.generate_callback(r".*wazuh-modulesd:ms-graph.*WARNING: Received unsuccessful "\
+    fortishield_log_monitor.start(
+        callback=callbacks.generate_callback(r".*fortishield-modulesd:ms-graph.*WARNING: Received unsuccessful "\
                                              r"status code when attempting to obtain access token"))
-    assert (wazuh_log_monitor.callback_result != None), f'Error, `unsuccessful status code` not found in log'
+    assert (fortishield_log_monitor.callback_result != None), f'Error, `unsuccessful status code` not found in log'

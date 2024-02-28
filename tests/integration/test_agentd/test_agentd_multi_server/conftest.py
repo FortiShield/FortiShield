@@ -1,10 +1,10 @@
 # Copyright (C) 2015-2021, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import pytest
 
-from wazuh_testing.tools.simulators.remoted_simulator import RemotedSimulator
+from fortishield_testing.tools.simulators.remoted_simulator import RemotedSimulator
 
 
 @pytest.fixture()

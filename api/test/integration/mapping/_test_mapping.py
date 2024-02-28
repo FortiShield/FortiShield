@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 
@@ -12,7 +12,7 @@ from copy import copy
 from os import path, chdir, walk
 
 base = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))))
-framework = path.join(base, 'framework', 'wazuh')
+framework = path.join(base, 'framework', 'fortishield')
 api = path.join(base, 'api', 'api')
 integration_tests = path.join(base, 'api', 'test', 'integration')
 
@@ -20,7 +20,7 @@ integration_tests = path.join(base, 'api', 'test', 'integration')
 file_path = path.join(integration_tests, 'mapping', 'integration_test_api_endpoints.json')
 
 # Fortishield modules
-wazuh_modules = [
+fortishield_modules = [
     api,  # API
     framework,  # SDK, CORE and RBAC (recursive call)
     integration_tests  # Integration tests
@@ -55,8 +55,8 @@ def extract_module_from_path(file_path):
     """Extracts the module from the file path."""
     parts = file_path.split('/')
     # Assuming the module is the last part of the path
-    wazuh_modules = parts[-1]
-    return wazuh_modules
+    fortishield_modules = parts[-1]
+    return fortishield_modules
 
 def get_file_and_test_info(test_name, test_mapping, module_name):
     try:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         test_tags = calculate_test_mappings()
 
         mapping_list = list()
-        for module in wazuh_modules:
+        for module in fortishield_modules:
             chdir(module)
             for root, dirs, files in sorted(walk('.')):
                 mappings = dict()
@@ -118,7 +118,7 @@ if __name__ == '__main__':
         file_rel_path = sys.argv[1]
 
         if not path.exists(path.join(base, file_rel_path)):
-            print('The relative path does not exist. Example: "framework/wazuh/agent.py"')
+            print('The relative path does not exist. Example: "framework/fortishield/agent.py"')
             exit(0)
 
         with open(file_path) as f:

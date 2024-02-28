@@ -19,7 +19,7 @@
 #define LOGTEST_LIMIT_SESSION_TIMEOUT   31536000
 
 /**
- * @brief Struct to save the wazuh-logtest internal configuration
+ * @brief Struct to save the fortishield-logtest internal configuration
  */
 typedef struct w_logtest_conf_t {
 

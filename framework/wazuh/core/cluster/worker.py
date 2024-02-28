@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -15,12 +15,12 @@ from time import perf_counter
 from typing import Tuple, Dict, Callable, List
 from typing import Union
 
-from wazuh.core import cluster as metadata, common, exception, utils
-from wazuh.core.cluster import client, cluster, common as c_common
-from wazuh.core.cluster.utils import log_subprocess_execution
-from wazuh.core.cluster.dapi import dapi
-from wazuh.core.utils import safe_move, get_utc_now
-from wazuh.core.wdb import AsyncFortishieldDBConnection
+from fortishield.core import cluster as metadata, common, exception, utils
+from fortishield.core.cluster import client, cluster, common as c_common
+from fortishield.core.cluster.utils import log_subprocess_execution
+from fortishield.core.cluster.dapi import dapi
+from fortishield.core.utils import safe_move, get_utc_now
+from fortishield.core.wdb import AsyncFortishieldDBConnection
 
 
 class ReceiveAgentGroupsTask(c_common.ReceiveStringTask):
@@ -45,7 +45,7 @@ class ReceiveAgentGroupsTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent groups."""
-        return self.wazuh_common.recv_agent_groups_periodic_information
+        return self.fortishield_common.recv_agent_groups_periodic_information
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -56,7 +56,7 @@ class ReceiveAgentGroupsTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.wazuh_common.sync_agent_groups_free = True
+        self.fortishield_common.sync_agent_groups_free = True
 
 
 class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
@@ -81,7 +81,7 @@ class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent groups."""
-        return self.wazuh_common.recv_agent_groups_entire_information
+        return self.fortishield_common.recv_agent_groups_entire_information
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -92,7 +92,7 @@ class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.wazuh_common.sync_agent_groups_free = True
+        self.fortishield_common.sync_agent_groups_free = True
 
 
 class ReceiveIntegrityTask(c_common.ReceiveFileTask):
@@ -103,7 +103,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to process the integrity files received from master."""
-        return self.wazuh_common.process_files_from_master
+        return self.fortishield_common.process_files_from_master
 
     def done_callback(self, future=None):
         """Free the integrity sync lock and remove the task_id.
@@ -113,7 +113,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
         future : asyncio.Future object
             Synchronization process result.
         """
-        self.wazuh_common.check_integrity_free = True
+        self.fortishield_common.check_integrity_free = True
         super().done_callback(future)
 
 
@@ -555,8 +555,8 @@ class WorkerHandler(client.AbstractClient, c_common.FortishieldCommon):
         Asynchronous task that is started when the worker connects to the master. It starts an agent-info
         synchronization process every 'sync_agent_info' seconds.
 
-        A list of JSON chunks with the information of all local agents is retrieved from local wazuh-db socket
-        and sent to the master's wazuh-db.
+        A list of JSON chunks with the information of all local agents is retrieved from local fortishield-db socket
+        and sent to the master's fortishield-db.
         """
         logger = self.task_loggers["Agent-info sync"]
         wdb_conn = AsyncFortishieldDBConnection()
@@ -721,9 +721,9 @@ class WorkerHandler(client.AbstractClient, c_common.FortishieldCommon):
 
             if data_['merged']:  # worker nodes can only receive agent-groups files
                 # Split merged file into individual files inside zipdir (directory containing unzipped files),
-                # and then move each one to the destination directory (<wazuh_path>/filename).
+                # and then move each one to the destination directory (<fortishield_path>/filename).
                 # The TYPE string used in the 'unmerge_info' function is a placeholder. It corresponds to the
-                # directory inside '{wazuh_path}/queue/' path.
+                # directory inside '{fortishield_path}/queue/' path.
                 for name, content, _ in cluster.unmerge_info('TYPE', zip_path, filename_):
                     full_unmerged_name = os.path.join(common.FORTISHIELD_PATH, name)
                     tmp_unmerged_path = full_unmerged_name + '.tmp'
@@ -731,16 +731,16 @@ class WorkerHandler(client.AbstractClient, c_common.FortishieldCommon):
                         f.write(content)
                     safe_move(tmp_unmerged_path, full_unmerged_name,
                               permissions=cluster_items['files'][data_['cluster_item_key']]['permissions'],
-                              ownership=(common.wazuh_uid(), common.wazuh_gid())
+                              ownership=(common.fortishield_uid(), common.fortishield_gid())
                               )
             else:
                 # Create destination dir if it doesn't exist.
                 if not os.path.exists(os.path.dirname(full_filename_path)):
                     utils.mkdir_with_mode(os.path.dirname(full_filename_path))
-                # Move the file from zipdir (directory containing unzipped files) to <wazuh_path>/filename.
+                # Move the file from zipdir (directory containing unzipped files) to <fortishield_path>/filename.
                 safe_move(os.path.join(zip_path, filename_), full_filename_path,
                           permissions=cluster_items['files'][data_['cluster_item_key']]['permissions'],
-                          ownership=(common.wazuh_uid(), common.wazuh_gid())
+                          ownership=(common.fortishield_uid(), common.fortishield_gid())
                           )
 
         errors = {'shared': 0, 'missing': 0, 'extra': 0}

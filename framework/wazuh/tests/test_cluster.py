@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -7,41 +7,41 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
+        del sys.modules['fortishield.rbac.orm']
 
-        from wazuh.tests.util import RBAC_bypasser
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh import cluster
-        from wazuh.core import common
-        from wazuh.core.exception import FortishieldError, FortishieldResourceNotFound
-        from wazuh.core.cluster.local_client import LocalClient
-        from wazuh.core.results import FortishieldResult
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield import cluster
+        from fortishield.core import common
+        from fortishield.core.exception import FortishieldError, FortishieldResourceNotFound
+        from fortishield.core.cluster.local_client import LocalClient
+        from fortishield.core.results import FortishieldResult
 
-default_config = {'disabled': True, 'node_type': 'master', 'name': 'wazuh', 'node_name': 'node01',
+default_config = {'disabled': True, 'node_type': 'master', 'name': 'fortishield', 'node_name': 'node01',
                   'key': '', 'port': 1516, 'bind_addr': '0.0.0.0', 'nodes': ['NODE_IP'], 'hidden': 'no'}
 
 
-@patch('wazuh.cluster.read_config', return_value=default_config)
+@patch('fortishield.cluster.read_config', return_value=default_config)
 def test_read_config_wrapper(mock_read_config):
     """Verify that the read_config_wrapper returns the default configuration."""
     result = cluster.read_config_wrapper()
     assert result.affected_items == [default_config]
 
 
-@patch('wazuh.cluster.read_config', side_effect=FortishieldError(1001))
+@patch('fortishield.cluster.read_config', side_effect=FortishieldError(1001))
 def test_read_config_wrapper_exception(mock_read_config):
     """Verify the exceptions raised in read_config_wrapper."""
     result = cluster.read_config_wrapper()
     assert list(result.failed_items.keys())[0] == FortishieldError(1001)
 
 
-@patch('wazuh.cluster.read_config', return_value=default_config)
+@patch('fortishield.cluster.read_config', return_value=default_config)
 def test_node_wrapper(mock_read_config):
     """Verify that the node_wrapper returns the default node information."""
     result = cluster.get_node_wrapper()
@@ -50,7 +50,7 @@ def test_node_wrapper(mock_read_config):
                                       'type': default_config["node_type"]}]
 
 
-@patch('wazuh.cluster.get_node', side_effect=FortishieldError(1001))
+@patch('fortishield.cluster.get_node', side_effect=FortishieldError(1001))
 def test_node_wrapper_exception(mock_get_node):
     """Verify the exceptions raised in get_node_wrapper."""
     result = cluster.get_node_wrapper()
@@ -65,7 +65,7 @@ def test_get_status_json():
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.local_client.LocalClient.start', side_effect=None)
+@patch('fortishield.core.cluster.local_client.LocalClient.start', side_effect=None)
 async def test_get_health_nodes(mock_unix_connection):
     """Verify that get_health_nodes returns the health of all nodes."""
 
@@ -73,7 +73,7 @@ async def test_get_health_nodes(mock_unix_connection):
         return {'nodes': {'manager': {'info': {'name': 'master'}}}}
 
     local_client = LocalClient()
-    with patch('wazuh.cluster.get_health', side_effect=async_mock):
+    with patch('fortishield.cluster.get_health', side_effect=async_mock):
         result = await cluster.get_health_nodes(lc=local_client)
     expected = await async_mock()
 
@@ -89,7 +89,7 @@ async def test_get_nodes_info():
 
     local_client = LocalClient()
     common.cluster_nodes.set(['master', 'worker1', 'worker2'])
-    with patch('wazuh.cluster.get_nodes', side_effect=valid_node):
+    with patch('fortishield.cluster.get_nodes', side_effect=valid_node):
         result = await cluster.get_nodes_info(lc=local_client, filter_node=['master', 'worker1', 'noexists'])
     expected = await valid_node()
 
@@ -103,12 +103,12 @@ async def test_get_nodes_info():
     True,
     False
 ])
-@patch("wazuh.cluster.node_id", new="testing_node")
+@patch("fortishield.cluster.node_id", new="testing_node")
 @pytest.mark.asyncio
 async def test_get_ruleset_sync_status(ruleset_integrity):
     """Verify that `get_ruleset_sync_status` function correctly returns node ruleset synchronization status."""
     master_md5 = {'key1': 'value1'}
-    with patch("wazuh.cluster.get_node_ruleset_integrity",
+    with patch("fortishield.cluster.get_node_ruleset_integrity",
                return_value=master_md5 if ruleset_integrity else {}) as ruleset_integrity_mock:
         result = await cluster.get_ruleset_sync_status(master_md5=master_md5)
         assert result.total_affected_items == 1
@@ -117,12 +117,12 @@ async def test_get_ruleset_sync_status(ruleset_integrity):
         assert result.affected_items[0]['synced'] is ruleset_integrity
 
 
-@patch("wazuh.cluster.node_id", new="testing_node")
+@patch("fortishield.cluster.node_id", new="testing_node")
 @pytest.mark.asyncio
 async def test_get_ruleset_sync_status_ko():
     """Verify proper exceptions behavior with `get_ruleset_sync_status`."""
     exc = FortishieldError(1000)
-    with patch("wazuh.cluster.get_node_ruleset_integrity", side_effect=exc):
+    with patch("fortishield.cluster.get_node_ruleset_integrity", side_effect=exc):
         result = await cluster.get_ruleset_sync_status(master_md5={})
         assert result.total_affected_items == 0
         assert result.total_failed_items == 1

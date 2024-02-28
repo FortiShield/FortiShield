@@ -198,7 +198,7 @@ stages:
       verify: False
       <<: *get_agents
       params:
-        search: 'wazuh-agent6'
+        search: 'fortishield-agent6'
     response:
       status_code: 200
       json:
@@ -206,7 +206,7 @@ stages:
         data:
           affected_items:
             - id: '006'
-              name: 'wazuh-agent6'
+              name: 'fortishield-agent6'
           failed_items: []
           total_affected_items: 1
           total_failed_items: 0
@@ -216,7 +216,7 @@ stages:
       verify: False
       <<: *get_agents
       params:
-        search: "wazuh-agent6' or 'wazuh'='wazuh"
+        search: "fortishield-agent6' or 'fortishield'='fortishield"
     response:
       status_code: 200
       json:
@@ -322,13 +322,13 @@ stages:
       json:
         <<: *error_spec
 
-  - name: Filter by agent version following the 'wazuh vX.Y.Z' format
+  - name: Filter by agent version following the 'fortishield vX.Y.Z' format
     request:
       verify: False
       <<: *get_agents
       params:
         version: 'Fortishield v3.9.2'
-    response: &old_wazuh_agents_response
+    response: &old_fortishield_agents_response
       status_code: 200
       json:
         error: 0
@@ -340,14 +340,14 @@ stages:
           total_affected_items: 2
           total_failed_items: 0
 
-  - name: Filter by agent version following the 'wazuh X.Y.Z' format
+  - name: Filter by agent version following the 'fortishield X.Y.Z' format
     request:
       verify: False
       <<: *get_agents
       params:
         version: 'Fortishield 3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_fortishield_agents_response
 
   - name: Filter by agent version following the 'vX.Y.Z' format
     request:
@@ -356,7 +356,7 @@ stages:
       params:
         version: 'v3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_fortishield_agents_response
 
   - name: Filter by agent version following the 'X.Y.Z' format
     request:
@@ -365,7 +365,7 @@ stages:
       params:
         version: '3.9.2'
     response:
-      <<: *old_wazuh_agents_response
+      <<: *old_fortishield_agents_response
 
   - name: Try to show agents using a non existing version
     request:
@@ -1953,10 +1953,10 @@ stages:
             rootcheck:
               sleep: !anyint
 
-  - name: Get internal configuration from wazuh-db component
+  - name: Get internal configuration from fortishield-db component
     request:
       verify: False
-      url: "{protocol:s}://{host:s}:{port:d}/agents/000/config/wazuh-db/internal"
+      url: "{protocol:s}://{host:s}:{port:d}/agents/000/config/fortishield-db/internal"
       method: GET
       headers:
         Authorization: "Bearer {test_login_token}"
@@ -1965,16 +1965,16 @@ stages:
       json:
         error: 0
         data:
-          wazuh_db:
+          fortishield_db:
             commit_time_max: !anyint
             commit_time_min: !anyint
             open_db_limit: !anyint
             worker_pool_size: !anyint
 
-  - name: Get wdb configuration from wazuh-db component
+  - name: Get wdb configuration from fortishield-db component
     request:
       verify: False
-      url: "{protocol:s}://{host:s}:{port:d}/agents/000/config/wazuh-db/wdb"
+      url: "{protocol:s}://{host:s}:{port:d}/agents/000/config/fortishield-db/wdb"
       method: GET
       headers:
         Authorization: "Bearer {test_login_token}"
@@ -2315,13 +2315,13 @@ stages:
         data:
           affected_items:
             - timestamp: !anystr
-              name: wazuh-remoted
+              name: fortishield-remoted
               agents:
                 - id: 1
                   uptime: !anystr
                   metrics: !anything
             - timestamp: !anystr
-              name: wazuh-analysisd
+              name: fortishield-analysisd
               agents:
                 - id: 1
                   uptime: !anystr
@@ -2351,7 +2351,7 @@ stages:
       url: "{protocol:s}://{host:s}:{port:d}/agents/001/daemons/stats"
       method: GET
       params:
-        daemons_list: wazuh-remoted
+        daemons_list: fortishield-remoted
       headers:
         Authorization: "Bearer {test_login_token}"
     response:
@@ -2361,7 +2361,7 @@ stages:
         data:
           affected_items:
             - timestamp: !anystr
-              name: wazuh-remoted
+              name: fortishield-remoted
               agents:
                 - id: 1
                   uptime: !anystr
@@ -2421,7 +2421,7 @@ stages:
           total_affected_items: 1
           total_failed_items: 0
 
-  - name: Get wazuh-agentd stats from agent 000 (manager, not allowed)
+  - name: Get fortishield-agentd stats from agent 000 (manager, not allowed)
     request:
       verify: False
       url: "{protocol:s}://{host:s}:{port:d}/agents/000/stats/agent"
@@ -2460,7 +2460,7 @@ stages:
           total_affected_items: 1
           total_failed_items: 0
 
-  - name: Get wazuh-agentd stats from agent 001
+  - name: Get fortishield-agentd stats from agent 001
     request:
       verify: False
       url: "{protocol:s}://{host:s}:{port:d}/agents/001/stats/agent"
@@ -3040,7 +3040,7 @@ stages:
       verify: False
       <<: *groups_id_request
       params:
-        search: 'wazuh-agent8'
+        search: 'fortishield-agent8'
     response:
       status_code: 200
       json:
@@ -3048,7 +3048,7 @@ stages:
         data:
           affected_items:
             - id: '008'
-              name: 'wazuh-agent8'
+              name: 'fortishield-agent8'
               group:
                 - default
           failed_items: []
@@ -3880,7 +3880,7 @@ stages:
       headers:
         Authorization: "Bearer {test_login_token}"
       params:
-        name: wazuh-agent1
+        name: fortishield-agent1
     response:
       status_code: 200
       json:
@@ -3888,7 +3888,7 @@ stages:
         data: &get_agents_by_name_response
           affected_items:
             - id: '001'
-              name: 'wazuh-agent1'
+              name: 'fortishield-agent1'
           failed_items: []
           total_affected_items: 1
           total_failed_items: 0
@@ -3915,7 +3915,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: name
-        name: wazuh-agent1
+        name: fortishield-agent1
     response:
       verify_response_with:
         # Check response item keys are the selected keys
@@ -3934,7 +3934,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: name,id,status
-        name: wazuh-agent1
+        name: fortishield-agent1
     response:
       verify_response_with:
         # Check response item keys are the selected keys
@@ -3947,7 +3947,7 @@ stages:
         data:
           affected_items:
             - id: '001'
-              name: 'wazuh-agent1'
+              name: 'fortishield-agent1'
               status: 'active'
           failed_items: []
           total_affected_items: 1
@@ -3959,7 +3959,7 @@ stages:
       <<: *get_agents_by_name
       params:
         select: wrong_select
-        name: wazuh-agent1
+        name: fortishield-agent1
     response:
       status_code: 400
       json:
@@ -4101,7 +4101,7 @@ stages:
       verify: False
       <<: *no_group_request
       params:
-        search: wazuh-agent11
+        search: fortishield-agent11
     response:
       status_code: 200
       json:

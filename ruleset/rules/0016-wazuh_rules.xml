@@ -5,16 +5,16 @@
   -  This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2.
 -->
 
-<group name="wazuh,">
+<group name="fortishield,">
   <rule id="200" level="0">
-    <decoded_as>wazuh</decoded_as>
-    <description>Grouping of wazuh rules.</description>
+    <decoded_as>fortishield</decoded_as>
+    <description>Grouping of fortishield rules.</description>
   </rule>
 
   <!-- Agent buffer rules -->
   <rule id="201" level="0">
     <if_sid>200</if_sid>
-    <match>^wazuh: Agent buffer: </match>
+    <match>^fortishield: Agent buffer: </match>
     <description>Agent event queue rule</description>
     <group>agent_flooding,</group>
   </rule>
@@ -50,13 +50,13 @@
 
   <!-- Remote upgrading rules -->
   <!--
-    wazuh: Upgrade procedure on agent 001 (TestAgent): started. Current version: v3.0.0
-    wazuh: Upgrade procedure on agent 001 (TestAgent): aborted: Cannot execute installer
-    wazuh: Upgrade procedure on agent 001 (TestAgent): succeeded. New version: v3.1.0
-    wazuh: Upgrade procedure on agent 001 (TestAgent): failed: Restored to previous version
-    wazuh: Upgrade procedure on agent 001 (TestAgent): lost: Maximum attempts exceeded
-    wazuh: Custom installation on agent 001 (TestAgent): started.
-    wazuh: Custom installation on agent 001 (TestAgent): aborted: Could not verify signature
+    fortishield: Upgrade procedure on agent 001 (TestAgent): started. Current version: v3.0.0
+    fortishield: Upgrade procedure on agent 001 (TestAgent): aborted: Cannot execute installer
+    fortishield: Upgrade procedure on agent 001 (TestAgent): succeeded. New version: v3.1.0
+    fortishield: Upgrade procedure on agent 001 (TestAgent): failed: Restored to previous version
+    fortishield: Upgrade procedure on agent 001 (TestAgent): lost: Maximum attempts exceeded
+    fortishield: Custom installation on agent 001 (TestAgent): started.
+    fortishield: Custom installation on agent 001 (TestAgent): aborted: Could not verify signature
   -->
   <rule id="210" level="0">
     <if_sid>200</if_sid>
@@ -123,7 +123,7 @@
 
   <rule id="220" level="7">
     <if_sid>200</if_sid>
-    <match>^wazuh: Invalid remote configuration: </match>
+    <match>^fortishield: Invalid remote configuration: </match>
     <description>The agent could not restart due to a $(module) failure in the remote configuration</description>
     <group>agent_restarting,configuration_failure,</group>
   </rule>
@@ -137,7 +137,7 @@
 
   <rule id="222" level="7">
     <if_sid>200</if_sid>
-    <match>^wazuh: Could not unmerge shared file.</match>
+    <match>^fortishield: Could not unmerge shared file.</match>
     <description>The agent could not restart due to a error while unmerging files.</description>
     <group>agent_restarting,configuration_failure,</group>
   </rule>
@@ -145,7 +145,7 @@
   <!-- FIM DB state rules -->
   <rule id="230" level="0">
     <if_sid>200</if_sid>
-    <match>^wazuh: FIM DB: </match>
+    <match>^fortishield: FIM DB: </match>
     <location>syscheck$</location>
     <description>FIM DB rule</description>
     <group>syscheck,fim_db_state,</group>

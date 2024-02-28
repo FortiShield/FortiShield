@@ -1,14 +1,14 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
 brief: These tests will check if the 'drop_privileges' setting of the API is working properly.
-       This setting allows the user who starts the 'wazuh-apid' daemon to be different from
+       This setting allows the user who starts the 'fortishield-apid' daemon to be different from
        the 'root' user. The Fortishield API is an open source 'RESTful' API that allows for interaction
        with the Fortishield manager from a web browser, command line tool like 'cURL' or any script
        or program that can make web requests.
@@ -22,12 +22,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -44,8 +44,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html#drop-privileges
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html#drop-privileges
 
 tags:
     - api
@@ -56,11 +56,11 @@ import pytest
 from pathlib import Path
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.constants.paths.api import FORTISHIELD_API_SCRIPT
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.utils.services import search_process_by_command
+from fortishield_testing.constants.api import CONFIGURATION_TYPES
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.constants.paths.api import FORTISHIELD_API_SCRIPT
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.utils.services import search_process_by_command
 
 
 # Marks
@@ -87,10 +87,10 @@ def test_drop_privileges(test_configuration, test_metadata, add_configuration, t
                          daemons_handler, wait_for_api_start):
     """
     description: Check if 'drop_privileges' affects the user of the API process. In this test, the 'PID' of the API
-                 process is obtained. After that, it gets the user ('root' or 'wazuh') and checks if it matches the
+                 process is obtained. After that, it gets the user ('root' or 'fortishield') and checks if it matches the
                  'drop_privileges' setting.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     test_phases:
         - setup:
@@ -99,7 +99,7 @@ def test_drop_privileges(test_configuration, test_metadata, add_configuration, t
             - Restart daemons defined in `daemons_handler_configuration` in this module
             - Wait until the API is ready to receive requests
         - test:
-            - Search wazuh-apid process and verify that it is present
+            - Search fortishield-apid process and verify that it is present
             - Get current user of the process
             - Check that the user is the expected
         - teardown:
@@ -130,20 +130,20 @@ def test_drop_privileges(test_configuration, test_metadata, add_configuration, t
             brief: Monitor the API log file to detect whether it has been started or not.
 
     assertions:
-        - Verify that when 'drop_privileges' is enabled the user who has started the 'wazuh-apid' daemon is 'wazuh'.
-        - Verify that when 'drop_privileges' is disabled the user who has started the 'wazuh-apid' daemon is 'root'.
+        - Verify that when 'drop_privileges' is enabled the user who has started the 'fortishield-apid' daemon is 'fortishield'.
+        - Verify that when 'drop_privileges' is disabled the user who has started the 'fortishield-apid' daemon is 'root'.
 
     input_description: Different test cases are contained in an external YAML file (cases_drop_privileges.yaml)
                        which includes API configuration parameters.
 
     expected_output:
-        - PID of the 'wazuh-apid' process.
-        - wazuh (if drop_privileges is enabled)
+        - PID of the 'fortishield-apid' process.
+        - fortishield (if drop_privileges is enabled)
         - root (if drop_privileges is disabled)
     """
     expected_user = test_metadata['expected_user']
 
-    # Get wazuh-apid process info
+    # Get fortishield-apid process info
     api_process = search_process_by_command(FORTISHIELD_API_SCRIPT)
     assert api_process is not None, f"The process {FORTISHIELD_API_SCRIPT} could not be found"
 

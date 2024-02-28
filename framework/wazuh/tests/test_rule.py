@@ -1,25 +1,25 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
 import sys
 import glob
 from unittest.mock import patch, mock_open, MagicMock
-from wazuh.core.common import USER_RULES_PATH
+from fortishield.core.common import USER_RULES_PATH
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh import rule
-        from wazuh.core.results import AffectedItemsFortishieldResult
-        from wazuh.core.exception import FortishieldError
+        from fortishield import rule
+        from fortishield.core.results import AffectedItemsFortishieldResult
+        from fortishield.core.exception import FortishieldError
 
 
 # Variables
@@ -72,11 +72,11 @@ rule_contents = '''
 
 
 @pytest.fixture(scope='module', autouse=True)
-def mock_wazuh_paths():
-    with patch('wazuh.core.common.RULES_PATH', new=os.path.join(parent_directory, core_data_path)):
-        with patch('wazuh.core.common.USER_RULES_PATH', new=os.path.join(parent_directory, tests_data_path)):
-            with patch('wazuh.core.common.FORTISHIELD_PATH', new=parent_directory):
-                with patch('wazuh.rule.to_relative_path', side_effect=lambda x: os.path.relpath(x, parent_directory)):
+def mock_fortishield_paths():
+    with patch('fortishield.core.common.RULES_PATH', new=os.path.join(parent_directory, core_data_path)):
+        with patch('fortishield.core.common.USER_RULES_PATH', new=os.path.join(parent_directory, tests_data_path)):
+            with patch('fortishield.core.common.FORTISHIELD_PATH', new=parent_directory):
+                with patch('fortishield.rule.to_relative_path', side_effect=lambda x: os.path.relpath(x, parent_directory)):
                     yield
 
 @pytest.mark.parametrize('func', [
@@ -90,7 +90,7 @@ def mock_wazuh_paths():
     'disabled',
     'random'
 ])
-@patch("wazuh.rule.configuration.get_ossec_conf", return_value=rule_ossec_conf)
+@patch("fortishield.rule.configuration.get_ossec_conf", return_value=rule_ossec_conf)
 def test_get_rules_files_status_include(mock_ossec, status, func):
     """Test getting rules using status filter."""
     m = mock_open(read_data=rule_contents)
@@ -120,7 +120,7 @@ def test_get_rules_files_status_include(mock_ossec, status, func):
     ['0010-rules_config.xml'],
     ['0015-ossec_rules.xml']
 ])
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
 def test_get_rules_files_file_param(mock_config, file_, func):
     """Test getting rules using param filter."""
     d_files = func(filename=file_)
@@ -131,7 +131,7 @@ def test_get_rules_files_file_param(mock_config, file_, func):
         assert d_files.total_affected_items == len(d_files.affected_items)
 
 
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=None)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=None)
 def test_failed_get_rules_file(mock_config):
     """
     Test failed get_rules_file function when ossec.conf don't have ruleset section
@@ -161,7 +161,7 @@ def test_failed_get_rules_file(mock_config):
     {'rule_ids': ['1', '2', '4', '8']},
     {'rule_ids': ['3']}  # No exists
 ])
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=other_rule_ossec_conf)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=other_rule_ossec_conf)
 def test_get_rules(mock_config, arg):
     """Test get_rules function."""
     result = rule.get_rules(**arg)
@@ -199,7 +199,7 @@ def test_failed_get_rules():
     {'search_text': None},
     {'search_text': "firewall", "complementary_search": False}
 ])
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
 def test_get_groups(mock_config, arg):
     """Test get_groups function."""
     result = rule.get_groups(**arg)
@@ -212,7 +212,7 @@ def test_get_groups(mock_config, arg):
 @pytest.mark.parametrize('requirement', [
     'pci_dss', 'gdpr', 'hipaa', 'nist_800_53', 'gpg13', 'tsc', 'mitre'
 ])
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
 def test_get_requirement(mocked_config, requirement):
     """Test get_requirement function."""
     result = rule.get_requirement(requirement=requirement)
@@ -224,7 +224,7 @@ def test_get_requirement(mocked_config, requirement):
 @pytest.mark.parametrize('requirement', [
     'a', 'b', 'c'
 ])
-@patch('wazuh.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
+@patch('fortishield.core.configuration.get_ossec_conf', return_value=rule_ossec_conf)
 def test_get_requirement_invalid(mocked_config, requirement):
     """Test get_requirement (invalid) function."""
     result = rule.get_requirement(requirement=requirement)
@@ -241,12 +241,12 @@ def test_get_requirement_invalid(mocked_config, requirement):
     ('test_rules.xml', 'tests/data/etc/rules/subpath/', 'tests/data/etc/rules/subpath/test_rules.xml'),
     ('not_found.xml', None, ''),
 ])
-def test_get_rule_file_path(filename, relative_dirname, result, mock_wazuh_paths):
+def test_get_rule_file_path(filename, relative_dirname, result, mock_fortishield_paths):
     """Test get_rule_file_path function."""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         res = rule.get_rule_file_path(filename=filename, 
                                             relative_dirname=relative_dirname)
-        assert res == os.path.join(wazuh.core.common.FORTISHIELD_PATH, result) if result else not res
+        assert res == os.path.join(fortishield.core.common.FORTISHIELD_PATH, result) if result else not res
 
 
 @pytest.mark.parametrize('filename, raw, relative_dirname, contains', [
@@ -258,7 +258,7 @@ def test_get_rule_file_path(filename, relative_dirname, result, mock_wazuh_paths
 ])
 def test_get_rule_file(filename, raw, relative_dirname, contains):
     """Test downloading a specified rule filter."""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         d_files = rule.get_rule_file(filename=filename, raw=raw, relative_dirname=relative_dirname)
         if raw:
             assert isinstance(d_files, str)
@@ -274,7 +274,7 @@ def test_get_rule_file_exceptions():
     """Test file exceptions on get_rule_file method."""
 
     # File does not exist in default ruleset
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         result = rule.get_rule_file(filename='non_existing_file.xml')
         assert not result.affected_items
         assert result.render()['data']['failed_items'][0]['error']['code'] == 1415
@@ -313,7 +313,7 @@ def test_get_rule_file_exceptions():
 ])
 def test_validate_upload_delete_dir(relative_dirname, res_path, err_code):
     """Test validate_upload_delete_dir function."""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         ret_path, ret_err = rule.validate_upload_delete_dir(relative_dirname = relative_dirname)
         assert ret_path == res_path and (ret_err.code == err_code if err_code else not ret_err)
 
@@ -324,12 +324,12 @@ def test_validate_upload_delete_dir(relative_dirname, res_path, err_code):
     ('test_new_rule.xml', None, False, 'tests/data/etc/rules/test_new_rule.xml'),
     ('test_new_rule.xml', 'tests/data/etc/rules/subpath', False, 'tests/data/etc/rules/subpath/test_new_rule.xml'),    
 ])
-@patch('wazuh.rule.delete_rule_file')
-@patch('wazuh.rule.full_copy')
-@patch('wazuh.rule.upload_file')
-@patch('wazuh.rule.remove')
-@patch('wazuh.rule.safe_move')
-@patch('wazuh.rule.validate_dummy_logtest')
+@patch('fortishield.rule.delete_rule_file')
+@patch('fortishield.rule.full_copy')
+@patch('fortishield.rule.upload_file')
+@patch('fortishield.rule.remove')
+@patch('fortishield.rule.safe_move')
+@patch('fortishield.rule.validate_dummy_logtest')
 def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_xml, mock_full_copy,
                      mock_delete, file, relative_dirname, overwrite, rule_path):
     """Test uploading a rule file.
@@ -347,10 +347,10 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_xml, mock_f
     """
 
     content = 'test'
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         ret_validation = rule.validate_upload_delete_dir(relative_dirname=relative_dirname)
-        with patch('wazuh.rule.validate_upload_delete_dir', return_value=ret_validation):
-            with patch('wazuh.rule.exists', return_value=overwrite):
+        with patch('fortishield.rule.validate_upload_delete_dir', return_value=ret_validation):
+            with patch('fortishield.rule.exists', return_value=overwrite):
                 result = rule.upload_rule_file(filename=file, relative_dirname=relative_dirname,
                                                 content=content, overwrite=overwrite)
 
@@ -360,7 +360,7 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_xml, mock_f
                 assert result.affected_items[0] == rule_path, 'Expected item not found'
                 mock_xml.assert_called_once_with(content, rule_path)
                 if overwrite:
-                    full_path = os.path.join(wazuh.common.FORTISHIELD_PATH, rule_path)
+                    full_path = os.path.join(fortishield.common.FORTISHIELD_PATH, rule_path)
                     backup_file = full_path+'.backup'
                     mock_full_copy.assert_called_once_with(full_path, backup_file), \
                     'full_copy function not called with expected parameters'
@@ -371,16 +371,16 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_xml, mock_f
                     mock_safe_move.assert_called_once()
 
 
-@patch('wazuh.rule.delete_rule_file', side_effect=FortishieldError(1019))
-@patch('wazuh.rule.upload_file')
-@patch('wazuh.rule.safe_move')
-@patch('wazuh.core.utils.check_remote_commands')
+@patch('fortishield.rule.delete_rule_file', side_effect=FortishieldError(1019))
+@patch('fortishield.rule.upload_file')
+@patch('fortishield.rule.safe_move')
+@patch('fortishield.core.utils.check_remote_commands')
 def test_upload_file_ko(*args):
     """Test exceptions on upload function."""
     content = 'test'
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         ret_validation = rule.validate_upload_delete_dir(relative_dirname=None)
-        with patch('wazuh.rule.validate_upload_delete_dir', return_value=ret_validation):
+        with patch('fortishield.rule.validate_upload_delete_dir', return_value=ret_validation):
             # Error when file exists and overwrite is not True
             result = rule.upload_rule_file(filename='test_rules.xml', content=content, overwrite=False)
             assert isinstance(result, AffectedItemsFortishieldResult), 'No expected result type'
@@ -421,7 +421,7 @@ def test_upload_file_ko(*args):
             'Error code not expected.'
         
         # clean backup files
-        search_pattern = os.path.join(wazuh.core.common.FORTISHIELD_PATH, "**", "*.backup")
+        search_pattern = os.path.join(fortishield.core.common.FORTISHIELD_PATH, "**", "*.backup")
         for bkp in glob.glob(search_pattern, recursive=True):
             os.remove(bkp)
 
@@ -432,18 +432,18 @@ def test_upload_file_ko(*args):
 ])
 def test_delete_rule_file(file, relative_dirname):
     """Test deleting a rule file."""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
-        with patch('wazuh.rule.exists', return_value=True):
-            with patch('wazuh.rule.remove'):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+        with patch('fortishield.rule.exists', return_value=True):
+            with patch('fortishield.rule.remove'):
                 # Assert returned type is AffectedItemsFortishieldResult when everything is correct
                 assert(isinstance(rule.delete_rule_file(filename=file, relative_dirname=relative_dirname), 
                                 AffectedItemsFortishieldResult))
 
 def test_delete_rule_file_ko():
     """Delete rule file invalid test cases"""
-    with patch('wazuh.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
+    with patch('fortishield.core.configuration.get_ossec_conf', return_value=get_rule_file_ossec_conf):
         # Assert error code when remove() method returns IOError
-        with patch('wazuh.rule.remove', side_effect=IOError()):
+        with patch('fortishield.rule.remove', side_effect=IOError()):
             result = rule.delete_rule_file(filename='test_rules.xml')
             assert isinstance(result, AffectedItemsFortishieldResult), 'No expected result type'
             assert result.render()['data']['failed_items'][0]['error']['code'] == 1907,\

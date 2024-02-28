@@ -1,15 +1,15 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh import common
-from wazuh.core.agent import get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
-from wazuh.core.exception import FortishieldError, FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.rootcheck import FortishieldDBQueryRootcheck, last_scan, rootcheck_delete_agent
-from wazuh.core.wazuh_queue import FortishieldQueue
-from wazuh.core.wdb import FortishieldDBConnection
-from wazuh.rbac.decorators import expose_resources
+from fortishield import common
+from fortishield.core.agent import get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
+from fortishield.core.exception import FortishieldError, FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.rootcheck import FortishieldDBQueryRootcheck, last_scan, rootcheck_delete_agent
+from fortishield.core.fortishield_queue import FortishieldQueue
+from fortishield.core.wdb import FortishieldDBConnection
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=["rootcheck:run"], resources=["agent:id:{agent_list}"],

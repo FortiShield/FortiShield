@@ -12,8 +12,8 @@
 #define WM_AGENT_UPGRADE_WRAPPERS_H
 
 #include "../../../../headers/shared.h"
-#include "../../../../wazuh_modules/wmodules.h"
-#include "../../../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_manager.h"
+#include "../../../../fortishield_modules/wmodules.h"
+#include "../../../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_manager.h"
 
 int setup_hash_table(void (free_data_function)(wm_agent_task* agent_task));
 
@@ -55,7 +55,7 @@ int __wrap_wm_agent_upgrade_validate_status(const char* connection_status);
 
 int __wrap_wm_agent_upgrade_validate_system(const char *platform, const char *os_major, const char *os_minor, const char *arch);
 
-int __wrap_wm_agent_upgrade_validate_version(const char *wazuh_version, const char *platform, wm_upgrade_command command, void *task);
+int __wrap_wm_agent_upgrade_validate_version(const char *fortishield_version, const char *platform, wm_upgrade_command command, void *task);
 
 int __wrap_wm_agent_upgrade_validate_wpk_version(const wm_agent_info *agent_info, wm_upgrade_task *task, const char *wpk_repository_config);
 

@@ -28,8 +28,8 @@ mkdir -p ./backup
 
 echo "$(date +"%Y/%m/%d %H:%M:%S") - Generating Backup." >> ./logs/upgrade.log
 
-FOLDERS_TO_BACKUP=($CURRENT_DIR/{active-response,bin,etc,lib,queue,ruleset,wodles,agentless,logs/{ossec,wazuh},var/selinux} \
-                   /Library/LaunchDaemons/com.wazuh.agent.plist \
+FOLDERS_TO_BACKUP=($CURRENT_DIR/{active-response,bin,etc,lib,queue,ruleset,wodles,agentless,logs/{ossec,fortishield},var/selinux} \
+                   /Library/LaunchDaemons/com.fortishield.agent.plist \
                    /Library/StartupItems/FORTISHIELD)
 FOLDERS_TO_EXCLUDE=($CURRENT_DIR/queue/diff)
 EXCLUDE_ARGUMENT="$(for i in ${FOLDERS_TO_EXCLUDE[@]}; do echo -n "--exclude $i "; done)"
@@ -52,7 +52,7 @@ fi
 
 # Installing upgrade
 echo "$(date +"%Y/%m/%d %H:%M:%S") - Upgrade started." >> ./logs/upgrade.log
-installer -pkg ./var/upgrade/wazuh-agent* -target / >> ./logs/upgrade.log 2>&1
+installer -pkg ./var/upgrade/fortishield-agent* -target / >> ./logs/upgrade.log 2>&1
 
 # Check installation result
 RESULT=$?
@@ -63,7 +63,7 @@ echo "$(date +"%Y/%m/%d %H:%M:%S") - Installation result = ${RESULT}" >> ./logs/
 status="pending"
 COUNTER=30
 while [ "$status" != "connected" -a $COUNTER -gt 0 ]; do
-    . ./var/run/wazuh-agentd.state >> ./logs/upgrade.log 2>&1
+    . ./var/run/fortishield-agentd.state >> ./logs/upgrade.log 2>&1
     echo "$(date +"%Y/%m/%d %H:%M:%S") - Waiting connection... Remaining attempts: ${COUNTER}." >> ./logs/upgrade.log
     sleep 1
     COUNTER=$[COUNTER - 1]
@@ -80,7 +80,7 @@ else
     echo "$(date +"%Y/%m/%d %H:%M:%S") - Upgrade failed. Restoring..." >> ./logs/upgrade.log
 
     # Cleanup before restore
-    CONTROL="./bin/wazuh-control"
+    CONTROL="./bin/fortishield-control"
     $CONTROL stop >> ./logs/upgrade.log 2>&1
 
     echo "$(date +"%Y/%m/%d %H:%M:%S") - Deleting upgrade files..." >> ./logs/upgrade.log
@@ -92,8 +92,8 @@ else
     [ -d "./ruleset" ] && rm -rf ./ruleset
 
     # Clean service
-    /bin/launchctl unload /Library/LaunchDaemons/com.wazuh.agent.plist >> ./logs/upgrade.log 2>&1
-    rm -rf /Library/LaunchDaemons/com.wazuh.agent.plist >> ./logs/upgrade.log 2>&1
+    /bin/launchctl unload /Library/LaunchDaemons/com.fortishield.agent.plist >> ./logs/upgrade.log 2>&1
+    rm -rf /Library/LaunchDaemons/com.fortishield.agent.plist >> ./logs/upgrade.log 2>&1
     rm -rf /Library/StartupItems/FORTISHIELD/ >> ./logs/upgrade.log 2>&1
 
     # Restore backup
@@ -116,12 +116,12 @@ else
     rm -rf ./backup/restore
 
     # Restore diff folder
-    install -d -m 0750 -o wazuh -g wazuh $CURRENT_DIR/queue/diff
+    install -d -m 0750 -o fortishield -g fortishield $CURRENT_DIR/queue/diff
 
     echo -ne "2" > ./var/upgrade/upgrade_result
 
     # Restore service
-    /bin/launchctl load /Library/LaunchDaemons/com.wazuh.agent.plist >> ./logs/upgrade.log 2>&1
+    /bin/launchctl load /Library/LaunchDaemons/com.fortishield.agent.plist >> ./logs/upgrade.log 2>&1
 
     $CONTROL start >> ./logs/upgrade.log 2>&1
 fi

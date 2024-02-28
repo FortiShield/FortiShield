@@ -17,7 +17,7 @@
 #include "../../config/global-config.h"
 #include "../../analysisd/eventinfo.h"
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 #define TEST_AGENT_ID   "005"
 #define TEST_TIME       10005

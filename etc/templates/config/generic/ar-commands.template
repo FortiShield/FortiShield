@@ -5,8 +5,8 @@
   </command>
 
   <command>
-    <name>restart-wazuh</name>
-    <executable>restart-wazuh</executable>
+    <name>restart-fortishield</name>
+    <executable>restart-fortishield</executable>
   </command>
 
   <command>

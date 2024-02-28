@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -10,9 +10,9 @@ from typing import Tuple
 
 import uvloop
 
-import wazuh.core.cluster.utils
-from wazuh.core import common, exception
-from wazuh.core.cluster import client
+import fortishield.core.cluster.utils
+from fortishield.core import common, exception
+from fortishield.core.cluster import client
 
 
 class LocalClientHandler(client.AbstractClient):
@@ -131,9 +131,9 @@ class LocalClient(client.AbstractClientManager):
 
     def __init__(self):
         """Class constructor"""
-        super().__init__(configuration=wazuh.core.cluster.utils.read_config(), enable_ssl=False, performance_test=0,
+        super().__init__(configuration=fortishield.core.cluster.utils.read_config(), enable_ssl=False, performance_test=0,
                          concurrency_test=0, file='', string=0, logger=logging.getLogger(), tag="Local Client",
-                         cluster_items=wazuh.core.cluster.utils.get_cluster_items())
+                         cluster_items=fortishield.core.cluster.utils.get_cluster_items())
         self.request_result = None
         self.protocol = None
         self.transport = None

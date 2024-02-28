@@ -12,14 +12,14 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/read-agents_wrappers.h"
-#include "../wrappers/wazuh/os_net/os_net_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/read-agents_wrappers.h"
+#include "../wrappers/fortishield/os_net/os_net_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 
 #include "../analysisd/eventinfo.h"
 #include "../analysisd/decoders/decoder.h"
-#include "../headers/wazuhdb_op.h"
+#include "../headers/fortishielddb_op.h"
 
 /* setup/teardown redefinitions */
 #define setup_dispatch_check setup_dispatch_answer

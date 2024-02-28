@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from asyncio import Transport
@@ -13,11 +13,11 @@ from freezegun import freeze_time
 from uvloop import EventLoopPolicy
 
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        from wazuh.core.cluster.server import *
-        from wazuh.core.cluster import common as c_common
-        from wazuh.core.exception import FortishieldClusterError, FortishieldError, FortishieldResourceNotFound
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        from fortishield.core.cluster.server import *
+        from fortishield.core.cluster import common as c_common
+        from fortishield.core.exception import FortishieldClusterError, FortishieldError, FortishieldResourceNotFound
 
 fernet_key = "00000000000000000000000000000000"
 asyncio.set_event_loop_policy(EventLoopPolicy())
@@ -26,7 +26,7 @@ asyncio.set_event_loop_policy(EventLoopPolicy())
 @pytest.mark.asyncio
 async def test_AbstractServerHandler_init(event_loop):
     """Check the correct initialization of the AbstractServerHandler object."""
-    with patch("wazuh.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         abstract_server_handler = AbstractServerHandler(server="Test", loop=event_loop, fernet_key=fernet_key,
                                                         cluster_items={"test": "server"})
         assert abstract_server_handler.server == "Test"
@@ -81,16 +81,16 @@ def test_AbstractServerHandler_connection_made(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.server.AbstractServerHandler.hello")
-@patch("wazuh.core.cluster.server.AbstractServerHandler.echo_master")
-@patch("wazuh.core.cluster.common.Handler.process_request")
+@patch("fortishield.core.cluster.server.AbstractServerHandler.hello")
+@patch("fortishield.core.cluster.server.AbstractServerHandler.echo_master")
+@patch("fortishield.core.cluster.common.Handler.process_request")
 async def test_AbstractServerHandler_process_request(mock_process_request, mock_echo_master, mock_hello, event_loop):
     """Check the behavior of the process_request function for the different commands that can be sent to it."""
     abstract_server_handler = AbstractServerHandler(server="Test", loop=event_loop, fernet_key=fernet_key,
                                                     cluster_items={"test": "server"})
 
-    abstract_server_handler.process_request(command=b"echo-c", data=b"wazuh")
-    mock_echo_master.assert_called_once_with(b"wazuh")
+    abstract_server_handler.process_request(command=b"echo-c", data=b"fortishield")
+    mock_echo_master.assert_called_once_with(b"fortishield")
 
     abstract_server_handler.process_request(command=b"hello", data=b"hi")
     mock_hello.assert_called_once_with(b"hi")
@@ -107,8 +107,8 @@ async def test_AbstractServerHandler_echo_master(event_loop):
     abstract_server_handler = AbstractServerHandler(server="Test", loop=event_loop, fernet_key=fernet_key,
                                                     cluster_items={"test": "server"})
 
-    assert abstract_server_handler.echo_master(data=b"wazuh") == (b"ok-m ", b"wazuh")
-    abstract_server_handler.echo_master(data=b"wazuh")
+    assert abstract_server_handler.echo_master(data=b"fortishield") == (b"ok-m ", b"fortishield")
+    abstract_server_handler.echo_master(data=b"fortishield")
     assert abstract_server_handler.last_keepalive == 0.0
 
 
@@ -128,7 +128,7 @@ def test_AbstractServerHandler_hello(event_loop):
     abstract_server_handler.tag = "FixBehaviour"
     abstract_server_handler.broadcast_reader = Mock()
 
-    with patch("wazuh.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         assert abstract_server_handler.hello(b"else_test") == (b"ok",
                                                                f"Client {abstract_server_handler.name} added".encode())
         assert abstract_server_handler.name == "else_test"
@@ -147,7 +147,7 @@ def test_AbstractServerHandler_hello(event_loop):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.common.Handler.process_response")
+@patch("fortishield.core.cluster.common.Handler.process_response")
 async def test_AbstractServerHandler_process_response(process_response_mock, event_loop):
     """Check that the process_response function processes the response according to the command sent."""
     abstract_server_handler = AbstractServerHandler(server="Test", loop=event_loop, fernet_key=fernet_key,
@@ -200,7 +200,7 @@ async def test_AbstractServerHandler_connection_lost(event_loop):
 
 @pytest.mark.asyncio
 @patch("asyncio.Queue")
-@patch("wazuh.core.cluster.server.functools")
+@patch("fortishield.core.cluster.server.functools")
 async def test_AbstractServerHandler_add_request(functools_mock, queue_mock, event_loop):
     """Check that requests are added to asyncio queue with expected parameters."""
     abstract_server_handler = AbstractServerHandler(server="Test", loop=event_loop, fernet_key=fernet_key,
@@ -240,11 +240,11 @@ async def test_AbstractServerHandler_broadcast_reader(event_loop):
 
 
 @patch("asyncio.get_running_loop", new=Mock())
-@patch('wazuh.core.cluster.server.AbstractServer.check_clients_keepalive')
-@patch('wazuh.core.cluster.server.AbstractServerHandler')
+@patch('fortishield.core.cluster.server.AbstractServer.check_clients_keepalive')
+@patch('fortishield.core.cluster.server.AbstractServerHandler')
 def test_AbstractServer_init(AbstractServerHandler_mock, keepalive_mock):
     """Check the correct initialization of the AbstractServer object."""
-    with patch("wazuh.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         abstract_server = AbstractServer(performance_test=1, concurrency_test=2, configuration={"test3": 3},
                                          cluster_items={"test4": 4}, enable_ssl=True)
 
@@ -268,8 +268,8 @@ def test_AbstractServer_init(AbstractServerHandler_mock, keepalive_mock):
 
 
 @patch("asyncio.get_running_loop", new=Mock())
-@patch('wazuh.core.cluster.server.AbstractServer.check_clients_keepalive')
-@patch('wazuh.core.cluster.server.AbstractServerHandler')
+@patch('fortishield.core.cluster.server.AbstractServer.check_clients_keepalive')
+@patch('fortishield.core.cluster.server.AbstractServerHandler')
 def test_AbstractServer_broadcast(AbstractServerHandler_mock, asynckeepalive_mock):
     """Check that add_request is called with expected parameters."""
     def test_func():
@@ -302,7 +302,7 @@ def test_AbstractServer_broadcast_ko():
                                               "has no attribute 'add_request'", exc_info=False)
 
 
-@patch("wazuh.core.cluster.server.uuid4", return_value="abc123")
+@patch("fortishield.core.cluster.server.uuid4", return_value="abc123")
 @patch("asyncio.get_running_loop", new=Mock())
 def test_AbstractServer_broadcast_add(uuid_mock):
     """Check that add_request is called with expected parameters."""
@@ -323,7 +323,7 @@ def test_AbstractServer_broadcast_add(uuid_mock):
                                           call('Added broadcast request to execute "test_func" in worker2.')]
 
 
-@patch("wazuh.core.cluster.server.uuid4", return_value="abc123")
+@patch("fortishield.core.cluster.server.uuid4", return_value="abc123")
 @patch("asyncio.get_running_loop", new=Mock())
 def test_AbstractServer_broadcast_add_ko(uuid_mock):
     """Check that expected error log is printed and that broadcast_results is deleted."""
@@ -383,7 +383,7 @@ def test_AbstractServer_setup_task_logger():
         mock_child.assert_called_with("fxz")
 
 
-@patch("wazuh.core.cluster.server.utils.process_array")
+@patch("fortishield.core.cluster.server.utils.process_array")
 @patch("asyncio.get_running_loop", new=Mock())
 def test_AbstractServer_get_connected_nodes(mock_process_array):
     """Check that all the necessary data is sent to the utils.process_array
@@ -393,16 +393,16 @@ def test_AbstractServer_get_connected_nodes(mock_process_array):
     basic_dict = {"info": {"first": "test"}}
 
     with patch.object(abstract_server, "to_dict", return_value=basic_dict):
-        abstract_server.get_connected_nodes(search={"value": "wazuh", "negation": True},
+        abstract_server.get_connected_nodes(search={"value": "fortishield", "negation": True},
                                             sort={"fields": ["nothing"], "order": "desc"}, limit=501, offset=1)
-        mock_process_array.assert_called_once_with([basic_dict["info"]], search_text="wazuh", complementary_search=True,
+        mock_process_array.assert_called_once_with([basic_dict["info"]], search_text="fortishield", complementary_search=True,
                                                    sort_by=["nothing"], sort_ascending=False,
                                                    allowed_sort_fields=basic_dict["info"].keys(), offset=1, limit=501,
                                                    distinct=False)
         mock_process_array.reset_mock()
 
 
-@patch("wazuh.core.cluster.server.utils.process_array")
+@patch("fortishield.core.cluster.server.utils.process_array")
 @patch("asyncio.get_running_loop", new=Mock())
 def test_AbstractServer_get_connected_nodes_ko(mock_process_array):
     """Check all exceptions that can be returned by the get_connected_nodes function."""
@@ -448,7 +448,7 @@ async def test_AbstractServer_check_clients_keepalive(sleep_mock):
     logger = Logger("test_check_clients_keepalive")
     with patch.object(logger, "debug") as mock_debug:
         with patch.object(logger, "error") as mock_error:
-            with patch("wazuh.core.cluster.server.AbstractServer.setup_task_logger",
+            with patch("fortishield.core.cluster.server.AbstractServer.setup_task_logger",
                        return_value=logger):
                 abstract_server = AbstractServer(performance_test=1, concurrency_test=2, configuration={"test3": 3},
                                                  cluster_items={"test4": 4}, enable_ssl=True, logger=logger)
@@ -475,7 +475,7 @@ async def test_AbstractServer_check_clients_keepalive(sleep_mock):
 @freeze_time("2022-01-01")
 @patch("asyncio.sleep", side_effect=IndexError)
 @patch("asyncio.get_running_loop", new=Mock())
-@patch('wazuh.core.cluster.server.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.server.perf_counter', return_value=0)
 async def test_AbstractServer_performance_test(perf_counter_mock, sleep_mock):
     """Check that the function performance_test sends a big message to all clients
      and then get the time it took to send them."""
@@ -501,7 +501,7 @@ async def test_AbstractServer_performance_test(perf_counter_mock, sleep_mock):
 @freeze_time("2022-01-01")
 @patch("asyncio.sleep", side_effect=IndexError)
 @patch("asyncio.get_running_loop", new=Mock())
-@patch('wazuh.core.cluster.server.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.server.perf_counter', return_value=0)
 async def test_AbstractServer_concurrency_test(perf_counter_mock, sleep_mock):
     """Check that the function concurrency_test sends messages to all clients
      and then get the time it took to send them."""
@@ -525,7 +525,7 @@ async def test_AbstractServer_concurrency_test(perf_counter_mock, sleep_mock):
 
 @pytest.mark.asyncio
 @patch("os.path.join", return_value="testing_path")
-@patch('wazuh.core.cluster.server.AbstractServer.check_clients_keepalive')
+@patch('fortishield.core.cluster.server.AbstractServer.check_clients_keepalive')
 async def test_AbstractServer_start(keepalive_mock, mock_path_join):
     """Check that the start function starts infinite asynchronous tasks according
     to the parameters with which the AbstractServer object has been created."""
@@ -554,7 +554,7 @@ async def test_AbstractServer_start(keepalive_mock, mock_path_join):
     abstract_server = AbstractServer(performance_test=1, concurrency_test=2,
                                         configuration={"bind_addr": "localhost", "port": 10000},
                                         cluster_items=cluster_items, enable_ssl=False, logger=logger)
-    with patch("wazuh.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         with patch.object(abstract_server, "handler_class"):
             abstract_server.loop = loop
             abstract_server.configuration["key"] = fernet_key
@@ -568,7 +568,7 @@ async def test_AbstractServer_start(keepalive_mock, mock_path_join):
                             configuration={"bind_addr": 3, "port": 10000},
                             cluster_items=cluster_items, enable_ssl=True,
                             logger=logger)
-    with patch("wazuh.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
+    with patch("fortishield.core.cluster.server.context_tag", ContextVar("tag", default="")) as mock_contextvar:
         with patch.object(abstract_server, "handler_class"):
             ssl_mock = SSLMock()
             with patch("ssl.create_default_context", return_value=ssl_mock) as create_default_context_mock:
@@ -581,10 +581,10 @@ async def test_AbstractServer_start(keepalive_mock, mock_path_join):
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.server.AbstractServerHandler")
+@patch("fortishield.core.cluster.server.AbstractServerHandler")
 @patch("uvloop.EventLoopPolicy")
 @patch("asyncio.set_event_loop_policy")
-@patch('wazuh.core.cluster.server.AbstractServer.check_clients_keepalive')
+@patch('fortishield.core.cluster.server.AbstractServer.check_clients_keepalive')
 async def test_AbstractServer_start_ko(keepalive_mock, set_event_loop_policy_mock, eventlooppolicy_mock,
                                        mock_AbstractServerHandler):
     """Check for exceptions that may arise inside the start function."""

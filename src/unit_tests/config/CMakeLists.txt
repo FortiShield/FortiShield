@@ -24,7 +24,7 @@ if(${TARGET} STREQUAL "winagent")
 endif(${TARGET} STREQUAL "winagent")
 
 # Include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate config tests
 list(APPEND config_names "test_client-config_validate_ipv6_link_local_interface")

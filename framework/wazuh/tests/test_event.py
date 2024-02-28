@@ -1,27 +1,27 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
 import sys
 from unittest.mock import MagicMock, patch
-from wazuh.core.exception import FortishieldError
+from fortishield.core.exception import FortishieldError
 
 
 import pytest
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..'))
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.event import MSG_HEADER, send_event_to_analysisd
+        from fortishield.event import MSG_HEADER, send_event_to_analysisd
 
 
 @pytest.mark.parametrize('events,side_effects,message', [
@@ -30,7 +30,7 @@ with patch('wazuh.core.common.wazuh_uid'):
     (['{"foo": 1}', '{"bar": 2}'], (FortishieldError(1014), None), 'Some events were forwarded to analisysd'),
     (['{"foo": 1}', '{"bar": 2}'], (FortishieldError(1014), FortishieldError(1014)), 'No events were forwarded to analisysd'),
 ])
-@patch('wazuh.event.FortishieldAnalysisdQueue.send_msg')
+@patch('fortishield.event.FortishieldAnalysisdQueue.send_msg')
 @patch('socket.socket.connect')
 def test_send_event_to_analysisd(socket_mock, send_msg_mock, events, side_effects, message):
     send_msg_mock.side_effect = side_effects

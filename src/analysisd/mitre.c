@@ -34,7 +34,7 @@ int mitre_load() {
     int size_ids;
     int size_phases;
     int sock = -1;
-    char *wazuhdb_query = NULL;
+    char *fortishielddb_query = NULL;
     char *response = NULL;
     char *tech_id = NULL;
     char *tech_name = NULL;
@@ -58,12 +58,12 @@ int mitre_load() {
     OSList* tactics_list = NULL;
     tactic_data* data_tactic = NULL;
 
-    os_calloc(OS_SIZE_6144 + 1, sizeof(char), wazuhdb_query);
+    os_calloc(OS_SIZE_6144 + 1, sizeof(char), fortishielddb_query);
     os_calloc(OS_MAXSTR, sizeof(char), response);
 
     /* Getting technique ID and name from Mitre's database in Fortishield-DB  */
-    snprintf(wazuhdb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUES, MAX_TECHNIQUES_REQUEST, offset);
-    techniques_json = wdbc_query_parse_json(&sock, wazuhdb_query, response, OS_MAXSTR);
+    snprintf(fortishielddb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUES, MAX_TECHNIQUES_REQUEST, offset);
+    techniques_json = wdbc_query_parse_json(&sock, fortishielddb_query, response, OS_MAXSTR);
 
     if (!techniques_json) {
         merror("Response from the Mitre database cannot be parsed.");
@@ -112,8 +112,8 @@ int mitre_load() {
             tactics_list = OSList_Create();
 
             /* Getting tactics from Mitre's database in Fortishield-DB */
-            snprintf(wazuhdb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUE_PHASES, tech_id);
-            phases_json = wdbc_query_parse_json(&sock, wazuhdb_query, response, OS_MAXSTR);
+            snprintf(fortishielddb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUE_PHASES, tech_id);
+            phases_json = wdbc_query_parse_json(&sock, fortishielddb_query, response, OS_MAXSTR);
 
             if (!phases_json) {
                 merror("Response from the Mitre database cannot be parsed.");
@@ -138,8 +138,8 @@ int mitre_load() {
                 tactic_id = tactic_id_json->valuestring;
 
                 /* Getting tactic ID and name from Mitre's database in Fortishield-DB  */
-                snprintf(wazuhdb_query, OS_SIZE_6144, SQL_GET_TACTIC_INFORMATION, tactic_id);
-                tactic_json = wdbc_query_parse_json(&sock, wazuhdb_query, response, OS_MAXSTR);
+                snprintf(fortishielddb_query, OS_SIZE_6144, SQL_GET_TACTIC_INFORMATION, tactic_id);
+                tactic_json = wdbc_query_parse_json(&sock, fortishielddb_query, response, OS_MAXSTR);
 
                 if (!tactic_json) {
                     merror("Response from the Mitre database cannot be parsed.");
@@ -212,13 +212,13 @@ int mitre_load() {
         offset += MAX_TECHNIQUES_REQUEST;
 
         /* Getting technique ID and name from Mitre's database in Fortishield-DB  */
-        snprintf(wazuhdb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUES, MAX_TECHNIQUES_REQUEST, offset);
-        techniques_json = wdbc_query_parse_json(&sock, wazuhdb_query, response, OS_MAXSTR);
+        snprintf(fortishielddb_query, OS_SIZE_6144, SQL_GET_ALL_TECHNIQUES, MAX_TECHNIQUES_REQUEST, offset);
+        techniques_json = wdbc_query_parse_json(&sock, fortishielddb_query, response, OS_MAXSTR);
 
     } while (size_ids = cJSON_GetArraySize(techniques_json), size_ids > 0);
 
 end:
-    os_free(wazuhdb_query);
+    os_free(fortishielddb_query);
     os_free(response);
 
     if (tactic_json != NULL) {

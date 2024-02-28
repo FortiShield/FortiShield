@@ -26,10 +26,10 @@ from socket import socket, AF_UNIX, SOCK_DGRAM
 ##################################################################################################################
 # Sets the file paths
 ##################################################################################################################
-wazuh_path = os.path.abspath(os.path.join(__file__, "../../.."))
-wazuh_queue = '{0}/queue/sockets/queue'.format(wazuh_path)
+fortishield_path = os.path.abspath(os.path.join(__file__, "../../.."))
+fortishield_queue = '{0}/queue/sockets/queue'.format(fortishield_path)
 now = time.strftime("%a %b %d %H:%M:%S %Z %Y")
-ar_log_file = '{0}/logs/active-responses.log'.format(wazuh_path)
+ar_log_file = '{0}/logs/active-responses.log'.format(fortishield_path)
 
 ##################################################################################################################
 # Read and parser arguments.
@@ -91,7 +91,7 @@ def ar_log():
 
 def logger(msg, mode, foreground=None):
 
-	send_msg(wazuh_queue, msg)
+	send_msg(fortishield_queue, msg)
 
 	if foreground:
 		if mode == "INFO":
@@ -306,7 +306,7 @@ def parse_tasks_states(tasks):
 # Send logs events by socket.
 ##################################################################################################################
 
-def send_msg(wazuh_queue, msg):
+def send_msg(fortishield_queue, msg):
 
 	send_id = 1
 	send_location = "kaspersky-integration"
@@ -317,7 +317,7 @@ def send_msg(wazuh_queue, msg):
 	content = '{}:{}:{}'.format(send_id, send_location, json.dumps(formatted))
 	s = socket(AF_UNIX, SOCK_DGRAM)
 	try:
-		s.connect(wazuh_queue)
+		s.connect(fortishield_queue)
 	except:
 		print('Error: Fortishield must be running.')
 		sys.exit(1)
@@ -331,7 +331,7 @@ def send_msg(wazuh_queue, msg):
 
 def main():
     ar_log()
-    set_logger('wazuh-kaspersky', foreground=args.verbose)
+    set_logger('fortishield-kaspersky', foreground=args.verbose)
     run_kaspersky()
 
 if __name__ == "__main__":

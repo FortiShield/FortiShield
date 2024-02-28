@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import datetime
@@ -9,19 +9,19 @@ from typing import Union
 from aiohttp import web
 from connexion.lifecycle import ConnexionResponse
 
-import wazuh.cluster as cluster
-import wazuh.core.common as common
-import wazuh.manager as manager
-import wazuh.stats as stats
+import fortishield.cluster as cluster
+import fortishield.core.common as common
+import fortishield.manager as manager
+import fortishield.stats as stats
 from api.encoder import dumps, prettify
 from api.models.base_model_ import Body
 from api.util import remove_nones_to_dict, parse_api_param, raise_if_exc, deserialize_date, deprecate_endpoint
 from api.validator import check_component_configuration_pair
-from wazuh.core.cluster.control import get_system_nodes
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.results import AffectedItemsFortishieldResult
+from fortishield.core.cluster.control import get_system_nodes
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.results import AffectedItemsFortishieldResult
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def get_cluster_node(request, pretty: bool = False, wait_for_complete: bool = False) -> web.Response:
@@ -358,7 +358,7 @@ async def get_configuration_node(request, node_id: str, pretty: bool = False, wa
     wait_for_complete : bool
         Disable response timeout or not. Default `False`
     section : str
-        Indicates the wazuh configuration section.
+        Indicates the fortishield configuration section.
     field : str
         Indicates a section child, e.g, fields for rule section are include, decoder_dir, etc.
     raw : bool, optional
@@ -635,9 +635,9 @@ async def get_stats_remoted_node(request, node_id: str, pretty: bool = False,
 async def get_log_node(request, node_id: str, pretty: bool = False, wait_for_complete: bool = False, offset: int = 0,
                        limit: int = None, sort: str = None, search: str = None, tag: str = None, level: str = None,
                        q: str = None, select: str = None, distinct: bool = False) -> web.Response:
-    """Get a specified node's wazuh logs.
+    """Get a specified node's fortishield logs.
 
-    Returns the last 2000 wazuh log entries in node {node_id}.
+    Returns the last 2000 fortishield log entries in node {node_id}.
 
     Parameters
     ----------
@@ -703,7 +703,7 @@ async def get_log_node(request, node_id: str, pretty: bool = False, wait_for_com
 
 async def get_log_summary_node(request, node_id: str, pretty: bool = False,
                                wait_for_complete: bool = False) -> web.Response:
-    """Get a summary of a specified node's wazuh logs.
+    """Get a summary of a specified node's fortishield logs.
 
     Parameters
     ----------

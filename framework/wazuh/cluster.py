@@ -1,17 +1,17 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from typing import Union
 
-from wazuh.core import common
-from wazuh.core.cluster import local_client
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.control import get_health, get_nodes, get_node_ruleset_integrity
-from wazuh.core.cluster.utils import get_cluster_status, read_cluster_config, read_config
-from wazuh.core.exception import FortishieldError, FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult, FortishieldResult
-from wazuh.rbac.decorators import expose_resources, async_list_handler
+from fortishield.core import common
+from fortishield.core.cluster import local_client
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.control import get_health, get_nodes, get_node_ruleset_integrity
+from fortishield.core.cluster.utils import get_cluster_status, read_cluster_config, read_config
+from fortishield.core.exception import FortishieldError, FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult, FortishieldResult
+from fortishield.rbac.decorators import expose_resources, async_list_handler
 
 cluster_enabled = not read_cluster_config(from_import=True)['disabled']
 node_id = get_node().get('node') if cluster_enabled else None

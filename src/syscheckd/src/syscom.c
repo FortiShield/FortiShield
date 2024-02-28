@@ -12,7 +12,7 @@
 #include "syscheck.h"
 #include "../rootcheck/rootcheck.h"
 #include "../os_net/os_net.h"
-#include "../wazuh_modules/wmodules.h"
+#include "../fortishield_modules/wmodules.h"
 #include "db/include/db.h"
 
 #ifdef FORTISHIELD_UNIT_TESTING

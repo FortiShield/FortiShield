@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -8,11 +8,11 @@ from aiohttp import web
 
 from api.encoder import dumps, prettify
 from api.util import remove_nones_to_dict, parse_api_param, raise_if_exc
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.common import DATABASE_LIMIT
-from wazuh.task import get_task_status
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.common import DATABASE_LIMIT
+from fortishield.task import get_task_status
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 
 async def get_tasks_status(request, pretty: bool = False, wait_for_complete: bool = False, offset: int = 0,

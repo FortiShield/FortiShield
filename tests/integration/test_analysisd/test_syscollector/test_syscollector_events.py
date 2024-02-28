@@ -1,14 +1,14 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
 brief: These tests will check if the Syscollector events, which are processed by
-       the `wazuh-analysisd` daemon, generates appropriate alerts based on the
+       the `fortishield-analysisd` daemon, generates appropriate alerts based on the
        information contained in the delta.
 
 
@@ -21,7 +21,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
+    - fortishield-analysisd
 
 os_platform:
     - linux
@@ -38,7 +38,7 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html\
+    - https://documentation.fortishield.com/current/user-manual/capabilities/syscollector.html\
         #using-syscollector-information-to-trigger-alerts
 '''
 import json
@@ -46,11 +46,11 @@ import pytest
 
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import ALERTS_JSON_PATH
-from wazuh_testing.constants.paths.sockets import ANALYSISD_QUEUE_SOCKET_PATH
-from wazuh_testing.modules.analysisd import utils, configuration as analysisd_config
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils import configuration
+from fortishield_testing.constants.paths.logs import ALERTS_JSON_PATH
+from fortishield_testing.constants.paths.sockets import ANALYSISD_QUEUE_SOCKET_PATH
+from fortishield_testing.modules.analysisd import utils, configuration as analysisd_config
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils import configuration
 
 from . import TEST_CASES_PATH, RULES_SAMPLE_PATH
 
@@ -81,7 +81,7 @@ def test_syscollector_events(test_metadata, configure_local_internal_options, mo
     '''
     description: Check if Analysisd handle Syscollector deltas properly by generating alerts.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 2
 

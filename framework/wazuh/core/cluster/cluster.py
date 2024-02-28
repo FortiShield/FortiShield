@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import errno
@@ -16,13 +16,13 @@ from operator import eq
 from os import listdir, path, remove, stat, walk
 from uuid import uuid4
 
-from wazuh import FortishieldError, FortishieldException, FortishieldInternalError
-from wazuh.core import common
-from wazuh.core.InputValidator import InputValidator
-from wazuh.core.cluster.utils import get_cluster_items, read_config
-from wazuh.core.utils import blake2b, mkdir_with_mode, get_utc_now, get_date_from_timestamp, to_relative_path
+from fortishield import FortishieldError, FortishieldException, FortishieldInternalError
+from fortishield.core import common
+from fortishield.core.InputValidator import InputValidator
+from fortishield.core.cluster.utils import get_cluster_items, read_config
+from fortishield.core.utils import blake2b, mkdir_with_mode, get_utc_now, get_date_from_timestamp, to_relative_path
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 # Separators used in compression/decompression functions to delimit files.
 FILE_SEP = '|@@//@@|'
@@ -617,7 +617,7 @@ def merge_info(merge_type, node_name, files=None, file_type=""):
     Parameters
     ----------
     merge_type : str
-        Directory inside {wazuh_path}/PATH where the files to merge can be found.
+        Directory inside {fortishield_path}/PATH where the files to merge can be found.
     node_name : str
         Name of the node to which the files will be sent.
     files : list
@@ -671,7 +671,7 @@ def unmerge_info(merge_type, path_file, filename):
     Parameters
     ----------
     merge_type : str
-        Name of the destination directory inside queue. I.e: {wazuh_path}/PATH/{merge_type}/<unmerge_files>.
+        Name of the destination directory inside queue. I.e: {fortishield_path}/PATH/{merge_type}/<unmerge_files>.
     path_file : str
         Path to the unzipped merged file.
     filename : str

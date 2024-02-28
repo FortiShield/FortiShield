@@ -59,13 +59,13 @@ cd $(dirname $0)
 VERSION_FILE="../src/VERSION"
 REVISION_FILE="../src/REVISION"
 DEFS_FILE="../src/headers/defs.h"
-FORTISHIELD_SERVER="../src/init/wazuh-server.sh"
-FORTISHIELD_AGENT="../src/init/wazuh-client.sh"
-FORTISHIELD_LOCAL="../src/init/wazuh-local.sh"
-NSIS_FILE="../src/win32/wazuh-installer.nsi"
-MSI_FILE="../src/win32/wazuh-installer.wxs"
-FW_INIT="../framework/wazuh/__init__.py"
-CLUSTER_INIT="../framework/wazuh/core/cluster/__init__.py"
+FORTISHIELD_SERVER="../src/init/fortishield-server.sh"
+FORTISHIELD_AGENT="../src/init/fortishield-client.sh"
+FORTISHIELD_LOCAL="../src/init/fortishield-local.sh"
+NSIS_FILE="../src/win32/fortishield-installer.nsi"
+MSI_FILE="../src/win32/fortishield-installer.wxs"
+FW_INIT="../framework/fortishield/__init__.py"
+CLUSTER_INIT="../framework/fortishield/core/cluster/__init__.py"
 API_SETUP="../api/setup.py"
 API_SPEC="../api/api/spec/spec.yaml"
 VERSION_DOCU="../src/Doxyfile"
@@ -90,13 +90,13 @@ then
 
     sed -E -i'' -e "s/^(#define __ossec_version +)\"v.*\"/\1\"$version\"/" $DEFS_FILE
 
-    # wazuh-control
+    # fortishield-control
 
     sed -E -i'' -e "s/^(VERSION=+)\"v.*\"/\1\"$version\"/" $FORTISHIELD_SERVER
     sed -E -i'' -e "s/^(VERSION=+)\"v.*\"/\1\"$version\"/" $FORTISHIELD_AGENT
     sed -E -i'' -e "s/^(VERSION=+)\"v.*\"/\1\"$version\"/" $FORTISHIELD_LOCAL
 
-    # File wazuh-installer.nsi
+    # File fortishield-installer.nsi
 
     egrep "^\!define VERSION \".+\"" $NSIS_FILE > /dev/null
 
@@ -108,7 +108,7 @@ then
 
     sed -E -i'' -e "s/^(\!define VERSION \").+\"/\1${version:1}\"/g" $NSIS_FILE
 
-    # File wazuh-installer.wxs
+    # File fortishield-installer.wxs
 
     egrep '<Product Id="\*" Name="Fortishield Agent" Language="1033" Version=".+" Manufacturer=' $MSI_FILE > /dev/null
 
@@ -171,13 +171,13 @@ then
 
     echo $revision > $REVISION_FILE
 
-    # wazuh-control
+    # fortishield-control
 
     sed -E -i'' -e "s/^(REVISION=+)\".*\"/\1\"$revision\"/" $FORTISHIELD_SERVER
     sed -E -i'' -e "s/^(REVISION=+)\".*\"/\1\"$revision\"/" $FORTISHIELD_AGENT
     sed -E -i'' -e "s/^(REVISION=+)\".*\"/\1\"$revision\"/" $FORTISHIELD_LOCAL
 
-    # File wazuh-installer.nsi
+    # File fortishield-installer.nsi
 
     egrep "^\!define REVISION \".+\"" $NSIS_FILE > /dev/null
 
@@ -205,7 +205,7 @@ fi
 if [ -n "$product" ]
 then
 
-    # File wazuh-installer.nsi
+    # File fortishield-installer.nsi
 
     egrep "^VIProductVersion \".+\"" $NSIS_FILE > /dev/null
 

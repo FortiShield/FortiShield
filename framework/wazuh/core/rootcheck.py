@@ -1,12 +1,12 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core.agent import Agent
-from wazuh.core.common import DATE_FORMAT
-from wazuh.core.exception import FortishieldException
-from wazuh.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_date_from_timestamp
-from wazuh.core.wdb import FortishieldDBConnection
+from fortishield.core.agent import Agent
+from fortishield.core.common import DATE_FORMAT
+from fortishield.core.exception import FortishieldException
+from fortishield.core.utils import FortishieldDBQuery, FortishieldDBBackend, get_date_from_timestamp
+from fortishield.core.wdb import FortishieldDBConnection
 
 
 class FortishieldDBQueryRootcheck(FortishieldDBQuery):

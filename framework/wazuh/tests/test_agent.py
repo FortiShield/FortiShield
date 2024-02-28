@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -15,28 +15,28 @@ from unittest.mock import MagicMock, patch, call
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..'))
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        from wazuh.tests.util import RBAC_bypasser
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        from fortishield.tests.util import RBAC_bypasser
 
-        del sys.modules['wazuh.rbac.orm']
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
 
-        from wazuh.agent import add_agent, assign_agents_to_group, create_group, delete_agents, delete_groups, \
+        from fortishield.agent import add_agent, assign_agents_to_group, create_group, delete_agents, delete_groups, \
             get_agent_conf, get_agent_config, get_agent_groups, get_agents, get_agents_in_group, \
             get_agents_keys, get_agents_summary_os, get_agents_summary_status, get_agents_sync_group, \
             get_distinct_agents, get_file_conf, get_full_overview, get_group_files, get_outdated_agents, \
             get_upgrade_result, remove_agent_from_group, remove_agent_from_groups, remove_agents_from_group, \
             restart_agents, upgrade_agents, upload_group_file, restart_agents_by_node, reconnect_agents, \
             ERROR_CODES_UPGRADE_SOCKET_BAD_REQUEST, ERROR_CODES_UPGRADE_SOCKET
-        from wazuh.core.agent import Agent
-        from wazuh import FortishieldError, FortishieldException, FortishieldInternalError
-        from wazuh.core.results import FortishieldResult, AffectedItemsFortishieldResult
-        from wazuh.core.tests.test_agent import InitAgent
+        from fortishield.core.agent import Agent
+        from fortishield import FortishieldError, FortishieldException, FortishieldInternalError
+        from fortishield.core.results import FortishieldResult, AffectedItemsFortishieldResult
+        from fortishield.core.tests.test_agent import InitAgent
         from api.util import remove_nones_to_dict
-        from wazuh.core.exception import FortishieldResourceNotFound
+        from fortishield.core.exception import FortishieldResourceNotFound
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 test_agent_path = os.path.join(test_data_path, 'agent')
@@ -85,8 +85,8 @@ def send_msg_to_wdb(msg, raw=False):
              {'count': 2, 'os': {'name': 'unknown', 'platform': 'unknown', 'version': 'unknown'}}]
     ),
 ])
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_distinct_agents(socket_mock, send_mock, fields, expected_items):
     """Test `get_distinct_agents` function from agent module.
@@ -147,8 +147,8 @@ def test_agent_get_distinct_agents(socket_mock, send_mock, fields, expected_item
      ]
      ),
 ])
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_sort_order(socket_mock, send_mock, fields, order, expected_items):
     """Test `sort` parameter of GET /agents endpoint with multiples and/or nested fields."""
@@ -159,7 +159,7 @@ def test_agent_sort_order(socket_mock, send_mock, fields, order, expected_items)
                                                            f'"{expected_items}". '
 
 
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_summary_status(socket_mock, send_mock):
     """Test `get_agents_summary` function from agent module."""
@@ -181,7 +181,7 @@ def test_agent_get_agents_summary_status(socket_mock, send_mock):
         'The agents connection or configuration status counts are not the expected ones'
 
 
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_summary_os(connect_mock, send_mock):
     """Tests `get_os_summary function`."""
@@ -195,9 +195,9 @@ def test_agent_get_agents_summary_os(connect_mock, send_mock):
     (['000'], [], 1703),
     (['001', '500'], ['001'], 1701)
 ])
-@patch('wazuh.core.agent.Agent.reconnect')
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.agent.Agent.reconnect')
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_reconnect_agents(socket_mock, send_mock, agents_info_mock, reconnect_mock, agent_list, expected_items,
                                 error_code):
@@ -225,9 +225,9 @@ def test_agent_reconnect_agents(socket_mock, send_mock, agents_info_mock, reconn
     (['000'], [], 1703),
     (['001', '500'], ['001'], 1701)
 ])
-@patch('wazuh.agent.send_restart_command')
-@patch('wazuh.agent.get_agents_info', return_value=set(short_agent_list))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.send_restart_command')
+@patch('fortishield.agent.get_agents_info', return_value=set(short_agent_list))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_restart_agents(socket_mock, send_mock, agents_info_mock, send_restart_mock, agent_list,
                               expected_items, error_code):
@@ -254,9 +254,9 @@ def test_agent_restart_agents(socket_mock, send_mock, agents_info_mock, send_res
     (['000', '001', '002'], ['001', '002'], 1703),
     (['001', '500'], ['001'], 1701)
 ])
-@patch('wazuh.agent.send_restart_command')
-@patch('wazuh.agent.get_agents_info', return_value=set(short_agent_list))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.send_restart_command')
+@patch('fortishield.agent.get_agents_info', return_value=set(short_agent_list))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_restart_agents_by_node(socket_mock, send_mock, agents_info_mock, send_restart_mock, agent_list,
                                       expected_items, error_code):
@@ -283,7 +283,7 @@ def test_agent_restart_agents_by_node(socket_mock, send_mock, agents_info_mock, 
     (['001', '002', '003'], ['001', '002', '003']),
     (['001', '400', '002', '500'], ['001', '002'])
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents(socket_mock, send_mock, agent_list, expected_items):
     """Test `get_agents` function from agent module.
@@ -308,9 +308,9 @@ def test_agent_get_agents(socket_mock, send_mock, agent_list, expected_items):
     ('default', True, ['001', '002', '005']),
     ('not_exists_group', False, None)
 ])
-@patch('wazuh.agent.get_agents')
-@patch('wazuh.agent.get_groups')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_agents')
+@patch('fortishield.agent.get_groups')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_in_group(socket_mock, send_mock, mock_get_groups, mock_get_agents, group, group_exists,
                                    expected_agents):
@@ -342,12 +342,12 @@ def test_agent_get_agents_in_group(socket_mock, send_mock, mock_get_groups, mock
 
 
 @pytest.mark.parametrize('group, q, expected_q', [
-    ('default', '(name~wazuh,status~active)', 'group=default;((name~wazuh,status~active))'),
-    ('default', 'name~wazuh,status~active', 'group=default;(name~wazuh,status~active)')
+    ('default', '(name~fortishield,status~active)', 'group=default;((name~fortishield,status~active))'),
+    ('default', 'name~fortishield,status~active', 'group=default;(name~fortishield,status~active)')
 ])
-@patch('wazuh.agent.get_agents')
-@patch('wazuh.agent.get_groups')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_agents')
+@patch('fortishield.agent.get_groups')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_in_group_q_formats(socket_mock, send_mock, mock_get_groups, mock_get_agents, group,
                                              q, expected_q):
@@ -374,7 +374,7 @@ def test_agent_get_agents_in_group_q_formats(socket_mock, send_mock, mock_get_gr
     (['001', '002', '003'], ['001', '002', '003']),
     (['001', '400', '002', '500'], ['001', '002'])
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_keys(socket_mock, send_mock, agent_list, expected_items):
     """Test `get_agents_keys` from agent module.
@@ -421,9 +421,9 @@ def test_agent_get_agents_keys(socket_mock, send_mock, agent_list, expected_item
     (['001', '500'], {'status': 'all', 'older_than': '1s'}, None, 1701, ['001']),
     (['001', '002'], {'status': 'all', 'older_than': '1s'}, None, FortishieldError(1726), None),
 ])
-@patch('wazuh.agent.Agent.remove')
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.Agent.remove')
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_delete_agents(socket_mock, send_mock, mock_remove, agent_list, filters, q, error_code, expected_items):
     """Test `delete_agents` function from agent module.
@@ -458,8 +458,8 @@ def test_agent_delete_agents(socket_mock, send_mock, mock_remove, agent_list, fi
     ('agent-1', '012', 'b3650e11eba2f27er4d160c69de533ee7eed601636a85ba2455d53a90927747f', {'enabled': True}),
     ('a' * 129, '002', 'f304f582f2417a3fddad69d9ae2b4f3b6e6fda788229668af9a6934d454ef44d', None)
 ])
-@patch('wazuh.core.agent.FortishieldSocketJSON')
-@patch('wazuh.core.agent.get_manager_status', return_value={'wazuh-authd': 'running'})
+@patch('fortishield.core.agent.FortishieldSocketJSON')
+@patch('fortishield.core.agent.get_manager_status', return_value={'fortishield-authd': 'running'})
 def test_agent_add_agent(manager_status_mock, socket_mock, name, agent_id, key, force):
     """Test `add_agent` from agent module.
 
@@ -491,9 +491,9 @@ def test_agent_add_agent(manager_status_mock, socket_mock, name, agent_id, key, 
     (['group-1', 'group-2', 'group-3'], 'mergedSum=a336982f3c020cd558a16113f752fd5b', ['group-1', 'group-2']),
     ([], '', []) # An empty group_list should return nothing
 ])
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agent_groups(socket_mock, send_mock, group_list, q, expected_result):
     """Test `get_agent_groups` from agent module.
@@ -518,8 +518,8 @@ def test_agent_get_agent_groups(socket_mock, send_mock, group_list, q, expected_
 @pytest.mark.parametrize('db_global, system_groups, error_code', [
     (test_global_bd_path, 'invalid_group', 1710)
 ])
-@patch('wazuh.agent.get_groups')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_groups')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agent_groups_exceptions(socket_mock, send_mock, mock_get_groups, db_global, system_groups,
                                            error_code):
@@ -528,7 +528,7 @@ def test_agent_get_agent_groups_exceptions(socket_mock, send_mock, mock_get_grou
 
     """
     mock_get_groups.return_value = {'valid-group'}
-    with patch('wazuh.core.common.DATABASE_PATH_GLOBAL', new=db_global):
+    with patch('fortishield.core.common.DATABASE_PATH_GLOBAL', new=db_global):
         try:
             group_result = get_agent_groups(group_list=[system_groups])
             assert group_result.failed_items
@@ -541,9 +541,9 @@ def test_agent_get_agent_groups_exceptions(socket_mock, send_mock, mock_get_grou
     ['group-1'],
     ['invalid-group']
 ])
-@patch('wazuh.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
 def test_agent_get_group_files(group_list):
     """Test `get_group_files` from agent module.
 
@@ -570,8 +570,8 @@ def test_agent_get_group_files(group_list):
     (test_shared_path, ['default'], True, FortishieldError(1405), FortishieldError(1405)),
     (test_shared_path, ['default'], True, FortishieldException(1400), FortishieldInternalError(1727))
 ])
-@patch('wazuh.agent.process_array')
-@patch('wazuh.core.agent.Agent.group_exists')
+@patch('fortishield.agent.process_array')
+@patch('fortishield.core.agent.Agent.group_exists')
 def test_agent_get_group_files_exceptions(mock_group_exists, mock_process_array, shared_path, group_list, group_exists,
                                           side_effect, expected_exception):
     """Test `get_group_files` function from agent module raises the expected exceptions if an invalid 'global.db' path
@@ -588,7 +588,7 @@ def test_agent_get_group_files_exceptions(mock_group_exists, mock_process_array,
     expected_exception : Exception
         Exception expected to be raised by `get_group_files` with the given parameters.
     """
-    with patch('wazuh.core.common.SHARED_PATH', new=shared_path):
+    with patch('fortishield.core.common.SHARED_PATH', new=shared_path):
         mock_group_exists.return_value = group_exists
         mock_process_array.side_effect = side_effect
         try:
@@ -602,10 +602,10 @@ def test_agent_get_group_files_exceptions(mock_group_exists, mock_process_array,
     'non-existent-group',
     'invalid-group'
 ])
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
-@patch('wazuh.core.common.wazuh_gid', return_value=getgrnam('root'))
-@patch('wazuh.core.common.wazuh_uid', return_value=getpwnam('root'))
-@patch('wazuh.agent.chown_r')
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.fortishield_gid', return_value=getgrnam('root'))
+@patch('fortishield.core.common.fortishield_uid', return_value=getpwnam('root'))
+@patch('fortishield.agent.chown_r')
 def test_create_group(chown_mock, uid_mock, gid_mock, group_id):
     """Test `create_group` function from agent module.
 
@@ -642,7 +642,7 @@ def test_create_group(chown_mock, uid_mock, gid_mock, group_id):
     ('ar.conf', FortishieldError, 1713),
     ('agent-template.conf', FortishieldError, 1713)
 ])
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
 def test_create_group_exceptions(group_id, exception, exception_code):
     """Test `create_group` function from agent module raises the expected exceptions if an invalid `group_id` is
     specified.
@@ -669,8 +669,8 @@ def test_create_group_exceptions(group_id, exception, exception_code):
     ['group-1'],
     ['group-1', 'group-2']
 ])
-@patch('wazuh.agent.get_groups')
-@patch('wazuh.agent.Agent.delete_single_group')
+@patch('fortishield.agent.get_groups')
+@patch('fortishield.agent.Agent.delete_single_group')
 def test_agent_delete_groups(mock_delete, mock_get_groups, group_list):
     """Test `delete_groups` function from agent module.
 
@@ -704,7 +704,7 @@ def test_agent_delete_groups(mock_delete, mock_get_groups, group_list):
     (['none-1', 'none-2'], [FortishieldResourceNotFound(1710)]),
     (['default', 'none-1'], [FortishieldError(1712), FortishieldResourceNotFound(1710)]),
 ])
-@patch('wazuh.agent.get_groups')
+@patch('fortishield.agent.get_groups')
 def test_agent_delete_groups_other_exceptions(mock_get_groups, group_list, expected_errors):
     """Test `delete_groups` function from agent module returns the expected exceptions when using invalid group lists.
 
@@ -730,9 +730,9 @@ def test_agent_delete_groups_other_exceptions(mock_get_groups, group_list, expec
     (['group-1'], ['001'], 0),
     (['group-1'], ['001', '002', '003', '100'], 1)
 ])
-@patch('wazuh.agent.Agent.add_group_to_agent')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
-@patch('wazuh.core.agent.Agent.group_exists', return_value=True)
+@patch('fortishield.agent.Agent.add_group_to_agent')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.agent.Agent.group_exists', return_value=True)
 @patch('socket.socket.connect')
 def test_assign_agents_to_group(socket_mock, group_exists_mock, send_mock, add_group_mock, group_list, agent_list,
                                 num_failed):
@@ -766,9 +766,9 @@ def test_assign_agents_to_group(socket_mock, group_exists_mock, send_mock, add_g
     (['group-1'], ['100'], FortishieldResourceNotFound(1701), False),
     (['default'], ['000'], FortishieldError(1703), False)
 ])
-@patch('wazuh.agent.Agent.group_exists')
-@patch('wazuh.agent.Agent.add_group_to_agent')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.Agent.group_exists')
+@patch('fortishield.agent.Agent.add_group_to_agent')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_assign_agents_to_group_exceptions(socket_mock, send_mock, mock_add_group, mock_group_exists, group_list,
                                                  agent_list, expected_error, catch_exception):
@@ -813,10 +813,10 @@ def test_agent_assign_agents_to_group_exceptions(socket_mock, send_mock, mock_ad
     ('default', '001'),
     ('group-1', '005')
 ])
-@patch('wazuh.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
-@patch('wazuh.core.agent.Agent.unset_single_group_agent')
-@patch('wazuh.agent.get_groups')
-@patch('wazuh.agent.get_agents_info')
+@patch('fortishield.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
+@patch('fortishield.core.agent.Agent.unset_single_group_agent')
+@patch('fortishield.agent.get_groups')
+@patch('fortishield.agent.get_agents_info')
 def test_agent_remove_agent_from_group(mock_get_agents, mock_get_groups, mock_unset, group_id, agent_id):
     """Test `remove_agent_from_group` function from agent module. Does not check its raised exceptions.
 
@@ -843,8 +843,8 @@ def test_agent_remove_agent_from_group(mock_get_agents, mock_get_groups, mock_un
     ('any-group', '000', FortishieldError(1703)),
     ('group-1', '005', FortishieldResourceNotFound(1710)),
 ])
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.agent.get_groups', side_effect={'default'})
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.agent.get_groups', side_effect={'default'})
 def test_agent_remove_agent_from_group_exceptions(group_mock, agents_info_mock, group_id, agent_id, expected_error):
     """Test `remove_agent_from_group` function from agent module raises the expected exceptions if an invalid 'agent_id'
     or 'group_id' are specified.
@@ -868,9 +868,9 @@ def test_agent_remove_agent_from_group_exceptions(group_mock, agents_info_mock, 
 @pytest.mark.parametrize('group_list, agent_list', [
     (['group-1'], ['001'])
 ])
-@patch('wazuh.core.agent.Agent.unset_single_group_agent')
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.agent.get_groups', return_value={'group-1'})
+@patch('fortishield.core.agent.Agent.unset_single_group_agent')
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.agent.get_groups', return_value={'group-1'})
 def test_agent_remove_agent_from_groups(mock_get_groups, mock_get_agents, mock_unset, group_list, agent_list):
     """Test `remove_agent_from_groups` function from agent module.
 
@@ -899,9 +899,9 @@ def test_agent_remove_agent_from_groups(mock_get_groups, mock_get_agents, mock_u
     (['any-group'], ['000'], FortishieldError(1703), True),
     (['any-group'], ['005'], FortishieldResourceNotFound(1710), False),
 ])
-@patch('wazuh.core.agent.Agent.unset_single_group_agent')
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.agent.get_groups', return_value={'group-1'})
+@patch('fortishield.core.agent.Agent.unset_single_group_agent')
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.agent.get_groups', return_value={'group-1'})
 def test_agent_remove_agent_from_groups_exceptions(mock_get_groups, mock_get_agents, mock_unset, group_list, agent_list,
                                                    expected_error, catch_exception):
     """Test `remove_agent_from_groups` function from agent module raises the expected errors when using invalid group
@@ -950,9 +950,9 @@ def test_agent_remove_agent_from_groups_exceptions(mock_get_groups, mock_get_age
 @pytest.mark.parametrize('group_list, agent_list', [
     (['group-1'], ['001'])
 ])
-@patch('wazuh.core.agent.Agent.unset_single_group_agent')
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.agent.get_groups', return_value={'group-1'})
+@patch('fortishield.core.agent.Agent.unset_single_group_agent')
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.agent.get_groups', return_value={'group-1'})
 def test_agent_remove_agents_from_group(mock_get_groups, mock_get_agents, mock_unset, group_list, agent_list):
     """Test `remove_agents_from_group` function from agent module.
 
@@ -981,8 +981,8 @@ def test_agent_remove_agents_from_group(mock_get_groups, mock_get_agents, mock_u
     (['group-1'], ['000'], FortishieldError(1703), False),
     (['group-1'], ['100'], FortishieldResourceNotFound(1701), False),
 ])
-@patch('wazuh.agent.get_agents_info', return_value=short_agent_list)
-@patch('wazuh.agent.get_groups', return_value={'group-1'})
+@patch('fortishield.agent.get_agents_info', return_value=short_agent_list)
+@patch('fortishield.agent.get_groups', return_value={'group-1'})
 def test_agent_remove_agents_from_group_exceptions(group_mock, agents_info_mock, group_list, agent_list,
                                                    expected_error, catch_exception):
     """Test `remove_agents_from_group` function from agent module raises the expected exceptions when using invalid
@@ -1018,7 +1018,7 @@ def test_agent_remove_agents_from_group_exceptions(group_mock, agents_info_mock,
 @pytest.mark.parametrize('agent_list, outdated_agents', [
     (short_agent_list, ['001', '002', '005'])
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_outdated_agents(socket_mock, send_mock, agent_list, outdated_agents):
     """Test get_oudated_agents function from agent module.
@@ -1109,9 +1109,9 @@ def test_agent_get_outdated_agents(socket_mock, send_mock, agent_list, outdated_
             True
     )
 ])
-@patch('wazuh.agent.get_agents_info', return_value=set(full_agent_list))
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_agents_info', return_value=set(full_agent_list))
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_upgrade_agents(mock_socket, mock_wdb, mock_client_keys, agent_set, expected_errors_and_items,
                               result_from_socket, filters, raise_error):
@@ -1130,7 +1130,7 @@ def test_agent_upgrade_agents(mock_socket, mock_wdb, mock_client_keys, agent_set
     raise_error : bool
         Boolean variable used to indicate that the
     """
-    with patch('wazuh.core.agent.core_upgrade_agents') as core_upgrade_agents_mock:
+    with patch('fortishield.core.agent.core_upgrade_agents') as core_upgrade_agents_mock:
         core_upgrade_agents_mock.return_value = result_from_socket
 
         if raise_error:
@@ -1222,9 +1222,9 @@ def test_agent_upgrade_agents(mock_socket, mock_wdb, mock_client_keys, agent_set
             True
     )
 ])
-@patch('wazuh.agent.get_agents_info', return_value=set(full_agent_list))
-@patch('wazuh.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_agents_info', return_value=set(full_agent_list))
+@patch('fortishield.core.common.CLIENT_KEYS', new=os.path.join(test_agent_path, 'client.keys'))
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_upgrade_result(mock_socket, mock_wdb, mock_client_keys, agent_set, expected_errors_and_items,
                                   result_from_socket, filters, raise_error):
@@ -1243,7 +1243,7 @@ def test_agent_get_upgrade_result(mock_socket, mock_wdb, mock_client_keys, agent
     raise_error : bool
         Boolean variable used to indicate that the
     """
-    with patch('wazuh.core.agent.core_upgrade_agents') as core_upgrade_agents_mock:
+    with patch('fortishield.core.agent.core_upgrade_agents') as core_upgrade_agents_mock:
         core_upgrade_agents_mock.return_value = result_from_socket
 
         if raise_error:
@@ -1282,11 +1282,11 @@ def test_agent_get_upgrade_result(mock_socket, mock_wdb, mock_client_keys, agent
 @pytest.mark.parametrize('agent_list, component, configuration', [
     (['001'], 'logcollector', 'internal')
 ])
-@patch('wazuh.core.wazuh_socket.FortishieldSocket')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.fortishield_socket.FortishieldSocket')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 @patch('os.path.exists')
-def test_agent_get_agent_config(mock_exists, socket_mock, send_mock, wazuh_socket_mock, agent_list, component, configuration):
+def test_agent_get_agent_config(mock_exists, socket_mock, send_mock, fortishield_socket_mock, agent_list, component, configuration):
     """Test `get_agent_config` function from agent module.
 
     Parameters
@@ -1298,7 +1298,7 @@ def test_agent_get_agent_config(mock_exists, socket_mock, send_mock, wazuh_socke
     configuration : str
         Name of the configuration file.
     """
-    wazuh_socket_mock.return_value.receive.return_value = b'ok {"test": "conf"}'
+    fortishield_socket_mock.return_value.receive.return_value = b'ok {"test": "conf"}'
 
     result = get_agent_config(agent_list=agent_list, component=component, config=configuration)
     assert isinstance(result, FortishieldResult), 'The returned object is not an "FortishieldResult" instance.'
@@ -1308,7 +1308,7 @@ def test_agent_get_agent_config(mock_exists, socket_mock, send_mock, wazuh_socke
 @pytest.mark.parametrize('agent_list', [
     ['005']
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agent_config_exceptions(socket_mock, send_mock, agent_list):
     """Test `get_agent_config` function from agent module raises the expected exceptions when using invalid parameters.
@@ -1328,10 +1328,10 @@ def test_agent_get_agent_config_exceptions(socket_mock, send_mock, agent_list):
 @pytest.mark.parametrize('agent_list', [
     full_agent_list[1:]
 ])
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
-@patch('wazuh.core.common.MULTI_GROUPS_PATH', new=test_multigroup_path)
-@patch('wazuh.agent.get_agents_info', return_value=full_agent_list)
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.MULTI_GROUPS_PATH', new=test_multigroup_path)
+@patch('fortishield.agent.get_agents_info', return_value=full_agent_list)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_sync_group(socket_mock, send_mock, get_agent_mock, agent_list):
     """Test `get_agents_sync_group` function from agent module.
@@ -1352,7 +1352,7 @@ def test_agent_get_agents_sync_group(socket_mock, send_mock, get_agent_mock, age
     (['000'], FortishieldError(1703)),
     (['100'], FortishieldResourceNotFound(1701))
 ])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_agents_sync_group_exceptions(socket_mock, send_mock, agent_list, expected_error):
     """Test `get_agents_sync_group` function from agent module returns the expected exceptions when using invalid
@@ -1376,8 +1376,8 @@ def test_agent_get_agents_sync_group_exceptions(socket_mock, send_mock, agent_li
 @pytest.mark.parametrize('filename, group_list', [
     ('agent.conf', ['default'])
 ])
-@patch('wazuh.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
 def test_agent_get_file_conf(filename, group_list):
     """Test `get_file_conf` from agent module.
 
@@ -1399,8 +1399,8 @@ def test_agent_get_file_conf(filename, group_list):
 @pytest.mark.parametrize('group_list', [
     ['default']
 ])
-@patch('wazuh.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.common.DATABASE_PATH_GLOBAL', new=test_global_bd_path)
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
 def test_agent_get_agent_conf(group_list):
     """Test `get_agent_agent_conf` function from agent module.
 
@@ -1418,8 +1418,8 @@ def test_agent_get_agent_conf(group_list):
 @pytest.mark.parametrize('group_list', [
     ['default']
 ])
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
-@patch('wazuh.core.configuration.upload_group_configuration')
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.core.configuration.upload_group_configuration')
 def test_agent_upload_group_file(mock_upload, group_list):
     """Test `upload_group_file` function from agent module.
 
@@ -1444,12 +1444,12 @@ def test_agent_upload_group_file(mock_upload, group_list):
     (full_agent_list, ['group-1'], False, '004'),
     (full_agent_list, ['group-1'], True, None)
 ])
-@patch('wazuh.core.common.SHARED_PATH', new=test_shared_path)
-@patch('wazuh.agent.get_distinct_agents')
-@patch('wazuh.agent.get_agent_groups')
-@patch('wazuh.agent.get_agents_summary_status')
-@patch('wazuh.agent.get_agents')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.common.SHARED_PATH', new=test_shared_path)
+@patch('fortishield.agent.get_distinct_agents')
+@patch('fortishield.agent.get_agent_groups')
+@patch('fortishield.agent.get_agents_summary_status')
+@patch('fortishield.agent.get_agents')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_agent_get_full_overview(socket_mock, send_mock, get_mock, summary_mock, group_mock, distinct_mock, agent_list,
                                  group_list, index_error, last_agent):
@@ -1523,8 +1523,8 @@ def insert_agents_db(n_agents=100000):
     (range(1000), {'limit': 100, 'offset': 500}, range(500, 600)),
     (range(100000), {'limit': 1000, 'offset': 80000}, range(80000, 81000)),
 ])
-@patch('wazuh.agent.get_agents_info', return_value=['test', 'test2'])
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.agent.get_agents_info', return_value=['test', 'test2'])
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_get_agents_big_env(mock_conn, mock_send, mock_get_agents, insert_agents_db, agent_list, params, expected_ids):
     """Check that the expected number of items is returned when limit is greater than 500.
@@ -1542,7 +1542,7 @@ def test_get_agents_big_env(mock_conn, mock_send, mock_get_agents, insert_agents
     def agent_ids_format(ids_list):
         return [str(agent_id).zfill(3) for agent_id in ids_list]
 
-    with patch('wazuh.agent.get_agents_info', return_value=set(agent_ids_format(range(100000)))):
+    with patch('fortishield.agent.get_agents_info', return_value=set(agent_ids_format(range(100000)))):
         result = get_agents(agent_list=agent_ids_format(agent_list), **params).render()
         expected_ids = agent_ids_format(expected_ids)
         for item in result['data']['affected_items']:
@@ -1554,9 +1554,9 @@ def test_get_agents_big_env(mock_conn, mock_send, mock_get_agents, insert_agents
     (['dmz', 'webserver'], '005', 'dmz'),
     (['dmz', 'webserver', 'database'], '005', 'dmz')
 ])
-@patch('wazuh.core.agent.Agent.get_agent_groups')
-@patch('wazuh.core.agent.Agent.set_agent_group_file')
-@patch('wazuh.core.agent.Agent')
+@patch('fortishield.core.agent.Agent.get_agent_groups')
+@patch('fortishield.core.agent.Agent.set_agent_group_file')
+@patch('fortishield.core.agent.Agent')
 def test_unset_single_group_agent(agent_patch, set_agent_group_patch, get_groups_patch, agent_groups,
                                    agent_id, group_id):
     """Test successfully unsetting a group from an agent.
@@ -1588,9 +1588,9 @@ def test_unset_single_group_agent(agent_patch, set_agent_group_patch, get_groups
     ('001', 'not_exists', True, 1734),
     ('001', 'default', True, 1745),
 ])
-@patch('wazuh.core.agent.Agent.get_agent_groups', return_value=['default'])
-@patch('wazuh.core.agent.Agent.group_exists', return_value=False)
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.agent.Agent.get_agent_groups', return_value=['default'])
+@patch('fortishield.core.agent.Agent.group_exists', return_value=False)
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_unset_single_group_agent_ko(agent_basic_mock, group_exists_mock, get_groups_mock, agent_id, group_id,
                                       force, expected_exc):
     """Test `remove_single_group_agent` method exceptions.

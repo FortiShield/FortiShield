@@ -1,13 +1,13 @@
 """
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the set_secure_headers middleware of the API handled by the 'wazuh-apid' daemon is
+brief: These tests will check if the set_secure_headers middleware of the API handled by the 'fortishield-apid' daemon is
        working properly. The Fortishield API is an open source 'RESTful' API that allows for interaction with the Fortishield
        manager from a web browser, command line tool like 'cURL' or any script or program that can make web requests.
 
@@ -20,12 +20,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -50,7 +50,7 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
 
 tags:
     - api
@@ -62,10 +62,10 @@ import requests
 from pathlib import Path
 
 from . import TEST_CASES_FOLDER_PATH, CONFIGURATIONS_FOLDER_PATH
-from wazuh_testing.constants.api import AGENTS_ROUTE, CONFIGURATION_TYPES
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import get_base_url, login
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.api import AGENTS_ROUTE, CONFIGURATION_TYPES
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import get_base_url, login
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 
 # Marks
@@ -95,7 +95,7 @@ def test_set_secure_headers(test_configuration, test_metadata, add_configuration
                  For this purpose, the test makes an API request and checks that the response headers fulfill the REST
                  recommended standard.
 
-    wazuh_min_version: 4.1.0
+    fortishield_min_version: 4.1.0
 
     test_phases:
         - setup:

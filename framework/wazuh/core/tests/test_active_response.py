@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -9,11 +9,11 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.exception import FortishieldError
-        from wazuh.core import active_response
-        from wazuh.core.agent import Agent
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.exception import FortishieldError
+        from fortishield.core import active_response
+        from fortishield.core.agent import Agent
 
 # Variables
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'etc', 'shared', 'ar.conf')
@@ -94,11 +94,11 @@ def test_correct_builder_is_used(agent_version, builder_type):
     (1650, None, []),
     (1652, 'random', []),
     (1652, 'invalid_cmd', []),
-    (None, 'restart-wazuh0', []),
-    (None, '!restart-wazuh0', []),
-    (None, 'restart-wazuh0', ["arg1", "arg2"])
+    (None, 'restart-fortishield0', []),
+    (None, '!restart-fortishield0', []),
+    (None, 'restart-fortishield0', ["arg1", "arg2"])
 ])
-@patch('wazuh.core.common.AR_CONF', new=test_data_path)
+@patch('fortishield.core.common.AR_CONF', new=test_data_path)
 def test_create_message(expected_exception, command, arguments):
     """Check if the returned message is correct.
 
@@ -128,12 +128,12 @@ def test_create_message(expected_exception, command, arguments):
 
 @pytest.mark.parametrize('expected_exception, command, arguments, alert', [
     (1650, None, [], None),
-    (None, 'restart-wazuh0', [], None),
-    (None, 'restart-wazuh0', [], None),
-    (None, 'restart-wazuh0', ["arg1", "arg2"], None),
+    (None, 'restart-fortishield0', [], None),
+    (None, 'restart-fortishield0', [], None),
+    (None, 'restart-fortishield0', ["arg1", "arg2"], None),
     (1652, 'custom-ar', ["arg1", "arg2"], {"data": {"srcip": "1.1.1.1"}})
 ])
-@patch('wazuh.core.common.AR_CONF', new=test_data_path)
+@patch('fortishield.core.common.AR_CONF', new=test_data_path)
 def test_create_json_message(expected_exception, command, arguments, alert):
     """Check if the returned json message is correct.
 
@@ -165,7 +165,7 @@ def test_create_json_message(expected_exception, command, arguments, alert):
             assert alert == ret["parameters"]["alert"], f'Alert information not being added'
 
 
-@patch('wazuh.core.common.AR_CONF', new=test_data_path)
+@patch('fortishield.core.common.AR_CONF', new=test_data_path)
 def test_get_commands():
     """
     Checks if get_commands method returns a list

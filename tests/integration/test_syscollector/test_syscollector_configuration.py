@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -21,9 +21,9 @@ targets:
     - agent
 
 daemons:
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-db
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-db
 
 os_platform:
     - linux
@@ -38,21 +38,21 @@ os_version:
     - Windows Server 2019
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/capabilities/syscollector.html
-    - https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html
+    - https://documentation.fortishield.com/current/user-manual/capabilities/syscollector.html
+    - https://documentation.fortishield.com/current/user-manual/reference/ossec-conf/wodle-syscollector.html
 '''
 import sys
 from pathlib import Path
 
 import pytest
-from wazuh_testing.constants.daemons import ANALYSISD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON, FORTISHIELD_MANAGER
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.platforms import WINDOWS
-from wazuh_testing.utils import services
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.utils import callbacks, configuration, file
-from wazuh_testing.modules.syscollector import patterns
-from wazuh_testing.modules.modulesd.configuration import MODULESD_DEBUG
+from fortishield_testing.constants.daemons import ANALYSISD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON, FORTISHIELD_MANAGER
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.platforms import WINDOWS
+from fortishield_testing.utils import services
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.utils import callbacks, configuration, file
+from fortishield_testing.modules.syscollector import patterns
+from fortishield_testing.modules.modulesd.configuration import MODULESD_DEBUG
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
 
@@ -65,7 +65,7 @@ local_internal_options = {MODULESD_DEBUG: '2'}
 if services.get_service() == FORTISHIELD_MANAGER:
     daemons_handler_configuration = {'daemons': [ANALYSISD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON], 'ignore_errors': True}
 elif sys.platform == WINDOWS:
-    from wazuh_testing.modules.agentd.configuration import AGENTD_WINDOWS_DEBUG
+    from fortishield_testing.modules.agentd.configuration import AGENTD_WINDOWS_DEBUG
     daemons_handler_configuration = {'all_daemons': True, 'ignore_errors': True}
     local_internal_options = {AGENTD_WINDOWS_DEBUG: '2'}
 else:
@@ -102,7 +102,7 @@ t5_configurations = configuration.load_configuration_template(t1_3_5_config_path
 
 # Tests
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t1_configurations, t1_config_metadata), ids=t1_case_ids)
-def test_syscollector_deactivation(test_configuration, test_metadata, set_wazuh_configuration,
+def test_syscollector_deactivation(test_configuration, test_metadata, set_fortishield_configuration,
                                    configure_local_internal_options, truncate_monitored_files,
                                    daemons_handler):
     '''
@@ -122,7 +122,7 @@ def test_syscollector_deactivation(test_configuration, test_metadata, set_wazuh_
             - Truncate all the log files and json alerts files.
             - Stop the necessary daemons.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 0
 
@@ -133,9 +133,9 @@ def test_syscollector_deactivation(test_configuration, test_metadata, set_wazuh_
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Set wazuh configuration using the configuration template.
+            brief: Set fortishield configuration using the configuration template.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -160,7 +160,7 @@ def test_syscollector_deactivation(test_configuration, test_metadata, set_wazuh_
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t2_configurations, t2_config_metadata), ids=t2_case_ids)
-def test_syscollector_all_scans_disabled(test_configuration, test_metadata, set_wazuh_configuration,
+def test_syscollector_all_scans_disabled(test_configuration, test_metadata, set_fortishield_configuration,
                                          configure_local_internal_options, truncate_monitored_files,
                                          daemons_handler):
     '''
@@ -180,7 +180,7 @@ def test_syscollector_all_scans_disabled(test_configuration, test_metadata, set_
             - Truncate all the log files and json alerts files.
             - Stop the necessary daemons.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 0
 
@@ -191,9 +191,9 @@ def test_syscollector_all_scans_disabled(test_configuration, test_metadata, set_
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Set wazuh configuration using the configuration template.
+            brief: Set fortishield configuration using the configuration template.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -226,7 +226,7 @@ def test_syscollector_all_scans_disabled(test_configuration, test_metadata, set_
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t3_configurations, t3_config_metadata), ids=t3_case_ids)
-def test_syscollector_invalid_configurations(test_configuration, test_metadata, set_wazuh_configuration,
+def test_syscollector_invalid_configurations(test_configuration, test_metadata, set_fortishield_configuration,
                                              configure_local_internal_options, truncate_monitored_files,
                                              daemons_handler):
     '''
@@ -248,7 +248,7 @@ def test_syscollector_invalid_configurations(test_configuration, test_metadata, 
             - Truncate all the log files and json alerts files.
             - Stop the necessary daemons.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 0
 
@@ -259,9 +259,9 @@ def test_syscollector_invalid_configurations(test_configuration, test_metadata, 
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Set wazuh configuration using the configuration template.
+            brief: Set fortishield configuration using the configuration template.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -322,7 +322,7 @@ def test_syscollector_invalid_configurations(test_configuration, test_metadata, 
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t4_configurations, t4_config_metadata), ids=t4_case_ids)
-def test_syscollector_default_values(test_configuration, test_metadata, set_wazuh_configuration,
+def test_syscollector_default_values(test_configuration, test_metadata, set_fortishield_configuration,
                                      configure_local_internal_options, truncate_monitored_files,
                                      daemons_handler):
     '''
@@ -343,7 +343,7 @@ def test_syscollector_default_values(test_configuration, test_metadata, set_wazu
             - Truncate all the log files and json alerts files.
             - Stop the necessary daemons.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 0
 
@@ -354,9 +354,9 @@ def test_syscollector_default_values(test_configuration, test_metadata, set_wazu
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Set wazuh configuration using the configuration template.
+            brief: Set fortishield configuration using the configuration template.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -390,7 +390,7 @@ def test_syscollector_default_values(test_configuration, test_metadata, set_wazu
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t5_configurations, t5_config_metadata), ids=t5_case_ids)
-def test_syscollector_scanning(test_configuration, test_metadata, set_wazuh_configuration,
+def test_syscollector_scanning(test_configuration, test_metadata, set_fortishield_configuration,
                                configure_local_internal_options, truncate_monitored_files,
                                daemons_handler):
     '''
@@ -411,7 +411,7 @@ def test_syscollector_scanning(test_configuration, test_metadata, set_wazuh_conf
             - Truncate all the log files and json alerts files.
             - Stop the necessary daemons.
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     tier: 0
 
@@ -422,9 +422,9 @@ def test_syscollector_scanning(test_configuration, test_metadata, set_wazuh_conf
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Set wazuh configuration using the configuration template.
+            brief: Set fortishield configuration using the configuration template.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.

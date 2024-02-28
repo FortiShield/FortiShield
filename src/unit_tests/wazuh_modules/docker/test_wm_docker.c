@@ -20,10 +20,10 @@
 #include "../../wrappers/common.h"
 #include "../../wrappers/libc/stdio_wrappers.h"
 #include "../../wrappers/libc/stdlib_wrappers.h"
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/shared/exec_op_wrappers.h"
-#include "../../../wazuh_modules/wmodules.h"
-#include "../../../wazuh_modules/wm_docker.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/shared/exec_op_wrappers.h"
+#include "../../../fortishield_modules/wmodules.h"
+#include "../../../fortishield_modules/wm_docker.h"
 #include "../scheduling/wmodules_scheduling_helpers.h"
 
 #define TEST_MAX_DATES 5

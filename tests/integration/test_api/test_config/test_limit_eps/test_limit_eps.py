@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -18,12 +18,12 @@ targets:
     - manager
 
 daemons:
-    - wazuh-apid
-    - wazuh-modulesd
-    - wazuh-analysisd
-    - wazuh-execd
-    - wazuh-db
-    - wazuh-remoted
+    - fortishield-apid
+    - fortishield-modulesd
+    - fortishield-analysisd
+    - fortishield-execd
+    - fortishield-db
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -40,8 +40,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/api/getting-started.html
-    - https://documentation.wazuh.com/current/user-manual/api/configuration.html
+    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.com/current/user-manual/api/configuration.html
 
 tags:
     - api
@@ -51,10 +51,10 @@ from pathlib import Path
 import requests
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
-from wazuh_testing.constants.api import CONFIGURATION_TYPES, MANAGER_CONFIGURATION_ROUTE
-from wazuh_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
-from wazuh_testing.modules.api.utils import login, get_base_url
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template, get_wazuh_conf
+from fortishield_testing.constants.api import CONFIGURATION_TYPES, MANAGER_CONFIGURATION_ROUTE
+from fortishield_testing.constants.daemons import API_DAEMONS_REQUIREMENTS
+from fortishield_testing.modules.api.utils import login, get_base_url
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template, get_fortishield_conf
 
 # Marks
 pytestmark = pytest.mark.server
@@ -75,12 +75,12 @@ daemons_handler_configuration = {'daemons': API_DAEMONS_REQUIREMENTS}
 
 @pytest.mark.tier(level=0)
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_id)
-def test_limit_eps(test_configuration, test_metadata, set_wazuh_configuration, add_configuration,
+def test_limit_eps(test_configuration, test_metadata, set_fortishield_configuration, add_configuration,
                    truncate_monitored_files, daemons_handler, wait_for_api_start):
     """
     description: Check if the API works as expected when uploading configurations with forbidden sections
 
-    wazuh_min_version: 4.4.0
+    fortishield_min_version: 4.4.0
 
     test_phases:
         - setup:
@@ -106,7 +106,7 @@ def test_limit_eps(test_configuration, test_metadata, set_wazuh_configuration, a
         - test_metadata:
             type: dict
             brief: Metadata from the test case.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
         - add_configuration:
@@ -160,6 +160,6 @@ def test_limit_eps(test_configuration, test_metadata, set_wazuh_configuration, a
                                             f"{internal_error_code} was returned: {json_response}"
 
     # Asserts that the configuration has the expected values
-    wazuh_config = " ".join(get_wazuh_conf())
-    assert f"<maximum>{test_metadata['expected_max_value']}</maximum>" in wazuh_config
-    assert f"<timeframe>{test_metadata['expected_timeframe_value']}</timeframe>" in wazuh_config
+    fortishield_config = " ".join(get_fortishield_conf())
+    assert f"<maximum>{test_metadata['expected_max_value']}</maximum>" in fortishield_config
+    assert f"<timeframe>{test_metadata['expected_timeframe_value']}</timeframe>" in fortishield_config

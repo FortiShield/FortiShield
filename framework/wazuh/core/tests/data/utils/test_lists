@@ -1,5 +1,5 @@
-test-wazuh-w:write
-test-wazuh-r:read
-test-wazuh-a:attribute
-test-wazuh-x:execute
-test-wazuh-c:command
+test-fortishield-w:write
+test-fortishield-r:read
+test-fortishield-a:attribute
+test-fortishield-x:execute
+test-fortishield-c:command

@@ -15,7 +15,7 @@
 
 #include "../../headers/shared.h"
 #include "../../analysisd/logtest.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 int Read_Logtest(XML_NODE node);
 cJSON *getRuleTestConfig();

@@ -14,9 +14,9 @@
 #include <stdio.h>
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 
 
 #include "../analysisd/mitre.h"
@@ -78,7 +78,7 @@ void test_queryid_no_response(void **state)
     will_return(__wrap_wdbc_query_parse_json, -1);
     will_return(__wrap_wdbc_query_parse_json, id_array);
 
-    expect_string(__wrap__merror, formatted_msg, "No response from wazuh-db.");
+    expect_string(__wrap__merror, formatted_msg, "No response from fortishield-db.");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 
@@ -98,7 +98,7 @@ void test_queryid_bad_response(void **state)
     will_return(__wrap_wdbc_query_parse_json, response_ids);
     will_return(__wrap_wdbc_query_parse_json, id_array);
 
-    expect_string(__wrap__merror, formatted_msg, "Bad response from wazuh-db: not found");
+    expect_string(__wrap__merror, formatted_msg, "Bad response from fortishield-db: not found");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 
@@ -252,7 +252,7 @@ void test_querytactics_no_response(void **state) {
     will_return(__wrap_wdbc_query_parse_json, -1);
     will_return(__wrap_wdbc_query_parse_json, tactic_array);
 
-    expect_string(__wrap__merror, formatted_msg, "No response from wazuh-db.");
+    expect_string(__wrap__merror, formatted_msg, "No response from fortishield-db.");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 
@@ -282,7 +282,7 @@ void test_querytactics_bad_response(void **state) {
     will_return(__wrap_wdbc_query_parse_json, response_tactics);
     will_return(__wrap_wdbc_query_parse_json, tactic_array);
 
-    expect_string(__wrap__merror, formatted_msg, "Bad response from wazuh-db: not found");
+    expect_string(__wrap__merror, formatted_msg, "Bad response from fortishield-db: not found");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 
@@ -429,7 +429,7 @@ void test_queryname_no_response(void **state) {
     will_return(__wrap_wdbc_query_parse_json, -1);
     will_return(__wrap_wdbc_query_parse_json, tactic_info_array);
 
-    expect_string(__wrap__merror, formatted_msg, "No response from wazuh-db.");
+    expect_string(__wrap__merror, formatted_msg, "No response from fortishield-db.");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 
@@ -464,7 +464,7 @@ void test_queryname_bad_response(void **state) {
     will_return(__wrap_wdbc_query_parse_json, response_tactics);
     will_return(__wrap_wdbc_query_parse_json, tactic_info_array);
 
-    expect_string(__wrap__merror, formatted_msg, "Bad response from wazuh-db: not found");
+    expect_string(__wrap__merror, formatted_msg, "Bad response from fortishield-db: not found");
     expect_string(__wrap__merror, formatted_msg, "Response from the Mitre database cannot be parsed.");
     expect_string(__wrap__merror, formatted_msg, "Mitre matrix information could not be loaded.");
 

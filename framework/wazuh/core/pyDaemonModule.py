@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import glob
@@ -10,8 +10,8 @@ from os import path
 
 import psutil
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldInternalError
+from fortishield.core import common
+from fortishield.core.exception import FortishieldInternalError
 
 
 def pyDaemon():

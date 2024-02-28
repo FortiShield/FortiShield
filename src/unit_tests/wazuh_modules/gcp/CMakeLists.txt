@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Tests list and flags
 list(APPEND tests_names "test_wm_gcp")
@@ -20,9 +20,9 @@ list(APPEND tests_names "test_wmodules_gcp")
 list(APPEND tests_flags "-Wl,--wrap,sched_scan_read,--wrap,realpath,--wrap,IsFile,--wrap,atexit ${DEBUG_OP_WRAPPERS}")
 list(APPEND use_shared_libs 0)
 
-# Generate wazuh modules library
-file(GLOB gcp ../../../wazuh_modules/*.o ../../../config/*.o)
-list(REMOVE_ITEM gcp ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB gcp ../../../fortishield_modules/*.o ../../../config/*.o)
+list(REMOVE_ITEM gcp ../../../fortishield_modules/main.o)
 
 add_library(GCP_O STATIC ${gcp})
 

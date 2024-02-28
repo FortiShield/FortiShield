@@ -8,12 +8,12 @@
  * Foundation.
 */
 
-/* wazuh-analysisd
+/* fortishield-analysisd
  * Responsible for correlation and log decoding
  */
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-analysisd"
+#define ARGV0 "fortishield-analysisd"
 #endif
 
 #include "shared.h"

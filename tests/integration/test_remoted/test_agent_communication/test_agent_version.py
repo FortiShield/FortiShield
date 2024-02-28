@@ -1,6 +1,6 @@
 """
  Copyright (C) 2015-2024, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
@@ -8,9 +8,9 @@ import pytest
 import time
 
 from pathlib import Path
-from wazuh_testing.tools.simulators.agent_simulator import connect
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.modules.remoted.configuration import REMOTED_DEBUG
+from fortishield_testing.tools.simulators.agent_simulator import connect
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.modules.remoted.configuration import REMOTED_DEBUG
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -32,7 +32,7 @@ local_internal_options = {REMOTED_DEBUG: '2'}
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_agent_version(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                            set_wazuh_configuration, daemons_handler, simulate_agents):
+                            set_fortishield_configuration, daemons_handler, simulate_agents):
 
     '''
     description: Check if the manager sends the shared configuration to agents through remote,
@@ -58,7 +58,7 @@ def test_agent_version(test_configuration, test_metadata, configure_local_intern
         - simulate_agents
             type: fixture
             brief: create agents
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
     '''
@@ -68,7 +68,7 @@ def test_agent_version(test_configuration, test_metadata, configure_local_intern
 
     time.sleep(5)
 
-    wazuh_db_agent_version = agent.get_agent_version()
-    assert wazuh_db_agent_version
+    fortishield_db_agent_version = agent.get_agent_version()
+    assert fortishield_db_agent_version
 
     injector.stop_receive()

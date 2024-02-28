@@ -10,7 +10,7 @@
  */
 
 #ifdef ENABLE_SYSC
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_INTERVAL = "interval";
 static const char *XML_SCAN_ON_START = "scan_on_start";

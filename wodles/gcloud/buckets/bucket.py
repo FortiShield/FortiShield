@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 #
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute
 # it and/or modify it under the terms of GPLv2
 
@@ -71,7 +71,7 @@ class FortishieldGCloudBucket(FortishieldGCloudIntegration):
         self.delete_file = delete_file
         self.only_logs_after = only_logs_after
         self.default_date = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-        self.db_path = join(utils.find_wazuh_path(), "wodles/gcloud/gcloud.db")
+        self.db_path = join(utils.find_fortishield_path(), "wodles/gcloud/gcloud.db")
         self.db_connector = None
         self.db_table_name = None
         self.datetime_format = "%Y-%m-%d %H:%M:%S.%f%z"

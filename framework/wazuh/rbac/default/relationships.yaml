@@ -2,11 +2,11 @@
 
 relationships:
   users:
-    wazuh:
+    fortishield:
       role_ids:
         - administrator
 
-    wazuh-wui:
+    fortishield-wui:
       role_ids:
         - administrator
 

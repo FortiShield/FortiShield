@@ -1,19 +1,19 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
 
 from aiohttp import web
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.event import send_event_to_analysisd
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.event import send_event_to_analysisd
 
 from api.encoder import dumps, prettify
 from api.models.base_model_ import Body
 from api.models.event_ingest_model import EventIngestModel
 from api.util import raise_if_exc, remove_nones_to_dict
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def forward_event(request: web.Request, pretty: bool = False, wait_for_complete: bool = False) -> web.Response:

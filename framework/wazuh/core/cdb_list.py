@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import re
@@ -7,9 +7,9 @@ from os import listdir, chmod, remove, path
 from pathlib import Path
 from typing import Union
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError
-from wazuh.core.utils import find_nth, delete_wazuh_file, to_relative_path
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError
+from fortishield.core.utils import find_nth, delete_fortishield_file, to_relative_path
 
 REQUIRED_FIELDS = ['relative_dirname', 'filename']
 SORT_FIELDS = ['relative_dirname', 'filename']
@@ -281,7 +281,7 @@ def delete_list(rel_path: str):
     rel_path : str
         Relative path of the file to delete.
     """
-    delete_wazuh_file(path.join(common.FORTISHIELD_PATH, rel_path))
+    delete_fortishield_file(path.join(common.FORTISHIELD_PATH, rel_path))
 
     # Also delete .cdb file (if exists).
     try:
@@ -291,7 +291,7 @@ def delete_list(rel_path: str):
 
 
 def get_filenames_paths(filenames_list: list, root_directory: str = common.USER_LISTS_PATH) -> list:
-    """Get full paths from filename list. I.e: test_filename -> {wazuh_path}/etc/lists/test_filename
+    """Get full paths from filename list. I.e: test_filename -> {fortishield_path}/etc/lists/test_filename
 
     Parameters
     ----------

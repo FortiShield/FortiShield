@@ -17,7 +17,7 @@
 #include "../../remoted/remoted.h"
 #include "../../headers/shared.h"
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
 
 int w_remoted_get_net_protocol(const char * content);
 

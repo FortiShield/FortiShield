@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -9,7 +9,7 @@ type: integration
 
 brief: Active responses execute a script in response to the triggering of specific alerts based
        on the alert level or rule group. These tests will check if the 'active responses',
-       which are executed by the 'wazuh-execd' daemon via scripts, run correctly.
+       which are executed by the 'fortishield-execd' daemon via scripts, run correctly.
 
 components:
     - execd
@@ -20,8 +20,8 @@ targets:
     - agent
 
 daemons:
-    - wazuh-analysisd
-    - wazuh-execd
+    - fortishield-analysisd
+    - fortishield-execd
 
 os_platform:
     - linux
@@ -38,21 +38,21 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/capabilities/active-response/#active-response
+    - https://documentation.fortishield.com/current/user-manual/capabilities/active-response/#active-response
 '''
 import sys
 import pytest
 
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, ACTIVE_RESPONSE_LOG_PATH
-from wazuh_testing.modules.active_response import patterns as ar_patterns
-from wazuh_testing.modules.agentd.configuration import AGENTD_WINDOWS_DEBUG
-from wazuh_testing.modules.execd import patterns as execd_paterns
-from wazuh_testing.modules.execd.configuration import EXECD_DEBUG_CONFIG
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.callbacks import generate_callback
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH, ACTIVE_RESPONSE_LOG_PATH
+from fortishield_testing.modules.active_response import patterns as ar_patterns
+from fortishield_testing.modules.agentd.configuration import AGENTD_WINDOWS_DEBUG
+from fortishield_testing.modules.execd import patterns as execd_paterns
+from fortishield_testing.modules.execd.configuration import EXECD_DEBUG_CONFIG
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.callbacks import generate_callback
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -75,7 +75,7 @@ ar_conf = 'firewall-drop5 - firewall-drop - 5'
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_execd_firewall_drop(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                             set_wazuh_configuration, configure_ar_conf, remoted_simulator, authd_simulator,
+                             set_fortishield_configuration, configure_ar_conf, remoted_simulator, authd_simulator,
                              daemons_handler, send_execd_message):
     '''
     description: Check if 'firewall-drop' command of 'active response' is executed correctly.
@@ -83,7 +83,7 @@ def test_execd_firewall_drop(test_configuration, test_metadata, configure_local_
                  is sent to it. This response includes an IP address that must be added
                  and removed from 'iptables', the Linux firewall.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 1
 
@@ -122,7 +122,7 @@ def test_execd_firewall_drop(test_configuration, test_metadata, configure_local_
         - The `cases_execd_firewall_drop.yaml` file provides the test cases.
     '''
     ar_monitor = FileMonitor(ACTIVE_RESPONSE_LOG_PATH)
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
 
     if error_message := test_metadata.get('expected_error'):
         callback = generate_callback(error_message)
@@ -130,8 +130,8 @@ def test_execd_firewall_drop(test_configuration, test_metadata, configure_local_
         assert ar_monitor.callback_result, 'AR `firewall-drop` did not fail.'
         return
 
-    wazuh_log_monitor.start(callback=generate_callback(execd_paterns.EXECD_EXECUTING_COMMAND))
-    assert wazuh_log_monitor.callback_result, 'Execd `executing` command log not raised.'
+    fortishield_log_monitor.start(callback=generate_callback(execd_paterns.EXECD_EXECUTING_COMMAND))
+    assert fortishield_log_monitor.callback_result, 'Execd `executing` command log not raised.'
 
     ar_monitor.start(callback=generate_callback(ar_patterns.ACTIVE_RESPONSE_FIREWALL_DROP))
     assert ar_monitor.callback_result, 'AR `firewall-drop` program not used.'

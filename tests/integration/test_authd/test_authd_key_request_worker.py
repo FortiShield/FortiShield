@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2021, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -19,8 +19,8 @@ components:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-clusterd
+    - fortishield-authd
+    - fortishield-clusterd
 
 os_platform:
     - linux
@@ -49,10 +49,10 @@ tags:
 from pathlib import Path
 
 import pytest
-from wazuh_testing.modules.clusterd.utils import CLUSTER_DATA_HEADER_SIZE
-from wazuh_testing.constants.paths.sockets import MODULESD_C_INTERNAL_SOCKET_PATH, MODULESD_KREQUEST_SOCKET_PATH
-from wazuh_testing.tools.mitm import WorkerMID
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.modules.clusterd.utils import CLUSTER_DATA_HEADER_SIZE
+from fortishield_testing.constants.paths.sockets import MODULESD_C_INTERNAL_SOCKET_PATH, MODULESD_KREQUEST_SOCKET_PATH
+from fortishield_testing.tools.mitm import WorkerMID
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH, SCRIPTS_FOLDER_PATH
 
@@ -71,13 +71,13 @@ script_filename = 'fetch_keys.py'
 # Variables
 receiver_sockets_params = [(MODULESD_KREQUEST_SOCKET_PATH, 'AF_UNIX', 'UDP')]
 mitm_master = WorkerMID(address=MODULESD_C_INTERNAL_SOCKET_PATH, family='AF_UNIX', connection_protocol='TCP')
-monitored_sockets_params = [('wazuh-clusterd', mitm_master, True), ('wazuh-authd', None, True)]
+monitored_sockets_params = [('fortishield-clusterd', mitm_master, True), ('fortishield-authd', None, True)]
 receiver_sockets, monitored_sockets = None, None
 
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_key_request_worker(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_key_request_worker(test_configuration, test_metadata, set_fortishield_configuration,
                                   configure_sockets_environment, copy_tmp_script,
                                   connect_to_sockets):
     '''
@@ -85,7 +85,7 @@ def test_authd_key_request_worker(test_configuration, test_metadata, set_wazuh_c
         Checks that every message from the worker is correctly formatted for master,
         and every master response is correctly parsed for worker.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.4.0
 
     parameters:
@@ -95,9 +95,9 @@ def test_authd_key_request_worker(test_configuration, test_metadata, set_wazuh_c
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_sockets_environment:
             type: fixture
             brief: Configure the socket listener to receive and send messages on the sockets.

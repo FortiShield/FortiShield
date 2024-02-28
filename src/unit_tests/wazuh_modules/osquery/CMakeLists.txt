@@ -17,9 +17,9 @@ list(APPEND tests_flags "-Wl,--wrap,access -Wl,--wrap,wurl_http_request \
                          -Wl,--wrap,fim_db_transaction_sync_row -Wl,--wrap,fim_db_file_update -Wl,--wrap,fim_db_file_pattern_search \
                          -Wl,--wrap,fim_db_init,--wrap,getpid")
 
-# Generate wazuh modules library
-file(GLOB osquery ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM osquery ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB osquery ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM osquery ../../../fortishield_modules/main.o)
 
 add_library(OSQUERY_O STATIC ${osquery})
 

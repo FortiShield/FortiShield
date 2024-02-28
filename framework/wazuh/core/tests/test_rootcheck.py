@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -10,13 +10,13 @@ from unittest.mock import patch, ANY
 import pytest
 
 from api.util import remove_nones_to_dict
-from wazuh.core.common import DATE_FORMAT
-from wazuh.core.exception import FortishieldException
-from wazuh.core.utils import get_date_from_timestamp
+from fortishield.core.common import DATE_FORMAT
+from fortishield.core.exception import FortishieldException
+from fortishield.core.utils import get_date_from_timestamp
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core import rootcheck
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core import rootcheck
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'test_rootcheck')
 
@@ -58,16 +58,16 @@ def send_msg_to_wdb(msg, raw=False):
     return ['ok', dumps(result)] if raw else result
 
 
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch("wazuh.core.rootcheck.FortishieldDBQuery.__init__")
-@patch('wazuh.core.agent.Agent.get_basic_information')
-def test_FortishieldDBQueryRootcheck_init(mock_info, mock_wazuhDBQuery, mock_backend):
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch("fortishield.core.rootcheck.FortishieldDBQuery.__init__")
+@patch('fortishield.core.agent.Agent.get_basic_information')
+def test_FortishieldDBQueryRootcheck_init(mock_info, mock_fortishieldDBQuery, mock_backend):
     """Test if FortishieldDBQuery and FortishieldDBBackend are called with expected parameters"""
     test = rootcheck.FortishieldDBQueryRootcheck(agent_id='100', offset=1, limit=1, sort=None, search='test', select=['log'],
                                            query='test', count=True, get_data=True, distinct=False, filters=None,
                                            fields={})
     mock_backend.assert_called_with('100')
-    mock_wazuhDBQuery.assert_called_with(ANY, offset=1, limit=1, table='pm_event', sort=None, search='test',
+    mock_fortishieldDBQuery.assert_called_with(ANY, offset=1, limit=1, table='pm_event', sort=None, search='test',
                                          select=['log'], fields={}, default_sort_field='date_last',
                                          default_sort_order='DESC', filters={}, query='test', backend=ANY,
                                          min_select_fields=set(), count=True, get_data=True, distinct=False,
@@ -77,8 +77,8 @@ def test_FortishieldDBQueryRootcheck_init(mock_info, mock_wazuhDBQuery, mock_bac
 @pytest.mark.parametrize('distinct', [
     True, False
 ])
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQueryRootcheck_default_query(mock_info, mock_backend, distinct):
     """Test if default query is changed according to distinct parameter
 
@@ -96,8 +96,8 @@ def test_FortishieldDBQueryRootcheck_default_query(mock_info, mock_backend, dist
         assert test._default_query() == "SELECT {0} FROM "
 
 
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQueryRootcheck_parse_filters(mock_info, mock_backend):
     """Test if expected query_filters are created after calling _parse_filters() method."""
     expected_query_filters = [{'value': 'all', 'field': 'status$0', 'operator': '=', 'separator': 'AND', 'level': 0},
@@ -118,8 +118,8 @@ def test_FortishieldDBQueryRootcheck_parse_filters(mock_info, mock_backend):
     ('solved', ['solved', '<=']),
     ('all', ['solved', 'outstanding', '<=', '>', 'UNION'])
 ])
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQueryRootcheck_filter_status(mock_info, mock_backend, status, expected_items):
     """Test if the query has the expected items after calling _filter_status() method
 
@@ -138,8 +138,8 @@ def test_FortishieldDBQueryRootcheck_filter_status(mock_info, mock_backend, stat
     assert all(item in test.query for item in expected_items)
 
 
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQueryRootcheck_filter_status_ko(mock_info, mock_backend):
     """Test if expected exception is raised when status does not exist"""
     test = rootcheck.FortishieldDBQueryRootcheck(agent_id='100', offset=1, limit=1, sort=None, search='test', select=['log'],
@@ -150,8 +150,8 @@ def test_FortishieldDBQueryRootcheck_filter_status_ko(mock_info, mock_backend):
         test._filter_status({'value': 'test'})
 
 
-@patch("wazuh.core.rootcheck.FortishieldDBBackend")
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch("fortishield.core.rootcheck.FortishieldDBBackend")
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQueryRootcheck_format_data_into_dictionary(mock_info, mock_backend):
     """Test if format_data_into_dictionary() returns expected element"""
     test = rootcheck.FortishieldDBQueryRootcheck(agent_id='100', offset=1, limit=1, sort=None, search='test',
@@ -168,8 +168,8 @@ def test_FortishieldDBQueryRootcheck_format_data_into_dictionary(mock_info, mock
            result['items'][0]['date_last'] == get_date_from_timestamp(1603648851).strftime(DATE_FORMAT)
 
 
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.wdb.FortishieldDBConnection._send', side_effect=send_msg_to_wdb)
 @patch('socket.socket.connect')
 def test_last_scan(mock_connect, mock_send, mock_info):
     """Check if last_scan function returns expected datetime according to the database"""
@@ -181,16 +181,16 @@ remove_db(test_data_path)
 
 
 @pytest.mark.parametrize('agent', ['001', '002', '003'])
-@patch('wazuh.core.wdb.FortishieldDBConnection')
+@patch('fortishield.core.wdb.FortishieldDBConnection')
 def test_rootcheck_delete_agent(mock_db_conn, agent):
-    """Test if proper parameters are being sent to the wazuhdb socket.
+    """Test if proper parameters are being sent to the fortishielddb socket.
 
     Parameters
     ----------
     agent : str
         Agent whose information is being deleted from the db.
     mock_db_conn : FortishieldDBConnection
-        Object used to send the delete message to the wazuhdb socket.
+        Object used to send the delete message to the fortishielddb socket.
     """
     rootcheck.rootcheck_delete_agent(agent, mock_db_conn)
     mock_db_conn.execute.assert_called_with(f"agent {agent} rootcheck delete", delete=True)

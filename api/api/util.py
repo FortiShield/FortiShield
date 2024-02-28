@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import datetime
@@ -13,8 +13,8 @@ import six
 from connexion import ProblemException
 
 from api.api_exception import APIError
-from wazuh.core import common, exception
-from wazuh.core.cluster.utils import running_in_master_node
+from fortishield.core import common, exception
+from fortishield.core.cluster.utils import running_in_master_node
 
 
 class APILoggerSize:

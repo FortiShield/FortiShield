@@ -553,13 +553,13 @@
     "function_params": {
       "user_id": null
     },
-    "fake_system_resources": {"user:id:*": ["wazuh"]},
-    "allowed_resources": [["wazuh"]]
+    "fake_system_resources": {"user:id:*": ["fortishield"]},
+    "allowed_resources": [["fortishield"]]
   },
   {
     "rbac": {
       "security:read": {
-        "user:id:wazuh": "allow"
+        "user:id:fortishield": "allow"
       }
     },
     "decorator_params": {
@@ -569,16 +569,16 @@
         "post_proc_kwargs": null
     },
     "function_params": {
-      "user_id": ["wazuh", "wazuh-wui"]
+      "user_id": ["fortishield", "fortishield-wui"]
     },
-    "fake_system_resources": {"user:id:*": ["wazuh"]},
-    "allowed_resources": [["wazuh"]]
+    "fake_system_resources": {"user:id:*": ["fortishield"]},
+    "allowed_resources": [["fortishield"]]
   },
   {
     "rbac": {
       "security:read": {
         "user:id:*": "deny",
-        "user:id:wazuh-wui": "allow"
+        "user:id:fortishield-wui": "allow"
       }
     },
     "decorator_params": {
@@ -588,16 +588,16 @@
         "post_proc_kwargs": null
     },
     "function_params": {
-      "user_id": ["wazuh", "wazuh-wui"]
+      "user_id": ["fortishield", "fortishield-wui"]
     },
-    "fake_system_resources": {"user:id:*": ["wazuh"]},
-    "allowed_resources": [["wazuh-wui"]]
+    "fake_system_resources": {"user:id:*": ["fortishield"]},
+    "allowed_resources": [["fortishield-wui"]]
   },
   {
     "rbac": {
       "security:delete": {
         "user:id:*": "deny",
-        "user:id:wazuh-wui": "allow"
+        "user:id:fortishield-wui": "allow"
       }
     },
     "decorator_params": {
@@ -607,16 +607,16 @@
         "post_proc_kwargs": null
     },
     "function_params": {
-      "user_id": ["wazuh", "wazuh-wui"]
+      "user_id": ["fortishield", "fortishield-wui"]
     },
-    "fake_system_resources": {"user:id:*": ["wazuh"]},
-    "allowed_resources": [["wazuh-wui"]]
+    "fake_system_resources": {"user:id:*": ["fortishield"]},
+    "allowed_resources": [["fortishield-wui"]]
   },
   {
     "rbac": {
       "security:delete": {
-        "user:id:wazuh": "deny",
-        "user:id:wazuh-wui": "allow"
+        "user:id:fortishield": "deny",
+        "user:id:fortishield-wui": "allow"
       }
     },
     "decorator_params": {
@@ -626,10 +626,10 @@
         "post_proc_kwargs": null
     },
     "function_params": {
-      "user_id": ["wazuh", "wazuh-wui"]
+      "user_id": ["fortishield", "fortishield-wui"]
     },
-    "fake_system_resources": {"user:id:*": ["wazuh"]},
-    "allowed_resources": [["wazuh-wui"]]
+    "fake_system_resources": {"user:id:*": ["fortishield"]},
+    "allowed_resources": [["fortishield-wui"]]
   },
   {
     "rbac": {

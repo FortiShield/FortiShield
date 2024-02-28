@@ -16,8 +16,8 @@
 #include "../../config/global-config.h"
 #include "../../analysisd/eventinfo.h"
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/os_xml/os_xml_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_xml/os_xml_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"
 
 #define TEST_AGENT_ID   "005"

@@ -38,8 +38,8 @@ class DockerListener:
             sys.stderr.write("This wodle does not work on Windows.\n")
             sys.exit(1)
         # socket variables
-        self.wazuh_path = os.path.abspath(os.path.join(__file__, "..", "..", ".."))
-        self.wazuh_queue = os.path.join(self.wazuh_path, "queue", "sockets", "queue")
+        self.fortishield_path = os.path.abspath(os.path.join(__file__, "..", "..", ".."))
+        self.fortishield_queue = os.path.join(self.fortishield_path, "queue", "sockets", "queue")
         self.msg_header = "1:Fortishield-Docker:"
         # docker variables
         self.client = None
@@ -133,7 +133,7 @@ class DockerListener:
             json_msg = json.dumps(self.format_msg(msg))
             print(json_msg)
             s = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-            s.connect(self.wazuh_queue)
+            s.connect(self.fortishield_queue)
 
             encoded_msg = "{header}{msg}".format(header=self.msg_header,
                                                  msg=json_msg).encode()
@@ -148,10 +148,10 @@ class DockerListener:
                 sys.stderr.write('Fortishield must be running.\n')
                 sys.exit(11)
             else:
-                sys.stderr.write("Error sending message to wazuh: {}\n".format(e))
+                sys.stderr.write("Error sending message to fortishield: {}\n".format(e))
                 sys.exit(13)
         except Exception as e:
-            sys.stderr.write("Error sending message to wazuh: {}\n".format(e))
+            sys.stderr.write("Error sending message to fortishield: {}\n".format(e))
             sys.exit(13)
 
 

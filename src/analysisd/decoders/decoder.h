@@ -71,7 +71,7 @@ typedef struct {
     void (*plugindecoder)(void *lf, void *rule_hash, void *decoder_match);
     void* (**order)(struct _Eventinfo *, char *, const char *);
 
-    bool internal_saving;      ///< Used to free decoderinfo structure in wazuh-logtest
+    bool internal_saving;      ///< Used to free decoderinfo structure in fortishield-logtest
 } OSDecoderInfo;
 
 /* List structure */

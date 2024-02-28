@@ -1,7 +1,7 @@
 # Unit Tests
 ## Index
 1. [Requirements](#requirements)
-2. [Compile Fortishield](#compile-wazuh)
+2. [Compile Fortishield](#compile-fortishield)
 3. [Compile and run unit tests for Linux targets](#compile-and-run-unit-tests-for-linux-targets)
 4. [Compile and run unit tests for Windows agent](#compile-and-run-unit-tests-for-windows-agent)
 5. [Compile and run unit tests for macOS agent](#compile-and-run-unit-tests-for-macos-agent)
@@ -30,7 +30,7 @@ $ brew install lcov
 ```
 
 ## Compile Fortishield
-In order to run unit tests on a specific wazuh target, the project needs to be built with the `DEBUG` and `TEST` options as shown below:
+In order to run unit tests on a specific fortishield target, the project needs to be built with the `DEBUG` and `TEST` options as shown below:
 ```
 make TARGET=server|agent|winagent DEBUG=1 TEST=1
 ```
@@ -38,14 +38,14 @@ make TARGET=server|agent|winagent DEBUG=1 TEST=1
 ## Compile and run unit tests for Linux targets
 In order to run unit tests for either the Fortishield server or Linux agents, these need to be built using [CMake](#installing-cmake) version 3.10 or higher and [cmocka](#installing-cmocka).
 
-Navigate into `wazuh/src/unit_tests` and run the following commands:
+Navigate into `fortishield/src/unit_tests` and run the following commands:
 ```
 mkdir build
 cd build
 cmake -DTARGET=server|agent ..
 make
 ```
-Notice that when running the cmake command we need to specify the target on which we will run the unit tests, this target needs to match the wazuh target used for compilation and wazuh needs to be previously compiled.
+Notice that when running the cmake command we need to specify the target on which we will run the unit tests, this target needs to match the fortishield target used for compilation and fortishield needs to be previously compiled.
 
 There are several ways to run unit tests:
 
@@ -66,7 +66,7 @@ The output of the test will be written directly into the console.
 ## Compile and run unit tests for Windows agent
 Similarly to compiling unit tests for server or Linux agent configurations, [CMake](#installing-cmake) 3.10 or higher and [cmocka](#installing-cmocka) are required, as well as a 32 bit [wine installation](#installing-wine) in order to run the tests.
 
-Navigate into `wazuh/src/unit_tests` and run the following commands:
+Navigate into `fortishield/src/unit_tests` and run the following commands:
 ```
 mkdir build
 cd build
@@ -96,7 +96,7 @@ The output of the test will be written directly into the console.
 ## Compile and run unit tests for macOS agent
 Similarly to compiling unit tests for server or Linux agent configurations, [CMake](#installing-cmake) 3.10 or higher and [cmocka](#installing-cmocka) are required.
 
-Navigate into `wazuh/src/unit_tests` and run the following commands:
+Navigate into `fortishield/src/unit_tests` and run the following commands:
 ```
 export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib
 mkdir build
@@ -191,7 +191,7 @@ If you need to run the tests on a CentOS 7 machine, you can follow these instruc
 
 After installing wine, the `WINEPATH` and `WINEARCH` variables need to be created in order for it to know it should run on 32 bit mode and find all required dlls for the tests. On an Ubuntu system, the following commands need to be executed and/or added into the user's `.bashrc` file.
 ```
-export WINEPATH="/usr/i686-w64-mingw32/lib;/path/to/wazuh/src"
+export WINEPATH="/usr/i686-w64-mingw32/lib;/path/to/fortishield/src"
 export WINEARCH=win32
 ```
 If wine complains about being a 64 bit installation, remove/rename the directory `~/.wine` and run it again.

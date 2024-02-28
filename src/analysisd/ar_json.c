@@ -13,7 +13,7 @@
 
 #define VERSION 1
 #ifndef ARGV0
-#define ARGV0 "wazuh-analysisd"
+#define ARGV0 "fortishield-analysisd"
 #endif
 
 /**

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 import asyncio
 import logging
@@ -11,15 +11,15 @@ from typing import AsyncGenerator, Callable
 from aiohttp import web
 
 from api.constants import INSTALLATION_UID_KEY, INSTALLATION_UID_PATH, UPDATE_INFORMATION_KEY
-from wazuh.core import common
-from wazuh.core.cluster.utils import running_in_master_node
-from wazuh.core.configuration import update_check_is_enabled
-from wazuh.core.manager import query_update_check_service
+from fortishield.core import common
+from fortishield.core.cluster.utils import running_in_master_node
+from fortishield.core.configuration import update_check_is_enabled
+from fortishield.core.manager import query_update_check_service
 
 
 ONE_DAY_SLEEP = 60*60*24
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 def cancel_signal_handler(func: Callable) -> Callable:
@@ -68,7 +68,7 @@ async def check_installation_uid(app: web.Application) -> None:
         installation_uid = str(uuid.uuid4())
         with open(INSTALLATION_UID_PATH, 'w') as file:
             file.write(installation_uid)
-            os.chown(file.name, common.wazuh_uid(), common.wazuh_gid())
+            os.chown(file.name, common.fortishield_uid(), common.fortishield_gid())
             os.chmod(file.name, 0o660)
     app[INSTALLATION_UID_KEY] = installation_uid
 

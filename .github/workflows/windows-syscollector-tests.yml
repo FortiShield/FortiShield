@@ -6,7 +6,7 @@ on:
       - ".github/workflows/windows-syscollector-tests.yml"
       - "src/data_provider/**"
       - "src/shared_modules/**"
-      - "src/wazuh_modules/syscollector/**"
+      - "src/fortishield_modules/syscollector/**"
       - "src/Makefile"
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
       - name: make
         run: |
           make -C src external win32/libgcc_s_dw2-1.dll win32/libstdc++-6.dll win32/libwinpthread-1.dll win32/libwinpthreadpatched.a TARGET=winagent -j2
-          make -C src libwazuhext.dll CFLAGS="-DCLIENT -D_POSIX_C_SOURCE -DWIN32 -DPSAPI_VERSION=1" LIBS="-lwsock32 -lws2_32 -lcrypt32" TARGET=winagent -j2
+          make -C src libfortishieldext.dll CFLAGS="-DCLIENT -D_POSIX_C_SOURCE -DWIN32 -DPSAPI_VERSION=1" LIBS="-lwsock32 -lws2_32 -lcrypt32" TARGET=winagent -j2
           make -C src win32/syscollector TARGET=winagent -j2
           # Make folder and upload as artifacts.
       - name: Copy libraries
         run: |
           mkdir -p src/shared_libraries
-          cp src/libwazuhext.dll src/shared_libraries/
+          cp src/libfortishieldext.dll src/shared_libraries/
           cp src/win32/libgcc_s_dw2-1.dll src/shared_libraries/
           cp src/win32/libstdc++-6.dll src/shared_libraries/
           cp src/win32/libwinpthread-1.dll src/shared_libraries/
@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: syscollector
-          path: src/wazuh_modules/syscollector/build/bin
+          path: src/fortishield_modules/syscollector/build/bin
   run-on-windows:
     needs: build
     runs-on: windows-latest

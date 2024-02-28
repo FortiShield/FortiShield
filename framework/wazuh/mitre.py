@@ -1,10 +1,10 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core import common, mitre
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core import common, mitre
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=["mitre:read"], resources=["*:*:*"])

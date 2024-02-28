@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -18,13 +18,13 @@ from typing import Union, List
 from defusedxml.ElementTree import tostring
 from defusedxml.minidom import parseString
 
-from wazuh.core import common
-from wazuh.core import wazuh_socket
-from wazuh.core.exception import FortishieldInternalError, FortishieldError
-from wazuh.core.exception import FortishieldResourceNotFound
-from wazuh.core.utils import cut_array, load_wazuh_xml, safe_move
+from fortishield.core import common
+from fortishield.core import fortishield_socket
+from fortishield.core.exception import FortishieldInternalError, FortishieldError
+from fortishield.core.exception import FortishieldResourceNotFound
+from fortishield.core.utils import cut_array, load_fortishield_xml, safe_move
 
-logger = logging.getLogger('wazuh')
+logger = logging.getLogger('fortishield')
 
 # Aux functions
 
@@ -120,7 +120,7 @@ UPDATE_CHECK_OSSEC_FIELD = 'update_check'
 GLOBAL_KEY = 'global'
 YES_VALUE = 'yes'
 CTI_URL_FIELD = 'cti-url'
-DEFAULT_CTI_URL = 'https://cti.wazuh.com'
+DEFAULT_CTI_URL = 'https://cti.fortishield.com'
 
 
 def _insert(json_dst: dict, section_name: str, option: str, value: str):
@@ -275,7 +275,7 @@ def _read_option(section_name: str, opt: str) -> tuple:
 
 
 def _replace_custom_values(opt_value: Union[list, dict, str]) -> Union[list, dict, str]:
-    """Replace custom values introduced by 'load_wazuh_xml' with their real values.
+    """Replace custom values introduced by 'load_fortishield_xml' with their real values.
 
     Parameters
     ----------
@@ -674,7 +674,7 @@ def get_ossec_conf(section: str = None, field: str = None, conf_file: str = comm
     """
     try:
         # Read XML
-        xml_data = load_wazuh_xml(conf_file)
+        xml_data = load_fortishield_xml(conf_file)
 
         # Parse XML to JSON
         data = _ossecconf2json(xml_data)
@@ -682,7 +682,7 @@ def get_ossec_conf(section: str = None, field: str = None, conf_file: str = comm
         if not from_import:
             raise FortishieldError(1101, extra_message=str(e))
         else:
-            print(f"wazuh-apid: There is an error in the ossec.conf file: {str(e)}")
+            print(f"fortishield-apid: There is an error in the ossec.conf file: {str(e)}")
             sys.exit(0)
 
     if section:
@@ -761,7 +761,7 @@ def get_agent_conf(group_id: str = None, offset: int = 0, limit: int = common.DA
         # Parse XML to JSON
         else:
             # Read XML
-            xml_data = load_wazuh_xml(agent_conf)
+            xml_data = load_fortishield_xml(agent_conf)
 
             data = _agentconf2json(xml_data)
     except Exception as e:
@@ -811,7 +811,7 @@ def get_agent_conf_multigroup(multigroup_id: str = None, offset: int = 0, limit:
 
     try:
         # Read XML
-        xml_data = load_wazuh_xml(agent_conf)
+        xml_data = load_fortishield_xml(agent_conf)
 
         # Parse XML to JSON
         data = _agentconf2json(xml_data)
@@ -1085,7 +1085,7 @@ def upload_group_configuration(group_id: str, file_content: str) -> str:
         # move temporary file to group folder
         try:
             new_conf_path = os_path.join(common.SHARED_PATH, group_id, "agent.conf")
-            safe_move(tmp_file_path, new_conf_path, ownership=(common.wazuh_uid(), common.wazuh_gid()),
+            safe_move(tmp_file_path, new_conf_path, ownership=(common.fortishield_uid(), common.fortishield_gid()),
                       permissions=0o660)
         except Exception as e:
             raise FortishieldInternalError(1016, extra_message=str(e))
@@ -1175,11 +1175,11 @@ def get_active_configuration(agent_id: str, component: str, configuration: str) 
     component_socket_mapping = {'agent': 'analysis', 'agentless': 'agentless', 'analysis': 'analysis', 'auth': 'auth',
                                 'com': 'com', 'csyslog': 'csyslog', 'integrator': 'integrator',
                                 'logcollector': 'logcollector', 'mail': 'mail', 'monitor': 'monitor',
-                                'request': 'remote', 'syscheck': 'syscheck', 'wazuh-db': 'wdb', 'wmodules': 'wmodules'}
+                                'request': 'remote', 'syscheck': 'syscheck', 'fortishield-db': 'wdb', 'wmodules': 'wmodules'}
     component_socket_dir_mapping = {'agent': 'sockets', 'agentless': 'sockets', 'analysis': 'sockets',
                                     'auth': 'sockets', 'com': 'sockets', 'csyslog': 'sockets', 'integrator': 'sockets',
                                     'logcollector': 'sockets', 'mail': 'sockets', 'monitor': 'sockets',
-                                    'request': 'sockets', 'syscheck': 'sockets', 'wazuh-db': 'db',
+                                    'request': 'sockets', 'syscheck': 'sockets', 'fortishield-db': 'db',
                                     'wmodules': 'sockets'}
 
     if not component or not configuration:
@@ -1207,7 +1207,7 @@ def get_active_configuration(agent_id: str, component: str, configuration: str) 
 
             # Socket connection
             try:
-                s = wazuh_socket.FortishieldSocket(dest_socket)
+                s = fortishield_socket.FortishieldSocket(dest_socket)
             except FortishieldInternalError:
                 raise
             except Exception as unhandled_exc:
@@ -1229,13 +1229,13 @@ def get_active_configuration(agent_id: str, component: str, configuration: str) 
 
         # JSON socket message
         else:  # component_socket_mapping[component] in sockets_json_protocol
-            msg = wazuh_socket.create_wazuh_socket_message(origin={'module': common.origin_module.get()},
+            msg = fortishield_socket.create_fortishield_socket_message(origin={'module': common.origin_module.get()},
                                                            command=GETCONFIG_COMMAND,
                                                            parameters={'section': configuration})
 
             # Socket connection
             try:
-                s = wazuh_socket.FortishieldSocketJSON(dest_socket)
+                s = fortishield_socket.FortishieldSocketJSON(dest_socket)
             except FortishieldInternalError:
                 raise
             except Exception as unhandled_exc:
@@ -1264,7 +1264,7 @@ def get_active_configuration(agent_id: str, component: str, configuration: str) 
 
         # Socket connection
         try:
-            s = wazuh_socket.FortishieldSocket(dest_socket)
+            s = fortishield_socket.FortishieldSocket(dest_socket)
         except FortishieldInternalError:
             raise
         except Exception as unhandled_exc:
@@ -1304,7 +1304,7 @@ def get_active_configuration(agent_id: str, component: str, configuration: str) 
 
 
 def write_ossec_conf(new_conf: str):
-    """Replace the current wazuh configuration (ossec.conf) with the provided configuration.
+    """Replace the current fortishield configuration (ossec.conf) with the provided configuration.
 
     Parameters
     ----------

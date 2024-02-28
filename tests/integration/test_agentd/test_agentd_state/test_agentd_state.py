@@ -1,14 +1,14 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-agentd' program is the client-side daemon that communicates with the server.
-       These tests will check if the content of the 'wazuh-agentd' daemon statistics file is valid.
+brief: The 'fortishield-agentd' program is the client-side daemon that communicates with the server.
+       These tests will check if the content of the 'fortishield-agentd' daemon statistics file is valid.
        The statistics files are documents that show real-time information about the Fortishield environment.
 
 components:
@@ -18,8 +18,8 @@ targets:
     - agent
 
 daemons:
-    - wazuh-agentd
-    - wazuh-remoted
+    - fortishield-agentd
+    - fortishield-remoted
 
 os_platform:
     - linux
@@ -40,7 +40,7 @@ os_version:
     - Windows Server 2016
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/statistics-files/wazuh-agentd-state.html
+    - https://documentation.fortishield.com/current/user-manual/reference/statistics-files/fortishield-agentd-state.html
 
 tags:
     - stats_file
@@ -52,11 +52,11 @@ from pathlib import Path
 import sys
 import time
 
-from wazuh_testing.constants.platforms import WINDOWS
-from wazuh_testing.modules.agentd.configuration import AGENTD_DEBUG, AGENTD_WINDOWS_DEBUG
-from wazuh_testing.modules.agentd.utils import parse_state_file
-from wazuh_testing.tools.simulators.remoted_simulator import RemotedSimulator
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.platforms import WINDOWS
+from fortishield_testing.modules.agentd.configuration import AGENTD_DEBUG, AGENTD_WINDOWS_DEBUG
+from fortishield_testing.modules.agentd.utils import parse_state_file
+from fortishield_testing.tools.simulators.remoted_simulator import RemotedSimulator
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 from utils import wait_keepalive, wait_ack, wait_state_update, wait_agent_notification
@@ -65,8 +65,8 @@ from utils import wait_keepalive, wait_ack, wait_state_update, wait_agent_notifi
 pytestmark = pytest.mark.tier(level=0)
 
 # Configuration and cases data.
-configs_path = Path(CONFIGS_PATH, 'wazuh_conf.yaml')
-cases_path = Path(TEST_CASES_PATH, 'wazuh_state_config_tests.yaml')
+configs_path = Path(CONFIGS_PATH, 'fortishield_conf.yaml')
+cases_path = Path(TEST_CASES_PATH, 'fortishield_state_config_tests.yaml')
 
 # Test configurations.
 config_parameters, test_metadata, test_cases_ids = get_test_cases_data(cases_path)
@@ -91,13 +91,13 @@ def start_remoted_server(test_metadata) -> None:
 
 
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_agentd_state(test_configuration, test_metadata, set_wazuh_configuration, remove_state_file, configure_local_internal_options,
+def test_agentd_state(test_configuration, test_metadata, set_fortishield_configuration, remove_state_file, configure_local_internal_options,
                       truncate_monitored_files, clean_keys, add_keys, daemons_handler):
     '''
-    description: Check that the statistics file 'wazuh-agentd.state' is created automatically
+    description: Check that the statistics file 'fortishield-agentd.state' is created automatically
                  and verify that the content of its fields is correct.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 0
 
@@ -108,12 +108,12 @@ def test_agentd_state(test_configuration, test_metadata, set_wazuh_configuration
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - remove_state_file:
             type: fixture
-            brief: Removes the wazuh-agentd.state file
+            brief: Removes the fortishield-agentd.state file
         - configure_local_internal_options:
             type: fixture
             brief: Set internal configuration for testing.
@@ -131,12 +131,12 @@ def test_agentd_state(test_configuration, test_metadata, set_wazuh_configuration
             brief: Handler of Fortishield daemons.
 
     assertions:
-        - Verify that the 'wazuh-agentd.state' statistics file has been created.
-        - Verify that the information stored in the 'wazuh-agentd.state' statistics file
-          is consistent with the connection status to the 'wazuh-remoted' daemon.
+        - Verify that the 'fortishield-agentd.state' statistics file has been created.
+        - Verify that the information stored in the 'fortishield-agentd.state' statistics file
+          is consistent with the connection status to the 'fortishield-remoted' daemon.
 
-    input_description: An external YAML file (wazuh_conf.yaml) includes configuration settings for the agent.
-                       Different test cases that are contained in an external YAML file (wazuh_state_tests.yaml)
+    input_description: An external YAML file (fortishield_conf.yaml) includes configuration settings for the agent.
+                       Different test cases that are contained in an external YAML file (fortishield_state_tests.yaml)
                        that includes the parameters and their expected responses.
 
     expected_output:

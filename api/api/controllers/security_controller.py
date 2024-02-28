@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -17,19 +17,19 @@ from api.models.security_model import (CreateUserModel, PolicyModel, RoleModel,
 from api.models.security_token_response_model import TokenResponseModel
 from api.util import (deprecate_endpoint, parse_api_param, raise_if_exc,
                       remove_nones_to_dict)
-from wazuh import security, __version__
-from wazuh.core.cluster.control import get_system_nodes
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
-from wazuh.core.exception import FortishieldException, FortishieldPermissionError
-from wazuh.core.results import AffectedItemsFortishieldResult, FortishieldResult
-from wazuh.core.security import revoke_tokens
-from wazuh.rbac import preprocessor
+from fortishield import security, __version__
+from fortishield.core.cluster.control import get_system_nodes
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
+from fortishield.core.exception import FortishieldException, FortishieldPermissionError
+from fortishield.core.results import AffectedItemsFortishieldResult, FortishieldResult
+from fortishield.core.security import revoke_tokens
+from fortishield.rbac import preprocessor
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 auth_re = re.compile(r'basic (.*)', re.IGNORECASE)
 
 
-@deprecate_endpoint(link=f'https://documentation.wazuh.com/{__version__}/user-manual/api/reference.html#'
+@deprecate_endpoint(link=f'https://documentation.fortishield.com/{__version__}/user-manual/api/reference.html#'
                          f'operation/api.controllers.security_controller.login_user')
 async def deprecated_login_user(user: str, raw: bool = False) -> web.Response:
     """User/password authentication to get an access token.

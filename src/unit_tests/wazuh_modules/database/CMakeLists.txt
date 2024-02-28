@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 list(APPEND wmdb_tests_names "test_wm_database")
 list(APPEND wmdb_tests_flags "-Wl,--wrap,wdb_set_agent_groups -Wl,--wrap,opendir -Wl,--wrap,readdir -Wl,--wrap,strerror -Wl,--wrap,unlink \

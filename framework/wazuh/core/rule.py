@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -7,9 +7,9 @@ import re
 from enum import Enum
 from glob import glob
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError
-from wazuh.core.utils import load_wazuh_xml, add_dynamic_detail
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError
+from fortishield.core.utils import load_fortishield_xml, add_dynamic_detail
 
 REQUIRED_FIELDS = ['id']
 RULE_REQUIREMENTS = ['pci_dss', 'gdpr', 'hipaa', 'nist_800_53', 'gpg13', 'tsc', 'mitre']
@@ -131,7 +131,7 @@ def load_rules_from_file(rule_filename: str, rule_relative_path: str, rule_statu
     """
     try:
         rules = list()
-        root = load_wazuh_xml(os.path.join(common.FORTISHIELD_PATH, rule_relative_path, rule_filename))
+        root = load_fortishield_xml(os.path.join(common.FORTISHIELD_PATH, rule_relative_path, rule_filename))
 
         # Get variables in dict format {varname: value} (will only be used for id and level for now)
         variables = {}

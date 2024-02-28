@@ -7,8 +7,8 @@
  * Foundation
 */
 
-#include "wazuh_modules/wmodules.h"
-#include "wazuh_modules/wm_sca.h"
+#include "fortishield_modules/wmodules.h"
+#include "fortishield_modules/wm_sca.h"
 
 #include <stdio.h>
 

@@ -39,7 +39,7 @@ elif [ "x$1" = "xsave" ]; then
     fi    
     FORTISHIELD_HOME=${2}
 
-    eval $(${FORTISHIELD_HOME}/bin/wazuh-control info 2>/dev/null)    
+    eval $(${FORTISHIELD_HOME}/bin/fortishield-control info 2>/dev/null)    
     if [ "X$FORTISHIELD_TYPE" = "X" ]; then
         echo "ERROR: Unable to save rules. You must have Fortishield installed to do so."
         exit 1;
@@ -79,7 +79,7 @@ elif [ "x$1" = "xrestore" ]; then
     fi    
     FORTISHIELD_HOME=${2}
     
-    eval $(${FORTISHIELD_HOME}/bin/wazuh-control info 2>/dev/null)    
+    eval $(${FORTISHIELD_HOME}/bin/fortishield-control info 2>/dev/null)    
     if [ "X$FORTISHIELD_TYPE" = "X" ]; then
         echo "ERROR: Unable to save rules. You must have Fortishield installed to do so."
         exit 1;

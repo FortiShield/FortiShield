@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -7,12 +7,12 @@ import re
 from collections import defaultdict
 from functools import wraps
 
-from wazuh.core.agent import get_agents_info, get_groups, expand_group
-from wazuh.core.common import rbac, broadcast, cluster_nodes
-from wazuh.core.exception import FortishieldPermissionError
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.utils import expand_rules, expand_lists, expand_decoders
-from wazuh.rbac.orm import RolesManager, PoliciesManager, AuthenticationManager, RulesManager
+from fortishield.core.agent import get_agents_info, get_groups, expand_group
+from fortishield.core.common import rbac, broadcast, cluster_nodes
+from fortishield.core.exception import FortishieldPermissionError
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.utils import expand_rules, expand_lists, expand_decoders
+from fortishield.rbac.orm import RolesManager, PoliciesManager, AuthenticationManager, RulesManager
 
 integer_resources = ['user:id', 'role:id', 'rule:id', 'policy:id']
 

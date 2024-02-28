@@ -14,7 +14,7 @@
  */
 
 #include "../eventinfo.h"
-#include "wazuhdb_op.h"
+#include "fortishielddb_op.h"
 
 #ifdef FORTISHIELD_UNIT_TESTING
 /* Remove static qualifier when unit testing */

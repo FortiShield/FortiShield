@@ -18,8 +18,8 @@
 #include "../../logcollector/state.h"
 
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/hash_op_wrappers.h"
-#include "../wrappers/wazuh/shared/validate_op_wrappers.h"
+#include "../wrappers/fortishield/shared/hash_op_wrappers.h"
+#include "../wrappers/fortishield/shared/validate_op_wrappers.h"
 #include "../wrappers/libc/stdio_wrappers.h"
 #include "../wrappers/posix/unistd_wrappers.h"
 #include "../wrappers/externals/cJSON/cJSON_wrappers.h"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -11,10 +11,10 @@ from uuid import uuid4
 import pytest
 from aiohttp import ClientError
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core.manager import *
-        from wazuh.core.exception import FortishieldException
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core.manager import *
+        from fortishield.core.exception import FortishieldException
 
 test_data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'manager')
 ossec_log_path = '{0}/ossec_log.log'.format(test_data_path)
@@ -68,7 +68,7 @@ def get_logs(json_log: bool = False):
     'starting'
 ])
 @patch('os.path.exists')
-@patch('wazuh.core.cluster.utils.glob')
+@patch('fortishield.core.cluster.utils.glob')
 def test_get_status(manager_glob, manager_exists, test_manager, process_status):
     """Tests core.manager.status()
 
@@ -110,7 +110,7 @@ def test_get_ossec_log_fields():
     result = get_ossec_log_fields('2020/07/14 06:10:40 rootcheck: INFO: Ending rootcheck scan.')
     assert isinstance(result, tuple), 'The result is not a tuple'
     assert result[0] == datetime(2020, 7, 14, 6, 10, 40, tzinfo=timezone.utc)
-    assert result[1] == 'wazuh-rootcheck'
+    assert result[1] == 'fortishield-rootcheck'
     assert result[2] == 'info'
     assert result[3] == ' Ending rootcheck scan.'
 
@@ -128,43 +128,43 @@ def test_get_ossec_logs(log_format):
     """Test get_ossec_logs() method returns result with expected information"""
     logs = get_logs(json_log=log_format == LoggingFormat.json).splitlines()
 
-    with patch("wazuh.core.manager.get_wazuh_active_logging_format", return_value=log_format):
+    with patch("fortishield.core.manager.get_fortishield_active_logging_format", return_value=log_format):
         with pytest.raises(FortishieldInternalError, match=".*1020.*"):
             get_ossec_logs()
 
-        with patch('wazuh.core.manager.exists', return_value=True):
-            with patch('wazuh.core.manager.tail', return_value=logs):
+        with patch('fortishield.core.manager.exists', return_value=True):
+            with patch('fortishield.core.manager.tail', return_value=logs):
                 result = get_ossec_logs()
                 assert all(key in log for key in ('timestamp', 'tag', 'level', 'description') for log in result)
 
 
-@patch("wazuh.core.manager.get_wazuh_active_logging_format", return_value=LoggingFormat.plain)
-@patch('wazuh.core.manager.exists', return_value=True)
+@patch("fortishield.core.manager.get_fortishield_active_logging_format", return_value=LoggingFormat.plain)
+@patch('fortishield.core.manager.exists', return_value=True)
 def test_get_logs_summary(mock_exists, mock_active_logging_format):
     """Test get_logs_summary() method returns result with expected information"""
     logs = get_logs().splitlines()
-    with patch('wazuh.core.manager.tail', return_value=logs):
+    with patch('fortishield.core.manager.tail', return_value=logs):
         result = get_logs_summary()
         assert all(key in log for key in ('all', 'info', 'error', 'critical', 'warning', 'debug')
                    for log in result.values())
-        assert result['wazuh-modulesd:database'] == {'all': 2, 'info': 0, 'error': 0, 'critical': 0, 'warning': 0,
+        assert result['fortishield-modulesd:database'] == {'all': 2, 'info': 0, 'error': 0, 'critical': 0, 'warning': 0,
                                                      'debug': 2}
 
 
-@patch('wazuh.core.manager.exists', return_value=True)
-@patch('wazuh.core.manager.FortishieldSocket')
-def test_validate_ossec_conf(mock_wazuhsocket, mock_exists):
+@patch('fortishield.core.manager.exists', return_value=True)
+@patch('fortishield.core.manager.FortishieldSocket')
+def test_validate_ossec_conf(mock_fortishieldsocket, mock_exists):
     with patch('socket.socket') as sock:
         # Mock sock response
         json_response = json.dumps({'error': 0, 'message': ""}).encode()
-        mock_wazuhsocket.return_value.receive.return_value = json_response
+        mock_fortishieldsocket.return_value.receive.return_value = json_response
         result = validate_ossec_conf()
 
         assert result == {'status': 'OK'}
         mock_exists.assert_called_with(os.path.join(common.FORTISHIELD_PATH, 'queue', 'sockets', 'com'))
 
 
-@patch("wazuh.core.manager.exists", return_value=True)
+@patch("fortishield.core.manager.exists", return_value=True)
 def test_validation_ko(mock_exists):
     # Socket creation raise socket.error
     with patch('socket.socket', side_effect=socket.error):
@@ -178,35 +178,35 @@ def test_validation_ko(mock_exists):
                 validate_ossec_conf()
 
         # execq_socket_path not exists
-        with patch("wazuh.core.manager.exists", return_value=False):
+        with patch("fortishield.core.manager.exists", return_value=False):
             with pytest.raises(FortishieldInternalError, match='.* 1901 .*'):
                 validate_ossec_conf()
 
         with patch('socket.socket.connect'):
             # Socket send raise socket.error
-            with patch('wazuh.core.manager.FortishieldSocket.send', side_effect=socket.error):
+            with patch('fortishield.core.manager.FortishieldSocket.send', side_effect=socket.error):
                 with pytest.raises(FortishieldInternalError, match='.* 1014 .*'):
                     validate_ossec_conf()
 
             with patch('socket.socket.send'):
                 # Socket recv raise socket.error
-                with patch('wazuh.core.manager.FortishieldSocket.receive', side_effect=socket.timeout):
+                with patch('fortishield.core.manager.FortishieldSocket.receive', side_effect=socket.timeout):
                     with pytest.raises(FortishieldInternalError, match='.* 1014 .*'):
                         validate_ossec_conf()
 
                 # _parse_execd_output raise KeyError
-                with patch('wazuh.core.manager.FortishieldSocket'):
-                    with patch('wazuh.core.manager.parse_execd_output', side_effect=KeyError):
+                with patch('fortishield.core.manager.FortishieldSocket'):
+                    with patch('fortishield.core.manager.parse_execd_output', side_effect=KeyError):
                         with pytest.raises(FortishieldInternalError, match='.* 1904 .*'):
                             validate_ossec_conf()
 
 
 @pytest.mark.parametrize('error_flag, error_msg', [
     (0, ""),
-    (1, "2019/02/27 11:30:07 wazuh-clusterd: ERROR: [Cluster] [Main] Error 3004 - Error in cluster configuration: "
+    (1, "2019/02/27 11:30:07 fortishield-clusterd: ERROR: [Cluster] [Main] Error 3004 - Error in cluster configuration: "
         "Unspecified key"),
-    (1, "2019/02/27 11:30:24 wazuh-authd: ERROR: (1230): Invalid element in the configuration: "
-        "'use_source_i'.\n2019/02/27 11:30:24 wazuh-authd: ERROR: (1202): Configuration error at "
+    (1, "2019/02/27 11:30:24 fortishield-authd: ERROR: (1230): Invalid element in the configuration: "
+        "'use_source_i'.\n2019/02/27 11:30:24 fortishield-authd: ERROR: (1202): Configuration error at "
         "'/var/ossec/etc/ossec.conf'.")
 ])
 def test_parse_execd_output(error_flag, error_msg):
@@ -228,7 +228,7 @@ def test_parse_execd_output(error_flag, error_msg):
             parse_execd_output(json_response)
 
 
-@patch('wazuh.core.manager.configuration.api_conf', new={'experimental_features': True})
+@patch('fortishield.core.manager.configuration.api_conf', new={'experimental_features': True})
 def test_get_api_config():
     """Checks that get_api_config method is returning current api_conf dict."""
     result = get_api_conf()
@@ -247,7 +247,7 @@ def test_get_update_information_template(last_check_date, update_check):
     assert 'update_check' in template
     assert template['update_check'] == update_check
     assert 'current_version' in template
-    assert template['current_version'] == f"v{wazuh.__version__}"
+    assert template['current_version'] == f"v{fortishield.__version__}"
     assert 'last_available_major' in template
     assert 'last_available_minor' in template
     assert 'last_available_patch' in template
@@ -382,7 +382,7 @@ async def test_query_update_check_service_request(
     """Test that query_update_check_service function make request to the URL with the correct headers."""
 
     version = '4.8.0'
-    with patch('framework.wazuh.core.manager.wazuh.__version__', version):
+    with patch('framework.fortishield.core.manager.fortishield.__version__', version):
         await query_update_check_service(installation_uid)
 
         client_session_get_mock.assert_called()

@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -23,9 +23,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
-    - wazuh-monitord
-    - wazuh-modulesd
+    - fortishield-analysisd
+    - fortishield-monitord
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -42,7 +42,7 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://github.com/fortishield/wazuh-documentation/blob/develop/source/github/monitoring-github-activity.rst
+    - https://github.com/fortishield/fortishield-documentation/blob/develop/source/github/monitoring-github-activity.rst
 
 tags:
     - github_configuration
@@ -50,13 +50,13 @@ tags:
 import pytest
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.modules.modulesd.configuration import MODULESD_DEBUG
-from wazuh_testing.modules.modulesd import patterns
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.configuration import get_test_cases_data
-from wazuh_testing.utils.configuration import load_configuration_template
-from wazuh_testing.utils import callbacks
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.modules.modulesd.configuration import MODULESD_DEBUG
+from fortishield_testing.modules.modulesd import patterns
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.utils.configuration import load_configuration_template
+from fortishield_testing.utils import callbacks
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
 # Marks
@@ -74,14 +74,14 @@ local_internal_options = {MODULESD_DEBUG: '2'}
 
 # Tests
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_invalid(test_configuration, test_metadata, set_wazuh_configuration, configure_local_internal_options,
+def test_invalid(test_configuration, test_metadata, set_fortishield_configuration, configure_local_internal_options,
                  truncate_monitored_files, daemons_handler, wait_for_github_start):
     '''
     description: Check if the 'github' module detects invalid configurations. For this purpose, the test
                  will configure that module using invalid configuration settings with different attributes.
                  Finally, it will verify that error events are generated indicating the source of the errors.
 
-    wazuh_min_version: 4.3.0
+    fortishield_min_version: 4.3.0
 
     tier: 0
 
@@ -92,7 +92,7 @@ def test_invalid(test_configuration, test_metadata, set_wazuh_configuration, con
         - test_metadata:
             type: data
             brief: Configuration cases.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Configure a custom environment for testing.
         - configure_local_internal_options:
@@ -112,7 +112,7 @@ def test_invalid(test_configuration, test_metadata, set_wazuh_configuration, con
         - Verify that the 'github' module generates error events when invalid configurations are used.
 
     input_description: A configuration template (github_integration) is contained in an external YAML file
-                       (wazuh_conf.yaml). That template is combined with different test cases defined in
+                       (fortishield_conf.yaml). That template is combined with different test cases defined in
                        the module. Those include configuration settings for the 'github' module.
 
     expected_output:
@@ -123,11 +123,11 @@ def test_invalid(test_configuration, test_metadata, set_wazuh_configuration, con
         - invalid_settings
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
-    wazuh_log_monitor.start(callback=callbacks.generate_callback(patterns.MODULESD_CONFIGURATION_ERROR, {
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor.start(callback=callbacks.generate_callback(patterns.MODULESD_CONFIGURATION_ERROR, {
                               'error_type': str(test_metadata['error_type']),
                               'tag': str(test_metadata['event_monitor']),
                               'integration': str(test_metadata['module']),
                           }))
 
-    assert (wazuh_log_monitor.callback_result != None), f'Error invalid configuration event not detected'
+    assert (fortishield_log_monitor.callback_result != None), f'Error invalid configuration event not detected'

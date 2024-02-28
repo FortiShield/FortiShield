@@ -13,12 +13,12 @@
 #include <cmocka.h>
 #include <stdio.h>
 
-#include "../../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../wrappers/wazuh/wazuh_modules/wm_agent_upgrade_wrappers.h"
+#include "../../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../wrappers/fortishield/fortishield_modules/wm_agent_upgrade_wrappers.h"
 
-#include "../../wazuh_modules/wmodules.h"
-#include "../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_parsing.h"
-#include "../../wazuh_modules/agent_upgrade/manager/wm_agent_upgrade_tasks.h"
+#include "../../fortishield_modules/wmodules.h"
+#include "../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_parsing.h"
+#include "../../fortishield_modules/agent_upgrade/manager/wm_agent_upgrade_tasks.h"
 #include "../../headers/shared.h"
 
 int* wm_agent_upgrade_parse_agents(const cJSON* agents, char** error_message);
@@ -326,7 +326,7 @@ void test_wm_agent_upgrade_parse_agent_response_err_with_data(void **state)
     char *response = "err invalid request";
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8116): Error response from agent: 'invalid request'");
 
     int ret = wm_agent_upgrade_parse_agent_response(response, &data);
@@ -341,7 +341,7 @@ void test_wm_agent_upgrade_parse_agent_response_err_without_data(void **state)
     char *response = "err ";
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8116): Error response from agent: ''");
 
     int ret = wm_agent_upgrade_parse_agent_response(response, &data);
@@ -429,7 +429,7 @@ void test_wm_agent_upgrade_parse_agent_upgrade_command_response_err_with_data(vo
                      "}";
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8116): Error response from agent: 'invalid request'");
 
     int ret = wm_agent_upgrade_parse_agent_upgrade_command_response(response, &data);
@@ -447,7 +447,7 @@ void test_wm_agent_upgrade_parse_agent_upgrade_command_response_err_without_data
                      "}";
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8116): Error response from agent: ''");
 
     int ret = wm_agent_upgrade_parse_agent_upgrade_command_response(response, &data);
@@ -464,7 +464,7 @@ void test_wm_agent_upgrade_parse_agent_upgrade_command_response_unknown_response
                      "}";
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8117): Unknown error from agent.");
 
     int ret = wm_agent_upgrade_parse_agent_upgrade_command_response(response, &data);
@@ -478,7 +478,7 @@ void test_wm_agent_upgrade_parse_agent_upgrade_command_response_invalid_response
     (void) state;
     char *data = NULL;
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8117): Unknown error from agent.");
 
     int ret = wm_agent_upgrade_parse_agent_upgrade_command_response(NULL, &data);
@@ -527,7 +527,7 @@ void test_wm_agent_upgrade_parse_agents_type_error(void **state)
     cJSON_AddItemToArray(agents, agent2);
     cJSON_AddItemToArray(agents, agent3);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Agent id not recognized'");
 
     int* agent_ids = wm_agent_upgrade_parse_agents(agents, &error);
@@ -562,7 +562,7 @@ void test_wm_agent_upgrade_parse_agents_empty(void **state)
 void test_wm_agent_upgrade_parse_upgrade_command_success(void **state)
 {
     char *error = NULL;
-    char *repo = "wazuh.com";
+    char *repo = "fortishield.com";
     char *ver = "v4.0.0";
 
     cJSON *params = cJSON_CreateObject();
@@ -622,7 +622,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_repo_type(void **state)
     cJSON_AddFalseToObject(params, "force_upgrade");
     cJSON_AddNumberToObject(params, "wpk_repo", 555);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"wpk_repo\" should be a string'");
 
     wm_upgrade_task* upgrade_task = wm_agent_upgrade_parse_upgrade_command(params, &error);
@@ -645,7 +645,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_version_type(void **sta
     cJSON_AddTrueToObject(params, "force_upgrade");
     cJSON_AddNumberToObject(params, "version", 111);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"version\" should be a string'");
 
     wm_upgrade_task* upgrade_task = wm_agent_upgrade_parse_upgrade_command(params, &error);
@@ -666,7 +666,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_http(void **state)
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "use_http", 1);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"use_http\" should be true or false'");
 
     wm_upgrade_task* upgrade_task = wm_agent_upgrade_parse_upgrade_command(params, &error);
@@ -687,7 +687,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_force(void **state)
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "force_upgrade", 0);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"force_upgrade\" should be true or false'");
 
     wm_upgrade_task* upgrade_task = wm_agent_upgrade_parse_upgrade_command(params, &error);
@@ -704,7 +704,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_force(void **state)
 void test_wm_agent_upgrade_parse_upgrade_command_invalid_json(void **state)
 {
     char *error = NULL;
-    char *repo = "wazuh.com";
+    char *repo = "fortishield.com";
     char *ver = "v4.0.0";
     bool http = false;
     bool force = false;
@@ -723,7 +723,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_json(void **state)
     cJSON_AddItemToArray(params, use_http);
     cJSON_AddItemToArray(params, force_upgrade);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Invalid JSON type'");
 
     wm_upgrade_task* upgrade_task = wm_agent_upgrade_parse_upgrade_command(params, &error);
@@ -740,7 +740,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_json(void **state)
 void test_wm_agent_upgrade_parse_upgrade_custom_command_success(void **state)
 {
     char *error = NULL;
-    char *file = "wazuh.wpk";
+    char *file = "fortishield.wpk";
     char *exe = "install.sh";
 
     cJSON *params = cJSON_CreateObject();
@@ -788,7 +788,7 @@ void test_wm_agent_upgrade_parse_upgrade_custom_command_invalid_file_type(void *
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "file_path", 789);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"file_path\" should be a string'");
 
     wm_upgrade_custom_task* upgrade_custom_task = wm_agent_upgrade_parse_upgrade_custom_command(params, &error);
@@ -809,7 +809,7 @@ void test_wm_agent_upgrade_parse_upgrade_custom_command_invalid_installer_type(v
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "installer", 456);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"installer\" should be a string'");
 
     wm_upgrade_custom_task* upgrade_custom_task = wm_agent_upgrade_parse_upgrade_custom_command(params, &error);
@@ -826,7 +826,7 @@ void test_wm_agent_upgrade_parse_upgrade_custom_command_invalid_installer_type(v
 void test_wm_agent_upgrade_parse_upgrade_custom_command_invalid_json(void **state)
 {
     char *error = NULL;
-    char *file = "wazuh.wpk";
+    char *file = "fortishield.wpk";
     char *exe = "install.sh";
 
     cJSON *params = cJSON_CreateArray();
@@ -837,7 +837,7 @@ void test_wm_agent_upgrade_parse_upgrade_custom_command_invalid_json(void **stat
     cJSON_AddItemToArray(params, file_path);
     cJSON_AddItemToArray(params, installer);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Invalid JSON type'");
 
     wm_upgrade_custom_task* upgrade_custom_task = wm_agent_upgrade_parse_upgrade_custom_command(params, &error);
@@ -906,7 +906,7 @@ void test_wm_agent_upgrade_parse_upgrade_agent_status_invalid_code_type(void **s
     cJSON *params = cJSON_CreateObject();
     cJSON_AddStringToObject(params, "error", "0");
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"error\" should be a number'");
 
     wm_upgrade_agent_status_task* agent_status_task = wm_agent_upgrade_parse_upgrade_agent_status(params, &error);
@@ -927,7 +927,7 @@ void test_wm_agent_upgrade_parse_upgrade_agent_status_invalid_data_type(void **s
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "message", 123);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"message\" should be a string'");
 
     wm_upgrade_agent_status_task* agent_status_task = wm_agent_upgrade_parse_upgrade_agent_status(params, &error);
@@ -948,7 +948,7 @@ void test_wm_agent_upgrade_parse_upgrade_agent_status_invalid_status_type(void *
     cJSON *params = cJSON_CreateObject();
     cJSON_AddNumberToObject(params, "status", 555);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"status\" should be a string'");
 
     wm_upgrade_agent_status_task* agent_status_task = wm_agent_upgrade_parse_upgrade_agent_status(params, &error);
@@ -976,7 +976,7 @@ void test_wm_agent_upgrade_parse_upgrade_agent_status_invalid_json(void **state)
     cJSON_AddItemToArray(params, code);
     cJSON_AddItemToArray(params, path);
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Invalid JSON type'");
 
     wm_upgrade_agent_status_task* agent_status_task = wm_agent_upgrade_parse_upgrade_agent_status(params, &error);
@@ -999,7 +999,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_success(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,24],"
-                   "        \"wpk_repo\":\"wazuh.com\","
+                   "        \"wpk_repo\":\"fortishield.com\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":false,"
                    "        \"force_upgrade\":true"
@@ -1019,7 +1019,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_success(void **state)
     assert_int_equal(agent_ids[2], 24);
     assert_int_equal(agent_ids[3], -1);
     assert_non_null(upgrade_task);
-    assert_string_equal(upgrade_task->wpk_repository, "wazuh.com");
+    assert_string_equal(upgrade_task->wpk_repository, "fortishield.com");
     assert_string_equal(upgrade_task->custom_version, "v4.0.0");
     assert_int_equal(upgrade_task->use_http, 0);
     assert_int_equal(upgrade_task->force_upgrade, 1);
@@ -1039,14 +1039,14 @@ void test_wm_agent_upgrade_parse_message_upgrade_agent_error(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,\"24\"],"
-                   "        \"wpk_repo\":\"wazuh.com\","
+                   "        \"wpk_repo\":\"fortishield.com\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":false,"
                    "        \"force_upgrade\":true"
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Agent id not recognized'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_task, &agent_ids, &error);
@@ -1071,14 +1071,14 @@ void test_wm_agent_upgrade_parse_message_upgrade_task_error(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,24],"
-                   "        \"wpk_repo\":\"wazuh.com\","
+                   "        \"wpk_repo\":\"fortishield.com\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":\"yes\","
                    "        \"force_upgrade\":true"
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"use_http\" should be true or false'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_task, &agent_ids, &error);
@@ -1106,7 +1106,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_custom_success(void **state)
                    "   \"command\": \"upgrade_custom\","
                    "   \"parameters\": {"
                    "        \"agents\":[1,15,24],"
-                   "        \"file_path\":\"wazuh.wpk\","
+                   "        \"file_path\":\"fortishield.wpk\","
                    "        \"installer\":\"install.sh\""
                    "    }"
                    "}";
@@ -1124,7 +1124,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_custom_success(void **state)
     assert_int_equal(agent_ids[2], 24);
     assert_int_equal(agent_ids[3], -1);
     assert_non_null(upgrade_custom_task);
-    assert_string_equal(upgrade_custom_task->custom_file_path, "wazuh.wpk");
+    assert_string_equal(upgrade_custom_task->custom_file_path, "fortishield.wpk");
     assert_string_equal(upgrade_custom_task->custom_installer, "install.sh");
     assert_null(error);
 
@@ -1140,12 +1140,12 @@ void test_wm_agent_upgrade_parse_message_upgrade_custom_agent_error(void **state
                    "   \"command\": \"upgrade_custom\","
                    "   \"parameters\": {"
                    "        \"agents\":[1,\"15\",24],"
-                   "        \"file_path\":\"wazuh.wpk\","
+                   "        \"file_path\":\"fortishield.wpk\","
                    "        \"installer\":\"install.sh\""
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Agent id not recognized'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_custom_task, &agent_ids, &error);
@@ -1170,12 +1170,12 @@ void test_wm_agent_upgrade_parse_message_upgrade_custom_task_error(void **state)
                    "   \"command\": \"upgrade_custom\","
                    "   \"parameters\": {"
                    "        \"agents\":[1,15,24],"
-                   "        \"file_path\":\"wazuh.wpk\","
+                   "        \"file_path\":\"fortishield.wpk\","
                    "        \"installer\":123"
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"installer\" should be a string'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_custom_task, &agent_ids, &error);
@@ -1243,7 +1243,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_agent_status_agent_error(void *
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Agent id not recognized'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_agent_status_task, &agent_ids, &error);
@@ -1274,7 +1274,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_agent_status_task_error(void **
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Parameter \"message\" should be a string'");
 
     int command = wm_agent_upgrade_parse_message(buffer, (void*)&upgrade_agent_status_task, &agent_ids, &error);
@@ -1333,7 +1333,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_result_agent_error(void **state
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8103): Error parsing command: 'Agent id not recognized'");
 
     int command = wm_agent_upgrade_parse_message(buffer, &task, &agent_ids, &error);
@@ -1361,7 +1361,7 @@ void test_wm_agent_upgrade_parse_message_invalid_command(void **state)
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8102): No action defined for command: 'unknown'");
 
     int command = wm_agent_upgrade_parse_message(buffer, &task, &agent_ids, &error);
@@ -1389,7 +1389,7 @@ void test_wm_agent_upgrade_parse_message_invalid_agents(void **state)
                    "    }"
                    "}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8107): Required parameters in message are missing.");
 
     int command = wm_agent_upgrade_parse_message(buffer, &task, &agent_ids, &error);
@@ -1412,7 +1412,7 @@ void test_wm_agent_upgrade_parse_message_invalid_json(void **state)
     void* task = NULL;
     char *buffer = "unknown";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8101): Cannot parse JSON: 'unknown'");
 
     int command = wm_agent_upgrade_parse_message(buffer, &task, &agent_ids, &error);
@@ -1435,7 +1435,7 @@ void test_wm_agent_upgrade_parse_message_missing_required(void **state)
     void* task = NULL;
     char *buffer = "{}";
 
-    expect_string(__wrap__mterror, tag, "wazuh-modulesd:agent-upgrade");
+    expect_string(__wrap__mterror, tag, "fortishield-modulesd:agent-upgrade");
     expect_string(__wrap__mterror, formatted_msg, "(8107): Required parameters in message are missing.");
 
     int command = wm_agent_upgrade_parse_message(buffer, &task, &agent_ids, &error);

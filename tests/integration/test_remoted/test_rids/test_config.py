@@ -1,19 +1,19 @@
 """
  Copyright (C) 2015-2023, Fortishield Inc.
- Created by Fortishield, Inc. <info@wazuh.com>.
+ Created by Fortishield, Inc. <info@fortishield.com>.
  This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 """
 
 import pytest
 
 from pathlib import Path
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils.configuration import get_test_cases_data, load_configuration_template
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.modules.remoted.configuration import REMOTED_DEBUG, REMOTED_WORKER_POOL, REMOTED_VERIFY_MSG_ID
-from wazuh_testing.modules.remoted import patterns
-from wazuh_testing.utils import configuration
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils.configuration import get_test_cases_data, load_configuration_template
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.modules.remoted.configuration import REMOTED_DEBUG, REMOTED_WORKER_POOL, REMOTED_VERIFY_MSG_ID
+from fortishield_testing.modules.remoted import patterns
+from fortishield_testing.utils import configuration
 
 from . import CONFIGS_PATH, TEST_CASES_PATH
 
@@ -35,7 +35,7 @@ local_internal_options = {REMOTED_DEBUG: '2'}
 # Test function.
 @pytest.mark.parametrize('test_configuration, test_metadata',  zip(test_configuration, test_metadata), ids=cases_ids)
 def test_rids_conf(test_configuration, test_metadata, configure_local_internal_options, truncate_monitored_files,
-                            daemons_handler, set_wazuh_configuration):
+                            daemons_handler, set_fortishield_configuration):
 
     '''
     description: Check that RIDS configuration works as expected for the following fields, `remoted.verify_msg_id` and
@@ -60,7 +60,7 @@ def test_rids_conf(test_configuration, test_metadata, configure_local_internal_o
             type: fixture
             brief: Starts/Restarts the daemons indicated in `daemons_handler_configuration` before each test,
                    once the test finishes, stops the daemons.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
             brief: Apply changes to the ossec.conf configuration.
     '''

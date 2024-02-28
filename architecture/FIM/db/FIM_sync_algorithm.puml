@@ -1,12 +1,12 @@
 ' Copyright (C) 2015, Fortishield Inc.
-' Created by Fortishield, Inc. <info@wazuh.com>.
+' Created by Fortishield, Inc. <info@fortishield.com>.
 ' This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 @startuml sequence_diagram_fim_synchronization
-actor "wazuh-agent" as agent
+actor "fortishield-agent" as agent
 participant FIM_sync_thread
 participant RSync_thread
-actor "wazuh-manager" as manager
+actor "fortishield-manager" as manager
 
 skinparam SequenceGroupBodyBackgroundColor #FFFFFF90
 

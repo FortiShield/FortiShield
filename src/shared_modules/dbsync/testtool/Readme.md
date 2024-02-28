@@ -2,7 +2,7 @@
 ## Index
 1. [Purpose](#purpose)
 2. [Architecture Diagram](#architecture-diagram)
-3. [Compile Fortishield](#compile-wazuh)
+3. [Compile Fortishield](#compile-fortishield)
 4. [How to use the tool](#how-to-use-the-tool)
 
 ## Purpose
@@ -13,7 +13,7 @@ The DBSync Testing Tool was created to test and validate the dbsync module. This
 ![alt text](../images/dbsyncTestToolArchDiagram.png)
 
 ## Compile Fortishield
-In order to run unit tests on a specific wazuh target, the project needs to be built either in release or debug mode.
+In order to run unit tests on a specific fortishield target, the project needs to be built either in release or debug mode.
 ```
 make TARGET=server|agent <DEBUG=1>
 ```

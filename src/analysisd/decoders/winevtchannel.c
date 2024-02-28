@@ -16,7 +16,7 @@
 #include "decoder.h"
 #include "external/cJSON/cJSON.h"
 #include "plugin_decoders.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include "os_net/os_net.h"
 #include "string_op.h"
 #include <time.h>

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from datetime import datetime, timezone
@@ -8,10 +8,10 @@ from unittest.mock import call, patch, ANY
 
 import pytest
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        from wazuh.core import sca as core_sca
-        from wazuh.core.exception import FortishieldError
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        from fortishield.core import sca as core_sca
+        from fortishield.core.exception import FortishieldError
 
 
 @pytest.mark.parametrize('agent_id, offset, limit, sort, search, select, query, count, get_data', [
@@ -21,9 +21,9 @@ with patch('wazuh.core.common.wazuh_uid'):
 @pytest.mark.parametrize('distinct', [
     True, False
 ])
-@patch('wazuh.core.agent.Agent.get_basic_information')
-@patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None)
-@patch('wazuh.core.utils.FortishieldDBQuery.__init__')
+@patch('fortishield.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None)
+@patch('fortishield.core.utils.FortishieldDBQuery.__init__')
 def test_FortishieldDBQuerySCA__init__(mock_wdbq, mock_backend, mock_get_basic_info, distinct, agent_id, offset, limit, sort,
                                  search, query, count, get_data, select):
     """Test if method __init__ of FortishieldDBQuerySCA works properly.
@@ -102,8 +102,8 @@ def test_FortishieldDBQuerySCA__format_data_into_dictionary(agent_id, offset, li
         {'id': 10, 'start_scan': 1556125759, 'end_scan': 1556125760, 'policy_id': 'cis_debian', 'pass': 20, 'fail': 6}
     ]
 
-    with patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None), \
-            patch('wazuh.core.agent.Agent.get_basic_information'):
+    with patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None), \
+            patch('fortishield.core.agent.Agent.get_basic_information'):
         wdbq_sca = core_sca.FortishieldDBQuerySCA(agent_id=agent_id, offset=offset, limit=limit, sort=sort, search=search,
                                             select=select, query=query, count=count, get_data=get_data)
 
@@ -125,7 +125,7 @@ def test_FortishieldDBQuerySCA__format_data_into_dictionary(agent_id, offset, li
 @pytest.mark.parametrize('select', [
     ['test'], [], None
 ])
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__init__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__init__')
 def test_FortishieldDBQuerySCACheck__init__(mock_wdbqsca, select, sca_checks_test_list, expected_default_query):
     """Test if method __init__ of FortishieldDBQuerySCACheck works properly.
 
@@ -151,8 +151,8 @@ def test_FortishieldDBQuerySCACheck__init__(mock_wdbqsca, select, sca_checks_tes
                                          default_sort_field='id', default_sort_order='ASC', query='')
 
 
-@patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None)
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None)
+@patch('fortishield.core.agent.Agent.get_basic_information')
 @patch('os.path.exists', return_value=True)
 def test_FortishieldDBQuerySCACheck_parse_select_filter(mock_exists, mock_get_basic_info, mock_backend):
     """Test if method _parse_select_filter of FortishieldDBQuerySCACheck works properly."""
@@ -170,7 +170,7 @@ def test_FortishieldDBQuerySCACheck_parse_select_filter(mock_exists, mock_get_ba
 @pytest.mark.parametrize('query', [
     'field~test', ''
 ])
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__init__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__init__')
 def test_FortishieldDBQuerySCACheckIDs__init__(mock_wdbqsca, query):
     """Test if method __init__ of FortishieldDBQuerySCACheckIDs works properly.
 
@@ -204,8 +204,8 @@ def test_FortishieldDBQuerySCACheckIDs__init__(mock_wdbqsca, query):
     ('rationale', 'all', True),
     ('description', 'none', False),
 ])
-@patch('wazuh.core.utils.FortishieldDBBackend.__init__', return_value=None)
-@patch('wazuh.core.agent.Agent.get_basic_information')
+@patch('fortishield.core.utils.FortishieldDBBackend.__init__', return_value=None)
+@patch('fortishield.core.agent.Agent.get_basic_information')
 def test_FortishieldDBQuerySCACheckIDs_protected_pass_filter(mock_get_basic_info, mock_backend, field, value, expected):
     """Test FortishieldDBQuerySCACheckIDs._pass_filter function."""
     query = core_sca.FortishieldDBQuerySCACheckIDs(agent_id='000', offset=10, limit=20, filters={'test': 'value'},
@@ -224,7 +224,7 @@ def test_FortishieldDBQuerySCACheckIDs_protected_pass_filter(mock_get_basic_info
 @pytest.mark.parametrize('select', [
     None, ['test']
 ])
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__init__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__init__')
 def test_FortishieldDBQuerySCACheckRelational__init__(mock_wdbqsca, select, table, sca_checks_test_list):
     """Test if method __init__ of FortishieldDBQuerySCACheckRelational works properly.
 
@@ -257,9 +257,9 @@ def test_FortishieldDBQuerySCACheckRelational__init__(mock_wdbqsca, select, tabl
 @pytest.mark.parametrize('select', [
     ['test'], None
 ])
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__enter__')
-@patch('wazuh.core.sca.FortishieldDBQuerySCA.__init__', return_value=None)
-@patch('wazuh.core.sca.FortishieldDBQuery.__exit__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__enter__')
+@patch('fortishield.core.sca.FortishieldDBQuerySCA.__init__', return_value=None)
+@patch('fortishield.core.sca.FortishieldDBQuery.__exit__')
 def test_FortishieldDBQueryDistinctSCACheck__init__(mock_exit, mock_wdbqsca, mock_enter, select):
     """Test if method __init__ of FortishieldDBQueryDistinctSCACheck works properly."""
     mock_enter.return_value.query = "SELECT * FROM sca_check a LEFT JOIN sca_check_compliance b ON a.id=b.id_check LEFT JOIN " \

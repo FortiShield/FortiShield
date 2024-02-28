@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -11,9 +11,9 @@ import pytest
 from sqlalchemy import create_engine
 from importlib import reload
 
-from wazuh.core.exception import FortishieldError
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.rbac.tests.utils import init_db
+from fortishield.core.exception import FortishieldError
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.rbac.tests.utils import init_db
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data/')
@@ -21,11 +21,11 @@ test_data_path = os.path.join(test_path, 'data/')
 
 @pytest.fixture(scope='function')
 def db_setup():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    import wazuh.rbac.decorators as decorator
+                    import fortishield.rbac.decorators as decorator
 
     init_db('schema_security_test.sql', test_data_path)
     reload(decorator)
@@ -89,7 +89,7 @@ def test_expose_resources(db_setup, decorator_params, function_params, rbac, fak
         fake_values = fake_system_resources.get(resource, resource.split(':')[-1])
         return {fake_values} if isinstance(fake_values, str) else set(fake_values)
 
-    with patch('wazuh.rbac.decorators._expand_resource', side_effect=mock_expand_resource):
+    with patch('fortishield.rbac.decorators._expand_resource', side_effect=mock_expand_resource):
         @db_setup.expose_resources(**decorator_params)
         def framework_dummy(**kwargs):
             for target_param, allowed_resource in zip(get_identifier(decorator_params['resources']), allowed_resources):
@@ -117,7 +117,7 @@ def test_expose_resourcesless(db_setup, decorator_params, rbac, allowed, mode):
     def mock_expand_resource(resource):
         return {'*'}
 
-    with patch('wazuh.rbac.decorators._expand_resource', side_effect=mock_expand_resource):
+    with patch('fortishield.rbac.decorators._expand_resource', side_effect=mock_expand_resource):
         @db_setup.expose_resources(**decorator_params)
         def framework_dummy():
             pass

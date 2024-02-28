@@ -14,7 +14,7 @@
 #include "config/agentlessd-config.h"
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-agentlessd"
+#define ARGV0 "fortishield-agentlessd"
 #endif
 
 /** Prototypes **/

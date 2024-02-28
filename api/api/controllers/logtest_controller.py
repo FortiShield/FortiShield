@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -10,10 +10,10 @@ from api.encoder import dumps, prettify
 from api.models.base_model_ import Body
 from api.models.logtest_model import LogtestModel
 from api.util import remove_nones_to_dict, raise_if_exc
-from wazuh import logtest
-from wazuh.core.cluster.dapi.dapi import DistributedAPI
+from fortishield import logtest
+from fortishield.core.cluster.dapi.dapi import DistributedAPI
 
-logger = logging.getLogger('wazuh-api')
+logger = logging.getLogger('fortishield-api')
 
 
 async def run_logtest_tool(request, pretty: bool = False, wait_for_complete: bool = False) -> web.Response:

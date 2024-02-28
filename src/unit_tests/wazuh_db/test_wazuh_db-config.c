@@ -14,19 +14,19 @@
 #include <stdio.h>
 
 #include "../../headers/shared.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../../config/wazuh_db-config.h"
-#include "../../wazuh_db/wdb.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../../config/fortishield_db-config.h"
+#include "../../fortishield_db/wdb.h"
 
 /* setup/teardown */
 
-int wazuh_db_setup() {
+int fortishield_db_setup() {
     wdb_init_conf();
 
     return OS_SUCCESS;
 }
 
-int  wazuh_db_teardown() {
+int  fortishield_db_teardown() {
     wdb_free_conf();
 
     return OS_SUCCESS;
@@ -421,5 +421,5 @@ int main(void)
         cmocka_unit_test(test_Read_FortishieldDB_Backup_valid_config2),
     };
 
-    return cmocka_run_group_tests(tests, wazuh_db_setup, wazuh_db_teardown);
+    return cmocka_run_group_tests(tests, fortishield_db_setup, fortishield_db_teardown);
 }

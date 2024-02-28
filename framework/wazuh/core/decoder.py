@@ -1,13 +1,13 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
 from enum import Enum
 
-from wazuh.core import common
-from wazuh.core.exception import FortishieldError, FortishieldInternalError
-from wazuh.core.utils import load_wazuh_xml, add_dynamic_detail
+from fortishield.core import common
+from fortishield.core.exception import FortishieldError, FortishieldInternalError
+from fortishield.core.utils import load_fortishield_xml, add_dynamic_detail
 
 REQUIRED_FIELDS = ['filename', 'position']
 SORT_FIELDS = ['filename', 'relative_dirname', 'name', 'position', 'status']
@@ -93,7 +93,7 @@ def load_decoders_from_file(decoder_file: str, decoder_path: str, decoder_status
     try:
         decoders = list()
         position = 0
-        root = load_wazuh_xml(os.path.join(common.FORTISHIELD_PATH, decoder_path, decoder_file))
+        root = load_fortishield_xml(os.path.join(common.FORTISHIELD_PATH, decoder_path, decoder_file))
 
         for xml_decoder in list(root):
             # New decoder

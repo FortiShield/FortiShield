@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -8,17 +8,17 @@ from unittest.mock import MagicMock, patch
 import pytest
 from aiohttp import web_response
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
         from api.controllers.default_controller import (BasicInfo, DATE_FORMAT,
                                                         datetime, default_info,
                                                         socket)
-        from wazuh.tests.util import RBAC_bypasser
-        from wazuh.core.utils import get_utc_now
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        del sys.modules['wazuh.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
+        from fortishield.core.utils import get_utc_now
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
 
 
 @pytest.mark.asyncio

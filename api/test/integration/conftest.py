@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 
@@ -187,14 +187,14 @@ def check_health(interval: int = 10, node_type: str = 'manager', agents: list = 
         nodes_to_check = ['master'] if only_check_master_health else env_cluster_nodes
         for node in nodes_to_check:
             health = subprocess.check_output(
-                f"docker inspect env-wazuh-{node}-1 -f '{{{{json .State.Health.Status}}}}'",
+                f"docker inspect env-fortishield-{node}-1 -f '{{{{json .State.Health.Status}}}}'",
                 shell=True)
             if not health.startswith(b'"healthy"'):
                 return False
     elif node_type == 'agent':
         for agent in agents:
             health = subprocess.check_output(
-                f"docker inspect env-wazuh-agent{agent}-1 -f '{{{{json .State.Health.Status}}}}'",
+                f"docker inspect env-fortishield-agent{agent}-1 -f '{{{{json .State.Health.Status}}}}'",
                 shell=True)
             if not health.startswith(b'"healthy"'):
                 return False
@@ -338,7 +338,7 @@ def save_logs(test_name: str):
         for log in logs:
             try:
                 subprocess.check_output(
-                    f"docker cp env-wazuh-{node}-1:{os.path.join(logs_path, log)} "
+                    f"docker cp env-fortishield-{node}-1:{os.path.join(logs_path, log)} "
                     f"{os.path.join(test_logs_path, f'test_{test_name}-{node}-{log}')}",
                     shell=True)
             except subprocess.CalledProcessError:
@@ -348,7 +348,7 @@ def save_logs(test_name: str):
     for agent in agent_names:
         try:
             subprocess.check_output(
-                f"docker cp env-wazuh-{agent}-1:{os.path.join(logs_path, 'ossec.log')} "
+                f"docker cp env-fortishield-{agent}-1:{os.path.join(logs_path, 'ossec.log')} "
                 f"{os.path.join(test_logs_path, f'test_{test_name}-{agent}-ossec.log')}",
                 shell=True)
         except subprocess.CalledProcessError:
@@ -418,7 +418,7 @@ def api_test(request: _pytest.fixtures.SubRequest):
         # Check if entrypoint was successful
         try:
             error_message = subprocess.check_output(["docker", "exec", "-t",
-                                                     "env-wazuh-master-1", "sh", "-c",
+                                                     "env-fortishield-master-1", "sh", "-c",
                                                      "cat /entrypoint_error"]).decode().strip()
             pytest.fail(error_message)
         except subprocess.CalledProcessError:
@@ -442,7 +442,7 @@ def get_health():
     health = "\nEnvironment final status\n"
     health += subprocess.check_output(
         "docker ps --format 'table {{.Names}}\t{{.RunningFor}}\t{{.Status}}'"
-        " --filter name=^env-wazuh",
+        " --filter name=^env-fortishield",
         shell=True).decode()
     health += '\n'
 

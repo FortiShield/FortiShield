@@ -10,11 +10,11 @@
 #include <time.h>
 
 #include "shared.h"
-#include "../wazuh_modules/wmodules.h"
+#include "../fortishield_modules/wmodules.h"
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/time_op_wrappers.h"
-#include "../wrappers/wazuh/os_regex/os_regex_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/time_op_wrappers.h"
+#include "../wrappers/fortishield/os_regex/os_regex_wrappers.h"
 
 
 extern time_t _get_next_time(const sched_scan_config *config, const char *MODULE_TAG,  const int run_on_start);

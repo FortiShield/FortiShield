@@ -22,9 +22,9 @@
 #include "../../wrappers/windows/winreg_wrappers.h"
 #include "../../wrappers/windows/winbase_wrappers.h"
 #include "../../wrappers/windows/securitybaseapi_wrappers.h"
-#include "../../wrappers/wazuh/syscheckd/fim_db_wrappers.h"
-#include "../../wrappers/wazuh/shared/syscheck_op_wrappers.h"
-#include "../../wrappers/wazuh/syscheckd/fim_diff_changes_wrappers.h"
+#include "../../wrappers/fortishield/syscheckd/fim_db_wrappers.h"
+#include "../../wrappers/fortishield/shared/syscheck_op_wrappers.h"
+#include "../../wrappers/fortishield/syscheckd/fim_diff_changes_wrappers.h"
 
 #include "test_fim.h"
 

@@ -1,14 +1,14 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import re
 from typing import Union
 
-from wazuh.core.exception import FortishieldError, FortishieldPermissionError
-from wazuh.core.results import FortishieldResult
-from wazuh.rbac.auth_context import RBAChecker, get_policies_from_roles
-from wazuh.rbac.orm import AuthenticationManager
+from fortishield.core.exception import FortishieldError, FortishieldPermissionError
+from fortishield.core.results import FortishieldResult
+from fortishield.rbac.auth_context import RBAChecker, get_policies_from_roles
+from fortishield.rbac.orm import AuthenticationManager
 
 
 class PreProcessor:

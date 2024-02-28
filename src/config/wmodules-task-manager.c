@@ -10,7 +10,7 @@
 #ifndef CLIENT
 #ifndef WIN32
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 
 static const char *XML_CLEANUP_TIME = "cleanup_time";
 static const char *XML_TASK_TIMEOUT = "task_timeout";

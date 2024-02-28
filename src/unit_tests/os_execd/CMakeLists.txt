@@ -25,7 +25,7 @@ if(${TARGET} STREQUAL "winagent")
 endif(${TARGET} STREQUAL "winagent")
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate Execd tests
 if(${TARGET} STREQUAL "winagent")

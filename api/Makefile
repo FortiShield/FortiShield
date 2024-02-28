@@ -4,7 +4,7 @@
 #
 # Syntax: make [ all | backup | install | restore | service ]
 
-FORTISHIELD_GROUP       = wazuh
+FORTISHIELD_GROUP       = fortishield
 INSTALLDIR       ?= /var/ossec
 
 RM_FILE        = rm -f
@@ -34,7 +34,7 @@ install:
 	$(INSTALL_CONFIG_FILE) api/configuration/api.yaml ${INSTALLDIR}/api/configuration
 
 	$(INSTALL_DIR) $(INSTALLDIR)/api/scripts
-	$(INSTALL_FILE) scripts/wazuh-apid.py ${INSTALLDIR}/api/scripts
+	$(INSTALL_FILE) scripts/fortishield-apid.py ${INSTALLDIR}/api/scripts
 
     # Install scripts/%.py on $(INSTALLDIR)/bin/%
 	$(foreach script,$(wildcard scripts/*.py),$(INSTALL_EXEC) wrappers/generic_wrapper.sh $(patsubst scripts/%.py,$(INSTALLDIR)/bin/%,$(script));)

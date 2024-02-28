@@ -1,14 +1,14 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
 brief: These tests will check if the 'SSL' (Secure Socket Layer) protocol-related settings of
-       the 'wazuh-authd' daemon are working correctly. The 'wazuh-authd' daemon can
+       the 'fortishield-authd' daemon are working correctly. The 'fortishield-authd' daemon can
        automatically add a Fortishield agent to a Fortishield manager and provide the key
        to the agent. It is used along with the 'agent-auth' application.
 
@@ -19,9 +19,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
-    - wazuh-modulesd
+    - fortishield-authd
+    - fortishield-db
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -38,8 +38,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-authd.html
-    - https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/auth.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-authd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/ossec-conf/auth.html
 
 tags:
     - enrollment
@@ -49,10 +49,10 @@ from pathlib import Path
 
 import pytest
 
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
-from wazuh_testing.tools.socket_controller import SocketController
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
+from fortishield_testing.tools.socket_controller import SocketController
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -76,17 +76,17 @@ daemons_handler_configuration = {'all_daemons': True}
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_ossec_auth_configurations(test_configuration, test_metadata, set_wazuh_configuration,
+def test_ossec_auth_configurations(test_configuration, test_metadata, set_fortishield_configuration,
                                    truncate_monitored_files, daemons_handler,
                                    configure_sockets_environment, wait_for_authd_startup):
     '''
     description:
-        Checks if the 'SSL' settings of the 'wazuh-authd' daemon work correctly by enrolling agents
+        Checks if the 'SSL' settings of the 'fortishield-authd' daemon work correctly by enrolling agents
         that use different values for these settings. Different types of encryption and secure
         connection protocols are tested, in addition to the 'ssl_auto_negotiate' option
         that automatically chooses the protocol to be used.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -98,9 +98,9 @@ def test_ossec_auth_configurations(test_configuration, test_metadata, set_wazuh_
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - daemons_handler:
             type: fixture
             brief: Handler of Fortishield daemons.

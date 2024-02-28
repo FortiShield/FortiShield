@@ -471,7 +471,7 @@
 #define LOGTEST_ERROR_ACCEPT_CONN                   "(7301): Failure to accept connection. Errno: %s"
 #define LOGTEST_ERROR_RECV_MSG_ERRNO                "(7302): Failure to receive message: Errno: %s"
 #define LOGTEST_ERROR_INIT_HASH                     "(7303): Failure to initialize all_sessions hash"
-#define LOGTEST_ERROR_INV_CONF                      "(7304): Invalid wazuh-logtest configuration"
+#define LOGTEST_ERROR_INV_CONF                      "(7304): Invalid fortishield-logtest configuration"
 #define LOGTEST_ERROR_SIZE_HASH                     "(7305): Failure to resize all_sessions hash"
 #define LOGTEST_ERROR_COMMAND_NOT_ALLOWED           "(7306): Unable to process command"
 #define LOGTEST_ERROR_JSON_PARSE_POS                "(7307): Error parsing JSON in position %i, ... %s ..."
@@ -585,10 +585,10 @@
 #define OS_AG_DISCON    "ossec: Agent disconnected: '%s'."
 #define OS_AG_REMOVED   "ossec: Agent removed: '%s'."
 
-#define OS_NORMAL_BUFFER  "wazuh: Agent buffer: 'normal'."
-#define OS_WARN_BUFFER  "wazuh: Agent buffer: '%d%%'."
-#define OS_FULL_BUFFER  "wazuh: Agent buffer: 'full'."
-#define OS_FLOOD_BUFFER "wazuh: Agent buffer: 'flooded'."
+#define OS_NORMAL_BUFFER  "fortishield: Agent buffer: 'normal'."
+#define OS_WARN_BUFFER  "fortishield: Agent buffer: '%d%%'."
+#define OS_FULL_BUFFER  "fortishield: Agent buffer: 'full'."
+#define OS_FLOOD_BUFFER "fortishield: Agent buffer: 'flooded'."
 
 /* WIN32 errors */
 #define CONF_ERROR      "Could not read (%s) (Make sure config exists and executable is running with Administrative privileges)."

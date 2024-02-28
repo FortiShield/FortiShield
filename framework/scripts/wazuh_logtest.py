@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import argparse
@@ -16,8 +16,8 @@ import sys
 import textwrap
 from typing import Union
 
-from wazuh.core import common
-from wazuh.core.common import LOGTEST_SOCKET
+from fortishield.core import common
+from fortishield.core.common import LOGTEST_SOCKET
 
 
 def init_argparse() -> argparse.Namespace:
@@ -66,7 +66,7 @@ def init_argparse() -> argparse.Namespace:
 
 
 def main():
-    """wazuh-logtest main function."""
+    """fortishield-logtest main function."""
     # Parse cmdline args
     parser = init_argparse()
     args = parser.parse_args()
@@ -88,9 +88,9 @@ def main():
     if args.verbose:
         options['rules_debug'] = True
 
-    # Initialize wazuh-logtest component
+    # Initialize fortishield-logtest component
     w_logtest = FortishieldLogtest(location=args.location)
-    logging.info('Starting wazuh-logtest %s', Fortishield.get_version_str())
+    logging.info('Starting fortishield-logtest %s', Fortishield.get_version_str())
     logging.info('Type one log per line')
 
     # Cleanup: remove session before exit
@@ -130,7 +130,7 @@ def main():
             logging.error('** Fortishield-logtest error ' + str(error))
             continue
         except ConnectionError:
-            logging.error('** Fortishield-logtest error when connecting with wazuh-analysisd')
+            logging.error('** Fortishield-logtest error when connecting with fortishield-analysisd')
             continue
         # Check and alert to user if new session was created
         if session_token and session_token != output['token']:
@@ -149,7 +149,7 @@ def main():
         # Continue using last available session
         session_token = output['token']
 
-        # Show wazuh-logtest output
+        # Show fortishield-logtest output
         FortishieldLogtest.show_output(output)
 
         # Show UT info
@@ -160,7 +160,7 @@ def main():
 class FortishieldDeamonProtocol:
     """Encapsulate logic communication aspects between Fortishield daemons."""
 
-    def __init__(self, version: int = 1, origin_module: str = "wazuh-logtest", module_name: str = "wazuh-logtest"):
+    def __init__(self, version: int = 1, origin_module: str = "fortishield-logtest", module_name: str = "fortishield-logtest"):
         """Class constructor.
 
         Parameters
@@ -168,9 +168,9 @@ class FortishieldDeamonProtocol:
         version :int
             Protocol version. Default: 1
         origin_module : str
-            Origin source module. Default: "wazuh-logtest"
+            Origin source module. Default: "fortishield-logtest"
         module_name : str
-            Source module name. Default: "wazuh-logtest"
+            Source module name. Default: "fortishield-logtest"
         """
         self.protocol = dict()
         self.protocol['version'] = version
@@ -226,7 +226,7 @@ class FortishieldDeamonProtocol:
 
 
 class FortishieldSocket:
-    """Encapsulate wazuh-socket communication (header with message size)."""
+    """Encapsulate fortishield-socket communication (header with message size)."""
 
     def __init__(self, file: str):
         """Class constructor.
@@ -239,7 +239,7 @@ class FortishieldSocket:
         self.file = file
 
     def send(self, msg: str) -> bytes:
-        """Send and receive data to wazuh-socket (header with message size).
+        """Send and receive data to fortishield-socket (header with message size).
 
         Parameters
         ----------
@@ -265,7 +265,7 @@ class FortishieldSocket:
 
 
 class FortishieldLogtest:
-    """Top level class to interact with wazuh-logtest feature, part of wazuh-analysisd."""
+    """Top level class to interact with fortishield-logtest feature, part of fortishield-analysisd."""
 
     def __init__(self, location: str = "stdin", log_format: str = "syslog"):
         """Class constructor.
@@ -286,7 +286,7 @@ class FortishieldLogtest:
         self.ut = [''] * 3
 
     def process_log(self, log, token: str = None, options: str = None) -> dict:
-        """Send log event to wazuh-logtest and receive the outcome.
+        """Send log event to fortishield-logtest and receive the outcome.
 
         Parameters
         ----------
@@ -410,7 +410,7 @@ class FortishieldLogtest:
         FortishieldLogtest.show_ossec_logtest_like(output)
 
     def show_ossec_logtest_like(output: dict):
-        """Show wazuh-logtest output like ossec-logtest.
+        """Show fortishield-logtest output like ossec-logtest.
 
         Parameters
         ----------
@@ -452,7 +452,7 @@ class FortishieldLogtest:
             logging.info('**Alert to be generated.')
 
     def show_phase_info(phase_data: dict, show_first: list = None, prefix: str = ""):
-        """Show wazuh-logtest processing phase information.
+        """Show fortishield-logtest processing phase information.
 
         Parameters
         ----------
@@ -500,10 +500,10 @@ class Fortishield:
         str
             Fortishield installation path.
         """
-        return common.find_wazuh_path()
+        return common.find_fortishield_path()
 
     def get_info(field: str) -> str:
-        """Get Fortishield information from wazuh-control.
+        """Get Fortishield information from fortishield-control.
 
         Parameters
         ----------
@@ -515,10 +515,10 @@ class Fortishield:
         str
             Field value.
         """
-        wazuh_control = os.path.join(Fortishield.get_install_path(), "bin", "wazuh-control")
-        wazuh_env_vars = dict()
+        fortishield_control = os.path.join(Fortishield.get_install_path(), "bin", "fortishield-control")
+        fortishield_env_vars = dict()
         try:
-            proc = subprocess.Popen([wazuh_control, "info"], stdout=subprocess.PIPE)
+            proc = subprocess.Popen([fortishield_control, "info"], stdout=subprocess.PIPE)
             (stdout, stderr) = proc.communicate()
         except:
             return "ERROR"
@@ -527,9 +527,9 @@ class Fortishield:
         env_variables.remove("")
         for env_variable in env_variables:
             key, value = env_variable.split("=")
-            wazuh_env_vars[key] = value.replace("\"", "")
+            fortishield_env_vars[key] = value.replace("\"", "")
 
-        return wazuh_env_vars[field]
+        return fortishield_env_vars[field]
 
     def get_version_str() -> str:
         """Get Fortishield version string.
@@ -568,7 +568,7 @@ class Fortishield:
 
 
 def init_logger(args: argparse.Namespace):
-    """Initialize wazuh-logtest logger.
+    """Initialize fortishield-logtest logger.
 
     Parameters
     -------

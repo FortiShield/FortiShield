@@ -77,7 +77,7 @@ WriteSyscheck()
 ##########
 DisableAuthd()
 {
-    echo "  <!-- Configuration for wazuh-authd -->" >> $NEWCONFIG
+    echo "  <!-- Configuration for fortishield-authd -->" >> $NEWCONFIG
     echo "  <auth>" >> $NEWCONFIG
     echo "    <disabled>yes</disabled>" >> $NEWCONFIG
     echo "    <port>1515</port>" >> $NEWCONFIG
@@ -225,8 +225,8 @@ GenerateAuthCert()
         # Generation auto-signed certificate if not exists
         if [ ! -f "${INSTALLDIR}/etc/sslmanager.key" ] && [ ! -f "${INSTALLDIR}/etc/sslmanager.cert" ]; then
             if [ ! "X${USER_GENERATE_AUTHD_CERT}" = "Xn" ]; then
-                    echo "Generating self-signed certificate for wazuh-authd..."
-                    ${INSTALLDIR}/bin/wazuh-authd -C 365 -B 2048 -K ${INSTALLDIR}/etc/sslmanager.key -X ${INSTALLDIR}/etc/sslmanager.cert -S "/C=US/ST=California/CN=wazuh/"
+                    echo "Generating self-signed certificate for fortishield-authd..."
+                    ${INSTALLDIR}/bin/fortishield-authd -C 365 -B 2048 -K ${INSTALLDIR}/etc/sslmanager.key -X ${INSTALLDIR}/etc/sslmanager.cert -S "/C=US/ST=California/CN=fortishield/"
                     chmod 640 ${INSTALLDIR}/etc/sslmanager.key
                     chmod 640 ${INSTALLDIR}/etc/sslmanager.cert
             fi
@@ -288,7 +288,7 @@ WriteLogs()
 ##########
 SetHeaders()
 {
-    HEADERS_TMP="/tmp/wazuh-headers.tmp"
+    HEADERS_TMP="/tmp/fortishield-headers.tmp"
     if [ "$DIST_VER" = "0" ]; then
         sed -e "s/TYPE/$1/g; s/DISTRIBUTION/${DIST_NAME}/g; s/VERSION//g" "$HEADER_TEMPLATE" > $HEADERS_TMP
     else
@@ -450,9 +450,9 @@ WriteManager()
 
     if [ "$EMAILNOTIFY" = "yes"   ]; then
         sed -e "s|<email_notification>no</email_notification>|<email_notification>yes</email_notification>|g; \
-        s|<smtp_server>smtp.example.wazuh.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
-        s|<email_from>wazuh@example.wazuh.com</email_from>|<email_from>wazuh@${HOST}</email_from>|g; \
-        s|<email_to>recipient@example.wazuh.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
+        s|<smtp_server>smtp.example.fortishield.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
+        s|<email_from>fortishield@example.fortishield.com</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
+        s|<email_to>recipient@example.fortishield.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
     else
         cat ${GLOBAL_TEMPLATE} >> $NEWCONFIG
     fi
@@ -563,7 +563,7 @@ WriteManager()
     cat ${RULES_TEMPLATE} >> $NEWCONFIG
     echo "" >> $NEWCONFIG
 
-    # Writting wazuh-logtest configuration
+    # Writting fortishield-logtest configuration
     cat ${RULE_TEST_TEMPLATE} >> $NEWCONFIG
     echo "" >> $NEWCONFIG
 
@@ -598,9 +598,9 @@ WriteLocal()
 
     if [ "$EMAILNOTIFY" = "yes"   ]; then
         sed -e "s|<email_notification>no</email_notification>|<email_notification>yes</email_notification>|g; \
-        s|<smtp_server>smtp.example.wazuh.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
-        s|<email_from>wazuh@example.wazuh.com</email_from>|<email_from>wazuh@${HOST}</email_from>|g; \
-        s|<email_to>recipient@example.wazuh.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
+        s|<smtp_server>smtp.example.fortishield.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
+        s|<email_from>fortishield@example.fortishield.com</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
+        s|<email_to>recipient@example.fortishield.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
     else
         cat ${GLOBAL_TEMPLATE} >> $NEWCONFIG
     fi
@@ -698,7 +698,7 @@ WriteLocal()
     cat ${RULES_TEMPLATE} >> $NEWCONFIG
     echo "" >> $NEWCONFIG
 
-    # Writting wazuh-logtest configuration
+    # Writting fortishield-logtest configuration
     cat ${RULE_TEST_TEMPLATE} >> $NEWCONFIG
     echo "" >> $NEWCONFIG
 
@@ -708,18 +708,18 @@ WriteLocal()
 InstallCommon()
 {
 
-    FORTISHIELD_GROUP='wazuh'
-    FORTISHIELD_USER='wazuh'
+    FORTISHIELD_GROUP='fortishield'
+    FORTISHIELD_USER='fortishield'
     INSTALL="install"
 
     if [ ${INSTYPE} = 'server' ]; then
-        OSSEC_CONTROL_SRC='./init/wazuh-server.sh'
+        OSSEC_CONTROL_SRC='./init/fortishield-server.sh'
         OSSEC_CONF_SRC='../etc/ossec-server.conf'
     elif [ ${INSTYPE} = 'agent' ]; then
-        OSSEC_CONTROL_SRC='./init/wazuh-client.sh'
+        OSSEC_CONTROL_SRC='./init/fortishield-client.sh'
         OSSEC_CONF_SRC='../etc/ossec-agent.conf'
     elif [ ${INSTYPE} = 'local' ]; then
-        OSSEC_CONTROL_SRC='./init/wazuh-local.sh'
+        OSSEC_CONTROL_SRC='./init/fortishield-local.sh'
         OSSEC_CONF_SRC='../etc/ossec-local.conf'
     fi
 
@@ -735,7 +735,7 @@ InstallCommon()
 
   ${INSTALL} -d -m 0750 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/
   ${INSTALL} -d -m 0770 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/logs
-  ${INSTALL} -d -m 0750 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/logs/wazuh
+  ${INSTALL} -d -m 0750 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/logs/fortishield
   ${INSTALL} -m 0660 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/logs/ossec.log
   ${INSTALL} -m 0660 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/logs/ossec.json
   ${INSTALL} -m 0660 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/logs/active-responses.log
@@ -750,31 +750,31 @@ InstallCommon()
 
     if [ ${NUNAME} = 'Darwin' ]
     then
-        if [ -f libwazuhext.dylib ]
+        if [ -f libfortishieldext.dylib ]
         then
-            ${INSTALL} -m 0750 -o root -g 0 libwazuhext.dylib ${INSTALLDIR}/lib
+            ${INSTALL} -m 0750 -o root -g 0 libfortishieldext.dylib ${INSTALLDIR}/lib
         fi
-    elif [ -f libwazuhext.so ]
+    elif [ -f libfortishieldext.so ]
     then
-        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} libwazuhext.so ${INSTALLDIR}/lib
+        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} libfortishieldext.so ${INSTALLDIR}/lib
 
         if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]) && [ ${DIST_VER} -le 5 ]; then
-            chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libwazuhext.so
+            chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libfortishieldext.so
         fi
     fi
 
     if [ ${NUNAME} = 'Darwin' ]
     then
-        if [ -f libwazuhshared.dylib ]
+        if [ -f libfortishieldshared.dylib ]
         then
-            ${INSTALL} -m 0750 -o root -g 0 libwazuhshared.dylib ${INSTALLDIR}/lib
+            ${INSTALL} -m 0750 -o root -g 0 libfortishieldshared.dylib ${INSTALLDIR}/lib
         fi
-    elif [ -f libwazuhshared.so ]
+    elif [ -f libfortishieldshared.so ]
     then
-        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} libwazuhshared.so ${INSTALLDIR}/lib
+        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} libfortishieldshared.so ${INSTALLDIR}/lib
 
         if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]) && [ ${DIST_VER} -le 5 ]; then
-            chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libwazuhshared.so
+            chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libfortishieldshared.so
         fi
     fi
 
@@ -845,17 +845,17 @@ InstallCommon()
 
     if [ ${NUNAME} = 'Darwin' ]
     then
-        if [ -f wazuh_modules/syscollector/build/lib/libsyscollector.dylib ]
+        if [ -f fortishield_modules/syscollector/build/lib/libsyscollector.dylib ]
         then
-            ${INSTALL} -m 0750 -o root -g 0 wazuh_modules/syscollector/build/lib/libsyscollector.dylib ${INSTALLDIR}/lib
+            ${INSTALL} -m 0750 -o root -g 0 fortishield_modules/syscollector/build/lib/libsyscollector.dylib ${INSTALLDIR}/lib
             install_name_tool -id @rpath/../lib/libsyscollector.dylib ${INSTALLDIR}/lib/libsyscollector.dylib
             install_name_tool -change $(PWD)/data_provider/build/lib/libsysinfo.dylib @rpath/../lib/libsysinfo.dylib ${INSTALLDIR}/lib/libsyscollector.dylib
             install_name_tool -change $(PWD)/shared_modules/rsync/build/lib/librsync.dylib @rpath/../lib/librsync.dylib ${INSTALLDIR}/lib/libsyscollector.dylib
             install_name_tool -change $(PWD)/shared_modules/dbsync/build/lib/libdbsync.dylib @rpath/../lib/libdbsync.dylib ${INSTALLDIR}/lib/libsyscollector.dylib
         fi
-    elif [ -f wazuh_modules/syscollector/build/lib/libsyscollector.so ]
+    elif [ -f fortishield_modules/syscollector/build/lib/libsyscollector.so ]
     then
-        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} wazuh_modules/syscollector/build/lib/libsyscollector.so ${INSTALLDIR}/lib
+        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} fortishield_modules/syscollector/build/lib/libsyscollector.so ${INSTALLDIR}/lib
 
         if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]) && [ ${DIST_VER} -le 5 ]; then
             chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libsyscollector.so
@@ -893,12 +893,12 @@ InstallCommon()
         fi
     fi
 
-  ${INSTALL} -m 0750 -o root -g 0 wazuh-logcollector ${INSTALLDIR}/bin
-  ${INSTALL} -m 0750 -o root -g 0 syscheckd/build/bin/wazuh-syscheckd ${INSTALLDIR}/bin
-  ${INSTALL} -m 0750 -o root -g 0 wazuh-execd ${INSTALLDIR}/bin
+  ${INSTALL} -m 0750 -o root -g 0 fortishield-logcollector ${INSTALLDIR}/bin
+  ${INSTALL} -m 0750 -o root -g 0 syscheckd/build/bin/fortishield-syscheckd ${INSTALLDIR}/bin
+  ${INSTALL} -m 0750 -o root -g 0 fortishield-execd ${INSTALLDIR}/bin
   ${INSTALL} -m 0750 -o root -g 0 manage_agents ${INSTALLDIR}/bin
-  ${INSTALL} -m 0750 -o root -g 0 ${OSSEC_CONTROL_SRC} ${INSTALLDIR}/bin/wazuh-control
-  ${INSTALL} -m 0750 -o root -g 0 wazuh-modulesd ${INSTALLDIR}/bin/
+  ${INSTALL} -m 0750 -o root -g 0 ${OSSEC_CONTROL_SRC} ${INSTALLDIR}/bin/fortishield-control
+  ${INSTALL} -m 0750 -o root -g 0 fortishield-modulesd ${INSTALLDIR}/bin/
 
   ${INSTALL} -d -m 0750 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue
   ${INSTALL} -d -m 0770 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/alerts
@@ -939,7 +939,7 @@ InstallCommon()
     fi
 
     ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} -b ../etc/internal_options.conf ${INSTALLDIR}/etc/
-    ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} wazuh_modules/syscollector/norm_config.json ${INSTALLDIR}/queue/syscollector
+    ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} fortishield_modules/syscollector/norm_config.json ${INSTALLDIR}/queue/syscollector
 
     if [ ! -f ${INSTALLDIR}/etc/local_internal_options.conf ]; then
         ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} ../etc/local_internal_options.conf ${INSTALLDIR}/etc/local_internal_options.conf
@@ -949,7 +949,7 @@ InstallCommon()
         if [ ${INSTYPE} = 'agent' ]; then
             ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/etc/client.keys
         else
-            ${INSTALL} -m 0640 -o wazuh -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/etc/client.keys
+            ${INSTALL} -m 0640 -o fortishield -g ${FORTISHIELD_GROUP} /dev/null ${INSTALLDIR}/etc/client.keys
         fi
     fi
 
@@ -982,19 +982,19 @@ InstallCommon()
   ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} disable-account ${INSTALLDIR}/active-response/bin/
   ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} host-deny ${INSTALLDIR}/active-response/bin/
   ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ip-customblock ${INSTALLDIR}/active-response/bin/
-  ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} restart-wazuh ${INSTALLDIR}/active-response/bin/
+  ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} restart-fortishield ${INSTALLDIR}/active-response/bin/
   ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} route-null ${INSTALLDIR}/active-response/bin/
   ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} kaspersky ${INSTALLDIR}/active-response/bin/
-  ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} wazuh-slack ${INSTALLDIR}/active-response/bin/
+  ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} fortishield-slack ${INSTALLDIR}/active-response/bin/
 
   ${INSTALL} -d -m 0750 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/var
   ${INSTALL} -d -m 0770 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/var/run
   ${INSTALL} -d -m 0770 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/var/upgrade
   ${INSTALL} -d -m 0770 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/var/selinux
 
-  if [ -f selinux/wazuh.pp ]
+  if [ -f selinux/fortishield.pp ]
   then
-    ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} selinux/wazuh.pp ${INSTALLDIR}/var/selinux/
+    ${INSTALL} -m 0640 -o root -g ${FORTISHIELD_GROUP} selinux/fortishield.pp ${INSTALLDIR}/var/selinux/
     InstallSELinuxPolicyPackage
   fi
 
@@ -1018,20 +1018,20 @@ InstallLocal()
     ${INSTALL} -d -m 0750 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/logs/api
     ${INSTALL} -d -m 0770 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/etc/rootcheck
 
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-agentlessd ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-analysisd ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-monitord ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-reportd ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-maild ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-logtest-legacy ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-csyslogd ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-dbd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-agentlessd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-analysisd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-monitord ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-reportd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-maild ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-logtest-legacy ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-csyslogd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-dbd ${INSTALLDIR}/bin
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} verify-agent-conf ${INSTALLDIR}/bin/
     ${INSTALL} -m 0750 -o root -g 0 clear_stats ${INSTALLDIR}/bin/
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-regex ${INSTALLDIR}/bin/
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-regex ${INSTALLDIR}/bin/
     ${INSTALL} -m 0750 -o root -g 0 agent_control ${INSTALLDIR}/bin/
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-integratord ${INSTALLDIR}/bin/
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-db ${INSTALLDIR}/bin/
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-integratord ${INSTALLDIR}/bin/
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-db ${INSTALLDIR}/bin/
 
     ${INSTALL} -d -m 0750 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/stats
     ${INSTALL} -d -m 0750 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/ruleset/decoders
@@ -1086,7 +1086,7 @@ InstallLocal()
 
     # Install templates files
     ${INSTALL} -d -m 0440 -o root -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/indexer
-    ${INSTALL} -m 0440 -o root -g ${FORTISHIELD_GROUP} wazuh_modules/vulnerability_scanner/indexer/template/legacy-template.json ${INSTALLDIR}/queue/indexer/vd_states_template.json
+    ${INSTALL} -m 0440 -o root -g ${FORTISHIELD_GROUP} fortishield_modules/vulnerability_scanner/indexer/template/legacy-template.json ${INSTALLDIR}/queue/indexer/vd_states_template.json
 
     # Install Task Manager files
     ${INSTALL} -d -m 0770 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/tasks
@@ -1123,7 +1123,7 @@ checkDownloadContent()
 
     if [ "X${DOWNLOAD_CONTENT_AND_DECOMPRESS}" = "Xy" ]; then
         echo "Download ${VD_FILENAME} file"
-        wget -O ${VD_FILENAME} http://packages.wazuh.com/deps/vulnerability_model_database/${VD_FILENAME}
+        wget -O ${VD_FILENAME} http://packages.fortishield.com/deps/vulnerability_model_database/${VD_FILENAME}
 
         echo "Decompress ${VD_FILENAME} file"
         ${INSTALL} -m 0660 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${VD_FILENAME} ${INSTALLDIR}/
@@ -1132,7 +1132,7 @@ checkDownloadContent()
         rm -rf ${VD_FILENAME}
     elif [ "X${DOWNLOAD_CONTENT}" = "Xyes" ]; then
         echo "Download ${VD_FILENAME} file"
-        wget -O ${VD_FILENAME} http://packages.wazuh.com/deps/vulnerability_model_database/${VD_FILENAME}
+        wget -O ${VD_FILENAME} http://packages.fortishield.com/deps/vulnerability_model_database/${VD_FILENAME}
 
         ${INSTALL} -m 0640 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${VD_FILENAME} ${INSTALLDIR}/
     fi
@@ -1166,9 +1166,9 @@ InstallServer()
             chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libcontent_manager.so
         fi
     fi
-    if [ -f build/wazuh_modules/vulnerability_scanner/libvulnerability_scanner.so ]
+    if [ -f build/fortishield_modules/vulnerability_scanner/libvulnerability_scanner.so ]
     then
-        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} build/wazuh_modules/vulnerability_scanner/libvulnerability_scanner.so ${INSTALLDIR}/lib
+        ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} build/fortishield_modules/vulnerability_scanner/libvulnerability_scanner.so ${INSTALLDIR}/lib
 
         if ([ "X${DIST_NAME}" = "Xrhel" ] || [ "X${DIST_NAME}" = "Xcentos" ] || [ "X${DIST_NAME}" = "XCentOS" ]); then
             chcon -t textrel_shlib_t ${INSTALLDIR}/lib/libvulnerability_scanner.so
@@ -1203,8 +1203,8 @@ InstallServer()
 
     TransferShared
 
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-remoted ${INSTALLDIR}/bin
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-authd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-remoted ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-authd ${INSTALLDIR}/bin
 
     ${INSTALL} -d -m 0770 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/rids
     ${INSTALL} -d -m 0770 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/router
@@ -1237,7 +1237,7 @@ InstallServer()
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/aws_s3.py ${INSTALLDIR}/wodles/aws/aws-s3.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/__init__.py ${INSTALLDIR}/wodles/aws/__init__.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/aws_tools.py ${INSTALLDIR}/wodles/aws/aws_tools.py
-    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/wazuh_integration.py ${INSTALLDIR}/wodles/aws/wazuh_integration.py
+    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/fortishield_integration.py ${INSTALLDIR}/wodles/aws/fortishield_integration.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/aws_bucket.py ${INSTALLDIR}/wodles/aws/buckets_s3/aws_bucket.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/cloudtrail.py ${INSTALLDIR}/wodles/aws/buckets_s3/cloudtrail.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/config.py ${INSTALLDIR}/wodles/aws/buckets_s3/config.py
@@ -1289,7 +1289,7 @@ InstallServer()
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../framework/wrappers/generic_wrapper.sh ${INSTALLDIR}/integrations/maltiverse
 
     # Keystore
-    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} wazuh-keystore ${INSTALLDIR}/bin/
+    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} fortishield-keystore ${INSTALLDIR}/bin/
 }
 
 InstallAgent()
@@ -1299,7 +1299,7 @@ InstallAgent()
 
     InstallSecurityConfigurationAssessmentFiles "agent"
 
-    ${INSTALL} -m 0750 -o root -g 0 wazuh-agentd ${INSTALLDIR}/bin
+    ${INSTALL} -m 0750 -o root -g 0 fortishield-agentd ${INSTALLDIR}/bin
     ${INSTALL} -m 0750 -o root -g 0 agent-auth ${INSTALLDIR}/bin
 
     ${INSTALL} -d -m 0750 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${INSTALLDIR}/queue/rids
@@ -1320,7 +1320,7 @@ InstallAgent()
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/aws_s3.py ${INSTALLDIR}/wodles/aws/aws-s3
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/__init__.py ${INSTALLDIR}/wodles/aws/__init__.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/aws_tools.py ${INSTALLDIR}/wodles/aws/aws_tools.py
-    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/wazuh_integration.py ${INSTALLDIR}/wodles/aws/wazuh_integration.py
+    ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/fortishield_integration.py ${INSTALLDIR}/wodles/aws/fortishield_integration.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/aws_bucket.py ${INSTALLDIR}/wodles/aws/buckets_s3/aws_bucket.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/cloudtrail.py ${INSTALLDIR}/wodles/aws/buckets_s3/cloudtrail.py
     ${INSTALL} -m 0750 -o root -g ${FORTISHIELD_GROUP} ../wodles/aws/buckets_s3/config.py ${INSTALLDIR}/wodles/aws/buckets_s3/config.py

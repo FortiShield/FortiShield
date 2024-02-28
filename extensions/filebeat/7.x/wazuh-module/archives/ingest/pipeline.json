@@ -103,7 +103,7 @@
     {
       "set": {
         "field": "_index",
-        "value": "wazuh-archives"
+        "value": "fortishield-archives"
       }
     },
     { "remove": { "field": "message", "ignore_missing": true, "ignore_failure": true } },

@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include "../headers/shared.h"
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/file_op_wrappers.h"
+#include "../wrappers/fortishield/shared/file_op_wrappers.h"
 
 /* setup/teardown */
 static int group_setup(void ** state) {

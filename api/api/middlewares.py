@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from json import JSONDecodeError
@@ -10,8 +10,8 @@ from aiohttp.web_exceptions import HTTPException
 from connexion.exceptions import OAuthProblem, ProblemException, Unauthorized
 from connexion.problem import problem as connexion_problem
 from secure import SecureHeaders
-from wazuh.core.exception import FortishieldPermissionError, FortishieldTooManyRequests
-from wazuh.core.utils import get_utc_now
+from fortishield.core.exception import FortishieldPermissionError, FortishieldTooManyRequests
+from fortishield.core.utils import get_utc_now
 
 from api.configuration import api_conf
 from api.util import raise_if_exc
@@ -21,7 +21,7 @@ MAX_REQUESTS_EVENTS_DEFAULT = 30
 # API secure headers
 secure_headers = SecureHeaders(server="Fortishield", csp="none", xfo="DENY")
 
-logger = getLogger('wazuh-api')
+logger = getLogger('fortishield-api')
 
 
 def _cleanup_detail_field(detail: str) -> str:

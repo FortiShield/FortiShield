@@ -499,7 +499,7 @@
         ]
     },
     {
-        "path": "framework/wazuh",
+        "path": "framework/fortishield",
         "files": [
             {
                 "name": "active_response.py",
@@ -685,7 +685,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core",
+        "path": "framework/fortishield/core",
         "files": [
             {
                 "name": "InputValidator.py",
@@ -921,8 +921,8 @@
                 ]
             },
             {
-                "name": "wazuh_queue.py",
-                "tag": "wazuh",
+                "name": "fortishield_queue.py",
+                "tag": "fortishield",
                 "tests": [
                     "test_agent_DELETE_endpoints.tavern.yaml",
                     "test_agent_GET_endpoints.tavern.yaml",
@@ -932,8 +932,8 @@
                 ]
             },
             {
-                "name": "wazuh_socket.py",
-                "tag": "wazuh",
+                "name": "fortishield_socket.py",
+                "tag": "fortishield",
                 "tests": [
                     "test_agent_DELETE_endpoints.tavern.yaml",
                     "test_agent_GET_endpoints.tavern.yaml",
@@ -967,7 +967,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster",
+        "path": "framework/fortishield/core/cluster",
         "files": [
             {
                 "name": "client.py",
@@ -1080,7 +1080,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster/dapi",
+        "path": "framework/fortishield/core/cluster/dapi",
         "files": [
             {
                 "name": "dapi.py",
@@ -1096,7 +1096,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/cluster/tests",
+        "path": "framework/fortishield/core/cluster/tests",
         "files": [
             {
                 "name": "conftest.py",
@@ -1112,7 +1112,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_agent",
+        "path": "framework/fortishield/core/tests/data/test_agent",
         "files": [
             {
                 "name": "schema_global_test.sql",
@@ -1128,7 +1128,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_agent/add_manual",
+        "path": "framework/fortishield/core/tests/data/test_agent/add_manual",
         "files": [
             {
                 "name": "add_manual_use_cases.yaml",
@@ -1144,7 +1144,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_database",
+        "path": "framework/fortishield/core/tests/data/test_database",
         "files": [
             {
                 "name": "schema_global_test.sql",
@@ -1160,7 +1160,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/core/tests/data/test_rootcheck",
+        "path": "framework/fortishield/core/tests/data/test_rootcheck",
         "files": [
             {
                 "name": "schema_rootcheck_test.sql",
@@ -1176,7 +1176,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac",
+        "path": "framework/fortishield/rbac",
         "files": [
             {
                 "name": "auth_context.py",
@@ -1236,7 +1236,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/default",
+        "path": "framework/fortishield/rbac/default",
         "files": [
             {
                 "name": "policies.yaml",
@@ -1296,7 +1296,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/tests",
+        "path": "framework/fortishield/rbac/tests",
         "files": [
             {
                 "name": "utils.py",
@@ -1312,7 +1312,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/rbac/tests/data",
+        "path": "framework/fortishield/rbac/tests/data",
         "files": [
             {
                 "name": "schema_security_test.sql",
@@ -1328,7 +1328,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests",
+        "path": "framework/fortishield/tests",
         "files": [
             {
                 "name": "util.py",
@@ -1344,7 +1344,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data",
+        "path": "framework/fortishield/tests/data",
         "files": [
             {
                 "name": "schema_ciscat_test.sql",
@@ -1415,7 +1415,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data/security",
+        "path": "framework/fortishield/tests/data/security",
         "files": [
             {
                 "name": "policies_test_cases.yml",
@@ -1542,7 +1542,7 @@
         ]
     },
     {
-        "path": "framework/wazuh/tests/data/security/default",
+        "path": "framework/fortishield/tests/data/security/default",
         "files": [
             {
                 "name": "default_cases.yml",

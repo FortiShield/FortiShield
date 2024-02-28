@@ -14,7 +14,7 @@
 #include "mail_list.h"
 
 #ifndef ARGV0
-#define ARGV0 "wazuh-maild"
+#define ARGV0 "fortishield-maild"
 #endif
 
 /* Global variables */

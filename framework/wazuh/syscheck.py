@@ -1,19 +1,19 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from glob import glob
 from typing import Union
 
-from wazuh.core import common
-from wazuh.core.agent import Agent, get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
-from wazuh.core.exception import FortishieldInternalError, FortishieldError, FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.syscheck import FortishieldDBQuerySyscheck, syscheck_delete_agent
-from wazuh.core.utils import FortishieldVersion
-from wazuh.core.wazuh_queue import FortishieldQueue
-from wazuh.core.wdb import FortishieldDBConnection
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core import common
+from fortishield.core.agent import Agent, get_agents_info, get_rbac_filters, FortishieldDBQueryAgents
+from fortishield.core.exception import FortishieldInternalError, FortishieldError, FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.syscheck import FortishieldDBQuerySyscheck, syscheck_delete_agent
+from fortishield.core.utils import FortishieldVersion
+from fortishield.core.fortishield_queue import FortishieldQueue
+from fortishield.core.wdb import FortishieldDBConnection
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=["syscheck:run"], resources=["agent:id:{agent_list}"],

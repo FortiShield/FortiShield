@@ -12,7 +12,7 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
-#include "../wazuh_db/wdb_state.h"
+#include "../fortishield_db/wdb_state.h"
 
 extern wdb_state_t wdb_state;
 
@@ -21,10 +21,10 @@ extern wdb_state_t wdb_state;
 static int test_setup(void ** state) {
     wdb_state.uptime = 123456789;
     wdb_state.queries_total = 856;
-    wdb_state.queries_breakdown.wazuhdb_queries = 212;
-    wdb_state.queries_breakdown.wazuhdb_breakdown.remove_queries = 212;
-    wdb_state.queries_breakdown.wazuhdb_breakdown.remove_time.tv_sec = 0;
-    wdb_state.queries_breakdown.wazuhdb_breakdown.remove_time.tv_usec = 132156;
+    wdb_state.queries_breakdown.fortishielddb_queries = 212;
+    wdb_state.queries_breakdown.fortishielddb_breakdown.remove_queries = 212;
+    wdb_state.queries_breakdown.fortishielddb_breakdown.remove_time.tv_sec = 0;
+    wdb_state.queries_breakdown.fortishielddb_breakdown.remove_time.tv_usec = 132156;
     wdb_state.queries_breakdown.agent_queries = 365;
     wdb_state.queries_breakdown.agent_breakdown.sql_queries = 70;
     wdb_state.queries_breakdown.agent_breakdown.remove_queries = 2;
@@ -267,7 +267,7 @@ static int test_teardown(void ** state) {
 
 /* Tests */
 
-void test_wazuhdb_create_state_json(void ** state) {
+void test_fortishielddb_create_state_json(void ** state) {
 
     cJSON* state_json = wdb_create_state_json();
 
@@ -494,14 +494,14 @@ void test_wazuhdb_create_state_json(void ** state) {
     assert_non_null(cJSON_GetObjectItem(task_tasks_queries_breakdown, "delete_old"));
     assert_int_equal(cJSON_GetObjectItem(task_tasks_queries_breakdown, "delete_old")->valueint, 2);
 
-    assert_non_null(cJSON_GetObjectItem(received_breakdown, "wazuhdb"));
-    assert_int_equal(cJSON_GetObjectItem(received_breakdown, "wazuhdb")->valueint, 212);
+    assert_non_null(cJSON_GetObjectItem(received_breakdown, "fortishielddb"));
+    assert_int_equal(cJSON_GetObjectItem(received_breakdown, "fortishielddb")->valueint, 212);
 
-    cJSON* wazuhdb_queries_breakdown = cJSON_GetObjectItem(received_breakdown, "wazuhdb_breakdown");
+    cJSON* fortishielddb_queries_breakdown = cJSON_GetObjectItem(received_breakdown, "fortishielddb_breakdown");
 
-    cJSON* wazuhdb_queries_db = cJSON_GetObjectItem(wazuhdb_queries_breakdown, "db");
-    assert_non_null(cJSON_GetObjectItem(wazuhdb_queries_db, "remove"));
-    assert_int_equal(cJSON_GetObjectItem(wazuhdb_queries_db, "remove")->valueint, 212);
+    cJSON* fortishielddb_queries_db = cJSON_GetObjectItem(fortishielddb_queries_breakdown, "db");
+    assert_non_null(cJSON_GetObjectItem(fortishielddb_queries_db, "remove"));
+    assert_int_equal(cJSON_GetObjectItem(fortishielddb_queries_db, "remove")->valueint, 212);
 
     assert_non_null(cJSON_GetObjectItem(metrics, "time"));
     cJSON* time = cJSON_GetObjectItem(metrics, "time");
@@ -721,20 +721,20 @@ void test_wazuhdb_create_state_json(void ** state) {
     assert_non_null(cJSON_GetObjectItem(task_tasks_time_breakdown, "delete_old"));
     assert_int_equal(cJSON_GetObjectItem(task_tasks_time_breakdown, "delete_old")->valueint, 12);
 
-    assert_non_null(cJSON_GetObjectItem(execution_breakdown, "wazuhdb"));
-    assert_int_equal(cJSON_GetObjectItem(execution_breakdown, "wazuhdb")->valueint, 132);
+    assert_non_null(cJSON_GetObjectItem(execution_breakdown, "fortishielddb"));
+    assert_int_equal(cJSON_GetObjectItem(execution_breakdown, "fortishielddb")->valueint, 132);
 
-    cJSON* wazuhdb_time_breakdown = cJSON_GetObjectItem(execution_breakdown, "wazuhdb_breakdown");
+    cJSON* fortishielddb_time_breakdown = cJSON_GetObjectItem(execution_breakdown, "fortishielddb_breakdown");
 
-    cJSON* wazuhdb_time_db = cJSON_GetObjectItem(wazuhdb_time_breakdown, "db");
-    assert_non_null(cJSON_GetObjectItem(wazuhdb_time_db, "remove"));
-    assert_int_equal(cJSON_GetObjectItem(wazuhdb_time_db, "remove")->valueint, 132);
+    cJSON* fortishielddb_time_db = cJSON_GetObjectItem(fortishielddb_time_breakdown, "db");
+    assert_non_null(cJSON_GetObjectItem(fortishielddb_time_db, "remove"));
+    assert_int_equal(cJSON_GetObjectItem(fortishielddb_time_db, "remove")->valueint, 132);
 }
 
 int main(void) {
     const struct CMUnitTest tests[] = {
         // Test wdb_create_state_json
-        cmocka_unit_test_setup_teardown(test_wazuhdb_create_state_json, test_setup, test_teardown),
+        cmocka_unit_test_setup_teardown(test_fortishielddb_create_state_json, test_setup, test_teardown),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

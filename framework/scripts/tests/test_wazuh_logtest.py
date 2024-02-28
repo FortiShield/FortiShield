@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -12,7 +12,7 @@ from unittest.mock import patch, call
 
 import pytest
 
-import scripts.wazuh_logtest as wazuh_logtest
+import scripts.fortishield_logtest as fortishield_logtest
 
 
 class FortishieldSocketMock:
@@ -75,7 +75,7 @@ def test_init_argparse(argument_parser_mock):
             self.default.append(default)
 
     argument_parser_mock.return_value = ArgumentParserMock()
-    wazuh_logtest.init_argparse()
+    fortishield_logtest.init_argparse()
 
     argument_parser_mock.assert_called_once_with(description='Tool for developing, tuning, and debugging rules.')
     assert argument_parser_mock.return_value.flag == ['-V', '-d', '-U', '-l', '-q', '-v']
@@ -94,11 +94,11 @@ def test_init_argparse(argument_parser_mock):
 @patch('logging.error')
 @patch('logging.warning')
 @patch('atexit.register')
-@patch('scripts.wazuh_logtest.init_logger')
-@patch('scripts.wazuh_logtest.FortishieldLogtest')
-@patch('scripts.wazuh_logtest.init_argparse')
+@patch('scripts.fortishield_logtest.init_logger')
+@patch('scripts.fortishield_logtest.FortishieldLogtest')
+@patch('scripts.fortishield_logtest.init_argparse')
 @patch('builtins.input', return_value='mock')
-def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_mock, register_mock, logger_warning_mock,
+def test_main(input_mock, argparse_mock, fortishield_logtest_class_mock, init_logger_mock, register_mock, logger_warning_mock,
               logger_error_mock, logger_info_mock, sys_exit_mock):
     """Test the main function."""
 
@@ -157,18 +157,18 @@ def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_m
                 return {'token': 'sth', 'messages': ['WARNING']}
 
     argparse_mock.return_value = ParserMock()
-    wazuh_logtest_class_mock.return_value = FortishieldLogtestMock()
+    fortishield_logtest_class_mock.return_value = FortishieldLogtestMock()
 
     # Test the first 'try' present in the 'while'
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception as e:
         pass
 
     argparse_mock.assert_called_once_with()
     init_logger_mock.assert_called_once_with(argparse_mock.return_value.args)
     input_mock.assert_called_once_with('\n')
-    register_mock.assert_called_once_with(wazuh_logtest_class_mock.return_value.remove_last_session)
+    register_mock.assert_called_once_with(fortishield_logtest_class_mock.return_value.remove_last_session)
     sys_exit_mock.assert_has_calls([call(0), call(1)])
 
     logger_info_mock.assert_has_calls([call('%s', 'Fortishield ERROR - Fortishield Inc.'),
@@ -176,16 +176,16 @@ def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_m
                                                   'modify\nit under the terms of the GNU General Public License '
                                                   '(version 2) as\npublished by the Free Software Foundation. For more '
                                                   'details, go to\nhttps://www.gnu.org/licenses/gpl.html\n'),
-                                       call('Starting wazuh-logtest %s', 'ERROR'),
+                                       call('Starting fortishield-logtest %s', 'ERROR'),
                                        call('Type one log per line')])
     logger_error_mock.assert_called_once_with('Unit test configuration wrong syntax: %s',
-                                              wazuh_logtest_class_mock.return_value.get_last_ut())
+                                              fortishield_logtest_class_mock.return_value.get_last_ut())
     logger_warning_mock.assert_has_calls([call('** Fortishield-Logtest: %s', 'WARNING'), call('')])
 
-    assert wazuh_logtest_class_mock.return_value.show_last_ut_result_called is True
-    assert wazuh_logtest_class_mock.return_value.remove_last_session_called is False
-    assert wazuh_logtest_class_mock.return_value.get_last_ut_called is True
-    assert wazuh_logtest_class_mock.return_value.process_log_called is True
+    assert fortishield_logtest_class_mock.return_value.show_last_ut_result_called is True
+    assert fortishield_logtest_class_mock.return_value.remove_last_session_called is False
+    assert fortishield_logtest_class_mock.return_value.get_last_ut_called is True
+    assert fortishield_logtest_class_mock.return_value.process_log_called is True
 
     # Test the first exception -> first condition
     input_mock.side_effect = EOFError()
@@ -193,7 +193,7 @@ def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_m
     argparse_mock.return_value.args.version = False
 
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception:
         pass
 
@@ -202,29 +202,29 @@ def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_m
     # Test the first exception -> third condition
     argparse_mock.return_value.args.ut = '3:3:3'
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception:
         pass
 
     sys_exit_mock.assert_called_with(1)
 
     # Test the first exception -> second condition
-    wazuh_logtest_class_mock.return_value = FortishieldLogtestMock(True)
+    fortishield_logtest_class_mock.return_value = FortishieldLogtestMock(True)
 
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception:
         pass
 
     # Test the second exception
     argparse_mock.return_value.args.ut = False
     input_mock.side_effect = None
-    wazuh_logtest_class_mock.return_value = FortishieldLogtestMock(process_log_exception='ValueError')
+    fortishield_logtest_class_mock.return_value = FortishieldLogtestMock(process_log_exception='ValueError')
     logger_error_mock.side_effect = Exception()
     logger_error_mock.reset_mock()
 
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception:
         pass
 
@@ -232,49 +232,49 @@ def test_main(input_mock, argparse_mock, wazuh_logtest_class_mock, init_logger_m
 
     # Test the third exception
     logger_error_mock.reset_mock()
-    wazuh_logtest_class_mock.return_value = FortishieldLogtestMock(process_log_exception='ConnectionError')
+    fortishield_logtest_class_mock.return_value = FortishieldLogtestMock(process_log_exception='ConnectionError')
     logger_error_mock.side_effect = Exception()
 
     try:
-        wazuh_logtest.main()
+        fortishield_logtest.main()
     except Exception:
         pass
 
-    logger_error_mock.assert_called_once_with('** Fortishield-logtest error when connecting with wazuh-analysisd')
+    logger_error_mock.assert_called_once_with('** Fortishield-logtest error when connecting with fortishield-analysisd')
 
 
 # Test FortishieldDaemonProtocol class methods
 
-def create_wazuh_daemon_protocol_class():
+def create_fortishield_daemon_protocol_class():
     """Create new FortishieldDaemonProtocol class."""
-    return wazuh_logtest.FortishieldDeamonProtocol()
+    return fortishield_logtest.FortishieldDeamonProtocol()
 
 
 def test_wdp_init():
     """Test the init method, checking the initial status of its attributes."""
-    wdp = create_wazuh_daemon_protocol_class()
+    wdp = create_fortishield_daemon_protocol_class()
 
     assert isinstance(wdp.protocol, dict)
     assert wdp.protocol['version'] == 1
     assert isinstance(wdp.protocol['origin'], dict)
-    assert wdp.protocol['origin']['name'] == 'wazuh-logtest'
-    assert wdp.protocol['origin']['module'] == 'wazuh-logtest'
+    assert wdp.protocol['origin']['name'] == 'fortishield-logtest'
+    assert wdp.protocol['origin']['module'] == 'fortishield-logtest'
 
 
 @patch('json.dumps', return_value='')
 def test_wdp_wrap(json_dumps_mock):
-    """Test if the data is being properly wrapped with wazuh daemon protocol information."""
-    wdp = create_wazuh_daemon_protocol_class()
+    """Test if the data is being properly wrapped with fortishield daemon protocol information."""
+    wdp = create_fortishield_daemon_protocol_class()
     assert wdp.wrap(command='command', parameters={'parameters': 'parameters'}) == json_dumps_mock.return_value
-    json_dumps_mock.assert_called_once_with({'version': 1, 'origin': {'name': 'wazuh-logtest', 'module':
-        'wazuh-logtest'}, 'command': 'command', 'parameters':
+    json_dumps_mock.assert_called_once_with({'version': 1, 'origin': {'name': 'fortishield-logtest', 'module':
+        'fortishield-logtest'}, 'command': 'command', 'parameters':
                                                  {'parameters': 'parameters'}})
 
 
 @patch('json.loads', return_value={'error': 'error', 'message': 'message'})
 def test_wdp_unwrap(json_loads_mock):
-    """Test if the data is being properly unwrapped from the wazuh daemon protocol."""
-    wdp = create_wazuh_daemon_protocol_class()
+    """Test if the data is being properly unwrapped from the fortishield daemon protocol."""
+    wdp = create_fortishield_daemon_protocol_class()
     msg = {}
 
     # Test if
@@ -291,15 +291,15 @@ def test_wdp_unwrap(json_loads_mock):
 
 # Test FortishieldSocket methods
 
-def create_wazuh_socket_class(file):
+def create_fortishield_socket_class(file):
     """Create a new FortishieldSocket class."""
-    return wazuh_logtest.FortishieldSocket(file=file)
+    return fortishield_logtest.FortishieldSocket(file=file)
 
 
 def test_ws_init():
     """Test the correct start of the FortishieldSocket class."""
     file = ''
-    assert create_wazuh_socket_class(file).file == file
+    assert create_fortishield_socket_class(file).file == file
 
 
 @patch('socket.socket')
@@ -341,7 +341,7 @@ def test_ws_sent(unpack_mock, pack_mock, msg_waitall_mock, stream_mock, unix_moc
 
     file = ''
     socket_socket_mock.return_value = WLogtestConn()
-    ws = create_wazuh_socket_class(file=file)
+    ws = create_fortishield_socket_class(file=file)
 
     # Test the try
     assert ws.send(file) == ''
@@ -363,17 +363,17 @@ def test_ws_sent(unpack_mock, pack_mock, msg_waitall_mock, stream_mock, unix_moc
 
 # Test FortishieldLogtest class methods
 
-@patch('scripts.wazuh_logtest.FortishieldSocket', return_value=FortishieldSocketMock())
-@patch('scripts.wazuh_logtest.LOGTEST_SOCKET')
-@patch('scripts.wazuh_logtest.FortishieldDeamonProtocol', return_value=FortishieldDeamonProtocolMock())
-def create_wazuh_logtest_class(wazuh_deamon_mock, logtest_socket_mock, wazuh_socket_mock):
+@patch('scripts.fortishield_logtest.FortishieldSocket', return_value=FortishieldSocketMock())
+@patch('scripts.fortishield_logtest.LOGTEST_SOCKET')
+@patch('scripts.fortishield_logtest.FortishieldDeamonProtocol', return_value=FortishieldDeamonProtocolMock())
+def create_fortishield_logtest_class(fortishield_deamon_mock, logtest_socket_mock, fortishield_socket_mock):
     """Create new FortishieldLogtest class."""
-    return wazuh_logtest.FortishieldLogtest()
+    return fortishield_logtest.FortishieldLogtest()
 
 
 def test_wl_init():
     """Test the correct initialization of FortishieldLogtest class."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
 
     assert isinstance(wl.protocol, FortishieldDeamonProtocolMock)
     assert isinstance(wl.socket, FortishieldSocketMock)
@@ -385,7 +385,7 @@ def test_wl_init():
 @patch('logging.debug')
 def test_wl_process_log(logging_debug_mock):
     """Check if we are processing a log correctly."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     token = 'token'
     log = 'log'
     options = 'options'
@@ -410,7 +410,7 @@ def test_wl_process_log(logging_debug_mock):
 @patch('logging.debug')
 def test_wl_remove_session(debug_mock):
     """Check if a session is correctly removed."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     token = 'token'
 
     # Test the 'try' and first if
@@ -430,10 +430,10 @@ def test_wl_remove_session(debug_mock):
     assert not wl.remove_session(token=token)
 
 
-@patch('scripts.wazuh_logtest.FortishieldLogtest.remove_session')
+@patch('scripts.fortishield_logtest.FortishieldLogtest.remove_session')
 def test_wl_remove_last_session(remove_session_mock):
     """Check if the last session is being correctly removed."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     wl.last_token = 'last_token'
 
     wl.remove_last_session()
@@ -442,16 +442,16 @@ def test_wl_remove_last_session(remove_session_mock):
 
 def test_wl_get_last_ut():
     """Check if the last known UT is being properly removed."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     assert wl.get_last_ut() == wl.ut
 
 
 @patch('logging.debug')
 @patch('json.dumps', return_value='')
-@patch('scripts.wazuh_logtest.FortishieldLogtest.show_ossec_logtest_like')
+@patch('scripts.fortishield_logtest.FortishieldLogtest.show_ossec_logtest_like')
 def test_wl_show_output(show_ossec_logtest_like_mock, json_dumps_mock, debug_mock):
     """Check if the logtest is displaying the event processing."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     wl.show_output()
 
     json_dumps_mock.assert_called_once()
@@ -460,14 +460,14 @@ def test_wl_show_output(show_ossec_logtest_like_mock, json_dumps_mock, debug_moc
 
 
 @patch('logging.info')
-@patch('scripts.wazuh_logtest.FortishieldLogtest.show_phase_info')
+@patch('scripts.fortishield_logtest.FortishieldLogtest.show_phase_info')
 def test_wl_show_ossec_logtest_like(show_phase_info_mock, info_mock):
-    """Test if wazuh-logtest output is being shown as ossec-logtest output."""
+    """Test if fortishield-logtest output is being shown as ossec-logtest output."""
     output = {'output': {'full_log': '', 'predecoder': 'predecoder_value', 'decoder': 'decoder_value', 'data': '',
                          'rule': 'rule_value'}, 'alert': 'alert_value', 'rules_debug': ['mock']}
 
     # Test the third 'if'
-    wazuh_logtest.FortishieldLogtest.show_ossec_logtest_like(output)
+    fortishield_logtest.FortishieldLogtest.show_ossec_logtest_like(output)
     info_mock.assert_has_calls([call('**Phase 1: Completed pre-decoding.'), call("\tfull event: '%s'", ''), call(''),
                                 call('**Phase 2: Completed decoding.'), call(''), call('**Rule debugging:'),
                                 call('\tmock'), call(''), call('**Phase 3: Completed filtering (rules).'),
@@ -481,7 +481,7 @@ def test_wl_show_ossec_logtest_like(show_phase_info_mock, info_mock):
     output['alert'] = ''
     info_mock.reset_mock()
 
-    wazuh_logtest.FortishieldLogtest.show_ossec_logtest_like(output)
+    fortishield_logtest.FortishieldLogtest.show_ossec_logtest_like(output)
     info_mock.assert_has_calls([call('**Phase 1: Completed pre-decoding.'), call(''),
                                 call('**Phase 2: Completed decoding.'), call('\tNo decoder matched.')])
     assert show_phase_info_mock.call_count == 5
@@ -489,19 +489,19 @@ def test_wl_show_ossec_logtest_like(show_phase_info_mock, info_mock):
 
 @patch('logging.info')
 def test_wl_show_phase_info(info_mock):
-    """Check if wazuh-logtest is processing phase information."""
+    """Check if fortishield-logtest is processing phase information."""
     phase_data = {'key': 'value', 'key2': 'value2', 'key3': {'1': '2'}}
     show_first = ['key']
 
-    wazuh_logtest.FortishieldLogtest.show_phase_info(phase_data=phase_data, show_first=show_first)
+    fortishield_logtest.FortishieldLogtest.show_phase_info(phase_data=phase_data, show_first=show_first)
     info_mock.assert_has_calls([call("\t%s: '%s'", 'key', 'value'), call("\t%s: '%s'", 'key2', 'value2')])
 
 
 @patch('logging.info')
-@patch('scripts.wazuh_logtest.FortishieldLogtest.get_last_ut', return_value='mock')
+@patch('scripts.fortishield_logtest.FortishieldLogtest.get_last_ut', return_value='mock')
 def test_wl_show_last_result(get_last_ut_mock, info_mock):
     """Check if the unit test result is okay."""
-    wl = create_wazuh_logtest_class()
+    wl = create_fortishield_logtest_class()
     ut = 'mock'
 
     # Test the first condition
@@ -523,23 +523,23 @@ def test_wl_show_last_result(get_last_ut_mock, info_mock):
 
 # Test Fortishield class
 
-def create_wazuh_class():
+def create_fortishield_class():
     """Auxiliary function to create a Fortishield class."""
-    return wazuh_logtest.Fortishield
+    return fortishield_logtest.Fortishield
 
 
-@patch('scripts.wazuh_logtest.common.find_wazuh_path', return_value='')
-def test_wazuh_get_install_path(find_wazuh_path_mock):
+@patch('scripts.fortishield_logtest.common.find_fortishield_path', return_value='')
+def test_fortishield_get_install_path(find_fortishield_path_mock):
     """Test is we can get the installation path correctly."""
-    assert create_wazuh_class().get_install_path() == find_wazuh_path_mock.return_value
+    assert create_fortishield_class().get_install_path() == find_fortishield_path_mock.return_value
 
 
 @patch('subprocess.PIPE')
 @patch('subprocess.Popen')
 @patch('os.path.join', return_value='')
-@patch('scripts.wazuh_logtest.Fortishield.get_install_path', return_value='')
-def test_wazuh_get_info(get_install_mock, join_mock, popen_mock, pipe_mock):
-    """Check if we can properly obtain information from wazuh-control."""
+@patch('scripts.fortishield_logtest.Fortishield.get_install_path', return_value='')
+def test_fortishield_get_info(get_install_mock, join_mock, popen_mock, pipe_mock):
+    """Check if we can properly obtain information from fortishield-control."""
 
     class ProcMock:
         """Auxiliary class."""
@@ -551,40 +551,40 @@ def test_wazuh_get_info(get_install_mock, join_mock, popen_mock, pipe_mock):
             self.communicated = True
             return [b'key=key\n', b'stderr']
 
-    wazuh = create_wazuh_class()
+    fortishield = create_fortishield_class()
     popen_mock.return_value = ProcMock()
     field = 'key'
 
     # Test the 'try'
-    assert wazuh.get_info(field=field) == field
+    assert fortishield.get_info(field=field) == field
     get_install_mock.assert_called_once_with()
-    join_mock.assert_called_once_with(get_install_mock.return_value, 'bin', 'wazuh-control')
+    join_mock.assert_called_once_with(get_install_mock.return_value, 'bin', 'fortishield-control')
     popen_mock.assert_called_once_with([join_mock.return_value, 'info'], stdout=pipe_mock)
     assert popen_mock.return_value.communicated is True
 
     # Test the 'except'
     popen_mock.side_effect = Exception()
-    assert wazuh.get_info(field=field) == 'ERROR'
+    assert fortishield.get_info(field=field) == 'ERROR'
 
 
-@patch('scripts.wazuh_logtest.Fortishield.get_info', return_value='')
-def test_wazuh_get_version_str(get_info_mock):
+@patch('scripts.fortishield_logtest.Fortishield.get_info', return_value='')
+def test_fortishield_get_version_str(get_info_mock):
     """Test if the version is being properly retrieved."""
-    assert create_wazuh_class().get_version_str() == get_info_mock.return_value
+    assert create_fortishield_class().get_version_str() == get_info_mock.return_value
     get_info_mock.assert_called_once_with('FORTISHIELD_VERSION')
 
 
-@patch('scripts.wazuh_logtest.Fortishield.get_version_str', return_value='')
-def test_wazuh_get_description(get_version_mock):
+@patch('scripts.fortishield_logtest.Fortishield.get_version_str', return_value='')
+def test_fortishield_get_description(get_version_mock):
     """Test if the description is being properly retrieved."""
-    assert create_wazuh_class().get_description() == f"Fortishield {get_version_mock.return_value} - Fortishield Inc."
+    assert create_fortishield_class().get_description() == f"Fortishield {get_version_mock.return_value} - Fortishield Inc."
     get_version_mock.assert_called_once_with()
 
 
 @patch('textwrap.dedent', return_value='')
-def test_wazuh_get_license(dedent_mock):
+def test_fortishield_get_license(dedent_mock):
     """Test that the license was not changed."""
-    assert create_wazuh_class().get_license() == dedent_mock.return_value
+    assert create_fortishield_class().get_license() == dedent_mock.return_value
     dedent_mock.assert_called_once_with('''
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License (version 2) as
@@ -602,6 +602,6 @@ def test_init_logger(logging_mock):
             self.debug = True
             self.quiet = True
 
-    wazuh_logtest.init_logger(ArgsMock())
+    fortishield_logtest.init_logger(ArgsMock())
 
     logging_mock.assert_called_once_with(format='', level='ERROR')

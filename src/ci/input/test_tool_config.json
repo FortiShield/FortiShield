@@ -1,5 +1,5 @@
 {
-    "wazuh_modules/syscollector":
+    "fortishield_modules/syscollector":
     [
         {
             "test_tool_name": "syscollector_test_tool",

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import builtins
@@ -10,9 +10,9 @@ from copy import deepcopy
 from numbers import Number
 from typing import Union, Iterable
 
-import wazuh.core.exception as wexception
-from wazuh.core import utils
-from wazuh.core.common import DATABASE_LIMIT
+import fortishield.core.exception as wexception
+from fortishield.core import utils
+from fortishield.core.common import DATABASE_LIMIT
 
 current_module = sys.modules[__name__]
 
@@ -206,7 +206,7 @@ class AbstractFortishieldResult(collections.abc.MutableMapping):
         Parameters
         ----------
         limit : int
-            Default: the value specified in wazuh.core.common.DATABASE_LIMIT
+            Default: the value specified in fortishield.core.common.DATABASE_LIMIT
         offset : int
             Default: 0.
 

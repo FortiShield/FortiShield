@@ -20,9 +20,9 @@
 #endif
 #include "../wrappers/libc/stdio_wrappers.h"
 #include "../wrappers/posix/select_wrappers.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/shared/exec_op_wrappers.h"
-#include "../wrappers/wazuh/shared/binaries_op_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/shared/exec_op_wrappers.h"
+#include "../wrappers/fortishield/shared/binaries_op_wrappers.h"
 #include "../wrappers/common.h"
 #include "../headers/audit_op.h"
 #include "../headers/defs.h"

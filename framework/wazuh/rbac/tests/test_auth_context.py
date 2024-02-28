@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest
 from sqlalchemy import create_engine
 
-from wazuh.rbac.tests.utils import init_db
+from fortishield.rbac.tests.utils import init_db
 
 test_path = os.path.dirname(os.path.realpath(__file__))
 test_data_path = os.path.join(test_path, 'data/')
@@ -17,11 +17,11 @@ test_data_path = os.path.join(test_path, 'data/')
 
 @pytest.fixture(scope='function')
 def db_setup():
-    with patch('wazuh.core.common.wazuh_uid'), patch('wazuh.core.common.wazuh_gid'):
+    with patch('fortishield.core.common.fortishield_uid'), patch('fortishield.core.common.fortishield_gid'):
         with patch('sqlalchemy.create_engine', return_value=create_engine("sqlite://")):
             with patch('shutil.chown'), patch('os.chmod'):
                 with patch('api.constants.SECURITY_PATH', new=test_data_path):
-                    from wazuh.rbac.auth_context import RBAChecker
+                    from fortishield.rbac.auth_context import RBAChecker
     init_db('schema_security_test.sql', test_data_path)
 
     yield RBAChecker
@@ -88,8 +88,8 @@ def test_auth_roles(db_setup):
     authorization_contexts, roles, results = values()
     for index, auth in enumerate(authorization_contexts):
         for role in roles:
-            with patch('wazuh.rbac.orm.RolesManager.get_role_id') as _role_rules:
-                with patch('wazuh.rbac.orm.RulesManager.get_rule') as _rule:
+            with patch('fortishield.rbac.orm.RolesManager.get_role_id') as _role_rules:
+                with patch('fortishield.rbac.orm.RulesManager.get_rule') as _rule:
                     list_rules = [{'rule': role.rules[i]} for i, _ in enumerate(role.rules)]
                     role.rules = list_rules
                     _role_rules.return_value = {'rules': list_rules}

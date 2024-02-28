@@ -1,13 +1,13 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the 'wazuh-authd' daemon correctly responds to the enrollment requests
+brief: These tests will check if the 'fortishield-authd' daemon correctly responds to the enrollment requests
        messages respecting the valid option values used in the force configuration block.
 
 components:
@@ -19,8 +19,8 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
+    - fortishield-authd
+    - fortishield-db
 
 os_platform:
     - linux
@@ -45,15 +45,15 @@ import pytest
 import re
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
-from wazuh_testing.modules.authd.utils import create_authd_request, validate_authd_response
-from wazuh_testing.tools.monitors.file_monitor import FileMonitor
-from wazuh_testing.utils import callbacks
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.modules.authd.utils import create_authd_request, validate_authd_response
+from fortishield_testing.tools.monitors.file_monitor import FileMonitor
+from fortishield_testing.utils import callbacks
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.modules.authd.configuration import AUTHD_DEBUG_CONFIG
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -104,7 +104,7 @@ daemons_handler_configuration = {'daemons': [AUTHD_DAEMON], 'ignore_errors': Tru
 # Functions
 def check_options(test_metadata):
     authd_sock = receiver_sockets[0]
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     for stage in test_metadata['test_case']:
         # Reopen socket (socket is closed by manager after sending message with client key)
         authd_sock.open()
@@ -120,13 +120,13 @@ def check_options(test_metadata):
 
         for log in stage['log']:
             log = re.escape(log)
-            wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
-            assert wazuh_log_monitor.callback_result, f'Error event not detected'
+            fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
+            assert fortishield_log_monitor.callback_result, f'Error event not detected'
 
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration_t1, test_metadata_t1), ids=test_cases_ids_t1)
-def test_authd_force_options(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_force_options(test_configuration, test_metadata, set_fortishield_configuration,
                              configure_local_internal_options, truncate_monitored_files,
                              insert_pre_existent_agents, daemons_handler,
                              wait_for_authd_startup, connect_to_sockets):
@@ -134,7 +134,7 @@ def test_authd_force_options(test_configuration, test_metadata, set_wazuh_config
     description:
         Checks that every input message in authd port generates the adequate output.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.3.0
 
     tier: 0
@@ -146,9 +146,9 @@ def test_authd_force_options(test_configuration, test_metadata, set_wazuh_config
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -184,7 +184,7 @@ def test_authd_force_options(test_configuration, test_metadata, set_wazuh_config
 
 
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration_t2, test_metadata_t2), ids=test_cases_ids_t2)
-def test_authd_force_insert(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_force_insert(test_configuration, test_metadata, set_fortishield_configuration,
                             configure_local_internal_options, truncate_monitored_files,
                             insert_pre_existent_agents, daemons_handler,
                             wait_for_authd_startup, connect_to_sockets):
@@ -192,7 +192,7 @@ def test_authd_force_insert(test_configuration, test_metadata, set_wazuh_configu
     description:
         Checks that every input message in authd port generates the adequate output.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.3.0
 
     tier: 0
@@ -204,9 +204,9 @@ def test_authd_force_insert(test_configuration, test_metadata, set_wazuh_configu
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -239,17 +239,17 @@ def test_authd_force_insert(test_configuration, test_metadata, set_wazuh_configu
         - Registration request responses on Authd socket.
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     for log in test_metadata['log']:
         log = re.escape(log)
-        wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
-        assert wazuh_log_monitor.callback_result, f'Error event not detected'
+        fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
+        assert fortishield_log_monitor.callback_result, f'Error event not detected'
 
     check_options(test_metadata)
 
 
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration_t3, test_metadata_t3), ids=test_cases_ids_t3)
-def test_authd_force_insert_only(test_configuration, test_metadata, set_wazuh_configuration,
+def test_authd_force_insert_only(test_configuration, test_metadata, set_fortishield_configuration,
                                  configure_local_internal_options, truncate_monitored_files,
                                  insert_pre_existent_agents, daemons_handler,
                                  wait_for_authd_startup, connect_to_sockets):
@@ -257,7 +257,7 @@ def test_authd_force_insert_only(test_configuration, test_metadata, set_wazuh_co
     description:
         Checks that every input message in authd port generates the adequate output.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.3.0
 
     tier: 0
@@ -269,9 +269,9 @@ def test_authd_force_insert_only(test_configuration, test_metadata, set_wazuh_co
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_local_internal_options:
             type: fixture
             brief: Configure the local internal options file.
@@ -304,10 +304,10 @@ def test_authd_force_insert_only(test_configuration, test_metadata, set_wazuh_co
         - Registration request responses on Authd socket.
     '''
 
-    wazuh_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
+    fortishield_log_monitor = FileMonitor(FORTISHIELD_LOG_PATH)
     for log in test_metadata['log']:
         log = re.escape(log)
-        wazuh_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
-        assert wazuh_log_monitor.callback_result, f'Error event not detected'
+        fortishield_log_monitor.start(callback=callbacks.generate_callback(fr'{PREFIX}{log}'), timeout=10, encoding='utf-8')
+        assert fortishield_log_monitor.callback_result, f'Error event not detected'
 
     check_options(test_metadata)

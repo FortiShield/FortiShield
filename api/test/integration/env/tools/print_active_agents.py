@@ -1,4 +1,4 @@
-from wazuh import agent
+from fortishield import agent
 
 if __name__ == '__main__':
     print(agent.get_agents(select=['status'], filters={'status': 'active'}).affected_items)

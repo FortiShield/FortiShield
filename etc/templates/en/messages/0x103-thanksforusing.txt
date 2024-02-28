@@ -4,9 +4,9 @@
    any bugs.
 
    Use our public Mailing List at:
-          https://groups.google.com/forum/#!forum/wazuh
+          https://groups.google.com/forum/#!forum/fortishield
 
    More information can be found at:
-          - http://www.wazuh.com
+          - http://www.fortishield.com
 
     ---  Press ENTER to finish (maybe more information below). ---

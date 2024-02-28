@@ -1,10 +1,10 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh import FortishieldError
-from wazuh.core.logtest import send_logtest_msg
-from wazuh.rbac.decorators import expose_resources
+from fortishield import FortishieldError
+from fortishield.core.logtest import send_logtest_msg
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=['logtest:run'], resources=['*:*:*'])

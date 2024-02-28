@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import _hashlib
@@ -20,22 +20,22 @@ import pytest
 from freezegun import freeze_time
 from uvloop import EventLoopPolicy, new_event_loop, Loop
 
-from wazuh import Fortishield
-from wazuh.core import exception
+from fortishield import Fortishield
+from fortishield.core import exception
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        import wazuh.core.cluster.common as cluster_common
-        import wazuh.core.results as wresults
-        from wazuh.core import common
-        from wazuh.core.wdb import AsyncFortishieldDBConnection
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        import fortishield.core.cluster.common as cluster_common
+        import fortishield.core.results as wresults
+        from fortishield.core import common
+        from fortishield.core.wdb import AsyncFortishieldDBConnection
 
 # Globals
 cluster_items = {"etc/": {"permissions": "0o640", "source": "master", "files": ["client.keys"],
@@ -52,7 +52,7 @@ cluster_items = {"etc/": {"permissions": "0o640", "source": "master", "files": [
                  }
 
 fernet_key = "00000000000000000000000000000000"
-wazuh_common = cluster_common.FortishieldCommon()
+fortishield_common = cluster_common.FortishieldCommon()
 in_buffer = cluster_common.InBuffer()
 
 asyncio.set_event_loop_policy(EventLoopPolicy())
@@ -147,7 +147,7 @@ def test_inbuffer_receive_data():
 # Test SendStringTask methods
 
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.SendStringTask.set_up_coro")
+@patch("fortishield.core.cluster.common.SendStringTask.set_up_coro")
 def test_sst_init(setup_coro_mock, create_task_mock):
     """Test the '__init__' method."""
 
@@ -162,16 +162,16 @@ def test_sst_init(setup_coro_mock, create_task_mock):
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        sst_task = cluster_common.SendStringTask(wazuh_common=cluster_common.FortishieldCommon(), logger='')
+        sst_task = cluster_common.SendStringTask(fortishield_common=cluster_common.FortishieldCommon(), logger='')
         assert sst_task.logger == ''
         assert sst_task.task in sst_task.tasks_hard_reference
-        assert isinstance(sst_task.wazuh_common, cluster_common.FortishieldCommon)
+        assert isinstance(sst_task.fortishield_common, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
 
 
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.SendStringTask.set_up_coro")
+@patch("fortishield.core.cluster.common.SendStringTask.set_up_coro")
 def test_sst_done_callback(setup_coro_mock, create_task_mock):
     """Test if this function is properly removing the finished tasks from the queue."""
 
@@ -196,12 +196,12 @@ def test_sst_done_callback(setup_coro_mock, create_task_mock):
             self.sync_tasks = {b"010": b"123456789", b"011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    wazuh_common_mock = FortishieldCommon()
+    fortishield_common_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
-        logger = logging.getLogger('wazuh')
+        logger = logging.getLogger('fortishield')
         with patch.object(logger, "error") as logger_mock:
-            sst_task = cluster_common.SendStringTask(wazuh_common=wazuh_common_mock, logger=logger)
+            sst_task = cluster_common.SendStringTask(fortishield_common=fortishield_common_mock, logger=logger)
             assert sst_task.task in sst_task.tasks_hard_reference
             sst_task.done_callback()
             logger_mock.assert_called_once_with(Exception)
@@ -211,7 +211,7 @@ def test_sst_done_callback(setup_coro_mock, create_task_mock):
 # Test ReceiveStringTask methods
 
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.ReceiveStringTask.set_up_coro")
+@patch("fortishield.core.cluster.common.ReceiveStringTask.set_up_coro")
 def test_rst_init(setup_coro_mock, create_task_mock):
     """Test the '__init__' method."""
 
@@ -226,9 +226,9 @@ def test_rst_init(setup_coro_mock, create_task_mock):
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        string_task = cluster_common.ReceiveStringTask(wazuh_common=cluster_common.FortishieldCommon(), logger='',
+        string_task = cluster_common.ReceiveStringTask(fortishield_common=cluster_common.FortishieldCommon(), logger='',
                                                        info_type='testing', task_id=b"010")
-        assert isinstance(string_task.wazuh_common, cluster_common.FortishieldCommon)
+        assert isinstance(string_task.fortishield_common, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
         assert string_task.info_type == 'testing'
@@ -246,7 +246,7 @@ async def test_rst_str_method(logger_mock, event_loop):
     def return_coro():
         return coro
     
-    with patch('wazuh.core.cluster.common.ReceiveStringTask.set_up_coro', side_effect = return_coro) as setup_coro_mock:
+    with patch('fortishield.core.cluster.common.ReceiveStringTask.set_up_coro', side_effect = return_coro) as setup_coro_mock:
         string_task = cluster_common.ReceiveStringTask(cluster_common.FortishieldCommon(), '', b"task", logger_mock)
         assert isinstance(string_task.__str__(), str)
         assert string_task.__str__() == "task"
@@ -254,16 +254,16 @@ async def test_rst_str_method(logger_mock, event_loop):
 
 
 @patch('logging.Logger')
-@patch('wazuh.core.cluster.common.FortishieldCommon')
-def test_rst_set_up_coro_ko(wazuh_common_mock, logger_mock):
+@patch('fortishield.core.cluster.common.FortishieldCommon')
+def test_rst_set_up_coro_ko(fortishield_common_mock, logger_mock):
     """Test if the exception is being properly raised when an Exception takes place."""
 
     with pytest.raises(NotImplementedError):
-        cluster_common.ReceiveStringTask(wazuh_common_mock, logger_mock, b"task")
+        cluster_common.ReceiveStringTask(fortishield_common_mock, logger_mock, b"task")
 
 
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.ReceiveStringTask.set_up_coro")
+@patch("fortishield.core.cluster.common.ReceiveStringTask.set_up_coro")
 def test_rst_done_callback(setup_coro_mock, create_task_mock):
     """Test if this function is properly removing the finished tasks from the queue."""
 
@@ -288,16 +288,16 @@ def test_rst_done_callback(setup_coro_mock, create_task_mock):
             self.sync_tasks = {b"010": b"123456789", b"011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    wazuh_common_mock = FortishieldCommon()
+    fortishield_common_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
-        logger = logging.getLogger('wazuh')
+        logger = logging.getLogger('fortishield')
         with patch.object(logger, "error") as logger_mock:
-            string_task = cluster_common.ReceiveStringTask(wazuh_common=wazuh_common_mock, logger=logger,
+            string_task = cluster_common.ReceiveStringTask(fortishield_common=fortishield_common_mock, logger=logger,
                                                            info_type='agent-groups', task_id=b"010")
             string_task.done_callback()
-            assert string_task.wazuh_common.in_str == {b"011": b"123456789"}
-            assert string_task.wazuh_common.sync_tasks == {b"011": b"123456789"}
+            assert string_task.fortishield_common.in_str == {b"011": b"123456789"}
+            assert string_task.fortishield_common.sync_tasks == {b"011": b"123456789"}
             logger_mock.assert_called_once_with(Exception, exc_info=False)
 
 
@@ -305,9 +305,9 @@ def test_rst_done_callback(setup_coro_mock, create_task_mock):
 
 @patch('asyncio.Event')
 @patch("asyncio.create_task")
-@patch.object(logging.getLogger("wazuh"), "error")
-@patch("wazuh.core.cluster.common.ReceiveFileTask.set_up_coro")
-@patch("wazuh.core.cluster.common.uuid4", return_value="e6c45993-b0ae-438f-8914-3b5175b2bbfd")
+@patch.object(logging.getLogger("fortishield"), "error")
+@patch("fortishield.core.cluster.common.ReceiveFileTask.set_up_coro")
+@patch("fortishield.core.cluster.common.uuid4", return_value="e6c45993-b0ae-438f-8914-3b5175b2bbfd")
 def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, event_mock):
     """Test the '__init__' method."""
 
@@ -322,9 +322,9 @@ def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, eve
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        file_task = cluster_common.ReceiveFileTask(wazuh_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        file_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                    task_id=b"010")
-        assert isinstance(file_task.wazuh_common, cluster_common.FortishieldCommon)
+        assert isinstance(file_task.fortishield_common, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
         assert file_task.logger == logger_mock
@@ -334,7 +334,7 @@ def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, eve
         file_task.filename = ""
 
         # Test if task_id is None
-        string_task = cluster_common.ReceiveFileTask(wazuh_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        string_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                      task_id="")
         assert string_task.task_id == uuid_mock.return_value
 
@@ -342,7 +342,7 @@ def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, eve
 @patch('asyncio.Event')
 @patch('logging.Logger')
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.ReceiveFileTask.set_up_coro")
+@patch("fortishield.core.cluster.common.ReceiveFileTask.set_up_coro")
 def test_rft_str_method(set_up_coro_mock, create_task_mock, logger_mock, event_mock):
     """Test the '__str__' method."""
 
@@ -357,23 +357,23 @@ def test_rft_str_method(set_up_coro_mock, create_task_mock, logger_mock, event_m
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback"):
-        file_task = cluster_common.ReceiveFileTask(wazuh_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        file_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                    task_id=b"010")
         assert isinstance(file_task.__str__(), str)
 
 
 @patch('logging.Logger')
-@patch('wazuh.core.cluster.common.FortishieldCommon')
-def test_rft_set_up_coro(wazuh_common_mock, logger_mock):
+@patch('fortishield.core.cluster.common.FortishieldCommon')
+def test_rft_set_up_coro(fortishield_common_mock, logger_mock):
     """Test if the exception is being properly raised when an Exception takes place."""
 
     with pytest.raises(NotImplementedError):
-        cluster_common.ReceiveFileTask(wazuh_common_mock, logger_mock, b"task")
+        cluster_common.ReceiveFileTask(fortishield_common_mock, logger_mock, b"task")
 
 
 @patch('asyncio.Event')
 @patch("asyncio.create_task")
-@patch("wazuh.core.cluster.common.ReceiveFileTask.set_up_coro")
+@patch("fortishield.core.cluster.common.ReceiveFileTask.set_up_coro")
 def test_rft_done_callback(set_up_coro_mock, create_task_mock, event_mock):
     """Test if this function is properly removing the finished tasks from the queue."""
 
@@ -399,14 +399,14 @@ def test_rft_done_callback(set_up_coro_mock, create_task_mock, event_mock):
             self.sync_tasks = {"010": b"123456789", "011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    wazuh_common_mock = FortishieldCommon()
+    fortishield_common_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
-        with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
-            file_task = cluster_common.ReceiveFileTask(wazuh_common=wazuh_common_mock,
-                                                       logger=logging.getLogger('wazuh'), task_id=b"010")
+        with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
+            file_task = cluster_common.ReceiveFileTask(fortishield_common=fortishield_common_mock,
+                                                       logger=logging.getLogger('fortishield'), task_id=b"010")
             file_task.done_callback()
-            assert file_task.wazuh_common.sync_tasks == {"011": b"123456789"}
+            assert file_task.fortishield_common.sync_tasks == {"011": b"123456789"}
             logger_mock.assert_called_once_with(Exception, exc_info=False)
 
 
@@ -420,7 +420,7 @@ def test_handler_init():
         def __init__(self):
             pass
 
-    with patch('wazuh.core.cluster.utils.context_tag', ContextVar('', default="")) as cv:
+    with patch('fortishield.core.cluster.utils.context_tag', ContextVar('', default="")) as cv:
         handler = cluster_common.Handler(None, cluster_items)
 
         assert isinstance(handler.counter, int)
@@ -435,7 +435,7 @@ def test_handler_init():
         assert handler.in_str == {}
         assert handler.request_chunk == 5242880
         assert handler.my_fernet is None
-        assert handler.logger == logging.getLogger("wazuh")
+        assert handler.logger == logging.getLogger("fortishield")
         assert handler.tag == "Handler"
         assert handler.cluster_items == cluster_items
         assert handler.transport is None
@@ -516,7 +516,7 @@ def test_handler_get_messages_ok():
     yield_value = None
 
     with patch('cryptography.fernet.Fernet.decrypt', return_value="decrypted payload"):
-        with patch('wazuh.core.cluster.common.Handler.msg_parse', return_value=True) as handler_mock:
+        with patch('fortishield.core.cluster.common.Handler.msg_parse', return_value=True) as handler_mock:
 
             # Test if
             handler.in_msg.total = handler.in_msg.received
@@ -532,7 +532,7 @@ def test_handler_get_messages_ok():
                 handler_mock.return_value = False
 
 
-@patch('wazuh.core.cluster.common.Handler.msg_parse', return_value=True)
+@patch('fortishield.core.cluster.common.Handler.msg_parse', return_value=True)
 @patch('cryptography.fernet.Fernet.decrypt', side_effect=cryptography.fernet.InvalidToken)
 def test_handler_get_messages_ko(decrypt_mock, msg_parse_mock):
     """Test whether the exception were correctly raised."""
@@ -544,9 +544,9 @@ def test_handler_get_messages_ko(decrypt_mock, msg_parse_mock):
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.common.Handler.push')
-@patch('wazuh.core.cluster.common.Handler.next_counter', return_value=30)
-@patch('wazuh.core.cluster.common.Handler.msg_build', return_value=["some", "messages"])
+@patch('fortishield.core.cluster.common.Handler.push')
+@patch('fortishield.core.cluster.common.Handler.next_counter', return_value=30)
+@patch('fortishield.core.cluster.common.Handler.msg_build', return_value=["some", "messages"])
 async def test_handler_send_request_ok(msg_build_mock, next_counter_mock, push_mock):
     """Test if a request is being properly sent."""
 
@@ -555,13 +555,13 @@ async def test_handler_send_request_ok(msg_build_mock, next_counter_mock, push_m
 
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.Response.read', return_value="some value") as read_mock:
+    with patch('fortishield.core.cluster.common.Response.read', return_value="some value") as read_mock:
         assert (await handler.send_request(b'some bytes', b'some data') == "some value")
         assert next_counter_mock.return_value not in handler.box
         read_mock.assert_awaited_once()
 
     handler.cluster_items['intervals']['communication']['timeout_cluster_request'] = 0.01
-    with patch('wazuh.core.cluster.common.Response.read', side_effect=delay):
+    with patch('fortishield.core.cluster.common.Response.read', side_effect=delay):
         with pytest.raises(exception.FortishieldClusterError, match=r'\b3020\b'):
             await handler.send_request(b'some bytes', b'some data')
         read_mock.assert_awaited_once()
@@ -579,7 +579,7 @@ async def test_handler_send_request_ko():
     """Test the 'send_request' method proper exception raise."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.Handler.msg_build', side_effect=MemoryError):
+    with patch('fortishield.core.cluster.common.Handler.msg_build', side_effect=MemoryError):
         with pytest.raises(exception.FortishieldClusterError, match=r'.* 3026 .*'):
             await handler.send_request(b'some bytes', b'some data')
 
@@ -588,7 +588,7 @@ async def test_handler_send_request_ko():
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.common.Handler.send_request')
+@patch('fortishield.core.cluster.common.Handler.send_request')
 async def test_handler_get_chunks_in_task_id(send_request_mock):
     """Test if all chunks are collected from task_id."""
 
@@ -618,7 +618,7 @@ async def test_handler_get_chunks_in_task_id(send_request_mock):
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.common.Handler.send_request')
+@patch('fortishield.core.cluster.common.Handler.send_request')
 async def test_handler_update_chunks_wdb(send_request_mock):
     """Test that the received chunks are sent correctly to wdb."""
 
@@ -650,7 +650,7 @@ async def test_handler_update_chunks_wdb(send_request_mock):
     handler = cluster_common.Handler(fernet_key, cluster_items)
     handler.server = ServerMock(None)
 
-    with patch('wazuh.core.cluster.cluster.run_in_pool',
+    with patch('fortishield.core.cluster.cluster.run_in_pool',
                return_value={'total_updated': 0, 'errors_per_folder': {'key': 'value'}, 'generic_errors': ['ERR'],
                              'updated_chunks': 2, 'time_spent': 6,
                              'error_messages': {'chunks': [[0, 0], [1, 1]], 'others': ['other1', 'other2']}}):
@@ -664,7 +664,7 @@ async def test_handler_update_chunks_wdb(send_request_mock):
                                                                                'generic_errors': ['ERR'],
                                                                                'time_spent': 6,
                                                                                'total_updated': 0, 'updated_chunks': 2}
-                    logger_debug_mock.assert_has_calls([call('2/5 chunks updated in wazuh-db in 6.000s.')])
+                    logger_debug_mock.assert_has_calls([call('2/5 chunks updated in fortishield-db in 6.000s.')])
                     logger_debug2_mock.assert_has_calls([call('Chunk 1/5: 0'), call('Chunk 2/5: 1')])
                     logger_error_mock.assert_has_calls([call('other1'), call('other2'),
                                                         call('Fortishield-db response for chunk 1/5 was not "ok": 0'),
@@ -685,7 +685,7 @@ async def test_handler_update_chunks_wdb(send_request_mock):
 @pytest.mark.asyncio
 @patch('os.path.exists', return_value=True)
 @patch('builtins.open', mock_open(read_data=b'chunks'))
-@patch('wazuh.core.cluster.common.Handler.send_request', return_value=b'some data')
+@patch('fortishield.core.cluster.common.Handler.send_request', return_value=b'some data')
 async def test_handler_send_file_ok(send_request_mock, os_path_exists_mock):
     """Test if a file is being correctly sent to peer."""
 
@@ -727,11 +727,11 @@ async def test_handler_send_string():
     """Test if a large string can be correctly sent to peer."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.Handler.send_request', return_value=b"some data"):
+    with patch('fortishield.core.cluster.common.Handler.send_request', return_value=b"some data"):
         assert (await handler.send_string(b"something") == b"some data")
 
-    with patch('wazuh.core.cluster.common.Handler.send_request', side_effect=exception.FortishieldClusterError(3020)):
-        with patch.object(logging.getLogger("wazuh"), "error") as logger_mock:
+    with patch('fortishield.core.cluster.common.Handler.send_request', side_effect=exception.FortishieldClusterError(3020)):
+        with patch.object(logging.getLogger("fortishield"), "error") as logger_mock:
             assert exception.FortishieldClusterError(3020).message.encode() in await handler.send_string(b"something")
             logger_mock.assert_called_once_with(
                 f'There was an error while trying to send a string: Error 3020 - Timeout sending request',
@@ -770,7 +770,7 @@ async def test_handler_forward_dapi_response_ok():
     handler.in_str = {b"string_id": in_buffer, b"other_string": "some value"}
     mock_manager = ParentManager()
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager):
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager):
         await handler.forward_dapi_response(b"client string_id")
         assert handler.in_str == {b'other_string': 'some value'}
 
@@ -795,12 +795,12 @@ async def test_handler_forward_dapi_response_ko():
     handler.in_str = {b"string_id": in_buffer, b"other_string": "some value"}
     mock_manager = ParentManager()
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager):
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager):
         # Mock the functions with the expected exceptions
         with patch.object(mock_manager.local_server, "send_string",
                           side_effect=exception.FortishieldException(1001)) as send_string_mock:
-            with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
-                with patch('wazuh.core.cluster.common.Handler.send_request', return_value="some value"):
+            with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
+                with patch('fortishield.core.cluster.common.Handler.send_request', return_value="some value"):
                     with patch('json.dumps', return_value="some value"):
                         await handler.forward_dapi_response(b"client string_id")
                         assert handler.in_str == {b'other_string': 'some value'}
@@ -833,7 +833,7 @@ async def test_handler_forward_sendsync_response_ok():
     handler.in_str = {b"string_id": in_buffer, b"other_string": "some value"}
     mock_manager = ParentManager()
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager):
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager):
         await handler.forward_sendsync_response(b"client string_id")
         assert handler.in_str == {b'other_string': 'some value'}
 
@@ -863,11 +863,11 @@ async def test_handler_forward_sendsync_response_ko(exception, expected_error):
     handler.in_str = {b"string_id": in_buffer, b"other_string": "some value"}
     mock_manager = ParentManager()
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager):
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager):
         # Mock the functions with the expected exceptions
         with patch.object(mock_manager.local_server, "send_request", side_effect=exception):
-            with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
-                with patch('wazuh.core.cluster.common.Handler.send_request',
+            with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
+                with patch('fortishield.core.cluster.common.Handler.send_request',
                            return_value="some value") as send_request_mock:
                     await handler.forward_sendsync_response(b"client string_id")
                     assert handler.in_str == {b'other_string': 'some value'}
@@ -888,7 +888,7 @@ def test_handler_data_received_ok():
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
     # Test first if
-    with patch('wazuh.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"d")]):
+    with patch('fortishield.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"d")]):
         # Test try
         handler.data_received(b"message")
         assert handler.div_msg_box[123] == b'bytes2'
@@ -899,7 +899,7 @@ def test_handler_data_received_ok():
         assert handler.div_msg_box[123] == b'bytesbytes2'
 
     # Test first else and first nested if
-    with patch('wazuh.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"bytes3")]):
+    with patch('fortishield.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"bytes3")]):
         with patch('cryptography.fernet.Fernet.decrypt', return_value="decrypted payload"):
             # Test second nested if and the else inside of it
             with patch('asyncio.WriteTransport.write') as write_mock:
@@ -913,7 +913,7 @@ def test_handler_data_received_ok():
             assert 123 not in handler.box
 
             # Test second nested else
-            with patch('wazuh.core.cluster.common.Handler.dispatch') as dispatch_mock:
+            with patch('fortishield.core.cluster.common.Handler.dispatch') as dispatch_mock:
                 handler.data_received(b"message")
                 dispatch_mock.assert_called_once_with(b"bytes1", 123, b"bytes2")
 
@@ -922,16 +922,16 @@ def test_handler_data_received_ko():
     """Test the 'data_received' function exceptions."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"bytes3")]):
+    with patch('fortishield.core.cluster.common.Handler.get_messages', return_value=[(b"bytes1", 123, b"bytes2", b"bytes3")]):
         with patch('cryptography.fernet.Fernet.decrypt', side_effect=cryptography.fernet.InvalidToken):
             with pytest.raises(exception.FortishieldClusterError, match=r'.* 3025 .*'):
                 handler.div_msg_box = {123: b"bytes"}
                 handler.data_received(b"message")
 
 
-@patch('wazuh.core.cluster.common.Handler.msg_build', return_value=["msg"])
-@patch('wazuh.core.cluster.common.Handler.push')
-@patch('wazuh.core.cluster.common.Handler.process_request', return_value=(b"command", b"payload"))
+@patch('fortishield.core.cluster.common.Handler.msg_build', return_value=["msg"])
+@patch('fortishield.core.cluster.common.Handler.push')
+@patch('fortishield.core.cluster.common.Handler.process_request', return_value=(b"command", b"payload"))
 def test_handler_dispatch(process_request_mock, push_mock, msg_build_mock):
     """Test if a message is properly processed and a response is sent."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
@@ -944,7 +944,7 @@ def test_handler_dispatch(process_request_mock, push_mock, msg_build_mock):
 
     # Test the first except
     process_request_mock.side_effect = exception.FortishieldException(1001)
-    with patch.object(logging.getLogger('wazuh'), "error") as logger_mock:
+    with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
         handler.dispatch(None, 123, b"payload")
         logger_mock.assert_called_with(f"Internal error processing request '{None}': {exception.FortishieldException(1001)}")
 
@@ -978,34 +978,34 @@ def test_handler_process_request():
     """Check if request commands are correctly defined."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.Handler.echo') as echo_mock:
+    with patch('fortishield.core.cluster.common.Handler.echo') as echo_mock:
         handler.process_request(b"echo", b"data")
         echo_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.receive_file') as receive_file_mock:
+    with patch('fortishield.core.cluster.common.Handler.receive_file') as receive_file_mock:
         handler.process_request(b"new_file", b"data")
         receive_file_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.receive_str') as receive_str_mock:
+    with patch('fortishield.core.cluster.common.Handler.receive_str') as receive_str_mock:
         handler.process_request(b"new_str", b"data")
         receive_str_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.update_file') as update_file_mock:
+    with patch('fortishield.core.cluster.common.Handler.update_file') as update_file_mock:
         handler.process_request(b"file_upd", b"data")
         update_file_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.str_upd') as str_upd_mock:
+    with patch('fortishield.core.cluster.common.Handler.str_upd') as str_upd_mock:
         handler.process_request(b"str_upd", b"data")
         str_upd_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.process_error_str') as process_error_str_mock:
+    with patch('fortishield.core.cluster.common.Handler.process_error_str') as process_error_str_mock:
         handler.process_request(b"err_str", b"data")
         process_error_str_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.end_file') as end_file_mock:
+    with patch('fortishield.core.cluster.common.Handler.end_file') as end_file_mock:
         handler.process_request(b"file_end", b"data")
         end_file_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.cancel_task') as cancel_task_mock:
+    with patch('fortishield.core.cluster.common.Handler.cancel_task') as cancel_task_mock:
         handler.process_request(b"cancel_task", b"data")
         cancel_task_mock.assert_called_once_with(b"data")
-    with patch('wazuh.core.cluster.common.Handler.process_dapi_error') as process_dapi_err_mock:
+    with patch('fortishield.core.cluster.common.Handler.process_dapi_error') as process_dapi_err_mock:
         handler.process_request(b"dapi_err", b"dapi_client error_msg")
         process_dapi_err_mock.assert_called_once_with(b"dapi_client error_msg")
-    with patch('wazuh.core.cluster.common.Handler.process_unknown_cmd') as process_unknown_cmd_mock:
+    with patch('fortishield.core.cluster.common.Handler.process_unknown_cmd') as process_unknown_cmd_mock:
         handler.process_request(b"something random", b"data")
         process_unknown_cmd_mock.assert_called_once_with(b"something random")
 
@@ -1016,7 +1016,7 @@ def test_handler_process_response():
 
     assert handler.process_response(b'ok', b"payload") == b"payload"
 
-    with patch('wazuh.core.cluster.common.Handler.process_error_from_peer', return_value=b"payload"):
+    with patch('fortishield.core.cluster.common.Handler.process_error_from_peer', return_value=b"payload"):
         assert handler.process_response(b"err", b"payload") == b"payload"
 
     assert handler.process_response(b"command", b"payload") == b"Unkown response command received: command"
@@ -1105,7 +1105,7 @@ def test_handler_str_upd():
     """Test if a string content is updated."""
     handler = cluster_common.Handler(fernet_key, cluster_items)
 
-    with patch('wazuh.core.cluster.common.InBuffer.receive_data'):
+    with patch('fortishield.core.cluster.common.InBuffer.receive_data'):
         handler.in_str = {b"string_id": in_buffer}
         assert handler.str_upd(b"string_id data") == (b"ok", b"String updated")
 
@@ -1217,7 +1217,7 @@ def test_handler_setup_task_logger():
         def addFilter(info):
             pass
 
-    with patch.object(logging.getLogger("wazuh"), "getChild", return_value=TaskLoggerMock()) as get_child_mock:
+    with patch.object(logging.getLogger("fortishield"), "getChild", return_value=TaskLoggerMock()) as get_child_mock:
         with patch.object(TaskLoggerMock, "addFilter") as add_filter_mock:
             handler.setup_task_logger("task_tag")
             get_child_mock.assert_called_once_with("task_tag")
@@ -1245,7 +1245,7 @@ async def test_handler_wait_for_file():
     await asyncio.gather(handler.wait_for_file(file_event, 'test'), unlock_file(file_event))
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.common.Handler.send_request')
+@patch('fortishield.core.cluster.common.Handler.send_request')
 async def test_handler_wait_for_file_ko(send_request_mock):
     """Check if expected exception is raised.
         Condition 1: when event.wait() exceeds the timeout, FortishieldClusterError 3039 is raised
@@ -1271,21 +1271,21 @@ async def test_handler_wait_for_file_ko(send_request_mock):
 
 # Test 'FortishieldCommon' class methods
 
-def test_wazuh_common_init():
+def test_fortishield_common_init():
     """Test the '__init__' method correct functioning."""
 
-    wazuh_common_test = cluster_common.FortishieldCommon()
-    assert wazuh_common_test.sync_tasks == {}
+    fortishield_common_test = cluster_common.FortishieldCommon()
+    assert fortishield_common_test.sync_tasks == {}
 
 
-def test_wazuh_common_get_logger():
+def test_fortishield_common_get_logger():
     """Check if a Logger object is properly returned."""
 
     with pytest.raises(NotImplementedError):
-        wazuh_common.get_logger()
+        fortishield_common.get_logger()
 
 
-def test_wazuh_common_setup_send_info():
+def test_fortishield_common_setup_send_info():
     """Check if SendTaskClass class is created and returned."""
 
     class MyTaskMock:
@@ -1296,13 +1296,13 @@ def test_wazuh_common_setup_send_info():
     my_task = MyTaskMock()
     mock_object = MagicMock(return_value=my_task)
 
-    with patch('wazuh.core.cluster.common.FortishieldCommon.get_logger'):
-        first_output, second_output = wazuh_common.setup_send_info(mock_object)
+    with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
+        first_output, second_output = fortishield_common.setup_send_info(mock_object)
         assert first_output == b'ok'
         assert isinstance(second_output, bytes)
 
 
-def test_wazuh_common_setup_receive_file():
+def test_fortishield_common_setup_receive_file():
     """Check if ReceiveFileTask class is created and added to the task dictionary."""
 
     class MyTaskMock:
@@ -1313,68 +1313,68 @@ def test_wazuh_common_setup_receive_file():
     my_task = MyTaskMock()
     mock_object = MagicMock(return_value=my_task)
 
-    with patch('wazuh.core.cluster.common.FortishieldCommon.get_logger'):
-        first_output, second_output = wazuh_common.setup_receive_file(mock_object)
+    with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
+        first_output, second_output = fortishield_common.setup_receive_file(mock_object)
         assert first_output == b'ok'
         assert isinstance(second_output, bytes)
-        assert MyTaskMock().task_id in wazuh_common.sync_tasks
-        assert isinstance(wazuh_common.sync_tasks[MyTaskMock().task_id], MyTaskMock)
+        assert MyTaskMock().task_id in fortishield_common.sync_tasks
+        assert isinstance(fortishield_common.sync_tasks[MyTaskMock().task_id], MyTaskMock)
 
 
-@patch('wazuh.core.cluster.common.FortishieldCommon')
+@patch('fortishield.core.cluster.common.FortishieldCommon')
 @patch('logging.Logger')
-def test_wazuh_common_end_receiving_file_ok(logger_mock, wazuh_common_mock):
+def test_fortishield_common_end_receiving_file_ok(logger_mock, fortishield_common_mock):
     """Check if the full path to the received file is properly stored and availability is notified."""
 
-    with patch('wazuh.core.cluster.common.ReceiveFileTask.set_up_coro'):
+    with patch('fortishield.core.cluster.common.ReceiveFileTask.set_up_coro'):
         with patch('asyncio.create_task'):
-            file_task = cluster_common.ReceiveFileTask(wazuh_common_mock, logger_mock, b"task")
+            file_task = cluster_common.ReceiveFileTask(fortishield_common_mock, logger_mock, b"task")
 
-    wazuh_common.sync_tasks = {'task_ID': file_task}
-    assert wazuh_common.end_receiving_file("task_ID filepath") == (b'ok', b'File correctly received')
-    assert isinstance(wazuh_common.sync_tasks["task_ID"], cluster_common.ReceiveFileTask)
+    fortishield_common.sync_tasks = {'task_ID': file_task}
+    assert fortishield_common.end_receiving_file("task_ID filepath") == (b'ok', b'File correctly received')
+    assert isinstance(fortishield_common.sync_tasks["task_ID"], cluster_common.ReceiveFileTask)
 
 
 @patch('os.remove')
 @patch('os.path.exists', return_value=True)
-def test_wazuh_common_end_receiving_file_ko(path_exists_mock, os_remove_mock):
+def test_fortishield_common_end_receiving_file_ko(path_exists_mock, os_remove_mock):
     """Test the 'end_receiving_file' correct functioning in a failure scenario."""
 
     with pytest.raises(exception.FortishieldClusterError, match=r'.* 3027 .*'):
-        wazuh_common.end_receiving_file("not_task_ID filepath")
+        fortishield_common.end_receiving_file("not_task_ID filepath")
 
-    with patch('wazuh.core.cluster.common.FortishieldCommon.get_logger'):
+    with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
         with pytest.raises(exception.FortishieldClusterError, match=r'.* 3027 .*'):
             os_remove_mock.side_effect = Exception
-            wazuh_common.end_receiving_file("not_task_ID filepath")
+            fortishield_common.end_receiving_file("not_task_ID filepath")
     assert os_remove_mock.call_count == 2
 
 
 @patch('json.loads')
-def test_wazuh_common_error_receiving_file_ok(json_loads_mock):
+def test_fortishield_common_error_receiving_file_ok(json_loads_mock):
     """Check how error are handled by peer in the sent file process."""
 
     with patch('os.path.exists', return_value=True):
         with patch('os.remove'):
             # Test first condition and its nested condition
-            assert wazuh_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
+            assert fortishield_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
 
     # Test second condition
-    with patch('wazuh.core.cluster.common.FortishieldCommon.get_logger'):
-        assert wazuh_common.error_receiving_file("not_task_ID error_details") == (b'ok', b'Error received')
+    with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
+        assert fortishield_common.error_receiving_file("not_task_ID error_details") == (b'ok', b'Error received')
 
 
-def test_wazuh_common_error_receiving_file_ko():
+def test_fortishield_common_error_receiving_file_ko():
     """Test the 'error_receiving_file' when an exception takes place."""
 
     with patch('json.loads'):
         with patch('os.path.exists', return_value=True):
             with patch('os.remove', side_effect=Exception):
-                with patch('wazuh.core.cluster.common.FortishieldCommon.get_logger'):
-                    assert wazuh_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
+                with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
+                    assert fortishield_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
 
 
-def test_wazuh_common_get_node():
+def test_fortishield_common_get_node():
     """Check if it is possible to obtain basic information about the node."""
 
     class MockClass(cluster_common.FortishieldCommon, cluster_common.Handler, abc.ABC):
@@ -1391,28 +1391,28 @@ def test_wazuh_common_get_node():
     mock_class = MockClass()
     mock_manager = MockManager()
 
-    with patch('wazuh.core.cluster.common.Handler.get_manager', return_value=mock_manager) as manager_mock:
+    with patch('fortishield.core.cluster.common.Handler.get_manager', return_value=mock_manager) as manager_mock:
         mock_class.get_node()
         manager_mock.assert_called_once()
 
 
 # Test SyncFortishielddb class
 
-def test_sync_wazuh_db_init():
+def test_sync_fortishield_db_init():
     """Test the '__init__' method from the SyncFortishielddb class."""
 
-    sync_wazuh_db = cluster_common.SyncFortishielddb(
-        manager=cluster_common.Handler(fernet_key, cluster_items), logger=logging.getLogger("wazuh"), cmd=b"cmd",
+    sync_fortishield_db = cluster_common.SyncFortishielddb(
+        manager=cluster_common.Handler(fernet_key, cluster_items), logger=logging.getLogger("fortishield"), cmd=b"cmd",
         data_retriever=None, get_data_command="get_command", set_data_command="set_command", pivot_key=None)
 
-    assert sync_wazuh_db.get_data_command == "get_command"
-    assert sync_wazuh_db.set_data_command == "set_command"
-    assert sync_wazuh_db.data_retriever is None
+    assert sync_fortishield_db.get_data_command == "get_command"
+    assert sync_fortishield_db.set_data_command == "set_command"
+    assert sync_fortishield_db.data_retriever is None
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.wdb.socket.socket")
-async def test_sync_wazuh_db_retrieve_information(socket_mock):
+@patch("fortishield.core.wdb.socket.socket")
+async def test_sync_fortishield_db_retrieve_information(socket_mock):
     """Check the proper functionality of the function in charge of
     obtaining the information from the database of the manager nodes."""
     counter = 0
@@ -1426,7 +1426,7 @@ async def test_sync_wazuh_db_retrieve_information(socket_mock):
             return 'ok', {'id': counter}
 
     wdb_conn = AsyncFortishieldDBConnection()
-    logger = logging.getLogger("wazuh")
+    logger = logging.getLogger("fortishield")
     handler = cluster_common.Handler(fernet_key, cluster_items)
     sync_object = cluster_common.SyncFortishielddb(manager=handler, logger=logger, cmd=b'syn_a_w_m',
                                              data_retriever=wdb_conn.run_wdb_command,
@@ -1455,26 +1455,26 @@ async def test_sync_wazuh_db_retrieve_information(socket_mock):
         with patch.object(sync_object.logger, 'error') as logger_error_mock:
             assert await sync_object.retrieve_information() == []
             logger_error_mock.assert_called_with(
-                'Could not obtain data from wazuh-db: Error 1000 - Fortishield Internal Error')
+                'Could not obtain data from fortishield-db: Error 1000 - Fortishield Internal Error')
 
 
 @pytest.mark.asyncio
 @freeze_time('1970-01-01')
 @patch("json.dumps", return_value="")
-@patch('wazuh.core.cluster.common.time.perf_counter', return_value=0)
-async def test_sync_wazuh_db_sync_ok(perf_counter_mock, json_dumps_mock):
+@patch('fortishield.core.cluster.common.time.perf_counter', return_value=0)
+async def test_sync_fortishield_db_sync_ok(perf_counter_mock, json_dumps_mock):
     """Check if the information is being properly sent to the master/worker node."""
 
-    sync_wazuh_db = cluster_common.SyncFortishielddb(
-        manager=cluster_common.Handler(fernet_key, cluster_items), logger=logging.getLogger("wazuh"), cmd=b"cmd",
+    sync_fortishield_db = cluster_common.SyncFortishielddb(
+        manager=cluster_common.Handler(fernet_key, cluster_items), logger=logging.getLogger("fortishield"), cmd=b"cmd",
         data_retriever=None, get_data_command="get_command", set_data_command="set_command", pivot_key=None)
 
     # Test try and if
-    with patch.object(sync_wazuh_db.logger, "debug") as logger_debug_mock:
-        with patch("wazuh.core.cluster.common.Handler.send_string", return_value=b"OK") as send_string_mock:
-            with patch("wazuh.core.cluster.common.Handler.send_request",
+    with patch.object(sync_fortishield_db.logger, "debug") as logger_debug_mock:
+        with patch("fortishield.core.cluster.common.Handler.send_string", return_value=b"OK") as send_string_mock:
+            with patch("fortishield.core.cluster.common.Handler.send_request",
                        side_effect=None) as send_request_mock:
-                assert await sync_wazuh_db.sync(start_time=10, chunks=['a', 'b']) is True
+                assert await sync_fortishield_db.sync(start_time=10, chunks=['a', 'b']) is True
                 send_request_mock.assert_called_once_with(command=b"cmd", data=b"OK")
                 json_dumps_mock.assert_called_with({'set_data_command': 'set_command',
                                                     'payload': {}, 'chunks': ['a', 'b']})
@@ -1483,19 +1483,19 @@ async def test_sync_wazuh_db_sync_ok(perf_counter_mock, json_dumps_mock):
             send_string_mock.assert_called_with(b"")
 
     # Test else
-    with patch.object(sync_wazuh_db.logger, "info") as logger_info_mock:
-        assert await sync_wazuh_db.sync(start_time=-10, chunks=[]) is True
+    with patch.object(sync_fortishield_db.logger, "info") as logger_info_mock:
+        assert await sync_fortishield_db.sync(start_time=-10, chunks=[]) is True
         logger_info_mock.assert_called_once_with(f"Finished in 10.000s. Updated 0 chunks.")
 
     # Test except
-    with patch("wazuh.core.cluster.common.Handler.send_string", return_value=b'Error 1'):
-        sync_wazuh_db.server = cluster_common.Handler(fernet_key, cluster_items)
+    with patch("fortishield.core.cluster.common.Handler.send_string", return_value=b'Error 1'):
+        sync_fortishield_db.server = cluster_common.Handler(fernet_key, cluster_items)
         with pytest.raises(exception.FortishieldClusterError, match=r".* 3016 .*"):
-            await sync_wazuh_db.sync(start_time=10, chunks=['a'])
+            await sync_fortishield_db.sync(start_time=10, chunks=['a'])
 
 
 @patch("json.loads", return_value={"updated_chunks": 10, "error_messages": None})
-@patch('wazuh.core.cluster.common.time.perf_counter', return_value=0)
+@patch('fortishield.core.cluster.common.time.perf_counter', return_value=0)
 def test_end_sending_agent_information(perf_counter_mock, json_loads_mock):
     """Check the correct output message when a command "syn_m_a_e", "syn_m_g_e" or "syn_w_g_e" takes place."""
 
@@ -1507,7 +1507,7 @@ def test_end_sending_agent_information(perf_counter_mock, json_loads_mock):
             return 0
 
     logger = logging.getLogger('testing')
-    with patch('wazuh.core.cluster.common.utils.get_utc_now', side_effect=get_utc_now_mock):
+    with patch('fortishield.core.cluster.common.utils.get_utc_now', side_effect=get_utc_now_mock):
         with patch.object(logger, "info") as logger_info_mock:
             assert cluster_common.end_sending_agent_information(
                 logger,
@@ -1538,7 +1538,7 @@ def test_error_receiving_agent_information():
         logger_error_mock.assert_called_once_with("There was an error while processing info on the peer: response")
 
 
-@patch("wazuh.core.cluster.common.FortishieldDBConnection")
+@patch("fortishield.core.cluster.common.FortishieldDBConnection")
 def test_send_data_to_wdb_ko(FortishieldDBConnection_mock):
     """Check if the data chunks are being properly forward to the Fortishield-db socket."""
 
@@ -1577,7 +1577,7 @@ def test_send_data_to_wdb_ko(FortishieldDBConnection_mock):
                                              timeout=15)
     assert result['error_messages']['chunks'] == [(0, ''), (1, '')]
 
-    with patch('wazuh.core.cluster.master.utils.Timeout', side_effect=Exception):
+    with patch('fortishield.core.cluster.master.utils.Timeout', side_effect=Exception):
         result = cluster_common.send_data_to_wdb(data={'chunks': ['1chunk', '2chunk'], 'set_data_command': ''},
                                                  timeout=15)
         assert result['error_messages']['others'] == ['Error while processing agent-info chunks: ']
@@ -1603,14 +1603,14 @@ def test_asyncio_exception_handler(format_tb, mock_loop, mock_logging):
     mock_logging.assert_called_once_with(output)
 
 
-def test_wazuh_json_encoder_default():
+def test_fortishield_json_encoder_default():
     """Test if a special JSON encoder is defined for Fortishield."""
 
-    wazuh_encoder = cluster_common.FortishieldJSONEncoder()
+    fortishield_encoder = cluster_common.FortishieldJSONEncoder()
 
     # Test first condition
-    assert isinstance(wazuh_encoder.default(object), dict)
-    assert wazuh_encoder.default(object) == {'__callable__': {'__name__': 'object', '__module__': 'builtins',
+    assert isinstance(fortishield_encoder.default(object), dict)
+    assert fortishield_encoder.default(object) == {'__callable__': {'__name__': 'object', '__module__': 'builtins',
                                                               '__qualname__': 'object', '__type__': 'type'}}
 
     class FortishieldMock(json.JSONEncoder):
@@ -1623,23 +1623,23 @@ def test_wazuh_json_encoder_default():
             self.a = 0
             self.b = 0
 
-    wazuh_encoder.default(FortishieldMock)
+    fortishield_encoder.default(FortishieldMock)
 
     with patch('builtins.callable', return_value=False):
         # Test second condition
-        assert isinstance(wazuh_encoder.default(exception.FortishieldException(3012)), dict)
-        assert wazuh_encoder.default(exception.FortishieldException(3012)) == \
-               {'__wazuh_exception__': {'__class__': 'FortishieldException',
+        assert isinstance(fortishield_encoder.default(exception.FortishieldException(3012)), dict)
+        assert fortishield_encoder.default(exception.FortishieldException(3012)) == \
+               {'__fortishield_exception__': {'__class__': 'FortishieldException',
                                         '__object__': {'type': 'about:blank', 'title': 'FortishieldException', 'code': 3012,
                                                        'extra_message': None, 'extra_remediation': None,
                                                        'cmd_error': False, 'dapi_errors': {}}}}
 
         # Test third condition
-        abstract_wazuh_result = wresults.AffectedItemsFortishieldResult()
+        abstract_fortishield_result = wresults.AffectedItemsFortishieldResult()
 
-        assert isinstance(wazuh_encoder.default(abstract_wazuh_result), dict)
-        assert wazuh_encoder.default(abstract_wazuh_result) == \
-               {'__wazuh_result__': {'__class__': 'AffectedItemsFortishieldResult',
+        assert isinstance(fortishield_encoder.default(abstract_fortishield_result), dict)
+        assert fortishield_encoder.default(abstract_fortishield_result) == \
+               {'__fortishield_result__': {'__class__': 'AffectedItemsFortishieldResult',
                                      '__object__': {'affected_items': [], 'sort_fields': None, 'sort_casting': ['int'],
                                                     'sort_ascending': [True], 'total_affected_items': 0,
                                                     'total_failed_items': 0, 'dikt': {}, 'all_msg': '', 'some_msg': '',
@@ -1648,96 +1648,96 @@ def test_wazuh_json_encoder_default():
 
         # Test fourth condition
         date = datetime(2021, 10, 15)
-        assert isinstance(wazuh_encoder.default(date), dict)
-        assert wazuh_encoder.default(date) == {'__wazuh_datetime__': '2021-10-15T00:00:00'}
+        assert isinstance(fortishield_encoder.default(date), dict)
+        assert fortishield_encoder.default(date) == {'__fortishield_datetime__': '2021-10-15T00:00:00'}
 
         # Test fifth condition
         exc = ValueError('test')
-        assert isinstance(wazuh_encoder.default(exc), dict)
-        assert wazuh_encoder.default(exc) == {'__unhandled_exc__': {'__class__': 'ValueError',
+        assert isinstance(fortishield_encoder.default(exc), dict)
+        assert fortishield_encoder.default(exc) == {'__unhandled_exc__': {'__class__': 'ValueError',
                                                                     '__args__': ('test',)}}
 
         # Test simple return
         with pytest.raises(TypeError):
-            wazuh_encoder.default({"key": "value"})
+            fortishield_encoder.default({"key": "value"})
 
 
-def test_as_wazuh_object_ok():
+def test_as_fortishield_object_ok():
     """Test the different outputs taking into account the input values."""
 
     # Test the first condition and nested if
-    assert cluster_common.as_wazuh_object({"__callable__": {"__name__": "type", "__wazuh__": "version"}}) == "server"
+    assert cluster_common.as_fortishield_object({"__callable__": {"__name__": "type", "__fortishield__": "version"}}) == "server"
 
     # Test the first condition and nested else
     assert isinstance(
-        cluster_common.as_wazuh_object({"__callable__": {"__name__": "path", "__qualname__": "__loader__.value",
+        cluster_common.as_fortishield_object({"__callable__": {"__name__": "path", "__qualname__": "__loader__.value",
                                                          "__module__": "os"}}), str)
 
-    assert cluster_common.as_wazuh_object({"__callable__": {"__name__": "__name__", "__qualname__": "value",
+    assert cluster_common.as_fortishield_object({"__callable__": {"__name__": "__name__", "__qualname__": "value",
                                                             "__module__": "itertools"}}) == "itertools"
 
     # Test the second condition
-    assert isinstance(cluster_common.as_wazuh_object(
-        {"__wazuh_exception__": {"__class__": "FortishieldException", "__object__": {"code": 1001}}}),
+    assert isinstance(cluster_common.as_fortishield_object(
+        {"__fortishield_exception__": {"__class__": "FortishieldException", "__object__": {"code": 1001}}}),
         exception.FortishieldException)
 
     # Test the third condition
-    with patch('wazuh.core.results.AbstractFortishieldResult.decode_json', return_value=wresults.AbstractFortishieldResult):
-        assert isinstance(cluster_common.as_wazuh_object(
-            {"__wazuh_result__": {"__class__": "AbstractFortishieldResult", "__object__": {"code": 1001}}}), abc.ABCMeta)
+    with patch('fortishield.core.results.AbstractFortishieldResult.decode_json', return_value=wresults.AbstractFortishieldResult):
+        assert isinstance(cluster_common.as_fortishield_object(
+            {"__fortishield_result__": {"__class__": "AbstractFortishieldResult", "__object__": {"code": 1001}}}), abc.ABCMeta)
 
     # Test the fourth condition
-    assert isinstance(cluster_common.as_wazuh_object({"__wazuh_datetime__": "2021-10-14"}), datetime)
-    assert cluster_common.as_wazuh_object({"__wazuh_datetime__": "2021-10-14"}) == datetime(2021, 10, 14)
+    assert isinstance(cluster_common.as_fortishield_object({"__fortishield_datetime__": "2021-10-14"}), datetime)
+    assert cluster_common.as_fortishield_object({"__fortishield_datetime__": "2021-10-14"}) == datetime(2021, 10, 14)
 
     # Test the fifth condition
-    result = cluster_common.as_wazuh_object({'__unhandled_exc__': {'__class__': 'ValueError',
+    result = cluster_common.as_fortishield_object({'__unhandled_exc__': {'__class__': 'ValueError',
                                                                    '__args__': ('test',)}})
     assert isinstance(result, ValueError)
 
     # No condition fulfilled
-    assert isinstance(cluster_common.as_wazuh_object({"__wazuh_datetime_bad__": "2021-10-14"}), dict)
-    assert cluster_common.as_wazuh_object({"__wazuh_datetime_bad__": "2021-10-14"}) == \
-           {"__wazuh_datetime_bad__": "2021-10-14"}
+    assert isinstance(cluster_common.as_fortishield_object({"__fortishield_datetime_bad__": "2021-10-14"}), dict)
+    assert cluster_common.as_fortishield_object({"__fortishield_datetime_bad__": "2021-10-14"}) == \
+           {"__fortishield_datetime_bad__": "2021-10-14"}
 
 
-def test_as_wazuh_object_ko():
+def test_as_fortishield_object_ko():
     """Test if the exceptions are correctly raised."""
 
     with pytest.raises(exception.FortishieldInternalError, match=r'.* 1000 .*'):
-        cluster_common.as_wazuh_object({"__callable__": {"__name__": "value", "__wazuh__": "value"}})
+        cluster_common.as_fortishield_object({"__callable__": {"__name__": "value", "__fortishield__": "value"}})
 
 
 def get_handler():
     """Return a Handler object. This is an auxiliary method."""
-    return cluster_common.Handler(fernet_key=fernet_key, cluster_items=cluster_items, logger=logging.getLogger("wazuh"))
+    return cluster_common.Handler(fernet_key=fernet_key, cluster_items=cluster_items, logger=logging.getLogger("fortishield"))
 
 
 # Test SyncTask class methods
 
 def test_sync_task_init():
     """Test '__init__' method from the SyncTask class."""
-    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("wazuh"), get_handler())
+    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("fortishield"), get_handler())
 
     assert sync_task.cmd == b"cmd"
-    assert sync_task.logger == logging.getLogger("wazuh")
+    assert sync_task.logger == logging.getLogger("fortishield")
     assert isinstance(sync_task.server, cluster_common.Handler)
 
 
 @pytest.mark.asyncio
-@patch('wazuh.core.cluster.common.Handler.send_request', side_effect=Exception())
+@patch('fortishield.core.cluster.common.Handler.send_request', side_effect=Exception())
 async def test_sync_task_request_permission(send_request_mock):
     """Check if a True value is returned once a permission to start synchronization is granted or a False when it
     is not."""
-    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("wazuh"), get_handler())
+    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("fortishield"), get_handler())
 
     # Test first condition
-    with patch.object(logging.getLogger("wazuh"), "error") as logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "error") as logger_mock:
         assert await sync_task.request_permission() is False
         send_request_mock.assert_called_with(command=b"cmd" + b"_p", data=b"")
         logger_mock.assert_called_once_with(f"Error asking for permission: {Exception()}")
 
-    with patch.object(logging.getLogger("wazuh"), "debug") as logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "debug") as logger_mock:
         # Test second condition
         send_request_mock.side_effect = None
         send_request_mock.return_value = b"True"
@@ -1755,7 +1755,7 @@ async def test_sync_task_request_permission(send_request_mock):
 @pytest.mark.asyncio
 async def test_sync_task_sync():
     """Test if an Exception is raised when an error takes place."""
-    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("wazuh"), get_handler())
+    sync_task = cluster_common.SyncTask(b"cmd", logging.getLogger("fortishield"), get_handler())
 
     with pytest.raises(NotImplementedError):
         await sync_task.sync()
@@ -1767,8 +1767,8 @@ async def test_sync_task_sync():
 @patch("json.dumps", return_value='')
 @patch("os.path.relpath", return_value="path")
 @patch("os.unlink", return_value="unlinked path")
-@patch("wazuh.core.cluster.cluster.compress_files", return_value=("files/path/", {}))
-@patch("wazuh.core.cluster.utils.log_subprocess_execution")
+@patch("fortishield.core.cluster.cluster.compress_files", return_value=("files/path/", {}))
+@patch("fortishield.core.cluster.utils.log_subprocess_execution")
 async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unlink_mock, relpath_mock, json_dumps_mock):
     """Check if the methods to synchronize files are defined."""
     files_to_sync = {"path1": "metadata1"}
@@ -1807,10 +1807,10 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
             pass
 
     worker_mock = WorkerMock()
-    sync_files = cluster_common.SyncFiles(b"cmd", logging.getLogger("wazuh"), worker_mock)
+    sync_files = cluster_common.SyncFiles(b"cmd", logging.getLogger("fortishield"), worker_mock)
 
     # Test second condition
-    with patch.object(logging.getLogger("wazuh"), "error") as logger_mock:
+    with patch.object(logging.getLogger("fortishield"), "error") as logger_mock:
         await sync_files.sync(files_to_sync, files_metadata, 1, task_pool=None)
         log_subprocess_mock.assert_called()
         json_dumps_mock.assert_called_once_with(
@@ -1821,8 +1821,8 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
     worker_mock.count = 2
     with patch.object(WorkerMock, "send_file", return_value=1000) as send_file_mock:
         # Test if present in try and second exception
-        with patch.object(logging.getLogger("wazuh"), "debug") as logger_debug_mock:
-            with patch.object(logging.getLogger("wazuh"), "error") as logger_error_mock:
+        with patch.object(logging.getLogger("fortishield"), "debug") as logger_debug_mock:
+            with patch.object(logging.getLogger("fortishield"), "error") as logger_error_mock:
                 await sync_files.sync(files_to_sync, files_metadata, 1, task_pool=None)
                 send_file_mock.assert_called_once_with('files/path/', b'OK')
                 logger_debug_mock.assert_has_calls([call(
@@ -1880,7 +1880,7 @@ async def test_sync_files_sync_ok(log_subprocess_mock, compress_files_mock, unli
 
 
 @pytest.mark.asyncio
-@patch("wazuh.core.cluster.common.Handler.send_request", side_effect=Exception())
+@patch("fortishield.core.cluster.common.Handler.send_request", side_effect=Exception())
 async def test_sync_files_sync_ko(send_request_mock):
     """Test if the right exceptions are being risen when necessary."""
     files_to_sync = {"path1": "metadata1"}
@@ -1890,7 +1890,7 @@ async def test_sync_files_sync_ko(send_request_mock):
     handler.name = "Test"
     handler.current_zip_limit = 1000
 
-    sync_files = cluster_common.SyncFiles(b"cmd", logging.getLogger("wazuh"), handler)
+    sync_files = cluster_common.SyncFiles(b"cmd", logging.getLogger("fortishield"), handler)
 
     # Test first condition
     await sync_files.sync(files_to_sync, files_metadata, 1, task_pool=None)

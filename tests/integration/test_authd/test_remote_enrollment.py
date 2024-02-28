@@ -1,14 +1,14 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the 'remote enrollment' option of the 'wazuh-authd' daemon
-       settings is working properly. The 'wazuh-authd' daemon can automatically add
+brief: These tests will check if the 'remote enrollment' option of the 'fortishield-authd' daemon
+       settings is working properly. The 'fortishield-authd' daemon can automatically add
        a Fortishield agent to a Fortishield manager and provide the key to the agent.
        It is used along with the 'agent-auth' application.
 
@@ -19,9 +19,9 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
-    - wazuh-modulesd
+    - fortishield-authd
+    - fortishield-db
+    - fortishield-modulesd
 
 os_platform:
     - linux
@@ -38,7 +38,7 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/auth.html#remote-enrollment
+    - https://documentation.fortishield.com/current/user-manual/reference/ossec-conf/auth.html#remote-enrollment
 
 tags:
     - enrollment
@@ -47,14 +47,14 @@ import pytest
 import socket, time
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
-from wazuh_testing.utils import callbacks
-from wazuh_testing.modules.authd import PREFIX
-from wazuh_testing.tools.socket_controller import SocketController
-from wazuh_testing.tools.monitors import file_monitor
-from wazuh_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.constants.paths.logs import FORTISHIELD_LOG_PATH
+from fortishield_testing.utils import callbacks
+from fortishield_testing.modules.authd import PREFIX
+from fortishield_testing.tools.socket_controller import SocketController
+from fortishield_testing.tools.monitors import file_monitor
+from fortishield_testing.constants.ports import DEFAULT_SSL_REMOTE_ENROLLMENT_PORT
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON, MODULES_DAEMON
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
 from contextlib import nullcontext as does_not_raise
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
@@ -113,16 +113,16 @@ def wait_for_tcp_port(port, host='localhost', timeout=10):
 
 
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_remote_enrollment(test_configuration, test_metadata, set_wazuh_configuration,
+def test_remote_enrollment(test_configuration, test_metadata, set_fortishield_configuration,
                            truncate_monitored_files, daemons_handler):
     '''
     description:
-        Checks if the 'wazuh-authd' daemon remote enrollment is enabled/disabled according
+        Checks if the 'fortishield-authd' daemon remote enrollment is enabled/disabled according
         to the configuration. By default, remote enrollment is enabled. When disabled,
         the 'authd' 'TLS' port (1515 by default) won't be listening to new connections,
         but requests to the local socket will still be attended.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -134,12 +134,12 @@ def test_remote_enrollment(test_configuration, test_metadata, set_wazuh_configur
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - daemons_handler:
             type: fixture
-            brief: Restarts wazuh or a specific daemon passed.
+            brief: Restarts fortishield or a specific daemon passed.
         - truncate_monitored_files:
             type: fixture
             brief: Truncate all the log files and json alerts files before and after the test execution.
@@ -154,7 +154,7 @@ def test_remote_enrollment(test_configuration, test_metadata, set_wazuh_configur
         to be made, and the expected result.
 
     expected_output:
-        - r'Accepting connections on port 1515. No password required.' (When the 'wazuh-authd' daemon)
+        - r'Accepting connections on port 1515. No password required.' (When the 'fortishield-authd' daemon)
         - r'OSSEC K:' (When the agent has enrolled in the manager)
         - r'.*Port 1515 was set as disabled.*' (When remote enrollment is disabled)
         - r'ERROR: Cannot communicate with the master'

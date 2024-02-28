@@ -13,7 +13,7 @@ CONF_FILE="${INSTALLDIR}/etc/ossec.conf"
 TMP_ENROLLMENT="${INSTALLDIR}/tmp/enrollment-configuration"
 TMP_SERVER="${INSTALLDIR}/tmp/server-configuration"
 FORTISHIELD_REGISTRATION_PASSWORD_PATH="etc/authd.pass"
-FORTISHIELD_MACOS_AGENT_DEPLOYMENT_VARS="/tmp/wazuh_envs"
+FORTISHIELD_MACOS_AGENT_DEPLOYMENT_VARS="/tmp/fortishield_envs"
 
 
 # Set default sed alias
@@ -304,7 +304,7 @@ main () {
         if [ ! -f "${INSTALLDIR}/logs/ossec.log" ]; then
             touch -f "${INSTALLDIR}/logs/ossec.log"
             chmod 660 "${INSTALLDIR}/logs/ossec.log"
-            chown root:wazuh "${INSTALLDIR}/logs/ossec.log"
+            chown root:fortishield "${INSTALLDIR}/logs/ossec.log"
         fi
 
         # Check if multiples IPs are defined in variable FORTISHIELD_MANAGER
@@ -339,7 +339,7 @@ main () {
     if [ -n "${FORTISHIELD_REGISTRATION_PASSWORD}" ]; then
         echo "${FORTISHIELD_REGISTRATION_PASSWORD}" > "${INSTALLDIR}/${FORTISHIELD_REGISTRATION_PASSWORD_PATH}"
         chmod 640 "${INSTALLDIR}"/"${FORTISHIELD_REGISTRATION_PASSWORD_PATH}"
-        chown root:wazuh "${INSTALLDIR}"/"${FORTISHIELD_REGISTRATION_PASSWORD_PATH}"
+        chown root:fortishield "${INSTALLDIR}"/"${FORTISHIELD_REGISTRATION_PASSWORD_PATH}"
     fi
 
     # Options to be modified in ossec.conf

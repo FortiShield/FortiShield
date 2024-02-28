@@ -18,9 +18,9 @@
 #include "../os_execd/execd.h"
 #include "../client-agent/agentd.h"
 #include "../syscheckd/include/syscheck.h"
-#include "../wazuh_modules/wmodules.h"
+#include "../fortishield_modules/wmodules.h"
 #include "../logcollector/logcollector.h"
-#include "../wazuh_modules/agent_upgrade/agent/wm_agent_upgrade_agent.h"
+#include "../fortishield_modules/agent_upgrade/agent/wm_agent_upgrade_agent.h"
 #endif
 
 static OSHash * req_table;

@@ -1,21 +1,21 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from os import remove
 from os.path import exists
 
-from wazuh import Fortishield
-from wazuh.core import common, configuration
-from wazuh.core.cluster.cluster import get_node
-from wazuh.core.cluster.utils import manager_restart, read_cluster_config
-from wazuh.core.configuration import get_ossec_conf, write_ossec_conf
-from wazuh.core.exception import FortishieldError, FortishieldInternalError
-from wazuh.core.manager import status, get_api_conf, get_update_information_template, get_ossec_logs, \
+from fortishield import Fortishield
+from fortishield.core import common, configuration
+from fortishield.core.cluster.cluster import get_node
+from fortishield.core.cluster.utils import manager_restart, read_cluster_config
+from fortishield.core.configuration import get_ossec_conf, write_ossec_conf
+from fortishield.core.exception import FortishieldError, FortishieldInternalError
+from fortishield.core.manager import status, get_api_conf, get_update_information_template, get_ossec_logs, \
     get_logs_summary, validate_ossec_conf, OSSEC_LOG_FIELDS
-from wazuh.core.results import AffectedItemsFortishieldResult, FortishieldResult
-from wazuh.core.utils import process_array, safe_move, validate_wazuh_xml, full_copy
-from wazuh.rbac.decorators import expose_resources
+from fortishield.core.results import AffectedItemsFortishieldResult, FortishieldResult
+from fortishield.core.utils import process_array, safe_move, validate_fortishield_xml, full_copy
+from fortishield.rbac.decorators import expose_resources
 
 cluster_enabled = not read_cluster_config(from_import=True)['disabled']
 node_id = get_node().get('node') if cluster_enabled else 'manager'
@@ -344,7 +344,7 @@ def get_basic_info() -> AffectedItemsFortishieldResult:
 @expose_resources(actions=[f"{'cluster' if cluster_enabled else 'manager'}:update_config"],
                   resources=[f'node:id:{node_id}' if cluster_enabled else '*:*:*'])
 def update_ossec_conf(new_conf: str = None) -> AffectedItemsFortishieldResult:
-    """Replace wazuh configuration (ossec.conf) with the provided configuration.
+    """Replace fortishield configuration (ossec.conf) with the provided configuration.
 
     Parameters
     ----------
@@ -369,7 +369,7 @@ def update_ossec_conf(new_conf: str = None) -> AffectedItemsFortishieldResult:
             raise FortishieldError(1125)
 
         # Check if the configuration is valid
-        validate_wazuh_xml(new_conf, config_file=True)
+        validate_fortishield_xml(new_conf, config_file=True)
 
         # Create a backup of the current configuration before attempting to replace it
         try:
@@ -396,7 +396,7 @@ def update_ossec_conf(new_conf: str = None) -> AffectedItemsFortishieldResult:
 
 
 def get_update_information(update_information: dict) -> FortishieldResult:
-    """Process update information into a wazuh result.
+    """Process update information into a fortishield result.
 
     Parameters
     ----------

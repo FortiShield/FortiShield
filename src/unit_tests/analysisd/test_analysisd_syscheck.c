@@ -13,10 +13,10 @@
 #include <cmocka.h>
 #include <stdio.h>
 
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/wazuh_db/wdb_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/fortishield_db/wdb_wrappers.h"
 
-#include "../headers/wazuhdb_op.h"
+#include "../headers/fortishielddb_op.h"
 #include "../headers/syscheck_op.h"
 
 /* Auxiliar structs */

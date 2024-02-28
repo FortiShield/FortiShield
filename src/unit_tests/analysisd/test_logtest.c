@@ -15,8 +15,8 @@
 
 #include "../../headers/shared.h"
 #include "../../analysisd/logtest.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/os_xml/os_xml_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_xml/os_xml_wrappers.h"
 
 int w_logtest_init_parameters();
 void * w_logtest_init();
@@ -581,7 +581,7 @@ void test_w_logtest_init_error_parameters(void **state)
 {
     will_return(__wrap_ReadConfig, OS_INVALID);
 
-    expect_string(__wrap__merror, formatted_msg, "(7304): Invalid wazuh-logtest configuration");
+    expect_string(__wrap__merror, formatted_msg, "(7304): Invalid fortishield-logtest configuration");
 
     w_logtest_init();
 

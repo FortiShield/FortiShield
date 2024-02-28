@@ -15,8 +15,8 @@
 #include "shared.h"
 #include "expression.h"
 #include "../wrappers/common.h"
-#include "../wrappers/wazuh/shared/debug_op_wrappers.h"
-#include "../wrappers/wazuh/os_regex/os_regex_wrappers.h"
+#include "../wrappers/fortishield/shared/debug_op_wrappers.h"
+#include "../wrappers/fortishield/os_regex/os_regex_wrappers.h"
 #include "../wrappers/externals/pcre2/pcre2_wrappers.h"
 
 

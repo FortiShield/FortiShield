@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -11,17 +11,17 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', '..', 'api'))
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
 
-        del sys.modules['wazuh.rbac.orm']
-        from wazuh.tests.util import RBAC_bypasser
+        del sys.modules['fortishield.rbac.orm']
+        from fortishield.tests.util import RBAC_bypasser
 
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh.core.exception import FortishieldError
-        from wazuh.core import rule
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield.core.exception import FortishieldError
+        from fortishield.core import rule
 
 # variables
 parent_directory = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -70,8 +70,8 @@ def test_check_status(status, expected_result):
     ('0350-amazon_rules.xml', 'tests/data/rules', 'enabled', None),
     ('noexists.xml', 'tests/data/rules', 'enabled', FortishieldError(1201))
 ])
-@patch("wazuh.core.common.FORTISHIELD_PATH", new=parent_directory)
-@patch("wazuh.core.common.RULES_PATH", new=data_path)
+@patch("fortishield.core.common.FORTISHIELD_PATH", new=parent_directory)
+@patch("fortishield.core.common.RULES_PATH", new=data_path)
 def test_load_rules_from_file(rule_file, rule_path, rule_status, exception):
     """Test set_groups rule core function."""
     try:
@@ -84,8 +84,8 @@ def test_load_rules_from_file(rule_file, rule_path, rule_status, exception):
         assert e.code == exception.code
 
 
-@patch("wazuh.core.common.FORTISHIELD_PATH", new=parent_directory)
-@patch("wazuh.core.common.RULES_PATH", new=data_path)
+@patch("fortishield.core.common.FORTISHIELD_PATH", new=parent_directory)
+@patch("fortishield.core.common.RULES_PATH", new=data_path)
 def test_load_rules_from_file_details():
     """Test set_groups rule core function."""
     rule_file = '9999-rules_regex_test.xml'
@@ -111,14 +111,14 @@ def test_load_rules_from_file_details():
     assert result[0]['details'] == details_result
 
 
-@patch("wazuh.core.rule.load_wazuh_xml", side_effect=OSError(13, 'Error', 'Permissions'))
+@patch("fortishield.core.rule.load_fortishield_xml", side_effect=OSError(13, 'Error', 'Permissions'))
 def test_load_rules_from_file_permissions(mock_load):
     """Test set_groups rule core function."""
     with pytest.raises(FortishieldError, match='.* 1207 .*'):
         rule.load_rules_from_file('nopermissions.xml', 'tests/data/rules', 'disabled')
 
 
-@patch("wazuh.core.rule.load_wazuh_xml", side_effect=OSError(8, 'Error', 'Unknown'))
+@patch("fortishield.core.rule.load_fortishield_xml", side_effect=OSError(8, 'Error', 'Unknown'))
 def test_load_rules_from_file_unknown(mock_load):
     """Test set_groups rule core function."""
     with pytest.raises(OSError, match='.*[Errno 8].*'):

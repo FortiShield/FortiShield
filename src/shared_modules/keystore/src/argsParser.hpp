@@ -83,14 +83,14 @@ public:
      */
     static void showHelp()
     {
-        std::cout << "\nUsage: wazuh-keystore <option(s)>\n"
+        std::cout << "\nUsage: fortishield-keystore <option(s)>\n"
                   << "Options:\n"
                   << "\t-h \t\t\tShow this help message\n"
                   << "\t-f COLUMN_FAMILY\tSpecifies the target column family for the insertion.\n"
                   << "\t-k KEY\t\t\tSpecifies the key for the key-value pair.\n"
                   << "\t-v VALUE\t\tSpecifies the value associated with the key.\n"
                   << "\nExample:"
-                  << "\n\t./wazuh-keystore -f indexer -k username -v admin\n"
+                  << "\n\t./fortishield-keystore -f indexer -k username -v admin\n"
                   << std::endl;
     }
 

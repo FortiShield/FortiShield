@@ -14,9 +14,9 @@
 #include "decoder.h"
 #include "external/cJSON/cJSON.h"
 #include "plugin_decoders.h"
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include "string_op.h"
-#include "wazuhdb_op.h"
+#include "fortishielddb_op.h"
 
 static OSDecoderInfo *ciscat_decoder = NULL;
 

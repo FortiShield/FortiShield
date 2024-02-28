@@ -15,9 +15,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB azure ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM azure ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB azure ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM azure ../../../fortishield_modules/main.o)
 
 add_library(AZURE_O STATIC ${azure})
 

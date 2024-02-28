@@ -1,13 +1,13 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: This module verifies the correct behavior of 'wazuh-authd' under different messages
+brief: This module verifies the correct behavior of 'fortishield-authd' under different messages
        in a Cluster scenario (for Master).
 
 components:
@@ -17,8 +17,8 @@ targets:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-db
+    - fortishield-authd
+    - fortishield-db
 
 os_platform:
     - linux
@@ -41,9 +41,9 @@ from pathlib import Path
 
 import pytest
 
-from wazuh_testing.constants.paths.sockets import FORTISHIELD_DB_SOCKET_PATH, AUTHD_SOCKET_PATH
-from wazuh_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON
-from wazuh_testing.utils.configuration import load_configuration_template, get_test_cases_data
+from fortishield_testing.constants.paths.sockets import FORTISHIELD_DB_SOCKET_PATH, AUTHD_SOCKET_PATH
+from fortishield_testing.constants.daemons import AUTHD_DAEMON, FORTISHIELD_DB_DAEMON
+from fortishield_testing.utils.configuration import load_configuration_template, get_test_cases_data
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -70,14 +70,14 @@ receiver_sockets, monitored_sockets = None, None
 
 # Tests
 @pytest.mark.parametrize('test_configuration,test_metadata', zip(test_configuration, test_metadata), ids=test_cases_ids)
-def test_authd_local_messages(test_configuration, test_metadata, set_wazuh_configuration, configure_sockets_environment_module,
+def test_authd_local_messages(test_configuration, test_metadata, set_fortishield_configuration, configure_sockets_environment_module,
                               truncate_monitored_files, insert_pre_existent_agents, daemons_handler,
                               wait_for_authd_startup, set_up_groups, connect_to_sockets):
     '''
     description:
         Checks that every input message in trough local authd port generates the adequate response to worker.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.2.0
 
     tier: 0
@@ -89,9 +89,9 @@ def test_authd_local_messages(test_configuration, test_metadata, set_wazuh_confi
         - test_metadata:
             type: dict
             brief: Test case metadata.
-        - set_wazuh_configuration:
+        - set_fortishield_configuration:
             type: fixture
-            brief: Load basic wazuh configuration.
+            brief: Load basic fortishield configuration.
         - configure_sockets_environment_module:
             type: fixture
             brief: Configure the socket listener to receive and send messages on the sockets at function scope.
@@ -106,7 +106,7 @@ def test_authd_local_messages(test_configuration, test_metadata, set_wazuh_confi
             brief: adds the required agents to the client.keys and global.db
         - daemons_handler:
             type: fixture
-            brief: Restarts wazuh or a specific daemon passed.
+            brief: Restarts fortishield or a specific daemon passed.
         - wait_for_authd_startup:
             type: fixture
             brief: Waits until Authd is accepting connections.

@@ -31,7 +31,7 @@
 #define ANALYZER_VERSION __ossec_version
 
 /** Fortishield to prelude severity mapping. **/
-static const char *(wazuh2prelude_sev[]) = {"info", "info", "info", "info",
+static const char *(fortishield2prelude_sev[]) = {"info", "info", "info", "info",
                                "low", "low", "low", "low",
                                "medium", "medium", "medium", "medium",
                                "high", "high", "high", "high", "high"
@@ -312,7 +312,7 @@ void OS_PreludeLog(const Eventinfo *lf)
 
     add_idmef_object(idmef, "alert.assessment.impact.severity",
                      (lf->generated_rule->level > 15) ? "high" :
-                     wazuh2prelude_sev[lf->generated_rule->level]);
+                     fortishield2prelude_sev[lf->generated_rule->level]);
 
     add_idmef_object(idmef, "alert.assessment.impact.completion", "succeeded");
 
@@ -380,7 +380,7 @@ void OS_PreludeLog(const Eventinfo *lf)
             add_idmef_object(idmef, "alert.classification.reference(-1).name", _prelude_data);
             add_idmef_object(idmef, "alert.classification.reference(-1).meaning", "Fortishield Ruleset");
 
-            snprintf(_prelude_data, 256, "https://github.com/fortishield/wazuh/tree/master/ruleset");
+            snprintf(_prelude_data, 256, "https://github.com/fortishield/fortishield/tree/master/ruleset");
             add_idmef_object(idmef, "alert.classification.reference(-1).url", _prelude_data);
         }
 
@@ -441,7 +441,7 @@ void OS_PreludeLog(const Eventinfo *lf)
 
                 add_idmef_object(idmef, "alert.classification.reference(-1).meaning", "Fortishield Ruleset");
 
-                snprintf(_prelude_data, 256, "https://github.com/fortishield/wazuh/tree/master/ruleset");
+                snprintf(_prelude_data, 256, "https://github.com/fortishield/fortishield/tree/master/ruleset");
                 add_idmef_object(idmef, "alert.classification.reference(-1).url", _prelude_data);
 
                 copy_group = strtok_r(NULL, ",", &saveptr);

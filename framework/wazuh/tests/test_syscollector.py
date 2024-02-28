@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -8,19 +8,19 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from wazuh.tests.util import InitWDBSocketMock
+from fortishield.tests.util import InitWDBSocketMock
 
-with patch('wazuh.core.common.wazuh_uid'):
-    with patch('wazuh.core.common.wazuh_gid'):
-        sys.modules['wazuh.rbac.orm'] = MagicMock()
-        import wazuh.rbac.decorators
-        del sys.modules['wazuh.rbac.orm']
+with patch('fortishield.core.common.fortishield_uid'):
+    with patch('fortishield.core.common.fortishield_gid'):
+        sys.modules['fortishield.rbac.orm'] = MagicMock()
+        import fortishield.rbac.decorators
+        del sys.modules['fortishield.rbac.orm']
 
-        from wazuh.tests.util import RBAC_bypasser
-        wazuh.rbac.decorators.expose_resources = RBAC_bypasser
-        from wazuh import syscollector
-        from wazuh.core.results import AffectedItemsFortishieldResult
-        from wazuh.core.syscollector import Type, get_valid_fields
+        from fortishield.tests.util import RBAC_bypasser
+        fortishield.rbac.decorators.expose_resources = RBAC_bypasser
+        from fortishield import syscollector
+        from fortishield.core.results import AffectedItemsFortishieldResult
+        from fortishield.core.syscollector import Type, get_valid_fields
 
 
 # Tests
@@ -30,10 +30,10 @@ with patch('wazuh.core.common.wazuh_uid'):
     (['hostname', 'os.name'], None),
     (None, {'negation': False, 'value': 'Centos'}),
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.syscollector.get_agents_info', return_value=['000', '001'])
-@patch('wazuh.core.agent.Agent.get_basic_information', return_value=None)
-@patch('wazuh.core.agent.Agent.get_agent_os_name', return_value='Linux')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.syscollector.get_agents_info', return_value=['000', '001'])
+@patch('fortishield.core.agent.Agent.get_basic_information', return_value=None)
+@patch('fortishield.core.agent.Agent.get_agent_os_name', return_value='Linux')
 def test_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_info, mock_exists, select, search):
     """Test get_item_agent method.
 
@@ -47,7 +47,7 @@ def test_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_info, mock
     search : dict
         Looks for items with the specified string in DB.
     """
-    with patch('wazuh.core.utils.FortishieldDBConnection') as mock_wdb:
+    with patch('fortishield.core.utils.FortishieldDBConnection') as mock_wdb:
         mock_wdb.return_value = InitWDBSocketMock(sql_schema_file='schema_syscollector_000.sql')
         results = syscollector.get_item_agent(agent_list=['000'], offset=0, select=select, search=search)
 
@@ -63,9 +63,9 @@ def test_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_info, mock
 @pytest.mark.parametrize("agent_list, expected_exception", [
     (['010'], 1701),
 ])
-@patch('wazuh.syscollector.get_agents_info', return_value=['000', '001'])
-@patch('wazuh.core.agent.Agent.get_basic_information', return_value=None)
-@patch('wazuh.core.agent.Agent.get_agent_os_name', return_value='Linux')
+@patch('fortishield.syscollector.get_agents_info', return_value=['000', '001'])
+@patch('fortishield.core.agent.Agent.get_basic_information', return_value=None)
+@patch('fortishield.core.agent.Agent.get_agent_os_name', return_value='Linux')
 def test_failed_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_info, agent_list, expected_exception):
     """Test if get_item_agent method handle exceptions properly.
 
@@ -76,7 +76,7 @@ def test_failed_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_inf
     expected_exception : int
         Expected error code when triggering the exception.
     """
-    with patch('wazuh.core.utils.FortishieldDBConnection') as mock_wdb:
+    with patch('fortishield.core.utils.FortishieldDBConnection') as mock_wdb:
         mock_wdb.return_value = InitWDBSocketMock(sql_schema_file='schema_syscollector_000.sql')
         results = syscollector.get_item_agent(agent_list=agent_list, offset=0, limit=500, nested=False)
 
@@ -94,10 +94,10 @@ def test_failed_get_item_agent(mock_agent_attr, mock_basic_info, mock_agents_inf
     'netiface',
     'hotfixes'
 ])
-@patch('wazuh.core.utils.path.exists', return_value=True)
-@patch('wazuh.syscollector.get_agents_info', return_value=['000', '001'])
-@patch('wazuh.core.agent.Agent.get_basic_information', return_value=None)
-@patch('wazuh.core.agent.Agent.get_agent_os_name', return_value='Linux')
+@patch('fortishield.core.utils.path.exists', return_value=True)
+@patch('fortishield.syscollector.get_agents_info', return_value=['000', '001'])
+@patch('fortishield.core.agent.Agent.get_basic_information', return_value=None)
+@patch('fortishield.core.agent.Agent.get_agent_os_name', return_value='Linux')
 def test_agent_elements(mock_agent_attr, mock_basic_info, mock_agents_info, mock_exists, element_type):
     """Tests every possible type of agent element
 
@@ -121,7 +121,7 @@ def test_agent_elements(mock_agent_attr, mock_basic_info, mock_agents_info, mock
             else:
                 assert field in rendered_result['data']['affected_items'][0].keys(), f'Key "{field}" not found in result'
 
-    with patch('wazuh.core.utils.FortishieldDBConnection') as mock_wdb:
+    with patch('fortishield.core.utils.FortishieldDBConnection') as mock_wdb:
         mock_wdb.return_value = InitWDBSocketMock(sql_schema_file='schema_syscollector_000.sql')
         results = syscollector.get_item_agent(agent_list=['000'], element_type=element_type)
 

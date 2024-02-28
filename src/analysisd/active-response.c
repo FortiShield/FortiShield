@@ -49,8 +49,8 @@ int AR_ReadConfig(const char *cfgfile)
         return (OS_INVALID);
     }
     fprintf(fp, "restart-ossec0 - restart-ossec.sh - 0\nrestart-ossec0 - restart-ossec.cmd - 0\n"
-                "restart-wazuh0 - restart-ossec.sh - 0\nrestart-wazuh0 - restart-ossec.cmd - 0\n"
-                "restart-wazuh0 - restart-wazuh - 0\nrestart-wazuh0 - restart-wazuh.exe - 0\n");
+                "restart-fortishield0 - restart-ossec.sh - 0\nrestart-fortishield0 - restart-ossec.cmd - 0\n"
+                "restart-fortishield0 - restart-fortishield - 0\nrestart-fortishield0 - restart-fortishield.exe - 0\n");
     fclose(fp);
 
 #ifndef WIN32

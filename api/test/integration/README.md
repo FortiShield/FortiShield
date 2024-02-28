@@ -9,7 +9,7 @@ components.
 The API integration tests are used to verify that the API is working properly in a complete Fortishield environment.
 This environment is built using [`docker`](https://www.docker.com/).
 
-The `wazuh/api/test/integration` directory contains all the API integration tests files and directories used for the
+The `fortishield/api/test/integration` directory contains all the API integration tests files and directories used for the
 environment deployment.
 
 ## API integration tests files
@@ -34,7 +34,7 @@ forming the cluster; 4 Fortishield agents with version 3.13.2 (old); and 1 NGINX
 The Fortishield version used for the managers and non-old agents is the one specified by the branch used to perform the API
 integration tests.
 
-The `docker-compose.yml` file used to deploy the environment is at `wazuh/api/test/integration/env`. The `Dockerfile`,
+The `docker-compose.yml` file used to deploy the environment is at `fortishield/api/test/integration/env`. The `Dockerfile`,
 `entrypoint.sh`, and other configuration files can be found in the `base` directory.
 
 We also use specific **configurations and health checks depending on the test executed**. These configurations can be
@@ -97,7 +97,7 @@ integration test, for both **white** and **black** modes.
 
 ## Test mapping for CI
 
-Every time a pull request is created in GitHub for the `wazuh` repository, a battery of checks is performed in the CI
+Every time a pull request is created in GitHub for the `fortishield` repository, a battery of checks is performed in the CI
 machines. One of these checks is the API integration tests execution with success.
 
 The API integration tests performed depend on the files modified in the pull request. In most cases, 10 API integration
@@ -114,7 +114,7 @@ tests that we consider the basic ones are performed. These tests are the followi
 - `test_security_POST_endpoints.tavern.yaml`
 - `test_security_PUT_endpoints.tavern.yaml`
 
-The `wazuh/api/test/integration/mapping` directory contains the `integration_test_api_endpoints.json` file that
+The `fortishield/api/test/integration/mapping` directory contains the `integration_test_api_endpoints.json` file that
 represents a mapping between the API and framework files; and the API integration tests that need to be performed. The
 API integration tests executed by the CI machines will be the union of the mapped integration tests of each file
 modified in the pull request.
@@ -145,7 +145,7 @@ Once these requirements are satisfied, we can perform the API integration tests:
 $ python3 -m pytest test_agent_GET_endpoints.tavern.yaml --disable-warnings
 ========================================== test session starts ===========================================
 platform linux -- Python 3.9.9, pytest-5.4.3, py-1.11.0, pluggy-0.13.1
-rootdir: /home/user/git/wazuh/api/test/integration, inifile: pytest.ini
+rootdir: /home/user/git/fortishield/api/test/integration, inifile: pytest.ini
 plugins: html-2.1.1, metadata-2.0.1, tavern-1.0.0
 collected 92 items                                                                                       
 
@@ -155,7 +155,7 @@ test_agent_GET_endpoints.tavern.yaml ...........................................
 ============================== 92 passed, 98 warnings in 217.61s (0:03:37) ===============================
 ```
 
-We can also use the `wazuh/api/test/integration/run_tests.py` script. This script includes the possibility to collect a 
+We can also use the `fortishield/api/test/integration/run_tests.py` script. This script includes the possibility to collect a 
 group of tests to be passed. Script arguments:
 
 ```text
@@ -181,5 +181,5 @@ optional arguments:
 ```
 
 The `run_test.py` script does not show the tests' full output. The full reports are saved 
-at `wazuh/api/test/integration/_test_results`. Containers' logs (`ossec.log`, `api.log` and `cluster.log`) are stored 
+at `fortishield/api/test/integration/_test_results`. Containers' logs (`ossec.log`, `api.log` and `cluster.log`) are stored 
 at `_test_results/logs`. Reports in HTML format are also generated and can be found at `_test_results/html_reports`.

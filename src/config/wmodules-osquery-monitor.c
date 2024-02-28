@@ -7,7 +7,7 @@
  * Foundation
 */
 
-#include "wazuh_modules/wmodules.h"
+#include "fortishield_modules/wmodules.h"
 #include <stdio.h>
 
 static const char *XML_DISABLED = "disabled";

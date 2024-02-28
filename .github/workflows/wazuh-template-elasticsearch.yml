@@ -1,6 +1,6 @@
-name: wazuh-template for Elasticsearch test
+name: fortishield-template for Elasticsearch test
 
-# if the file wazuh/extensions/elasticsearch/7.x/wazuh-template.json is modified launch the test or is a part of
+# if the file fortishield/extensions/elasticsearch/7.x/fortishield-template.json is modified launch the test or is a part of
 # a pull request
 
 on:
@@ -9,7 +9,7 @@ on:
       - "extensions/elasticsearch/7.x/**"
 
 jobs:
-  wazuh-template-elasticsearch:
+  fortishield-template-elasticsearch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r extensions/elasticsearch/7.x/qa/requirements.txt
-      - name: Test wazuh-template for Elasticsearch
+      - name: Test fortishield-template for Elasticsearch
         run: |
           cd extensions/elasticsearch/7.x
           python -m pytest -vv qa/

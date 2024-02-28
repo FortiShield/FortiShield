@@ -1,8 +1,8 @@
 # Generate task manager library
 file(GLOB task_files
-    ${SRC_FOLDER}/wazuh_modules/*.o
-    ${SRC_FOLDER}/wazuh_modules/task_manager/*.o)
-list(REMOVE_ITEM task_files ${SRC_FOLDER}/wazuh_modules/main.o)
+    ${SRC_FOLDER}/fortishield_modules/*.o
+    ${SRC_FOLDER}/fortishield_modules/task_manager/*.o)
+list(REMOVE_ITEM task_files ${SRC_FOLDER}/fortishield_modules/main.o)
 
 add_library(TASK_O STATIC ${task_files})
 
@@ -22,7 +22,7 @@ set_target_properties(
 target_link_libraries(TASK_O ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread)
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Generate task manager tests
 list(APPEND task_names "test_wm_task_manager")

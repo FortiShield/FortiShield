@@ -1,9 +1,9 @@
-# Find the wazuh shared library
-find_library(FORTISHIELDEXT NAMES libwazuhext.so HINTS "${SRC_FOLDER}")
+# Find the fortishield shared library
+find_library(FORTISHIELDEXT NAMES libfortishieldext.so HINTS "${SRC_FOLDER}")
 set(uname "Linux")
 
 if(NOT FORTISHIELDEXT)
-    message(FATAL_ERROR "libwazuhext not found! Aborting...")
+    message(FATAL_ERROR "libfortishieldext not found! Aborting...")
 endif()
 
 # Add compiling flags
@@ -14,10 +14,10 @@ set(TEST_DEPS ${FORTISHIELDLIB} ${FORTISHIELDEXT} -lpthread -ldl -lcmocka -fprof
 
 add_subdirectory(analysisd)
 add_subdirectory(remoted)
-add_subdirectory(wazuh_db)
+add_subdirectory(fortishield_db)
 add_subdirectory(os_auth)
 add_subdirectory(os_crypto)
-add_subdirectory(wazuh_modules)
+add_subdirectory(fortishield_modules)
 add_subdirectory(monitord)
 add_subdirectory(logcollector)
 add_subdirectory(os_execd)

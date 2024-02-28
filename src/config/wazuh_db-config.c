@@ -11,8 +11,8 @@
 
 #include "shared.h"
 #include "config.h"
-#include "config/wazuh_db-config.h"
-#include "wazuh_db/wdb.h"
+#include "config/fortishield_db-config.h"
+#include "fortishield_db/wdb.h"
 #include "headers/string_op.h"
 
 static short eval_bool(const char *str) {

@@ -29,8 +29,8 @@
 #include <sys/wait.h>
 #include "check_cert.h"
 #include "key_request.h"
-#include "wazuh_db/helpers/wdb_global_helpers.h"
-#include "wazuhdb_op.h"
+#include "fortishield_db/helpers/wdb_global_helpers.h"
+#include "fortishielddb_op.h"
 #include "os_err.h"
 #include "generate_cert.h"
 
@@ -1056,7 +1056,7 @@ void* run_writer(__attribute__((unused)) void *arg) {
             gettime(&t1);
             mdebug2("[Writer] wdb_remove_agent(): %d µs.", (int)(1000000. * (double)time_diff(&t0, &t1)));
 
-            snprintf(wdbquery, OS_SIZE_128, "wazuhdb remove %s", cur->id);
+            snprintf(wdbquery, OS_SIZE_128, "fortishielddb remove %s", cur->id);
             gettime(&t0);
             wdbc_query_ex(&wdb_sock, wdbquery, wdboutput, sizeof(wdboutput));
             gettime(&t1);

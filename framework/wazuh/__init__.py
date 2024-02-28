@@ -1,14 +1,14 @@
 
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from time import strftime
 
-from wazuh.core import common
-from wazuh.core.wdb import FortishieldDBConnection
-from wazuh.core.exception import FortishieldException, FortishieldError, FortishieldInternalError
+from fortishield.core import common
+from fortishield.core.wdb import FortishieldDBConnection
+from fortishield.core.exception import FortishieldException, FortishieldError, FortishieldInternalError
 
 """
 Fortishield HIDS Python package

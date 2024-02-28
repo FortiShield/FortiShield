@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -9,10 +9,10 @@ import pytest
 
 from api.models.configuration_model import HTTPSModel
 
-with patch('wazuh.common.wazuh_uid'):
-    with patch('wazuh.common.wazuh_gid'):
+with patch('fortishield.common.fortishield_uid'):
+    with patch('fortishield.common.fortishield_gid'):
         from api.encoder import prettify, dumps
-        from wazuh.core.results import FortishieldResult
+        from fortishield.core.results import FortishieldResult
 
 
 def custom_hook(dct):

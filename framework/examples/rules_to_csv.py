@@ -11,12 +11,12 @@
 ###
 
 # Instructions:
-#  - Use the embedded interpreter to run the script: {wazuh_path}/framework/python/bin/python3 rules_to_csv.py
+#  - Use the embedded interpreter to run the script: {fortishield_path}/framework/python/bin/python3 rules_to_csv.py
 
 import csv
 import sys
 
-import wazuh.rule
+import fortishield.rule
 
 if __name__ == '__main__':
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
         n_rules = int(sys.argv[1])
 
     for step in range(0, n_rules, 500):
-        result = wazuh.rule.get_rules(limit=500, offset=step).render()
+        result = fortishield.rule.get_rules(limit=500, offset=step).render()
         if not result:
             break
 

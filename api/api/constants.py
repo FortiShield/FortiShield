@@ -1,10 +1,10 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
 
-from wazuh.core import common
+from fortishield.core import common
 
 API_PATH = os.path.join(common.FORTISHIELD_PATH, 'api')
 CONFIG_PATH = os.path.join(API_PATH, 'configuration')

@@ -4,8 +4,8 @@
 | **Main release candidate issue**      | RELEASE_CANDIDATE_ISSUE_URL                               |
 | **Version**                           | FORTISHIELD_VERSION                                             |
 | **Release candidate**                 | RC_VERSION                                                |
-| **wazuh/wazuh tag**                   | https://github.com/fortishield/wazuh/tree/vFORTISHIELD_VERSION-TAG    |
-| **wazuh/wazuh-qa tag**                | https://github.com/fortishield/wazuh-qa/tree/vFORTISHIELD_VERSION-TAG |
+| **fortishield/fortishield tag**                   | https://github.com/fortishield/fortishield/tree/vFORTISHIELD_VERSION-TAG    |
+| **fortishield/fortishield-qa tag**                | https://github.com/fortishield/fortishield-qa/tree/vFORTISHIELD_VERSION-TAG |
 | **Previous release testing issue**    | PREVIOUS_IT                                               |
 | **Build**                             | COMPLETE_THIS_FIELD :warning: :warning: :warning:         |
 

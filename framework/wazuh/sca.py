@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
-from wazuh.core import common
-from wazuh.core.agent import get_agents_info
-from wazuh.core.exception import FortishieldResourceNotFound
-from wazuh.core.results import AffectedItemsFortishieldResult
-from wazuh.core.sca import (
+from fortishield.core import common
+from fortishield.core.agent import get_agents_info
+from fortishield.core.exception import FortishieldResourceNotFound
+from fortishield.core.results import AffectedItemsFortishieldResult
+from fortishield.core.sca import (
     FortishieldDBQueryDistinctSCACheck, FortishieldDBQuerySCA, FortishieldDBQuerySCACheck, FortishieldDBQuerySCACheckIDs,
     FortishieldDBQuerySCACheckRelational, SCA_CHECK_COMPLIANCE_DB_FIELDS, SCA_CHECK_RULES_DB_FIELDS, SCA_CHECK_DB_FIELDS)
-from wazuh.rbac.decorators import expose_resources
+from fortishield.rbac.decorators import expose_resources
 
 
 @expose_resources(actions=["sca:read"], resources=['agent:id:{agent_list}'])

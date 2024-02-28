@@ -91,9 +91,9 @@ yesrunauthd="Auth szolgáltatás futtatása"
 
 # Part 4
 installing="A rendszer telepítése"
-startwazuh="Szeretné elindítani a Fortishield-ot a telepítés után?"
-nowazuhstart="A Fortishield nem indul el a telepítés végén."
-yeswazuhstart="A Fortishield a telepítés végén kezdődik."
+startfortishield="Szeretné elindítani a Fortishield-ot a telepítés után?"
+nofortishieldstart="A Fortishield nem indul el a telepítés végén."
+yesfortishieldstart="A Fortishield a telepítés végén kezdődik."
 runningmake="A Make fájl futtatása"
 
 # Final

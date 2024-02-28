@@ -1,13 +1,13 @@
 '''
 copyright: Copyright (C) 2015-2021, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: These tests will check if the 'wazuh-authd' daemon correctly handles the enrollment requests
+brief: These tests will check if the 'fortishield-authd' daemon correctly handles the enrollment requests
        from the API.
 
 tier: 0
@@ -20,8 +20,8 @@ components:
     - manager
 
 daemons:
-    - wazuh-authd
-    - wazuh-api
+    - fortishield-authd
+    - fortishield-api
 
 os_platform:
     - linux
@@ -46,7 +46,7 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/registering/restful-api-registration.html
+    - https://documentation.fortishield.com/current/user-manual/registering/restful-api-registration.html
 
 tags:
     - authd
@@ -59,12 +59,12 @@ import pytest
 import time
 from pathlib import Path
 
-from wazuh_testing.constants.paths.logs import FORTISHIELD_API_LOG_FILE_PATH
-from wazuh_testing.utils.client_keys import get_client_keys
-from wazuh_testing.utils.file import truncate_file
-from wazuh_testing.utils.services import control_service
-from wazuh_testing.modules.api.utils import get_base_url, login
-from wazuh_testing.utils.configuration import get_test_cases_data
+from fortishield_testing.constants.paths.logs import FORTISHIELD_API_LOG_FILE_PATH
+from fortishield_testing.utils.client_keys import get_client_keys
+from fortishield_testing.utils.file import truncate_file
+from fortishield_testing.utils.services import control_service
+from fortishield_testing.modules.api.utils import get_base_url, login
+from fortishield_testing.utils.configuration import get_test_cases_data
 
 from . import TEST_CASES_FOLDER_PATH
 
@@ -125,10 +125,10 @@ def test_agentd_server_configuration(test_metadata, truncate_monitored_files_mod
                                      daemons_handler_module, wait_for_api_startup_module):
     '''
     description:
-        Checks `wazuh-api` responds correctly to agent registration requests. Also, ensure client.keys is update
+        Checks `fortishield-api` responds correctly to agent registration requests. Also, ensure client.keys is update
         accordingly to the new agents parameters.
 
-    wazuh_min_version:
+    fortishield_min_version:
         4.4.0
 
     parameters:

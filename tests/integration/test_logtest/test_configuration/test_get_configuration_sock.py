@@ -1,16 +1,16 @@
 '''
 copyright: Copyright (C) 2015-2022, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@wazuh.com>.
+           Created by Fortishield, Inc. <info@fortishield.com>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 type: integration
 
-brief: The 'wazuh-logtest' tool allows the testing and verification of rules and decoders against provided log examples
-       remotely inside a sandbox in 'wazuh-analysisd'. This functionality is provided by the manager, whose work
+brief: The 'fortishield-logtest' tool allows the testing and verification of rules and decoders against provided log examples
+       remotely inside a sandbox in 'fortishield-analysisd'. This functionality is provided by the manager, whose work
        parameters are configured in the ossec.conf file in the XML rule_test section. Test logs can be evaluated through
-       the 'wazuh-logtest' tool or by making requests via RESTful API. These tests will check if the logtest
+       the 'fortishield-logtest' tool or by making requests via RESTful API. These tests will check if the logtest
        configuration is valid. Also checks rules, decoders, decoders, alerts matching logs correctly.
 
 components:
@@ -22,7 +22,7 @@ targets:
     - manager
 
 daemons:
-    - wazuh-analysisd
+    - fortishield-analysisd
 
 os_platform:
     - linux
@@ -39,9 +39,9 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.wazuh.com/current/user-manual/reference/tools/wazuh-logtest.html
-    - https://documentation.wazuh.com/current/user-manual/capabilities/wazuh-logtest/index.html
-    - https://documentation.wazuh.com/current/user-manual/reference/daemons/wazuh-analysisd.html
+    - https://documentation.fortishield.com/current/user-manual/reference/tools/fortishield-logtest.html
+    - https://documentation.fortishield.com/current/user-manual/capabilities/fortishield-logtest/index.html
+    - https://documentation.fortishield.com/current/user-manual/reference/daemons/fortishield-analysisd.html
 
 tags:
     - logtest_configuration
@@ -50,8 +50,8 @@ from pathlib import Path
 import re
 
 import pytest
-from wazuh_testing.constants.paths.sockets import ANALYSISD_ANALISIS_SOCKET_PATH
-from wazuh_testing.utils import configuration
+from fortishield_testing.constants.paths.sockets import ANALYSISD_ANALISIS_SOCKET_PATH
+from fortishield_testing.utils import configuration
 
 from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 
@@ -59,7 +59,7 @@ from . import CONFIGURATIONS_FOLDER_PATH, TEST_CASES_FOLDER_PATH
 pytestmark = [pytest.mark.linux, pytest.mark.tier(level=0), pytest.mark.server]
 
 # Configuration
-t_config_path = Path(CONFIGURATIONS_FOLDER_PATH, 'configuration_wazuh_conf.yaml')
+t_config_path = Path(CONFIGURATIONS_FOLDER_PATH, 'configuration_fortishield_conf.yaml')
 t_cases_path = Path(TEST_CASES_FOLDER_PATH, 'cases_get_configuration_sock.yaml')
 t_config_parameters, t_config_metadata, t_case_ids = configuration.get_test_cases_data(t_cases_path)
 t_configurations = configuration.load_configuration_template(t_config_path, t_config_parameters, t_config_metadata)
@@ -75,16 +75,16 @@ daemons_handler_configuration = {'all_daemons': True}
 
 # Test
 @pytest.mark.parametrize('test_configuration, test_metadata', zip(t_configurations, t_config_metadata), ids=t_case_ids)
-def test_get_configuration_sock(test_configuration, test_metadata, set_wazuh_configuration,
+def test_get_configuration_sock(test_configuration, test_metadata, set_fortishield_configuration,
                                 daemons_handler, connect_to_sockets):
     '''
     description: Check analysis Unix socket returns the correct Logtest configuration under different sets of
-                 configurations, `wazuh-analisysd` returns the right information from the `rule_test` configuration
+                 configurations, `fortishield-analisysd` returns the right information from the `rule_test` configuration
                  block. To do this, it overwrites wrong field values and checks that the values within the received
                  message after establishing a connection using the logtest AF_UNIX socket that uses TCP are the same
-                 that the loaded fields from the 'wazuh_conf.yaml' file.
+                 that the loaded fields from the 'fortishield_conf.yaml' file.
 
-    wazuh_min_version: 4.2.0
+    fortishield_min_version: 4.2.0
 
     tier: 0
 
@@ -95,9 +95,9 @@ def test_get_configuration_sock(test_configuration, test_metadata, set_wazuh_con
         - configure_environment:
             type: fixture
             brief: Configure a custom environment for testing
-        - restart_wazuh:
+        - restart_fortishield:
             type: fixture
-            brief: Restart wazuh, ossec.log and start a new monitor.
+            brief: Restart fortishield, ossec.log and start a new monitor.
         - connect_to_sockets:
             type: fixture
             brief: Function scope version of 'connect_to_sockets' which connects to the specified sockets for the test.
@@ -108,7 +108,7 @@ def test_get_configuration_sock(test_configuration, test_metadata, set_wazuh_con
         - Verify that each message field received matches the loaded configuration fields.
 
     input_description: Five test cases are defined in the module. These include some configurations stored in
-                       the 'wazuh_conf.yaml'.
+                       the 'fortishield_conf.yaml'.
 
     expected_output:
         - 'Real message was: .*'

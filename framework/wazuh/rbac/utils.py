@@ -1,11 +1,11 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from functools import wraps
 
 from cachetools import TTLCache, cached
-from wazuh.core.common import cache_event
+from fortishield.core.common import cache_event
 
 from api.configuration import security_conf
 

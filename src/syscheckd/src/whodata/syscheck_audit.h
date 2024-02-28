@@ -17,8 +17,8 @@
 
 #define WHODATA_PERMS (AUDIT_PERM_WRITE | AUDIT_PERM_ATTR)
 
-#define AUDIT_HEALTHCHECK_KEY "wazuh_hc"
-#define AUDIT_KEY "wazuh_fim"
+#define AUDIT_HEALTHCHECK_KEY "fortishield_hc"
+#define AUDIT_KEY "fortishield_fim"
 
 typedef struct {
     char *path;

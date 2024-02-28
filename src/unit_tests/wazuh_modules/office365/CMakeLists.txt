@@ -6,7 +6,7 @@
 # Foundation.
 
 #include wrappers
-include(${SRC_FOLDER}/unit_tests/wrappers/wazuh/shared/shared.cmake)
+include(${SRC_FOLDER}/unit_tests/wrappers/fortishield/shared/shared.cmake)
 
 # Tests list and flags
 list(APPEND tests_names "test_wm_office365")
@@ -25,9 +25,9 @@ list(APPEND use_shared_libs 1)
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.h")
 list(APPEND shared_libs "../scheduling/wmodules_scheduling_helpers.c")
 
-# Generate wazuh modules library
-file(GLOB office365 ../../../wazuh_modules/*.o)
-list(REMOVE_ITEM office365 ../../../wazuh_modules/main.o)
+# Generate fortishield modules library
+file(GLOB office365 ../../../fortishield_modules/*.o)
+list(REMOVE_ITEM office365 ../../../fortishield_modules/main.o)
 
 add_library(OFFICE365_O STATIC ${office365})
 

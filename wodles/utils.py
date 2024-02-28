@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@wazuh.com>.
+# Created by Fortishield, Inc. <info@fortishield.com>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,7 +9,7 @@ from sys import exit
 
 
 @lru_cache(maxsize=None)
-def find_wazuh_path() -> str:
+def find_fortishield_path() -> str:
     """
     Get the Fortishield installation path.
 
@@ -32,19 +32,19 @@ def find_wazuh_path() -> str:
             abs_path = parts[0]
             allparts.insert(0, parts[1])
 
-    wazuh_path = ''
+    fortishield_path = ''
     try:
         for i in range(0, allparts.index('wodles')):
-            wazuh_path = os.path.join(wazuh_path, allparts[i])
+            fortishield_path = os.path.join(fortishield_path, allparts[i])
     except ValueError:
         pass
 
-    return wazuh_path
+    return fortishield_path
 
 
-def call_wazuh_control(option: str) -> str:
+def call_fortishield_control(option: str) -> str:
     """
-    Execute the wazuh-control script with the parameters specified.
+    Execute the fortishield-control script with the parameters specified.
 
     Parameters
     ----------
@@ -54,21 +54,21 @@ def call_wazuh_control(option: str) -> str:
     Returns
     -------
     str
-        The output of the call to wazuh-control.
+        The output of the call to fortishield-control.
     """
-    wazuh_control = os.path.join(find_wazuh_path(), "bin", "wazuh-control")
+    fortishield_control = os.path.join(find_fortishield_path(), "bin", "fortishield-control")
     try:
-        proc = subprocess.Popen([wazuh_control, option], stdout=subprocess.PIPE)
+        proc = subprocess.Popen([fortishield_control, option], stdout=subprocess.PIPE)
         (stdout, stderr) = proc.communicate()
         return stdout.decode()
     except (OSError, ChildProcessError):
-        print(f'ERROR: a problem occurred while executing {wazuh_control}')
+        print(f'ERROR: a problem occurred while executing {fortishield_control}')
         exit(1)
 
 
-def get_wazuh_info(field: str) -> str:
+def get_fortishield_info(field: str) -> str:
     """
-    Execute the wazuh-control script with the 'info' argument, filtering by field if specified.
+    Execute the fortishield-control script with the 'info' argument, filtering by field if specified.
 
     Parameters
     ----------
@@ -79,27 +79,27 @@ def get_wazuh_info(field: str) -> str:
     Returns
     -------
     str
-        The output of the wazuh-control script.
+        The output of the fortishield-control script.
     """
-    wazuh_info = call_wazuh_control("info")
-    if not wazuh_info:
+    fortishield_info = call_fortishield_control("info")
+    if not fortishield_info:
         return "ERROR"
 
     if not field:
-        return wazuh_info
+        return fortishield_info
 
-    env_variables = wazuh_info.rsplit("\n")
+    env_variables = fortishield_info.rsplit("\n")
     env_variables.remove("")
-    wazuh_env_vars = dict()
+    fortishield_env_vars = dict()
     for env_variable in env_variables:
         key, value = env_variable.split("=")
-        wazuh_env_vars[key] = value.replace("\"", "")
+        fortishield_env_vars[key] = value.replace("\"", "")
 
-    return wazuh_env_vars[field]
+    return fortishield_env_vars[field]
 
 
 @lru_cache(maxsize=None)
-def get_wazuh_version() -> str:
+def get_fortishield_version() -> str:
     """
     Return the version of Fortishield installed.
 
@@ -108,11 +108,11 @@ def get_wazuh_version() -> str:
     str
         The version of Fortishield installed.
     """
-    return get_wazuh_info("FORTISHIELD_VERSION")
+    return get_fortishield_info("FORTISHIELD_VERSION")
 
 
 @lru_cache(maxsize=None)
-def get_wazuh_revision() -> str:
+def get_fortishield_revision() -> str:
     """
     Return the revision of the Fortishield instance installed.
 
@@ -121,11 +121,11 @@ def get_wazuh_revision() -> str:
     str
         The revision of the Fortishield instance installed.
     """
-    return get_wazuh_info("FORTISHIELD_REVISION")
+    return get_fortishield_info("FORTISHIELD_REVISION")
 
 
 @lru_cache(maxsize=None)
-def get_wazuh_type() -> str:
+def get_fortishield_type() -> str:
     """
     Return the type of Fortishield instance installed.
 
@@ -134,9 +134,9 @@ def get_wazuh_type() -> str:
     str
         The type of Fortishield instance installed.
     """
-    return get_wazuh_info("FORTISHIELD_TYPE")
+    return get_fortishield_info("FORTISHIELD_TYPE")
 
 
-ANALYSISD = os.path.join(find_wazuh_path(), 'queue', 'sockets', 'queue')
+ANALYSISD = os.path.join(find_fortishield_path(), 'queue', 'sockets', 'queue')
 # Max size of the event that ANALYSISID can handle
 MAX_EVENT_SIZE = 65535
