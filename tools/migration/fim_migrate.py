@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Database support for Fortishield HIDS.
-# Copyright (C) 2015, Fortishield Inc. <info@fortishield.com>
+# Copyright (C) 2015, Fortishield Inc. <info@fortishield.github.io>
 # September 28, 2018.
 # This program is a free software, you can redistribute it
 # and/or modify it under the terms of GPLv2.
@@ -187,7 +187,7 @@ def _print_help():
         -d          Debug mode.
         -h          Prints this help.
 
-    Copyright (C) 2015 Fortishield, Inc. <info@fortishield.com>
+    Copyright (C) 2015 Fortishield, Inc. <info@fortishield.github.io>
     ''')
 
 

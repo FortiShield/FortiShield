@@ -26,4 +26,4 @@
   - Válassza a 'lokális' telepítést, ha csak egy rendszere van,
     amit monitoroznia kell.
 
-  - További információk: https://documentation.fortishield.com
+  - További információk: https://documentation.fortishield.github.io

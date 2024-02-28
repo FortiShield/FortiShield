@@ -26,4 +26,4 @@
     wilt houden.
 
   - Meer informatie vindt u op:
-    https://documentation.fortishield.com
+    https://documentation.fortishield.github.io

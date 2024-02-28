@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -12,8 +12,8 @@ import pytest
 from api.util import parse_api_param
 from fortishield.core.exception import FortishieldError
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         sys.modules['fortishield.rbac.orm'] = MagicMock()
         import fortishield.rbac.decorators
 

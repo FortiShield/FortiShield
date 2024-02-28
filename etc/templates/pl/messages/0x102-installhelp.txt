@@ -25,4 +25,4 @@
   - Wybierz 'lokalna' jeśli masz tylko jeden system do monitorowania.
 
   - Więcej informacji na:
-    https://documentation.fortishield.com
+    https://documentation.fortishield.github.io

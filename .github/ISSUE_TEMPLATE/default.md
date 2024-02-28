@@ -15,13 +15,13 @@ assignees: ''
 Whenever possible, issues should be created for bug reporting and feature requests.
 For questions related to the user experience, please refer:
 - Fortishield mailing list: https://groups.google.com/forum/#!forum/fortishield
-- Join Fortishield on Slack: https://fortishield.com/community/join-us-on-slack
+- Join Fortishield on Slack: https://fortishield.github.io/community/join-us-on-slack
 
 Please fill the table above. Feel free to extend it at your convenience.
 -->
 
 <!--
 
-You may want to set debug options `<component>.debug=2` (see https://documentation.fortishield.com/current/user-manual/reference/internal-options.html) to get verbose logs. This may help investigate the issue.
+You may want to set debug options `<component>.debug=2` (see https://documentation.fortishield.github.io/current/user-manual/reference/internal-options.html) to get verbose logs. This may help investigate the issue.
 
 -->

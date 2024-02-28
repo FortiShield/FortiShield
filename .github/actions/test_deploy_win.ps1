@@ -93,8 +93,8 @@ function test($vars)
 
 }
 
-Write-Output "Download package: https://s3.us-west-1.amazonaws.com/packages-dev.fortishield.com/warehouse/pullrequests/$MAJOR.$MINOR/windows/fortishield-agent-$VERSION-0.commit$SHA.msi"
-Invoke-WebRequest -Uri "https://s3.us-west-1.amazonaws.com/packages-dev.fortishield.com/warehouse/pullrequests/$MAJOR.$MINOR/windows/fortishield-agent-$VERSION-0.commit$SHA.msi" -OutFile "fortishield-agent-$VERSION-0.commit$SHA.msi"
+Write-Output "Download package: https://s3.us-west-1.amazonaws.com/fortishield.github.io/packages-dev/warehouse/pullrequests/$MAJOR.$MINOR/windows/fortishield-agent-$VERSION-0.commit$SHA.msi"
+Invoke-WebRequest -Uri "https://s3.us-west-1.amazonaws.com/fortishield.github.io/packages-dev/warehouse/pullrequests/$MAJOR.$MINOR/windows/fortishield-agent-$VERSION-0.commit$SHA.msi" -OutFile "fortishield-agent-$VERSION-0.commit$SHA.msi"
 
 install_fortishield "FORTISHIELD_MANAGER=1.1.1.1 FORTISHIELD_MANAGER_PORT=7777 FORTISHIELD_PROTOCOL=udp FORTISHIELD_REGISTRATION_SERVER=2.2.2.2 FORTISHIELD_REGISTRATION_PORT=8888 FORTISHIELD_REGISTRATION_PASSWORD=password FORTISHIELD_KEEP_ALIVE_INTERVAL=10 FORTISHIELD_TIME_RECONNECT=10 FORTISHIELD_REGISTRATION_CA=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_CERTIFICATE=/var/ossec/etc/testsslmanager.cert FORTISHIELD_REGISTRATION_KEY=/var/ossec/etc/testsslmanager.key FORTISHIELD_AGENT_NAME=test-agent FORTISHIELD_AGENT_GROUP=test-group ENROLLMENT_DELAY=10" 
 test "FORTISHIELD_MANAGER FORTISHIELD_MANAGER_PORT FORTISHIELD_PROTOCOL FORTISHIELD_REGISTRATION_SERVER FORTISHIELD_REGISTRATION_PORT FORTISHIELD_REGISTRATION_PASSWORD FORTISHIELD_KEEP_ALIVE_INTERVAL FORTISHIELD_TIME_RECONNECT FORTISHIELD_REGISTRATION_CA FORTISHIELD_REGISTRATION_CERTIFICATE FORTISHIELD_REGISTRATION_KEY FORTISHIELD_AGENT_NAME FORTISHIELD_AGENT_GROUP ENROLLMENT_DELAY " 

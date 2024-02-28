@@ -562,7 +562,7 @@ void test_wm_agent_upgrade_parse_agents_empty(void **state)
 void test_wm_agent_upgrade_parse_upgrade_command_success(void **state)
 {
     char *error = NULL;
-    char *repo = "fortishield.com";
+    char *repo = "fortishield.github.io";
     char *ver = "v4.0.0";
 
     cJSON *params = cJSON_CreateObject();
@@ -704,7 +704,7 @@ void test_wm_agent_upgrade_parse_upgrade_command_invalid_force(void **state)
 void test_wm_agent_upgrade_parse_upgrade_command_invalid_json(void **state)
 {
     char *error = NULL;
-    char *repo = "fortishield.com";
+    char *repo = "fortishield.github.io";
     char *ver = "v4.0.0";
     bool http = false;
     bool force = false;
@@ -999,7 +999,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_success(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,24],"
-                   "        \"wpk_repo\":\"fortishield.com\","
+                   "        \"wpk_repo\":\"fortishield.github.io\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":false,"
                    "        \"force_upgrade\":true"
@@ -1019,7 +1019,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_success(void **state)
     assert_int_equal(agent_ids[2], 24);
     assert_int_equal(agent_ids[3], -1);
     assert_non_null(upgrade_task);
-    assert_string_equal(upgrade_task->wpk_repository, "fortishield.com");
+    assert_string_equal(upgrade_task->wpk_repository, "fortishield.github.io");
     assert_string_equal(upgrade_task->custom_version, "v4.0.0");
     assert_int_equal(upgrade_task->use_http, 0);
     assert_int_equal(upgrade_task->force_upgrade, 1);
@@ -1039,7 +1039,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_agent_error(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,\"24\"],"
-                   "        \"wpk_repo\":\"fortishield.com\","
+                   "        \"wpk_repo\":\"fortishield.github.io\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":false,"
                    "        \"force_upgrade\":true"
@@ -1071,7 +1071,7 @@ void test_wm_agent_upgrade_parse_message_upgrade_task_error(void **state)
                    "   \"command\": \"upgrade\","
                    "   \"parameters\": {"
                    "        \"agents\": [1,15,24],"
-                   "        \"wpk_repo\":\"fortishield.com\","
+                   "        \"wpk_repo\":\"fortishield.github.io\","
                    "        \"version\":\"v4.0.0\","
                    "        \"use_http\":\"yes\","
                    "        \"force_upgrade\":true"

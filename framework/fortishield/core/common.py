@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -184,7 +184,7 @@ MAX_GROUPS_PER_MULTIGROUP = 128
 
 # ============================================= Fortishield constants - Version ==============================================
 # Agent upgrading variables.
-WPK_REPO_URL_4_X = "packages.fortishield.com/4.x/wpk/"
+WPK_REPO_URL_4_X = "fortishield.github.io/packages/4.x/wpk/"
 # Agent component stats required version.
 AGENT_COMPONENT_STATS_REQUIRED_VERSION = {'logcollector': 'v4.2.0', 'agent': 'v4.2.0'}
 # Version variables (legacy, required, etc).

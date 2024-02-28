@@ -3,6 +3,6 @@
    tendrá que editar el archivo ossec.conf y agregar una
    nueva entrada de tipo localfile.
    Cualquier otra pregunta de configuración podrá ser
-   respondida en https://documentation.fortishield.com/.
+   respondida en https://documentation.fortishield.github.io/.
 
    --- Presione ENTER para continuar ---

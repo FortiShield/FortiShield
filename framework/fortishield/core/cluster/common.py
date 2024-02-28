@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -132,17 +132,17 @@ class SendStringTask:
     # by the garbage collector (https://github.com/python/cpython/issues/91887).
     tasks_hard_reference = set()
 
-    def __init__(self, fortishield_common, logger):
+    def __init__(self, fortishield.github.iomon, logger):
         """Class constructor.
 
         Parameters
         ----------
-        fortishield_common : FortishieldCommon object
+        fortishield.github.iomon : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the reception process.
         """
-        self.fortishield_common = fortishield_common
+        self.fortishield.github.iomon = fortishield.github.iomon
         self.coro = self.set_up_coro()
         self.task = asyncio.create_task(self.coro())
         self.tasks_hard_reference.add(self.task)
@@ -176,12 +176,12 @@ class ReceiveStringTask:
     Create an asyncio task that can be identified by a task_id specified in advance.
     """
 
-    def __init__(self, fortishield_common, logger, task_id, info_type='agent-info'):
+    def __init__(self, fortishield.github.iomon, logger, task_id, info_type='agent-info'):
         """Class constructor.
 
         Parameters
         ----------
-        fortishield_common : FortishieldCommon object
+        fortishield.github.iomon : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the receive process.
@@ -190,7 +190,7 @@ class ReceiveStringTask:
         info_type : str
             Information type handled.
         """
-        self.fortishield_common = fortishield_common
+        self.fortishield.github.iomon = fortishield.github.iomon
         self.coro = self.set_up_coro()
         self.task_id = task_id
         self.info_type = info_type
@@ -223,11 +223,11 @@ class ReceiveStringTask:
 
         Remove string and task_id (if exist) from sync_tasks dict. If task was not cancelled, raise stored exception.
         """
-        if self.task_id in self.fortishield_common.in_str:
+        if self.task_id in self.fortishield.github.iomon.in_str:
             # pop() is used instead of 'del' so an exception is never raised here
-            self.fortishield_common.in_str.pop(self.task_id, None)
-        if self.task_id in self.fortishield_common.sync_tasks:
-            del self.fortishield_common.sync_tasks[self.task_id]
+            self.fortishield.github.iomon.in_str.pop(self.task_id, None)
+        if self.task_id in self.fortishield.github.iomon.sync_tasks:
+            del self.fortishield.github.iomon.sync_tasks[self.task_id]
         if not self.task.cancelled():
             task_exc = self.task.exception()
             if task_exc:
@@ -239,19 +239,19 @@ class ReceiveFileTask:
     Create an asyncio task that can be identified by a task_id.
     """
 
-    def __init__(self, fortishield_common, logger, task_id: bytes = b''):
+    def __init__(self, fortishield.github.iomon, logger, task_id: bytes = b''):
         """Class constructor.
 
         Parameters
         ----------
-        fortishield_common : FortishieldCommon object
+        fortishield.github.iomon : FortishieldCommon object
             Instance of FortishieldCommon.
         logger : Logger object
             Logger to use during the reception process.
         task_id : bytes
             Pre-defined task_id to identify this object. If not specified, a random task_id will be used.
         """
-        self.fortishield_common = fortishield_common
+        self.fortishield.github.iomon = fortishield.github.iomon
         self.coro = self.set_up_coro()
         self.task_id = task_id.decode() if task_id else str(uuid4())
         self.received_information = asyncio.Event()
@@ -285,8 +285,8 @@ class ReceiveFileTask:
 
         Remove task_id (if exists) from sync_tasks dict. If task was not cancelled, raise stored exception.
         """
-        if self.task_id in self.fortishield_common.sync_tasks:
-            del self.fortishield_common.sync_tasks[self.task_id]
+        if self.task_id in self.fortishield.github.iomon.sync_tasks:
+            del self.fortishield.github.iomon.sync_tasks[self.task_id]
         if not self.task.cancelled():
             task_exc = self.task.exception()
             if task_exc:

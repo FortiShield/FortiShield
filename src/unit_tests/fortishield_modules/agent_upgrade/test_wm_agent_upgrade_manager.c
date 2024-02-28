@@ -59,7 +59,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_command(void **state)
                   "   \"command\": \"upgrade\","
                   "   \"parameters\": {"
                   "        \"agents\": [1],"
-                  "        \"wpk_repo\": \"packages.fortishield.com/wpk\""
+                  "        \"wpk_repo\": \"fortishield.github.io/packages/wpk\""
                   "    }"
                   "}";
 
@@ -114,7 +114,7 @@ void test_wm_agent_upgrade_listen_messages_upgrade_command(void **state)
                                                                                "   \"command\": \"upgrade\","
                                                                                "   \"parameters\": {"
                                                                                "        \"agents\": [1],"
-                                                                               "        \"wpk_repo\": \"packages.fortishield.com/wpk\""
+                                                                               "        \"wpk_repo\": \"fortishield.github.io/packages/wpk\""
                                                                                "    }"
                                                                                "}'");
 

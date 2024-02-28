@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -80,9 +80,9 @@ async def test_rit_init():
     """Test if the ReceiveIntegrityTask is properly initialized."""
     master_common = get_master_handler()
     with patch.object(master_common, 'integrity_check') as integrity_check_mock:
-        receive_integrity_task = master.ReceiveIntegrityTask(fortishield_common=master_common,
+        receive_integrity_task = master.ReceiveIntegrityTask(fortishield.github.iomon=master_common,
                                                             logger=logging.getLogger("fortishield"))
-        assert isinstance(receive_integrity_task.fortishield_common, cluster_common.FortishieldCommon)
+        assert isinstance(receive_integrity_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
         assert isinstance(receive_integrity_task.logger, logging.Logger)
         integrity_check_mock.assert_called_once()
 
@@ -101,10 +101,10 @@ def test_rit_set_up_coro(create_task_mock):
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_integrity_task = master.ReceiveIntegrityTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_integrity_task = master.ReceiveIntegrityTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                          logger=logging.getLogger("fortishield"))
-    assert receive_integrity_task.set_up_coro() == fortishield_common_mock.integrity_check
+    assert receive_integrity_task.set_up_coro() == fortishield.github.iomon_mock.integrity_check
     create_task_mock.assert_called_once()
 
 
@@ -124,14 +124,14 @@ def test_rit_done_callback(super_callback_mock, create_task_mock):
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_integrity_task = master.ReceiveIntegrityTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_integrity_task = master.ReceiveIntegrityTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                          logger=logging.getLogger("fortishield"))
     receive_integrity_task.done_callback()
 
     create_task_mock.assert_called_once()
     super_callback_mock.assert_called_once_with(None)
-    assert fortishield_common_mock.sync_integrity_free[0] is True
+    assert fortishield.github.iomon_mock.sync_integrity_free[0] is True
 
 
 # Test ReceiveExtraValidTask class
@@ -141,10 +141,10 @@ def test_rit_done_callback(super_callback_mock, create_task_mock):
 def test_revt_init(set_up_coro_mock, create_task_mock):
     """Test the correct initialization of the ReceiveExtraValidTask class."""
 
-    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield_common=cluster_common.FortishieldCommon(),
+    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield.github.iomon=cluster_common.FortishieldCommon(),
                                                             logger=logging.getLogger("fortishield"))
 
-    assert isinstance(receive_extra_valid_task.fortishield_common, cluster_common.FortishieldCommon)
+    assert isinstance(receive_extra_valid_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
     assert isinstance(receive_extra_valid_task.logger, logging.Logger)
     set_up_coro_mock.assert_called_once()
     create_task_mock.assert_called_once()
@@ -164,10 +164,10 @@ def test_revt_set_up_coro(create_task_mock):
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                             logger=logging.getLogger("fortishield"))
-    assert receive_extra_valid_task.set_up_coro() == fortishield_common_mock.sync_extra_valid
+    assert receive_extra_valid_task.set_up_coro() == fortishield.github.iomon_mock.sync_extra_valid
     create_task_mock.assert_called_once()
 
 
@@ -188,16 +188,16 @@ def test_revt_done_callback(set_up_coro_mock, super_callback_mock, create_task_m
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_extra_valid_task = master.ReceiveExtraValidTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                             logger=logging.getLogger("fortishield"))
     receive_extra_valid_task.done_callback()
 
     create_task_mock.assert_called_once()
     super_callback_mock.assert_called_once_with(None)
     set_up_coro_mock.assert_called_once()
-    assert fortishield_common_mock.sync_integrity_free[0] is True
-    assert fortishield_common_mock.extra_valid_requested is False
+    assert fortishield.github.iomon_mock.sync_integrity_free[0] is True
+    assert fortishield.github.iomon_mock.extra_valid_requested is False
 
 
 @patch("asyncio.create_task")
@@ -205,10 +205,10 @@ def test_revt_done_callback(set_up_coro_mock, super_callback_mock, create_task_m
 def test_rait_init(set_up_coro_mock, create_task_mock):
     """Test the initialization of the ReceiveAgentInfoTask object."""
 
-    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield_common=cluster_common.FortishieldCommon(),
+    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield.github.iomon=cluster_common.FortishieldCommon(),
                                                           logger=logging.getLogger("fortishield"), task_id="0101")
 
-    assert isinstance(receive_agent_info_task.fortishield_common, cluster_common.FortishieldCommon)
+    assert isinstance(receive_agent_info_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
     assert receive_agent_info_task.task_id == "0101"
     set_up_coro_mock.assert_called_once()
     create_task_mock.assert_called_once()
@@ -219,10 +219,10 @@ def test_rait_init(set_up_coro_mock, create_task_mock):
 def test_seagt_init(set_up_coro_mock, create_task_mock):
     """Test the initialization of the SendEntireAgentGroupsTask object."""
 
-    receive_agent_groups_task = master.SendEntireAgentGroupsTask(fortishield_common=cluster_common.FortishieldCommon(),
+    receive_agent_groups_task = master.SendEntireAgentGroupsTask(fortishield.github.iomon=cluster_common.FortishieldCommon(),
                                                                  logger=logging.getLogger("fortishield"))
 
-    assert isinstance(receive_agent_groups_task.fortishield_common, cluster_common.FortishieldCommon)
+    assert isinstance(receive_agent_groups_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
     set_up_coro_mock.assert_called_once()
     create_task_mock.assert_called_once()
 
@@ -237,14 +237,14 @@ def test_rait_set_up_coro(create_task_mock):
         def __init__(self):
             pass
 
-        def sync_fortishield_db_info(self, fortishield_common, task_id):
+        def sync_fortishield_db_info(self, fortishield.github.iomon, task_id):
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                           logger=logging.getLogger("fortishield"), task_id="0101")
-    assert receive_agent_info_task.set_up_coro() == fortishield_common_mock.sync_fortishield_db_info
+    assert receive_agent_info_task.set_up_coro() == fortishield.github.iomon_mock.sync_fortishield_db_info
     create_task_mock.assert_called_once()
 
 
@@ -264,15 +264,15 @@ def test_rait_done_callback(set_up_coro_mock, super_callback_mock, create_task_m
             """Auxiliary method."""
             pass
 
-    fortishield_common_mock = FortishieldCommonMock()
-    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield_common=fortishield_common_mock,
+    fortishield.github.iomon_mock = FortishieldCommonMock()
+    receive_agent_info_task = master.ReceiveAgentInfoTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                           logger=logging.getLogger("fortishield"), task_id="0101")
     receive_agent_info_task.done_callback()
 
     create_task_mock.assert_called_once()
     super_callback_mock.assert_called_once_with(None)
     set_up_coro_mock.assert_called_once()
-    assert fortishield_common_mock.sync_agent_info_free is True
+    assert fortishield.github.iomon_mock.sync_agent_info_free is True
 
 
 # Test MasterHandler class

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -45,7 +45,7 @@ class ReceiveAgentGroupsTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent groups."""
-        return self.fortishield_common.recv_agent_groups_periodic_information
+        return self.fortishield.github.iomon.recv_agent_groups_periodic_information
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -56,7 +56,7 @@ class ReceiveAgentGroupsTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.fortishield_common.sync_agent_groups_free = True
+        self.fortishield.github.iomon.sync_agent_groups_free = True
 
 
 class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
@@ -81,7 +81,7 @@ class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent groups."""
-        return self.fortishield_common.recv_agent_groups_entire_information
+        return self.fortishield.github.iomon.recv_agent_groups_entire_information
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -92,7 +92,7 @@ class ReceiveEntireAgentGroupsTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.fortishield_common.sync_agent_groups_free = True
+        self.fortishield.github.iomon.sync_agent_groups_free = True
 
 
 class ReceiveIntegrityTask(c_common.ReceiveFileTask):
@@ -103,7 +103,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to process the integrity files received from master."""
-        return self.fortishield_common.process_files_from_master
+        return self.fortishield.github.iomon.process_files_from_master
 
     def done_callback(self, future=None):
         """Free the integrity sync lock and remove the task_id.
@@ -113,7 +113,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
         future : asyncio.Future object
             Synchronization process result.
         """
-        self.fortishield_common.check_integrity_free = True
+        self.fortishield.github.iomon.check_integrity_free = True
         super().done_callback(future)
 
 

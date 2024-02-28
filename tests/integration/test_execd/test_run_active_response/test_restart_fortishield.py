@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2023, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@fortishield.com>.
+           Created by Fortishield, Inc. <info@fortishield.github.io>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -43,7 +43,7 @@ os_version:
     - Windows Server 2016
 
 references:
-    - https://documentation.fortishield.com/current/user-manual/capabilities/active-response/#active-response
+    - https://documentation.fortishield.github.io/current/user-manual/capabilities/active-response/#active-response
 '''
 import sys
 import pytest

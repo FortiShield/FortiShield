@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import _hashlib
@@ -23,8 +23,8 @@ from uvloop import EventLoopPolicy, new_event_loop, Loop
 from fortishield import Fortishield
 from fortishield.core import exception
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         sys.modules['fortishield.rbac.orm'] = MagicMock()
         import fortishield.rbac.decorators
 
@@ -52,7 +52,7 @@ cluster_items = {"etc/": {"permissions": "0o640", "source": "master", "files": [
                  }
 
 fernet_key = "00000000000000000000000000000000"
-fortishield_common = cluster_common.FortishieldCommon()
+fortishield.github.iomon = cluster_common.FortishieldCommon()
 in_buffer = cluster_common.InBuffer()
 
 asyncio.set_event_loop_policy(EventLoopPolicy())
@@ -162,10 +162,10 @@ def test_sst_init(setup_coro_mock, create_task_mock):
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        sst_task = cluster_common.SendStringTask(fortishield_common=cluster_common.FortishieldCommon(), logger='')
+        sst_task = cluster_common.SendStringTask(fortishield.github.iomon=cluster_common.FortishieldCommon(), logger='')
         assert sst_task.logger == ''
         assert sst_task.task in sst_task.tasks_hard_reference
-        assert isinstance(sst_task.fortishield_common, cluster_common.FortishieldCommon)
+        assert isinstance(sst_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
 
@@ -196,12 +196,12 @@ def test_sst_done_callback(setup_coro_mock, create_task_mock):
             self.sync_tasks = {b"010": b"123456789", b"011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    fortishield_common_mock = FortishieldCommon()
+    fortishield.github.iomon_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
         logger = logging.getLogger('fortishield')
         with patch.object(logger, "error") as logger_mock:
-            sst_task = cluster_common.SendStringTask(fortishield_common=fortishield_common_mock, logger=logger)
+            sst_task = cluster_common.SendStringTask(fortishield.github.iomon=fortishield.github.iomon_mock, logger=logger)
             assert sst_task.task in sst_task.tasks_hard_reference
             sst_task.done_callback()
             logger_mock.assert_called_once_with(Exception)
@@ -226,9 +226,9 @@ def test_rst_init(setup_coro_mock, create_task_mock):
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        string_task = cluster_common.ReceiveStringTask(fortishield_common=cluster_common.FortishieldCommon(), logger='',
+        string_task = cluster_common.ReceiveStringTask(fortishield.github.iomon=cluster_common.FortishieldCommon(), logger='',
                                                        info_type='testing', task_id=b"010")
-        assert isinstance(string_task.fortishield_common, cluster_common.FortishieldCommon)
+        assert isinstance(string_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
         assert string_task.info_type == 'testing'
@@ -255,11 +255,11 @@ async def test_rst_str_method(logger_mock, event_loop):
 
 @patch('logging.Logger')
 @patch('fortishield.core.cluster.common.FortishieldCommon')
-def test_rst_set_up_coro_ko(fortishield_common_mock, logger_mock):
+def test_rst_set_up_coro_ko(fortishield.github.iomon_mock, logger_mock):
     """Test if the exception is being properly raised when an Exception takes place."""
 
     with pytest.raises(NotImplementedError):
-        cluster_common.ReceiveStringTask(fortishield_common_mock, logger_mock, b"task")
+        cluster_common.ReceiveStringTask(fortishield.github.iomon_mock, logger_mock, b"task")
 
 
 @patch("asyncio.create_task")
@@ -288,16 +288,16 @@ def test_rst_done_callback(setup_coro_mock, create_task_mock):
             self.sync_tasks = {b"010": b"123456789", b"011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    fortishield_common_mock = FortishieldCommon()
+    fortishield.github.iomon_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
         logger = logging.getLogger('fortishield')
         with patch.object(logger, "error") as logger_mock:
-            string_task = cluster_common.ReceiveStringTask(fortishield_common=fortishield_common_mock, logger=logger,
+            string_task = cluster_common.ReceiveStringTask(fortishield.github.iomon=fortishield.github.iomon_mock, logger=logger,
                                                            info_type='agent-groups', task_id=b"010")
             string_task.done_callback()
-            assert string_task.fortishield_common.in_str == {b"011": b"123456789"}
-            assert string_task.fortishield_common.sync_tasks == {b"011": b"123456789"}
+            assert string_task.fortishield.github.iomon.in_str == {b"011": b"123456789"}
+            assert string_task.fortishield.github.iomon.sync_tasks == {b"011": b"123456789"}
             logger_mock.assert_called_once_with(Exception, exc_info=False)
 
 
@@ -322,9 +322,9 @@ def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, eve
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback") as done_callback_mock:
-        file_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        file_task = cluster_common.ReceiveFileTask(fortishield.github.iomon=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                    task_id=b"010")
-        assert isinstance(file_task.fortishield_common, cluster_common.FortishieldCommon)
+        assert isinstance(file_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
         setup_coro_mock.assert_called_once()
         done_callback_mock.assert_called_once()
         assert file_task.logger == logger_mock
@@ -334,7 +334,7 @@ def test_rft_init(uuid_mock, setup_coro_mock, logger_mock, create_task_mock, eve
         file_task.filename = ""
 
         # Test if task_id is None
-        string_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        string_task = cluster_common.ReceiveFileTask(fortishield.github.iomon=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                      task_id="")
         assert string_task.task_id == uuid_mock.return_value
 
@@ -357,18 +357,18 @@ def test_rft_str_method(set_up_coro_mock, create_task_mock, logger_mock, event_m
     create_task_mock.return_value = TaskMock()
 
     with patch.object(TaskMock, "add_done_callback"):
-        file_task = cluster_common.ReceiveFileTask(fortishield_common=cluster_common.FortishieldCommon(), logger=logger_mock,
+        file_task = cluster_common.ReceiveFileTask(fortishield.github.iomon=cluster_common.FortishieldCommon(), logger=logger_mock,
                                                    task_id=b"010")
         assert isinstance(file_task.__str__(), str)
 
 
 @patch('logging.Logger')
 @patch('fortishield.core.cluster.common.FortishieldCommon')
-def test_rft_set_up_coro(fortishield_common_mock, logger_mock):
+def test_rft_set_up_coro(fortishield.github.iomon_mock, logger_mock):
     """Test if the exception is being properly raised when an Exception takes place."""
 
     with pytest.raises(NotImplementedError):
-        cluster_common.ReceiveFileTask(fortishield_common_mock, logger_mock, b"task")
+        cluster_common.ReceiveFileTask(fortishield.github.iomon_mock, logger_mock, b"task")
 
 
 @patch('asyncio.Event')
@@ -399,14 +399,14 @@ def test_rft_done_callback(set_up_coro_mock, create_task_mock, event_mock):
             self.sync_tasks = {"010": b"123456789", "011": b"123456789"}
 
     create_task_mock.return_value = TaskMock()
-    fortishield_common_mock = FortishieldCommon()
+    fortishield.github.iomon_mock = FortishieldCommon()
 
     with patch.object(TaskMock, "add_done_callback"):
         with patch.object(logging.getLogger('fortishield'), "error") as logger_mock:
-            file_task = cluster_common.ReceiveFileTask(fortishield_common=fortishield_common_mock,
+            file_task = cluster_common.ReceiveFileTask(fortishield.github.iomon=fortishield.github.iomon_mock,
                                                        logger=logging.getLogger('fortishield'), task_id=b"010")
             file_task.done_callback()
-            assert file_task.fortishield_common.sync_tasks == {"011": b"123456789"}
+            assert file_task.fortishield.github.iomon.sync_tasks == {"011": b"123456789"}
             logger_mock.assert_called_once_with(Exception, exc_info=False)
 
 
@@ -1271,21 +1271,21 @@ async def test_handler_wait_for_file_ko(send_request_mock):
 
 # Test 'FortishieldCommon' class methods
 
-def test_fortishield_common_init():
+def test_fortishield.github.iomon_init():
     """Test the '__init__' method correct functioning."""
 
-    fortishield_common_test = cluster_common.FortishieldCommon()
-    assert fortishield_common_test.sync_tasks == {}
+    fortishield.github.iomon_test = cluster_common.FortishieldCommon()
+    assert fortishield.github.iomon_test.sync_tasks == {}
 
 
-def test_fortishield_common_get_logger():
+def test_fortishield.github.iomon_get_logger():
     """Check if a Logger object is properly returned."""
 
     with pytest.raises(NotImplementedError):
-        fortishield_common.get_logger()
+        fortishield.github.iomon.get_logger()
 
 
-def test_fortishield_common_setup_send_info():
+def test_fortishield.github.iomon_setup_send_info():
     """Check if SendTaskClass class is created and returned."""
 
     class MyTaskMock:
@@ -1297,12 +1297,12 @@ def test_fortishield_common_setup_send_info():
     mock_object = MagicMock(return_value=my_task)
 
     with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
-        first_output, second_output = fortishield_common.setup_send_info(mock_object)
+        first_output, second_output = fortishield.github.iomon.setup_send_info(mock_object)
         assert first_output == b'ok'
         assert isinstance(second_output, bytes)
 
 
-def test_fortishield_common_setup_receive_file():
+def test_fortishield.github.iomon_setup_receive_file():
     """Check if ReceiveFileTask class is created and added to the task dictionary."""
 
     class MyTaskMock:
@@ -1314,67 +1314,67 @@ def test_fortishield_common_setup_receive_file():
     mock_object = MagicMock(return_value=my_task)
 
     with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
-        first_output, second_output = fortishield_common.setup_receive_file(mock_object)
+        first_output, second_output = fortishield.github.iomon.setup_receive_file(mock_object)
         assert first_output == b'ok'
         assert isinstance(second_output, bytes)
-        assert MyTaskMock().task_id in fortishield_common.sync_tasks
-        assert isinstance(fortishield_common.sync_tasks[MyTaskMock().task_id], MyTaskMock)
+        assert MyTaskMock().task_id in fortishield.github.iomon.sync_tasks
+        assert isinstance(fortishield.github.iomon.sync_tasks[MyTaskMock().task_id], MyTaskMock)
 
 
 @patch('fortishield.core.cluster.common.FortishieldCommon')
 @patch('logging.Logger')
-def test_fortishield_common_end_receiving_file_ok(logger_mock, fortishield_common_mock):
+def test_fortishield.github.iomon_end_receiving_file_ok(logger_mock, fortishield.github.iomon_mock):
     """Check if the full path to the received file is properly stored and availability is notified."""
 
     with patch('fortishield.core.cluster.common.ReceiveFileTask.set_up_coro'):
         with patch('asyncio.create_task'):
-            file_task = cluster_common.ReceiveFileTask(fortishield_common_mock, logger_mock, b"task")
+            file_task = cluster_common.ReceiveFileTask(fortishield.github.iomon_mock, logger_mock, b"task")
 
-    fortishield_common.sync_tasks = {'task_ID': file_task}
-    assert fortishield_common.end_receiving_file("task_ID filepath") == (b'ok', b'File correctly received')
-    assert isinstance(fortishield_common.sync_tasks["task_ID"], cluster_common.ReceiveFileTask)
+    fortishield.github.iomon.sync_tasks = {'task_ID': file_task}
+    assert fortishield.github.iomon.end_receiving_file("task_ID filepath") == (b'ok', b'File correctly received')
+    assert isinstance(fortishield.github.iomon.sync_tasks["task_ID"], cluster_common.ReceiveFileTask)
 
 
 @patch('os.remove')
 @patch('os.path.exists', return_value=True)
-def test_fortishield_common_end_receiving_file_ko(path_exists_mock, os_remove_mock):
+def test_fortishield.github.iomon_end_receiving_file_ko(path_exists_mock, os_remove_mock):
     """Test the 'end_receiving_file' correct functioning in a failure scenario."""
 
     with pytest.raises(exception.FortishieldClusterError, match=r'.* 3027 .*'):
-        fortishield_common.end_receiving_file("not_task_ID filepath")
+        fortishield.github.iomon.end_receiving_file("not_task_ID filepath")
 
     with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
         with pytest.raises(exception.FortishieldClusterError, match=r'.* 3027 .*'):
             os_remove_mock.side_effect = Exception
-            fortishield_common.end_receiving_file("not_task_ID filepath")
+            fortishield.github.iomon.end_receiving_file("not_task_ID filepath")
     assert os_remove_mock.call_count == 2
 
 
 @patch('json.loads')
-def test_fortishield_common_error_receiving_file_ok(json_loads_mock):
+def test_fortishield.github.iomon_error_receiving_file_ok(json_loads_mock):
     """Check how error are handled by peer in the sent file process."""
 
     with patch('os.path.exists', return_value=True):
         with patch('os.remove'):
             # Test first condition and its nested condition
-            assert fortishield_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
+            assert fortishield.github.iomon.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
 
     # Test second condition
     with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
-        assert fortishield_common.error_receiving_file("not_task_ID error_details") == (b'ok', b'Error received')
+        assert fortishield.github.iomon.error_receiving_file("not_task_ID error_details") == (b'ok', b'Error received')
 
 
-def test_fortishield_common_error_receiving_file_ko():
+def test_fortishield.github.iomon_error_receiving_file_ko():
     """Test the 'error_receiving_file' when an exception takes place."""
 
     with patch('json.loads'):
         with patch('os.path.exists', return_value=True):
             with patch('os.remove', side_effect=Exception):
                 with patch('fortishield.core.cluster.common.FortishieldCommon.get_logger'):
-                    assert fortishield_common.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
+                    assert fortishield.github.iomon.error_receiving_file("task_ID error_details") == (b'ok', b'Error received')
 
 
-def test_fortishield_common_get_node():
+def test_fortishield.github.iomon_get_node():
     """Check if it is possible to obtain basic information about the node."""
 
     class MockClass(cluster_common.FortishieldCommon, cluster_common.Handler, abc.ABC):

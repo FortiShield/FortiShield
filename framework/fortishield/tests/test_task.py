@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -9,8 +9,8 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         import fortishield.rbac.decorators
 
         from fortishield.tests.util import get_fake_database_data, RBAC_bypasser, InitWDBSocketMock

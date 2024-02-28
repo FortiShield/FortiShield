@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -285,7 +285,7 @@ def test_get_invalid_keys(dikt, f_kwargs, invalid_keys):
 
 @pytest.mark.parametrize('link', [
     '',
-    'https://documentation.fortishield.com/current/user-manual/api/reference.html'
+    'https://documentation.fortishield.github.io/current/user-manual/api/reference.html'
 ])
 @pytest.mark.asyncio
 async def test_deprecate_endpoint(link):

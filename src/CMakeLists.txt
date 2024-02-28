@@ -53,11 +53,11 @@ if(NOT EXTERNAL_DEPS_VERSION)
 endif(NOT EXTERNAL_DEPS_VERSION)
 
 if(NOT RESOURCES_URL)
-    set(RESOURCES_URL "https://packages.fortishield.com/deps/${EXTERNAL_DEPS_VERSION}/libraries/sources")
+    set(RESOURCES_URL "https://fortishield.github.io/packages/deps/${EXTERNAL_DEPS_VERSION}/libraries/sources")
 endif(NOT RESOURCES_URL)
 
 if(NOT PRECOMPILED_RESOURCES_URL)
-    set(PRECOMPILED_RESOURCES_URL "https://packages.fortishield.com/deps/${EXTERNAL_DEPS_VERSION}/libraries/linux/amd64")
+    set(PRECOMPILED_RESOURCES_URL "https://fortishield.github.io/packages/deps/${EXTERNAL_DEPS_VERSION}/libraries/linux/amd64")
 endif(NOT PRECOMPILED_RESOURCES_URL)
 
 # Download external libraries

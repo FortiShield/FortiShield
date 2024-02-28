@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 #
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 """This module contains generic functions for this wodle."""
@@ -16,7 +16,7 @@ import sys
 import re
 
 DEFAULT_AWS_CONFIG_PATH = path.join(path.expanduser('~'), '.aws', 'config')
-SECURITY_LAKE_IAM_ROLE_AUTHENTICATION_URL = 'https://documentation.fortishield.com/current/cloud-security/amazon/services/' \
+SECURITY_LAKE_IAM_ROLE_AUTHENTICATION_URL = 'https://documentation.fortishield.github.io/current/cloud-security/amazon/services/' \
                                         'supported-services/security-lake.html#configuring-an-iam-role'
 
 ALL_REGIONS = (

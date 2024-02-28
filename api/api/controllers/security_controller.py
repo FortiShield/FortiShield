@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import logging
@@ -29,7 +29,7 @@ logger = logging.getLogger('fortishield-api')
 auth_re = re.compile(r'basic (.*)', re.IGNORECASE)
 
 
-@deprecate_endpoint(link=f'https://documentation.fortishield.com/{__version__}/user-manual/api/reference.html#'
+@deprecate_endpoint(link=f'https://documentation.fortishield.github.io/{__version__}/user-manual/api/reference.html#'
                          f'operation/api.controllers.security_controller.login_user')
 async def deprecated_login_user(user: str, raw: bool = False) -> web.Response:
     """User/password authentication to get an access token.

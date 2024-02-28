@@ -68,7 +68,7 @@ void test_wm_agent_upgrade_dump_enabled(void **state)
     config->enabled = 1;
 
     #ifdef TEST_SERVER
-    os_strdup("fortishield.com/packages", config->manager_config.wpk_repository);
+    os_strdup("fortishield.github.io/packages", config->manager_config.wpk_repository);
     config->manager_config.chunk_size = 512;
     config->manager_config.max_threads = 8;
     #else
@@ -91,7 +91,7 @@ void test_wm_agent_upgrade_dump_enabled(void **state)
     assert_int_equal(cJSON_GetObjectItem(conf, "max_threads")->valueint, 8);
     assert_int_equal(cJSON_GetObjectItem(conf, "chunk_size")->valueint, 512);
     assert_non_null(cJSON_GetObjectItem(conf, "wpk_repository"));
-    assert_string_equal(cJSON_GetObjectItem(conf, "wpk_repository")->valuestring, "fortishield.com/packages");
+    assert_string_equal(cJSON_GetObjectItem(conf, "wpk_repository")->valuestring, "fortishield.github.io/packages");
     #else
     assert_non_null(cJSON_GetObjectItem(conf, "ca_verification"));
     assert_string_equal(cJSON_GetObjectItem(conf, "ca_verification")->valuestring, "yes");
@@ -144,7 +144,7 @@ void test_wm_agent_upgrade_destroy(void **state)
     os_calloc(1, sizeof(wm_agent_upgrade), config);
 
     #ifdef TEST_SERVER
-    os_strdup("fortishield.com/packages", config->manager_config.wpk_repository);
+    os_strdup("fortishield.github.io/packages", config->manager_config.wpk_repository);
     #endif
 
     expect_string(__wrap__mtinfo, tag, "fortishield-modulesd:agent-upgrade");

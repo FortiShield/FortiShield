@@ -450,9 +450,9 @@ WriteManager()
 
     if [ "$EMAILNOTIFY" = "yes"   ]; then
         sed -e "s|<email_notification>no</email_notification>|<email_notification>yes</email_notification>|g; \
-        s|<smtp_server>smtp.example.fortishield.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
-        s|<email_from>fortishield@example.fortishield.com</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
-        s|<email_to>recipient@example.fortishield.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
+        s|<smtp_server>smtp.example.fortishield.github.io</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
+        s|<email_from>fortishield@example.fortishield.github.io</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
+        s|<email_to>recipient@example.fortishield.github.io</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
     else
         cat ${GLOBAL_TEMPLATE} >> $NEWCONFIG
     fi
@@ -598,9 +598,9 @@ WriteLocal()
 
     if [ "$EMAILNOTIFY" = "yes"   ]; then
         sed -e "s|<email_notification>no</email_notification>|<email_notification>yes</email_notification>|g; \
-        s|<smtp_server>smtp.example.fortishield.com</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
-        s|<email_from>fortishield@example.fortishield.com</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
-        s|<email_to>recipient@example.fortishield.com</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
+        s|<smtp_server>smtp.example.fortishield.github.io</smtp_server>|<smtp_server>${SMTP}</smtp_server>|g; \
+        s|<email_from>fortishield@example.fortishield.github.io</email_from>|<email_from>fortishield@${HOST}</email_from>|g; \
+        s|<email_to>recipient@example.fortishield.github.io</email_to>|<email_to>${EMAIL}</email_to>|g;" "${GLOBAL_TEMPLATE}" >> $NEWCONFIG
     else
         cat ${GLOBAL_TEMPLATE} >> $NEWCONFIG
     fi
@@ -1123,7 +1123,7 @@ checkDownloadContent()
 
     if [ "X${DOWNLOAD_CONTENT_AND_DECOMPRESS}" = "Xy" ]; then
         echo "Download ${VD_FILENAME} file"
-        wget -O ${VD_FILENAME} http://packages.fortishield.com/deps/vulnerability_model_database/${VD_FILENAME}
+        wget -O ${VD_FILENAME} http://fortishield.github.io/packages/deps/vulnerability_model_database/${VD_FILENAME}
 
         echo "Decompress ${VD_FILENAME} file"
         ${INSTALL} -m 0660 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${VD_FILENAME} ${INSTALLDIR}/
@@ -1132,7 +1132,7 @@ checkDownloadContent()
         rm -rf ${VD_FILENAME}
     elif [ "X${DOWNLOAD_CONTENT}" = "Xyes" ]; then
         echo "Download ${VD_FILENAME} file"
-        wget -O ${VD_FILENAME} http://packages.fortishield.com/deps/vulnerability_model_database/${VD_FILENAME}
+        wget -O ${VD_FILENAME} http://fortishield.github.io/packages/deps/vulnerability_model_database/${VD_FILENAME}
 
         ${INSTALL} -m 0640 -o ${FORTISHIELD_USER} -g ${FORTISHIELD_GROUP} ${VD_FILENAME} ${INSTALLDIR}/
     fi

@@ -25,4 +25,4 @@
   - Eğer inceleme yapacağınız tek sisteminiz varsa 'yerel' kullanın.
 
   - Daha fazla bilgi:
-    https://documentation.fortishield.com
+    https://documentation.fortishield.github.io

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from unittest.mock import MagicMock, patch
@@ -9,8 +9,8 @@ from connexion.lifecycle import ConnexionRequest
 
 from api.api_exception import APIError
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         from api.uri_parser import APIUriParser
 
 query_dict = {'component': 'VaLuE',

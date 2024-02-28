@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import sys
@@ -9,8 +9,8 @@ import pytest
 from aiohttp import web_response
 from api.controllers.test.utils import CustomAffectedItems
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         sys.modules['fortishield.rbac.orm'] = MagicMock()
         import fortishield.rbac.decorators
         from api.controllers.task_controller import get_tasks_status

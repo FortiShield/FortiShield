@@ -16,7 +16,7 @@
  * There are several way of registering according to manager's configuration
  * This library receives a enrollment configuration and target especification and registers to the
  * manager or shows several messages in case of failure
- * For details on enrollment process @see https://documentation.fortishield.com/3.12/user-manual/registering/
+ * For details on enrollment process @see https://documentation.fortishield.github.io/3.12/user-manual/registering/
  */
 #ifndef ENROLLMENT_CLIENT_H
 #define ENROLLMENT_CLIENT_H

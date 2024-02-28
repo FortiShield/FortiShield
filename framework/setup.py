@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from fortishield import __version__
@@ -13,7 +13,7 @@ setup(name='fortishield',
       description='Fortishield control with Python',
       url='https://github.com/fortishield',
       author='Fortishield',
-      author_email='hello@fortishield.com',
+      author_email='hello@fortishield.github.io',
       license='GPLv2',
       packages=find_namespace_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
       package_data={'fortishield': ['core/fortishield.json',

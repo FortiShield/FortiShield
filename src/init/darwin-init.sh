@@ -2,7 +2,7 @@
 
 # Darwin init script.
 # by Lorenzo Costanzia di Costigliole <mummie@tin.it>
-# Modified by Fortishield, Inc. <info@fortishield.com>.
+# Modified by Fortishield, Inc. <info@fortishield.github.io>.
 # Copyright (C) 2015, Fortishield Inc.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 

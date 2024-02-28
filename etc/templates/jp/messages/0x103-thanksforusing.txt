@@ -6,6 +6,6 @@
            https://groups.google.com/forum/#!forum/fortishield
 
      詳しい情報は次の場所にあります：
-           - http://www.fortishield.com
+           - http://www.fortishield.github.io
 
      --- ENTERを押して終了します（以下の情報が必要です）。 ---

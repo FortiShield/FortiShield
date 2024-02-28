@@ -48,7 +48,7 @@ All the downloaded content will be stored in the filesystem, making it available
         "compressionType": "raw",
         "versionedContent": "cti-api",
         "deleteDownloadedContent": true,
-        "url": "https://cti.fortishield.com/api/v1/catalog/contexts/test_context/consumers/test_consumer",
+        "url": "https://cti.fortishield.github.io/api/v1/catalog/contexts/test_context/consumers/test_consumer",
         "outputFolder": "/tmp/output_folder",
         "contentFileName": "content.json",
         "databasePath": "/tmp/content_updater/rocksdb"
@@ -80,9 +80,9 @@ Executing the Content Manager for the first time, with a starting offset of `228
 [DEBUG_VERBOSE]: Initial API offset: 228000
 [DEBUG_VERBOSE]: CTI last offset: '230577'
 [DEBUG_VERBOSE]: CTI last snapshot link: 'https://s3.us-east-1.amazonaws.com/cti-snapshots-pro/store/contexts/vd_1.0.0/consumers/vd_4.8.0/230577_1700904966.zip'
-[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.com/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=228000&to_offset=229000'
-[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.com/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=229000&to_offset=230000'
-[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.com/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=230000&to_offset=230577'
+[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.github.io/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=228000&to_offset=229000'
+[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.github.io/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=229000&to_offset=230000'
+[DEBUG_VERBOSE]: Downloading offsets from: 'https://cti.fortishield.github.io/api/v1/catalog/contexts/vd_1.0.0/consumers/vd_4.8.0//changes?from_offset=230000&to_offset=230577'
 [DEBUG]: SkipStep - Starting process
 [DEBUG]: PubSubPublisher - Starting process
 [DEBUG_VERBOSE]: Data to be published: '{"paths":["/tmp/output_folder/contents/229000-example.json","/tmp/output_folder/contents/230000-example.json","/tmp/output_folder/contents/230577-example.json"],"stageStatus":[{"stage":"CtiOffsetDownloader","status":"ok"}],"type":"offsets"}'
@@ -154,7 +154,7 @@ The snapshot file will be decompressed and stored in the filesystem, making it a
         "contentSource": "cti-snapshot",
         "compressionType": "zip",
         "deleteDownloadedContent": true,
-        "url": "https://cti.fortishield.com/api/v1/catalog/contexts/test_context/consumers/test_consumer",
+        "url": "https://cti.fortishield.github.io/api/v1/catalog/contexts/test_context/consumers/test_consumer",
         "outputFolder": "/tmp/output_folder"
     }
 }
@@ -285,7 +285,7 @@ When downloading files, the Content Manager keeps track of the last downloaded f
         "contentSource": "file",
         "compressionType": "zip",
         "deleteDownloadedContent": false,
-        "url": "https://cti.fortishield.com/cti-snapshots/store/contexts/test_context/consumers/test_consumer/1000_2000.zip",
+        "url": "https://cti.fortishield.github.io/cti-snapshots/store/contexts/test_context/consumers/test_consumer/1000_2000.zip",
         "outputFolder": "/tmp/output_folder"
     }
 }

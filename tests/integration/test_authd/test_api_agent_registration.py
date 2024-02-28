@@ -1,7 +1,7 @@
 '''
 copyright: Copyright (C) 2015-2021, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@fortishield.com>.
+           Created by Fortishield, Inc. <info@fortishield.github.io>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -46,7 +46,7 @@ os_version:
     - Red Hat 6
 
 references:
-    - https://documentation.fortishield.com/current/user-manual/registering/restful-api-registration.html
+    - https://documentation.fortishield.github.io/current/user-manual/registering/restful-api-registration.html
 
 tags:
     - authd

@@ -7,6 +7,6 @@
               https://groups.google.com/forum/#!forum/fortishield
 
     Maggiori informazioni sono disponibili all'indirizzo:
-               - http://www.fortishield.com
+               - http://www.fortishield.github.io
 
       --- Premere ENTER per finire (forse di più informazioni qui di seguito). ---

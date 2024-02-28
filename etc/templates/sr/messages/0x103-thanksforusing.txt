@@ -7,7 +7,7 @@
               https://groups.google.com/forum/#!forum/fortishield
 
     Više informacija može se pronaći na:
-               - http://www.fortishield.com
+               - http://www.fortishield.github.io
 
          --- Pritisnite ENTER za kraj. ---
     --- (Možda i više informacija u nastavku). ---

@@ -5,10 +5,10 @@
 The Fortishield Filebeat module is hosted at the following URLs
 
 - Production:
-  - https://packages.fortishield.com/4.x/filebeat/
+  - https://fortishield.github.io/packages/4.x/filebeat/
 - Development:
-  - https://packages-dev.fortishield.com/pre-release/filebeat/
-  - https://packages-dev.fortishield.com/staging/filebeat/
+  - https://fortishield.github.io/packages-dev/pre-release/filebeat/
+  - https://fortishield.github.io/packages-dev/staging/filebeat/
 
 The Fortishield Filebeat module must follow the following nomenclature, where revision corresponds to X.Y values
 

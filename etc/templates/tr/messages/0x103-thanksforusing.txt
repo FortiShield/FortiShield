@@ -7,7 +7,7 @@
               https://groups.google.com/forum/#!forum/fortishield
 
     Daha fazla bilgi şu adresten bulunabilir:
-               - http://www.fortishield.com
+               - http://www.fortishield.github.io
 
          --- Bitirmek için ENTER'a basın. ---
       --- (Belki daha fazla bilgi aşağıda). ---

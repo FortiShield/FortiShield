@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import copy
@@ -226,7 +226,7 @@ def generate_self_signed_certificate(private_key: rsa.RSAPrivateKey, certificate
         x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, u"California"),
         x509.NameAttribute(NameOID.LOCALITY_NAME, u"San Francisco"),
         x509.NameAttribute(NameOID.ORGANIZATION_NAME, u"Fortishield"),
-        x509.NameAttribute(NameOID.COMMON_NAME, u"fortishield.com"),
+        x509.NameAttribute(NameOID.COMMON_NAME, u"fortishield.github.io"),
     ])
     cert = x509.CertificateBuilder().subject_name(
         subject

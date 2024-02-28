@@ -23,4 +23,4 @@
   - Izaberi 'lokalnu' ako pratiš samo jedan sistem.
 
   - Više obaveštenja na:
-    https://documentation.fortishield.com
+    https://documentation.fortishield.github.io

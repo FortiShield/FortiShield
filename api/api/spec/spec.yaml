@@ -555,7 +555,7 @@ components:
             detail: "Permission denied: Resource type: *:*"
             remediation: "Please, make sure you have permissions to execute the current request. For more information
             on how to set up permissions, please visit
-            https://documentation.fortishield.com/5.0/user-manual/api/rbac/configuration.html"
+            https://documentation.fortishield.github.io/5.0/user-manual/api/rbac/configuration.html"
             error: 4000
             dapi_errors:
               unknown-node:
@@ -622,7 +622,7 @@ components:
             title: "Fortishield Error"
             detail: "Maximum number of requests per minute reached"
             remediation: "This limit can be changed in api.yaml file. More information here:
-            https://documentation.fortishield.com/5.0/user-manual/api/security/configuration.html"
+            https://documentation.fortishield.github.io/5.0/user-manual/api/security/configuration.html"
             code: 6001
 
     ResourceNotFoundResponse:
@@ -635,7 +635,7 @@ components:
             title: "Resource Not Found"
             detail: "The group does not exist"
             remediation: "Please, use `GET /groups` to find all available groups:
-            https://documentation.fortishield.com/5.0/user-manual/api/rbac/configuration.html"
+            https://documentation.fortishield.github.io/5.0/user-manual/api/rbac/configuration.html"
             code: 1710
             dapi_errors:
               unknown-node:
@@ -3876,7 +3876,7 @@ components:
           type: number
           format: float
           description: "Same as `alerts_written` but focusing in [FTS alerts]
-          (https://documentation.fortishield.com/5.0/user-manual/ruleset/ruleset-xml-syntax/decoders.html?highlight=fts
+          (https://documentation.fortishield.github.io/5.0/user-manual/ruleset/ruleset-xml-syntax/decoders.html?highlight=fts
           #fts)"
         hostinfo_queue_size:
           type: number
@@ -9213,8 +9213,8 @@ paths:
                           code: 1707
                           message: "Cannot send request, agent is not active"
                           remediation: "Please, check non-active agents connection and try again.
-                           Visit https://documentation.fortishield.com/5.0/user-manual/registering/index.html
-                           and https://documentation.fortishield.com/5.0/user-manual/agents/agent-connection.html
+                           Visit https://documentation.fortishield.github.io/5.0/user-manual/registering/index.html
+                           and https://documentation.fortishield.github.io/5.0/user-manual/agents/agent-connection.html
                            to obtain more information on registering and connecting agents"
                         id:
                           - '009'
@@ -10179,9 +10179,9 @@ paths:
                         logall: no
                         logall_json: no
                         email_notification: no
-                        smtp_server: smtp.example.fortishield.com
-                        email_from: fortishield@example.fortishield.com
-                        email_to: recipient@example.fortishield.com
+                        smtp_server: smtp.example.fortishield.github.io
+                        email_from: fortishield@example.fortishield.github.io
+                        email_to: recipient@example.fortishield.github.io
                         email_maxperhour: 12
                         email_log_source: alerts.log
                         agents_disconnection_time: "10m"
@@ -11849,9 +11849,9 @@ paths:
                         logall: no
                         logall_json: no
                         email_notification: no
-                        smtp_server: smtp.example.fortishield.com
-                        email_from: fortishield@example.fortishield.com
-                        email_to: recipient@example.fortishield.com
+                        smtp_server: smtp.example.fortishield.github.io
+                        email_from: fortishield@example.fortishield.github.io
+                        email_to: recipient@example.fortishield.github.io
                         email_maxperhour: 12
                         email_log_source: alerts.log
                         queue_size: 131072
@@ -19038,4 +19038,4 @@ paths:
 
 externalDocs:
   description: "Find more about Fortishield API usage"
-  url: 'https://documentation.fortishield.com/5.0/user-manual/api/index.html'
+  url: 'https://documentation.fortishield.github.io/5.0/user-manual/api/index.html'

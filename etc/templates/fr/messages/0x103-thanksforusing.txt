@@ -7,7 +7,7 @@
                https://groups.google.com/forum/#!forum/fortishield
 
     Pour plus d'informations:
-               - http://www.fortishield.com
+               - http://www.fortishield.github.io
 
          --- Appuyez sur ENTER pour terminer. ---
     --- (Peut-être plus d'informations ci-dessous). ---

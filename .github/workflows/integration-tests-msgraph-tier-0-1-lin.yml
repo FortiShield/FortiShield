@@ -35,7 +35,7 @@ jobs:
       - name: Download m365proxy and config http for msgraph module
         run: |
           sed -i 's/https:\/\/%s\/%s/http:\/\/%s\/%s/g' src/fortishield_modules/wm_ms_graph.h
-          curl -L http://packages.fortishield.com/utils/m365proxy/m365proxy.tar.gz | \
+          curl -L http://fortishield.github.io/packages/utils/m365proxy/m365proxy.tar.gz | \
           tar zvx -C /tmp/
 
       # Build fortishield server for linux.

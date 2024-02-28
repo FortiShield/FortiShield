@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import os
@@ -360,7 +360,7 @@ def test_upload_file(mock_logtest, mock_safe_move, mock_remove, mock_xml, mock_f
                 assert result.affected_items[0] == rule_path, 'Expected item not found'
                 mock_xml.assert_called_once_with(content, rule_path)
                 if overwrite:
-                    full_path = os.path.join(fortishield.common.FORTISHIELD_PATH, rule_path)
+                    full_path = os.path.join(fortishield.github.iomon.FORTISHIELD_PATH, rule_path)
                     backup_file = full_path+'.backup'
                     mock_full_copy.assert_called_once_with(full_path, backup_file), \
                     'full_copy function not called with expected parameters'

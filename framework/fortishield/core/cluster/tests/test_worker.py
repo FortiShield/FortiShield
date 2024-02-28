@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -75,9 +75,9 @@ async def test_rgit_init(event_loop):
 
     with patch('fortishield.core.cluster.worker.ReceiveAgentGroupsTask.set_up_coro',
                side_effect=return_coro) as set_up_coro_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield.github.iomon=get_worker_handler(event_loop),
                                                                   logger=logging.getLogger("fortishield"), task_id="0101")
-        assert isinstance(receive_agent_groups_task.fortishield_common, cluster_common.FortishieldCommon)
+        assert isinstance(receive_agent_groups_task.fortishield.github.iomon, cluster_common.FortishieldCommon)
         assert receive_agent_groups_task.task_id == "0101"
         set_up_coro_mock.assert_called_once()
 
@@ -88,7 +88,7 @@ async def test_rgit_set_up_coro(event_loop):
 
     with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield.github.iomon=get_worker_handler(event_loop),
                                                                   logger=logging.getLogger("fortishield"), task_id="0101")
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
@@ -102,7 +102,7 @@ async def test_rgcit_set_up_coro(event_loop):
 
     with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield.github.iomon=get_worker_handler(event_loop),
                                                                         logger=logging.getLogger("fortishield"),
                                                                         task_id="0101")
         while not receive_agent_groups_task.task.done():
@@ -117,13 +117,13 @@ async def test_rgit_done_callback(event_loop):
 
     with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_periodic_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+        receive_agent_groups_task = worker.ReceiveAgentGroupsTask(fortishield.github.iomon=get_worker_handler(event_loop),
                                                                   logger=logging.getLogger("fortishield"), task_id="0101")
 
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
         recv_agent_mock.assert_awaited_once()
-        assert receive_agent_groups_task.fortishield_common.sync_agent_groups_free is True
+        assert receive_agent_groups_task.fortishield.github.iomon.sync_agent_groups_free is True
 
 
 @pytest.mark.asyncio
@@ -132,13 +132,13 @@ async def test_rgcit_done_callback(event_loop):
 
     with patch('fortishield.core.cluster.worker.WorkerHandler.recv_agent_groups_entire_information',
                return_value='') as recv_agent_mock:
-        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield_common=get_worker_handler(event_loop),
+        receive_agent_groups_task = worker.ReceiveEntireAgentGroupsTask(fortishield.github.iomon=get_worker_handler(event_loop),
                                                                         logger=logging.getLogger("fortishield"),
                                                                         task_id="0101")
         while not receive_agent_groups_task.task.done():
             await asyncio.sleep(0.01)
         recv_agent_mock.assert_awaited_once()
-        assert receive_agent_groups_task.fortishield_common.sync_agent_groups_free is True
+        assert receive_agent_groups_task.fortishield.github.iomon.sync_agent_groups_free is True
 
 
 @pytest.mark.asyncio
@@ -147,8 +147,8 @@ async def test_rit_set_up_coro(event_loop):
 
     with patch('fortishield.core.cluster.worker.WorkerHandler.process_files_from_master',
                return_value='') as process_files_mock:
-        receive_task = worker.ReceiveIntegrityTask(fortishield_common=get_worker_handler(event_loop), logger=None)
-        receive_task.fortishield_common = cluster_common.FortishieldCommon()
+        receive_task = worker.ReceiveIntegrityTask(fortishield.github.iomon=get_worker_handler(event_loop), logger=None)
+        receive_task.fortishield.github.iomon = cluster_common.FortishieldCommon()
         while not receive_task.task.done():
             await asyncio.sleep(0.01)
 
@@ -166,13 +166,13 @@ async def test_rit_done_callback(event_loop):
         return coro
 
     with patch('fortishield.core.cluster.worker.ReceiveIntegrityTask.set_up_coro', side_effect=return_coro):
-        receive_task = worker.ReceiveIntegrityTask(fortishield_common=get_worker_handler(event_loop), logger=None)
-        receive_task.fortishield_common = cluster_common.FortishieldCommon()
+        receive_task = worker.ReceiveIntegrityTask(fortishield.github.iomon=get_worker_handler(event_loop), logger=None)
+        receive_task.fortishield.github.iomon = cluster_common.FortishieldCommon()
 
         while not receive_task.task.done():
             await asyncio.sleep(0.01)
 
-        assert receive_task.fortishield_common.check_integrity_free is True
+        assert receive_task.fortishield.github.iomon.check_integrity_free is True
 
 
 # Test SyncFortishielddb class

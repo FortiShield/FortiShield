@@ -1,9 +1,9 @@
 # Fortishield
 
-[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://fortishield.com/community/join-us-on-slack/)
+[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://fortishield.github.io/community/join-us-on-slack/)
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/fortishield)
-[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.fortishield.com)
-[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://fortishield.com)
+[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.fortishield.github.io)
+[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://fortishield.github.io)
 [![Coverity](https://scan.coverity.com/projects/10992/badge.svg)](https://scan.coverity.com/projects/fortishield-fortishield)
 [![Twitter](https://img.shields.io/twitter/follow/fortishield?style=social)](https://twitter.com/fortishield)
 [![YouTube](https://img.shields.io/youtube/views/peTSzcAueEc?style=social)](https://www.youtube.com/watch?v=peTSzcAueEc)
@@ -159,25 +159,25 @@ Here you can find all the automation tools maintained by the Fortishield team.
 
 ## Documentation
 
-* [Full documentation](http://documentation.fortishield.com)
-* [Fortishield installation guide](https://documentation.fortishield.com/current/installation-guide/index.html)
+* [Full documentation](http://documentation.fortishield.github.io)
+* [Fortishield installation guide](https://documentation.fortishield.github.io/current/installation-guide/index.html)
 
 ## Get involved
 
-Become part of the [Fortishield's community](https://fortishield.com/community/) to learn from other users, participate in discussions, talk to our developers and contribute to the project.
+Become part of the [Fortishield's community](https://fortishield.github.io/community/) to learn from other users, participate in discussions, talk to our developers and contribute to the project.
 
 If you want to contribute to our project please don’t hesitate to make pull-requests, submit issues or send commits, we will review all your questions.
 
-You can also join our [Slack community channel](https://fortishield.com/community/join-us-on-slack/) and [mailing list](https://groups.google.com/d/forum/fortishield) by sending an email to [fortishield+subscribe@googlegroups.com](mailto:fortishield+subscribe@googlegroups.com), to ask questions and participate in discussions.
+You can also join our [Slack community channel](https://fortishield.github.io/community/join-us-on-slack/) and [mailing list](https://groups.google.com/d/forum/fortishield) by sending an email to [fortishield+subscribe@googlegroups.com](mailto:fortishield+subscribe@googlegroups.com), to ask questions and participate in discussions.
 
 Stay up to date on news, releases, engineering articles and more.
 
-* [Fortishield website](http://fortishield.com)
+* [Fortishield website](http://fortishield.github.io)
 * [Linkedin](https://www.linkedin.com/company/fortishield)
 * [YouTube](https://www.youtube.com/c/fortishieldsecurity)
 * [Twitter](https://twitter.com/fortishield)
-* [Fortishield blog](https://fortishield.com/blog/)
-* [Slack announcements channel](https://fortishield.com/community/join-us-on-slack/)
+* [Fortishield blog](https://fortishield.github.io/blog/)
+* [Slack announcements channel](https://fortishield.github.io/community/join-us-on-slack/)
 
 ## Authors
 

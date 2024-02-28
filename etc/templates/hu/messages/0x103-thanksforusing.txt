@@ -7,7 +7,7 @@
             https://groups.google.com/forum/#!forum/fortishield
 
     További információk a következő címen található meg:
-               - http://www.fortishield.com
+               - http://www.fortishield.github.io
 
         --- Nyomja meg az ENTER befejezni. ---
         --- (Talán több információt lent.) ---

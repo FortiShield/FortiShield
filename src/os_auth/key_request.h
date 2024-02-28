@@ -14,7 +14,7 @@
  *
  * This feature receives a key request configuration and registers to the manager
  * through a socket or a DB integration, or failing that, it shows various failure messages
- * For details on key request process @see https://documentation.fortishield.com/current/user-manual/capabilities/agent-key-request.html
+ * For details on key request process @see https://documentation.fortishield.github.io/current/user-manual/capabilities/agent-key-request.html
  */
 #ifndef KEY_REQUEST_H
 #define KEY_REQUEST_H

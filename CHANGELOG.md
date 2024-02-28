@@ -580,7 +580,7 @@ All notable changes to this project will be documented in this file.
 
 #### Changed
 
-- Vulnerability Detector now fetches the RHEL 5 feed URL from feed.fortishield.com by default. ([#18142](https://github.com/fortishield/fortishield/pull/18142))
+- Vulnerability Detector now fetches the RHEL 5 feed URL from feed.fortishield.github.io by default. ([#18142](https://github.com/fortishield/fortishield/pull/18142))
 - The Vulnerability Detector CPE helper has been updated. ([#16846](https://github.com/fortishield/fortishield/pull/16846))
 
 #### Fixed
@@ -650,7 +650,7 @@ All notable changes to this project will be documented in this file.
 
 #### Changed
 
-- Vulnerability Detector now fetches the NVD feed from https://feed.fortishield.com, based on the NVD API 2.0. ([#17954](https://github.com/fortishield/fortishield/pull/17954))
+- Vulnerability Detector now fetches the NVD feed from https://feed.fortishield.github.io, based on the NVD API 2.0. ([#17954](https://github.com/fortishield/fortishield/pull/17954))
   - The option `<update_from_year>` has been deprecated.
 
 #### Fixed
@@ -2133,7 +2133,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Core:**
-  - Fixed a bug in Vulnerability Detector that made Modulesd crash while updating the NVD feed due to a missing CPE entry. ([4cbd1e8](https://github.com/fortishield/fortishield/commit/4cbd1e85eeee0eb0d8247fa7228f590a9dd24153))
+  - Fixed a bug in Vulnerability Detector that made Modulesd crash while updating the NVD feed due to a missing CPE entry. ([4cbd1e8](https://github.com/fortishield/fortishield.github.iomit/4cbd1e85eeee0eb0d8247fa7228f590a9dd24153))
 
 
 ## [v4.1.4] - 2021-03-25
@@ -2394,7 +2394,7 @@ All notable changes to this project will be documented in this file.
 - Added **enrollment capability**. Agents are now able to request a key from the manager if current key is missing or wrong. ([#5609](https://github.com/fortishield/fortishield/pull/5609))
 - Migrated the agent-info data to Fortishield DB. ([#5541](https://github.com/fortishield/fortishield/pull/5541))
 - **API:**
-  - Embedded Fortishield API with Fortishield Manager, there is no need to install Fortishield API. ([9860823](https://github.com/fortishield/fortishield/commit/9860823d568f5e6d93550d9b139507c04d2c2eb9))
+  - Embedded Fortishield API with Fortishield Manager, there is no need to install Fortishield API. ([9860823](https://github.com/fortishield/fortishield.github.iomit/9860823d568f5e6d93550d9b139507c04d2c2eb9))
   - Migrated Fortishield API server from nodejs to python. ([#2640](https://github.com/fortishield/fortishield/pull/2640))
   - Added asynchronous aiohttp server for the Fortishield API. ([#4474](https://github.com/fortishield/fortishield/issues/4474))
   - New Fortishield API is approximately 5 times faster on average. ([#5834](https://github.com/fortishield/fortishield/issues/5834))
@@ -2405,11 +2405,11 @@ All notable changes to this project will be documented in this file.
   - Added RBAC support to Fortishield API. ([#3287](https://github.com/fortishield/fortishield/issues/3287))
   - Added new endpoints for Fortishield API security management. ([#3410](https://github.com/fortishield/fortishield/issues/3410))
   - Added SQLAlchemy ORM based database for RBAC. ([#3375](https://github.com/fortishield/fortishield/issues/3375))
-  - Added new JWT authentication method. ([7080ac3](https://github.com/fortishield/fortishield/commit/7080ac352774bb0feaf07cab76df58ea5503ff4b))
+  - Added new JWT authentication method. ([7080ac3](https://github.com/fortishield/fortishield.github.iomit/7080ac352774bb0feaf07cab76df58ea5503ff4b))
   - Fortishield API up and running by default in all nodes for a clustered environment.
   - Added new and improved error handling. ([#2843](https://github.com/fortishield/fortishield/issues/2843) ([#5345](https://github.com/fortishield/fortishield/issues/5345))
   - Added tavern and docker based Fortishield API integration tests. ([#3612](https://github.com/fortishield/fortishield/issues/3612))
-  - Added new and unified Fortishield API responses structure. ([3421015](https://github.com/fortishield/fortishield/commit/34210154016f0a63211a81707744dce0ec0a54f9))
+  - Added new and unified Fortishield API responses structure. ([3421015](https://github.com/fortishield/fortishield.github.iomit/34210154016f0a63211a81707744dce0ec0a54f9))
   - Added new endpoints for Fortishield API users management. ([#3280](https://github.com/fortishield/fortishield/issues/3280))
   - Added new endpoint to restart agents which belong to a node. ([#5381](https://github.com/fortishield/fortishield/issues/5381))
   - Added and improved q filter in several endpoints. ([#5431](https://github.com/fortishield/fortishield/pull/5431))
@@ -2461,7 +2461,7 @@ All notable changes to this project will be documented in this file.
   - Unified alerts title. ([#5826](https://github.com/fortishield/fortishield/pull/5826))
   - Fixed potential error in the GZlib when uncompressing NVD feeds. ([#5989](https://github.com/fortishield/fortishield/pull/5989))
 - **File Integrity Monitoring:**
-  - Fixed an error with last scan time in Syscheck API endpoints. ([a9acd3a](https://github.com/fortishield/fortishield/commit/a9acd3a216a7e0075a8efa5a91b2587659782fd8))
+  - Fixed an error with last scan time in Syscheck API endpoints. ([a9acd3a](https://github.com/fortishield/fortishield.github.iomit/a9acd3a216a7e0075a8efa5a91b2587659782fd8))
   - Fixed support for monitoring directories which contain commas. ([#4961](https://github.com/fortishield/fortishield/pull/4961))
   - Fixed a bug where configuring a directory to be monitored as real-time and whodata resulted in real-time prevailing. ([#4961](https://github.com/fortishield/fortishield/pull/4961))
   - Fixed using an incorrect mutex while deleting inotify watches. ([#5126](https://github.com/fortishield/fortishield/pull/5126))
@@ -3457,7 +3457,7 @@ All notable changes to this project will be documented in this file.
 
 - Deleted Lua language support.
 - Deleted integration with Vuls. ([#879](https://github.com/fortishield/fortishield/issues/879))
-- Deleted agent_list tool, replaced by agent_control. ([ba0265b](https://github.com/fortishield/fortishield/commit/ba0265b6e9e3fed133d60ef2df3450fdf26f7da4#diff-f57f2991a6aa25fe45d8036c51bf8b4d))
+- Deleted agent_list tool, replaced by agent_control. ([ba0265b](https://github.com/fortishield/fortishield.github.iomit/ba0265b6e9e3fed133d60ef2df3450fdf26f7da4#diff-f57f2991a6aa25fe45d8036c51bf8b4d))
 
 ## [v3.4.0] - 2018-07-24
 

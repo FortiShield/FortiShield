@@ -22,4 +22,4 @@
    - Scegli 'local' se hai un solo sistema da monitorare.
 
    - Ulteriori informazioni su:
-     https://documentation.fortishield.com
+     https://documentation.fortishield.github.io

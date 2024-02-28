@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import asyncio
@@ -50,7 +50,7 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its integrity information."""
-        return self.fortishield_common.integrity_check
+        return self.fortishield.github.iomon.integrity_check
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -63,10 +63,10 @@ class ReceiveIntegrityTask(c_common.ReceiveFileTask):
         super().done_callback(future)
 
         # Integrity task is only freed if master is not waiting for Extra valid files.
-        # if not self.fortishield_common.extra_valid_requested:
-        #     self.fortishield_common.sync_integrity_free[0] = True
+        # if not self.fortishield.github.iomon.extra_valid_requested:
+        #     self.fortishield.github.iomon.sync_integrity_free[0] = True
 
-        self.fortishield_common.sync_integrity_free[0] = True
+        self.fortishield.github.iomon.sync_integrity_free[0] = True
 
 
 class ReceiveExtraValidTask(c_common.ReceiveFileTask):
@@ -91,7 +91,7 @@ class ReceiveExtraValidTask(c_common.ReceiveFileTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends the previously required extra valid files."""
-        return self.fortishield_common.sync_extra_valid
+        return self.fortishield.github.iomon.sync_extra_valid
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -102,8 +102,8 @@ class ReceiveExtraValidTask(c_common.ReceiveFileTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.fortishield_common.extra_valid_requested = False
-        self.fortishield_common.sync_integrity_free[0] = True
+        self.fortishield.github.iomon.extra_valid_requested = False
+        self.fortishield.github.iomon.sync_integrity_free[0] = True
 
 
 class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
@@ -128,7 +128,7 @@ class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker sends its Agent info."""
-        return self.fortishield_common.sync_fortishield_db_info
+        return self.fortishield.github.iomon.sync_fortishield_db_info
 
     def done_callback(self, future=None):
         """Check whether the synchronization process was correct and free its lock.
@@ -139,7 +139,7 @@ class ReceiveAgentInfoTask(c_common.ReceiveStringTask):
             Synchronization process result.
         """
         super().done_callback(future)
-        self.fortishield_common.sync_agent_info_free = True
+        self.fortishield.github.iomon.sync_agent_info_free = True
 
 
 class SendEntireAgentGroupsTask(c_common.SendStringTask):
@@ -163,7 +163,7 @@ class SendEntireAgentGroupsTask(c_common.SendStringTask):
 
     def set_up_coro(self) -> Callable:
         """Set up the function to be called when the worker needs the entire agent-groups information."""
-        return self.fortishield_common.send_entire_agent_groups_information
+        return self.fortishield.github.iomon.send_entire_agent_groups_information
 
 
 class MasterHandler(server.AbstractServerHandler, c_common.FortishieldCommon):

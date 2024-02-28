@@ -433,12 +433,12 @@ ConfigureServer()
             fi
 
             if [ -x "$HOST_CMD" ]; then
-              HOSTTMP=`${HOST_CMD} -W 5 -t mx fortishield.com 2>/dev/null`
+              HOSTTMP=`${HOST_CMD} -W 5 -t mx fortishield.github.io 2>/dev/null`
               if [ $? = 1 ]; then
                  # Trying without the -W
-                 HOSTTMP=`${HOST_CMD} -t mx fortishield.com 2>/dev/null`
+                 HOSTTMP=`${HOST_CMD} -t mx fortishield.github.io 2>/dev/null`
               fi
-              echo "x$HOSTTMP" | grep "fortishield.com mail is handled" > /dev/null 2>&1
+              echo "x$HOSTTMP" | grep "fortishield.github.io mail is handled" > /dev/null 2>&1
               if [ $? = 0 ]; then
                  # Breaking down the user e-mail
                  EMAILHOST=`echo ${EMAIL} | cut -d "@" -f 2`
@@ -756,7 +756,7 @@ AddPFTable()
     echo ""
     echo "   - ${pfmessage}:"
     echo "     ${moreinfo}"
-    echo "     https://documentation.fortishield.com"
+    echo "     https://documentation.fortishield.github.io"
 
     echo ""
     echo ""
@@ -849,7 +849,7 @@ main()
     fi
 
     # Initial message
-    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.fortishield.com"
+    echo " $NAME $VERSION (Rev. $REVISION) ${installscript} - https://www.fortishield.github.io"
     catMsg "0x101-initial"
     echo ""
     echo "  - $system: $UNAME (${DIST_NAME} ${DIST_VER}.${DIST_SUBVER})"
@@ -1065,13 +1065,13 @@ main()
         echo " - ${addserveragent}"
         echo ""
         echo "   ${moreinfo}"
-        echo "   https://documentation.fortishield.com/"
+        echo "   https://documentation.fortishield.github.io/"
         echo ""
 
     elif [ "X$INSTYPE" = "Xagent" ]; then
         echo ""
         echo " - ${moreinfo}"
-        echo "   https://documentation.fortishield.com/"
+        echo "   https://documentation.fortishield.github.io/"
         echo ""
     fi
 

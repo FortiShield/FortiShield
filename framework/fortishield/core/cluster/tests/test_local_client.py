@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from asyncio import Event, Transport
@@ -10,8 +10,8 @@ from unittest.mock import patch, AsyncMock, call
 import pytest
 from uvloop import EventLoopPolicy, new_event_loop
 
-with patch('fortishield.common.fortishield_uid'):
-    with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.fortishield_uid'):
+    with patch('fortishield.github.iomon.fortishield_gid'):
         from fortishield.core.cluster.local_client import *
         from fortishield.core.cluster.common import InBuffer
         from fortishield.core.exception import FortishieldInternalError

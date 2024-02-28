@@ -24,4 +24,4 @@
   - choisissez 'local' si vous n'avez qu'une machine à surveiller.
 
   - Plus d'information sur :
-    https://documentation.fortishield.com
+    https://documentation.fortishield.github.io

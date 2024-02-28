@@ -1,9 +1,9 @@
 # Fortishield Ruleset
 
-[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://fortishield.com/community/join-us-on-slack/)
+[![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://fortishield.github.io/community/join-us-on-slack/)
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/fortishield)
-[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.fortishield.com)
-[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://fortishield.com)
+[![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.fortishield.github.io)
+[![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://fortishield.github.io)
 
 Fortishield ruleset is used to detect attacks, intrusions, software misuse, configuration problems, application errors, malware, rootkits, system anomalies or security policy violations.
 
@@ -24,7 +24,7 @@ The ruleset includes compliance mapping with PCI DSS v3.1 and CIS.
 
 ## Full documentation
 
-Full documentation at [documentation.fortishield.com](https://documentation.fortishield.com/current/user-manual/ruleset/index.html)
+Full documentation at [documentation.fortishield.github.io](https://documentation.fortishield.github.io/current/user-manual/ruleset/index.html)
 
 ## Contribute
 
@@ -40,5 +40,5 @@ If you are not familiar with Github, you can also share them through [our users 
 
 ## Web references
 
-* [Fortishield website](http://fortishield.com)
+* [Fortishield website](http://fortishield.github.io)
 * [OSSEC project website](http://ossec.github.io)

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import copy
@@ -23,7 +23,7 @@ PATH_DATE_FORMAT = "%Y/%m/%d"
 DB_DATE_FORMAT = "%Y%m%d"
 DEFAULT_DATABASE_NAME = "s3_cloudtrail"
 
-RETRY_CONFIGURATION_URL = 'https://documentation.fortishield.com/current/amazon/services/prerequisites/' \
+RETRY_CONFIGURATION_URL = 'https://documentation.fortishield.github.io/current/amazon/services/prerequisites/' \
                           'considerations.html#Connection-configuration-for-retries'
 
 INVALID_CREDENTIALS_ERROR_CODE = "SignatureDoesNotMatch"

@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -10,10 +10,10 @@ import pytest
 
 from fortishield.core.exception import FortishieldClusterError
 
-with patch('fortishield.common.getgrnam'):
-    with patch('fortishield.common.getpwnam'):
-        with patch('fortishield.common.fortishield_uid'):
-            with patch('fortishield.common.fortishield_gid'):
+with patch('fortishield.github.iomon.getgrnam'):
+    with patch('fortishield.github.iomon.getpwnam'):
+        with patch('fortishield.github.iomon.fortishield_uid'):
+            with patch('fortishield.github.iomon.fortishield_gid'):
                 sys.modules['fortishield.rbac.orm'] = MagicMock()
 
                 from fortishield.core.cluster import control

@@ -7,7 +7,7 @@ Copyright (C) 2014 Trend Micro Inc.
 
 = Information about OSSEC =
 
-Visit https://www.fortishield.com
+Visit https://www.fortishield.github.io
 
 
 = Recommended Installation =
@@ -72,7 +72,7 @@ To compile everything by yourself the following dependencies need to be installe
 
 The following step is common to all OSes:
 - CMake 3.18 installation
-   $> curl -OL http://packages.fortishield.com/utils/cmake/cmake-3.18.3.tar.gz && tar -zxf cmake-3.18.3.tar.gz
+   $> curl -OL http://fortishield.github.io/packages/utils/cmake/cmake-3.18.3.tar.gz && tar -zxf cmake-3.18.3.tar.gz
    $> cd cmake-3.18.3 && ./bootstrap --no-system-curl
    $> make -j$(nproc) && make install
    $> cd .. && rm -rf cmake-*

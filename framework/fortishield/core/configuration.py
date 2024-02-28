@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 import json
@@ -120,7 +120,7 @@ UPDATE_CHECK_OSSEC_FIELD = 'update_check'
 GLOBAL_KEY = 'global'
 YES_VALUE = 'yes'
 CTI_URL_FIELD = 'cti-url'
-DEFAULT_CTI_URL = 'https://cti.fortishield.com'
+DEFAULT_CTI_URL = 'https://cti.fortishield.github.io'
 
 
 def _insert(json_dst: dict, section_name: str, option: str, value: str):

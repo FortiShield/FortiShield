@@ -29,7 +29,7 @@ BEGIN
             " and/or modify it under the terms of the GNU General" \
             " Public License (version 2) as published by the FSF" \
             " - Free Software Foundation\r\n\r\n" \
-            "For more information, visit us online at https://fortishield.com/",
+            "For more information, visit us online at https://fortishield.github.io/",
             IDC_STATIC,16,18,200,63
 END
 

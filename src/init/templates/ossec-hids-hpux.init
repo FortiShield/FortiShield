@@ -2,7 +2,7 @@
 #
 # name: fortishield
 # purpose: Init script for Fortishield
-# Copyright (C) 2015, Fortishield Inc. <support@fortishield.com>
+# Copyright (C) 2015, Fortishield Inc. <support@fortishield.github.io>
 #
 
 FORTISHIELD_HOME=FORTISHIELD_HOME_TMP

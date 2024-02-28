@@ -1,7 +1,7 @@
 """
 copyright: Copyright (C) 2015, Fortishield Inc.
 
-           Created by Fortishield, Inc. <info@fortishield.com>.
+           Created by Fortishield, Inc. <info@fortishield.github.io>.
 
            This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
@@ -40,8 +40,8 @@ os_version:
     - Ubuntu Bionic
 
 references:
-    - https://documentation.fortishield.com/current/user-manual/api/getting-started.html
-    - https://documentation.fortishield.com/current/user-manual/api/configuration.html
+    - https://documentation.fortishield.github.io/current/user-manual/api/getting-started.html
+    - https://documentation.fortishield.github.io/current/user-manual/api/configuration.html
 
 tags:
     - api

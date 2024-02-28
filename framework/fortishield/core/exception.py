@@ -1,5 +1,5 @@
 # Copyright (C) 2015, Fortishield Inc.
-# Created by Fortishield, Inc. <info@fortishield.com>.
+# Created by Fortishield, Inc. <info@fortishield.github.io>.
 # This program is free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from copy import deepcopy
@@ -57,11 +57,11 @@ class FortishieldException(Exception):
         1101: {'message': 'Requested component does not exist',
                'remediation': 'Run `FORTISHIELD_PATH/bin/fortishield-logtest -t` to check your configuration'},
         1102: {'message': 'Invalid section',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html) '
                               'to get more information about configuration sections'},
         1103: {'message': 'Invalid field in section',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html) '
                               'to get more information about configuration sections'},
         1104: {'message': 'Invalid type',
@@ -69,7 +69,7 @@ class FortishieldException(Exception):
         1105: 'Error reading API configuration',
         1106: {'message': 'Requested section not present in configuration',
                'remediation': 'Please, check your configuration file. '
-                              f'You can visit the official documentation (https://documentation.fortishield.com/'
+                              f'You can visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html) '
                               'to get more information about configuration sections'},
         1107: 'Internal options file not found',
@@ -88,7 +88,7 @@ class FortishieldException(Exception):
                'remediation': 'Please, check your configuration file and try again'
                },
         1116: {'message': "Requested component configuration does not exist",
-               'remediation': f"Please, visit the official documentation (https://documentation.fortishield.com/"
+               'remediation': f"Please, visit the official documentation (https://documentation.fortishield.github.io/"
                               f"{DOCU_VERSION}/user-manual/api/reference.html#operation/"
                               f"api.controllers.agents_controller.get_agent_config) to check available component "
                               f"configurations"},
@@ -99,9 +99,9 @@ class FortishieldException(Exception):
                'remediation': "Please ensure the selected module is running and properly configured"},
         1122: {'message': 'Experimental features are disabled',
                'remediation': 'Experimental features can be enabled in FORTISHIELD_PATH/api/configuration/api.yaml or '
-                              f"using API endpoint https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/"
+                              f"using API endpoint https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/"
                               'reference.html#operation/api.controllers.manager_controller.put_api_config or '
-                              f"https://documentation.fortishield.com/{DOCU_VERSION}/"
+                              f"https://documentation.fortishield.github.io/{DOCU_VERSION}/"
                               'user-manual/api/reference.html#operation/'
                               'api.controllers.cluster_controller.put_api_config'},
         1123: {
@@ -109,7 +109,7 @@ class FortishieldException(Exception):
                        f"{MAX_SOCKET_BUFFER_SIZE // 1024} KB"},
         1124: {'message': 'Remote command detected',
                'remediation': f'To solve this issue, please enable the remote commands in the API settings or add an '
-                              f'exception: https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/'
+                              f'exception: https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/'
                               f'configuration.html#remote-commands-localfile-and-wodle-command'},
         1125: {'message': 'Invalid ossec configuration',
                'remediation': 'Please, provide a valid ossec configuration'
@@ -120,21 +120,21 @@ class FortishieldException(Exception):
         1127: {'message': 'Protected section was modified',
                'remediation': 'To solve this, either revert the changes made to this section or disable the protection '
                               'in the API settings: '
-                              f"https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/configuration.html"},
+                              f"https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/configuration.html"},
         1128: {'message': 'Invalid configuration for the given component'},
         1129: {'message': 'Higher version agents detected',
                'remediation': f'To solve this issue, please enable agents higher versions in the API settings: '
-                              f'https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/'
+                              f'https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/'
                               f'configuration.html#agents'},
 
         # Rule: 1200 - 1299
         1200: {'message': 'Error reading rules from `FORTISHIELD_HOME/etc/ossec.conf`',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html)'
                               ' to get more information about how to configure the rules'
                },
         1201: {'message': 'Error reading rule files',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html)'
                               ' to get more information about how to configure the rules'
                },
@@ -152,27 +152,27 @@ class FortishieldException(Exception):
                'remediation': 'Please, check your permissions over the file'
                },
         1208: {'message': 'The rule does not exist or you do not have permission to see it',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html)'
                               ' to get more information about how to configure the rules'
                },
         1209: {'message': 'Invalid relative directory. A \'rule_dir\' tag must '
                           'be declared in ossec.conf ruleset section.',
                'remediation': f'Please, visit the official documentation '
-                              f'(https://documentation.fortishield.com/'
+                              f'(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/ruleset.html)'
                               ' to get more information about the rules'
         },
         1210: {'message': 'Uploading, updating or deleting default rules is not allowed.',
                'remediation': f'Please, visit the official documentation '
-                              f'(https://documentation.fortishield.com/'
+                              f'(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/ruleset/index.html)'
                               ' to get more information about the rules'
         },
         1211: {'message': 'Invalid relative directory. A \'rule_dir\' tag is declared in ossec.conf '
                           'ruleset section, but the directory does not exist.',
                'remediation': f'Please, visit the official documentation'
-                               '(https://documentation.fortishield.com/'
+                               '(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/ruleset.html)'
                               ' to get more information about the rules'
                },
@@ -219,7 +219,7 @@ class FortishieldException(Exception):
 
         # Decoders: 1500 - 1599
         1500: {'message': 'Error reading decoders from ossec.conf',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/ruleset/custom.html)'
                               'to get more information on adding or modifying existing decoders'
                },
@@ -233,27 +233,27 @@ class FortishieldException(Exception):
                },
         1504: {'message': 'The decoder does not exist or you do not have permission to see it',
                'remediation': f'Please, visit the official documentation '
-                              f'(https://documentation.fortishield.com/'
+                              f'(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/index.html)'
                               ' to get more information about the decoders'
                },
         1505: {'message': 'Invalid relative directory. A \'decoder_dir\' '
                           'tag must be declared in ossec.conf ruleset section.',
                'remediation': f'Please, visit the official documentation'
-                               '(https://documentation.fortishield.com/'
+                               '(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/ruleset.html)'
                               ' to get more information about the decoders'
                },
         1506: {'message': 'Uploading, updating or deleting default decoders is not allowed.',
                'remediation': f'Please, visit the official documentation'
-                               '(https://documentation.fortishield.com/'
+                               '(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/ruleset/index.html)'
                               ' to get more information about the decoders'
                },
         1507: {'message': 'Invalid relative directory. A \'decoder_dir\' tag is declared '
                           'in ossec.conf ruleset section, but the directory does not exist.',
                'remediation': f'Please, visit the official documentation'
-                               '(https://documentation.fortishield.com/'
+                               '(https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/reference/ossec-conf/ruleset.html)'
                               ' to get more information about the decoders'
                },
@@ -263,7 +263,7 @@ class FortishieldException(Exception):
         1650: 'Active response - Command not specified',
 
         1652: {'message': 'The command used is not defined in the configuration.',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/capabilities/active-response/how-to-configure.html)'
                               'to get more information'
                },
@@ -284,8 +284,8 @@ class FortishieldException(Exception):
                },
         1707: {'message': 'Cannot send request, agent is not active',
                'remediation': 'Please, check non-active agents connection and try again. Visit '
-                              f'https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/registering/index.html and '
-                              f'https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/agents/agent-connection.'
+                              f'https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/registering/index.html and '
+                              f'https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/agents/agent-connection.'
                               f'html to obtain more information on registering and connecting agents'
                },
         1708: {'message': 'There is an agent with the same ID',
@@ -301,7 +301,7 @@ class FortishieldException(Exception):
                'remediation': 'Please, use another group ID'
                },
         1712: {'message': 'Default group is not deletable',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/agents/grouping-agents.html)'
                               'to get more information'
                },
@@ -324,19 +324,19 @@ class FortishieldException(Exception):
                'remediation': 'Please, use `GET /agents/groups/:group_id/files` to get all available group files'
                },
         1728: {'message': 'Invalid node type',
-               'remediation': f'Valid types are `master` and `worker`. Please, visit https://documentation.fortishield.com/'
+               'remediation': f'Valid types are `master` and `worker`. Please, visit https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/configuring-cluster/index.html '
                               'to get more information about cluster configuration'},
         1730: {'message': 'Node does not exist',
                'remediation': 'Make sure the name is correct and that the node is up. You can check it using '
-                              f'`cluster_control -l` (https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/'
+                              f'`cluster_control -l` (https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/'
                               f'reference/tools/cluster_control.html#get-connected-nodes)'},
 
         1731: {'message': 'Agent is not eligible for the action to be performed',
                'remediation': 'Please, make sure the agent meets the requirements.'},
         1734: {'message': 'Error removing agent from group',
                'remediation': f'Agent does not belong to specified group, to assign the agent to a group follow: '
-                              f'https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/agents/grouping-agents.html'
+                              f'https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/agents/grouping-agents.html'
                },
         1735: {'message': 'Agent version is not compatible with this feature',
                'remediation': 'Please update the agent, in case the problem persists contact us at: https://github.com'
@@ -404,7 +404,7 @@ class FortishieldException(Exception):
                'remediation': 'Please, fix the corrupted files'
                },
         1910: {'message': 'Content-type header is mandatory',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/api/reference.html#operation/api.controllers.'
                               f'cluster_controller.put_files_node)'
                               ' to get more information about how to configure a cluster'},
@@ -439,12 +439,12 @@ class FortishieldException(Exception):
         3001: 'Error creating zip file',
         3002: {'message': 'Error creating PID file'},
         3004: {'message': 'Error in cluster configuration',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/configuring-cluster/index.html)'
                               ' to get more information about how to configure a cluster'},
         3005: 'Error reading cluster JSON file',
         3006: {'message': 'Error reading cluster configuration',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/configuring-cluster/index.html)'
                               ' to get more information about how to configure a cluster'},
         3007: 'Client.keys file received in master node',
@@ -452,7 +452,7 @@ class FortishieldException(Exception):
                'remediation': ''},
         3012: 'Cluster is not running',
         3013: {'message': 'Cluster is not running, it might be disabled in `FORTISHIELD_HOME/etc/ossec.conf`',
-               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.com/'
+               'remediation': f'Please, visit the official documentation (https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/configuring-cluster/index.html)'
                               ' to get more information about how to configure a cluster'
                },
@@ -472,26 +472,26 @@ class FortishieldException(Exception):
         3024: "Length of command exceeds limit defined in fortishield.cluster.common.Handler.cmd_len.",
         3025: {'message': "Could not decrypt message",
                'remediation': "Check the cluster key is correct in the worker's "
-                              f"[ossec.conf](https://documentation.fortishield.com/{DOCU_VERSION}/user-manual/reference/"
+                              f"[ossec.conf](https://documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/reference/"
                               f"ossec-conf/cluster.html#key)"
                               ", ensure it is the same that the master's."},
         3026: "Error sending request: Memory error. Request chunk size divided by 2.",
         3027: "Unknown received task name",
         3028: {'message': "Worker node ID already exists",
-               'remediation': f"Check and fix [worker names](https://documentation.fortishield.com/{DOCU_VERSION}/"
+               'remediation': f"Check and fix [worker names](https://documentation.fortishield.github.io/{DOCU_VERSION}/"
                               f"user-manual/reference/ossec-conf/cluster.html#node-name)"
                               " and restart the `fortishield-manager` service."},
         3029: {"message": "Connected worker with same name as the master",
-               "remediation": f"Check and fix the [worker name](https://documentation.fortishield.com/{DOCU_VERSION}/"
+               "remediation": f"Check and fix the [worker name](https://documentation.fortishield.github.io/{DOCU_VERSION}/"
                               f"user-manual/reference/ossec-conf/cluster.html#node-name)"
                               " and restart the `fortishield-manager` service in the node"},
         3030: {'message': 'Worker does not belong to the same cluster',
-               'remediation': f"Change the [cluster name](https://documentation.fortishield.com/{DOCU_VERSION}/"
+               'remediation': f"Change the [cluster name](https://documentation.fortishield.github.io/{DOCU_VERSION}/"
                               f"user-manual/reference/ossec-conf/cluster.html#name)"
                               " in the worker configuration to match the master's and restart the `fortishield-manager` "
                               "service"},
         3031: {'message': "Worker and master versions are not the same",
-               'remediation': f"[Update](https://documentation.fortishield.com/{DOCU_VERSION}/upgrade-guide/index.html)"
+               'remediation': f"[Update](https://documentation.fortishield.github.io/{DOCU_VERSION}/upgrade-guide/index.html)"
                               " master and workers to the same version."},
         3032: "Could not forward DAPI request. Connection not available.",
         3034: "Error sending file. File not found.",
@@ -507,7 +507,7 @@ class FortishieldException(Exception):
         4000: {'message': "Permission denied",
                'remediation': "Please, make sure you have permissions to execute the current request. "
                               f"For more information on how to set up permissions, please visit https://documentation."
-                              f"fortishield.com/{DOCU_VERSION}/user-manual/api/rbac/configuration.html"},
+                              f"fortishield.github.io/{DOCU_VERSION}/user-manual/api/rbac/configuration.html"},
         4001: {'message': 'The body of the request is empty, you must specify what you want to modify'},
         4002: {'message': 'The specified role does not exist',
                'remediation': 'Please, create the specified role with the endpoint POST /security/roles'},
@@ -533,7 +533,7 @@ class FortishieldException(Exception):
         4018: {'message': 'Level cannot be a negative number'},
         4019: {'message': 'Invalid resource specified',
                'remediation': f'Please, check the current RBAC resources, for more information please visit https:/'
-                              f'/documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/rbac/configuration.html'},
+                              f'/documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/rbac/configuration.html'},
         4020: {'message': 'Invalid endpoint specified',
                'remediation': 'Valid endpoints are: '},
         4021: 'Error reading security configuration',
@@ -547,7 +547,7 @@ class FortishieldException(Exception):
         4500: {'message': 'The specified resources are invalid',
                'remediation': 'Please, make sure permissions are properly defined, '
                               f'for more information on setting up permissions please visit https://documentation.'
-                              f'fortishield.com/{DOCU_VERSION}/user-manual/api/rbac/configuration.html'},
+                              f'fortishield.github.io/{DOCU_VERSION}/user-manual/api/rbac/configuration.html'},
 
         # User management
         5000: {'message': 'The user could not be created',
@@ -577,14 +577,14 @@ class FortishieldException(Exception):
                           'The current IP has been blocked due to a high number of login attempts'},
         6001: {'message': 'Maximum number of requests per minute reached',
                'remediation': f'This limit can be changed in api.yaml file. More information here: https:/'
-                              f'/documentation.fortishield.com/{DOCU_VERSION}/user-manual/api/configuration.html#'
+                              f'/documentation.fortishield.github.io/{DOCU_VERSION}/user-manual/api/configuration.html#'
                               f'configuration-file'},
         6002: {'message': 'The body type is not the one specified in the content-type'},
         6003: {'message': 'Error trying to load the JWT secret',
                'remediation': 'Make sure you have the right permissions: FORTISHIELD_PATH/api/configuration/security/'
                               'jwt_secret'},
         6004: {'message': 'The current user does not have authentication enabled through authorization context',
-               'remediation': f'You can enable it using the following endpoint: https://documentation.fortishield.com/'
+               'remediation': f'You can enable it using the following endpoint: https://documentation.fortishield.github.io/'
                               f'{DOCU_VERSION}/user-manual/api/reference.html#operation/api.controllers.'
                               f'security_controller.edit_run_as'},
         6005: {'message': 'Maximum number of requests per minute reached'},
