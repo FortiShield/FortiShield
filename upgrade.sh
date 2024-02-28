@@ -1,9 +1,9 @@
 #!/bin/bash
-# Copyright (C) 2024, FortiShield Inc.
+# Copyright (C) 2015, Fortishield Inc.
 
 # validate OS, linux or macos
 if [ "X$(uname)" = "XLinux" ] ; then
-    # Get FortiShield installation path
+    # Get Fortishield installation path
     SCRIPT=$(readlink -f "$0")
     FORTISHIELD_HOME=$(dirname $(dirname $(dirname "$SCRIPT")))
     cd "${FORTISHIELD_HOME}"

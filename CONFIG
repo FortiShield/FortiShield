@@ -1,0 +1,22 @@
+FORTISHIELD
+Copyright (C) 2015, Fortishield Inc.
+
+Based on OSSEC
+Copyright (C) 2014 Trend Micro Inc.
+
+
+= Information about Fortishield =
+
+Visit https://www.wazuh.com
+
+
+= Recommended Installation =
+
+See INSTALL
+
+
+== Configuring Fortishield ==
+
+Just follow the steps from the install.sh script.
+More information at
+https://documentation.wazuh.com

@@ -1,0 +1,26 @@
+:modulename: wazuh
+:has-dashboards: false
+
+== Fortishield module
+
+This module prepares Elasticsearch for ingesting Fortishield alerts and, optionally, Fortishield archives.
+
+include::../include/what-happens.asciidoc[]
+
+[float]
+=== Compatibility
+
+Compatible with Fortishield 3.x and Elastic stack 7.x. The module was tested with Fortishield 3.9 and Elastic stack 7.2. 
+
+include::../include/running-modules.asciidoc[]
+
+[float]
+==== `{fileset}` log fileset settings
+
+include::../include/var-paths.asciidoc[]
+
+:has-dashboards!:
+
+:fileset_ex!:
+
+:modulename!:

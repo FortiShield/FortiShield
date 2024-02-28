@@ -1,0 +1,12 @@
+# FORTISHIELD SYSTEM FILE, PLEASE DO NOT MODIFY
+
+default_users:
+  wazuh:
+    description: Superuser of Fortishield.
+    password: wazuh
+    allow_run_as: True
+
+  wazuh-wui:
+    description: Superuser of Fortishield UI
+    password: wazuh-wui
+    allow_run_as: True
